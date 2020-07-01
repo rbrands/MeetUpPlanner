@@ -1,0 +1,80 @@
+﻿@page "/"
+@using Blazored.TextEditor
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+<BlazoredTextEditor @ref="@QuillHtml">
+    <ToolbarContent>
+        <select class="ql-header">
+            <option selected=""></option>
+            <option value="1"></option>
+            <option value="2"></option>
+            <option value="3"></option>
+            <option value="4"></option>
+            <option value="5"></option>
+        </select>
+        <span class="ql-formats">
+            <button class="ql-bold"></button>
+            <button class="ql-italic"></button>
+            <button class="ql-underline"></button>
+            <button class="ql-strike"></button>
+        </span>
+        <span class="ql-formats">
+            <select class="ql-color"></select>
+            <select class="ql-background"></select>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-list" value="ordered"></button>
+            <button class="ql-list" value="bullet"></button>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-link"></button>
+        </span>
+    </ToolbarContent>
+    <EditorContent>
+        <h4>This Toolbar works with HTML</h4>
+        <a href="http://BlazorHelpWebsite.com">
+            BlazorHelpWebsite.com
+        </a>
+    </EditorContent>
+</BlazoredTextEditor>
+<br />
+<button class="btn btn-primary"
+        @onclick="GetHTML">
+    Get HTML
+</button>
+<button class="btn btn-primary"
+        @onclick="SetHTML">
+    Set HTML
+</button>
+<br />
+<div>
+    <br />
+    @((MarkupString)QuillHTMLContent)
+    @QuillHTMLContent
+</div>
+<br />
+@code {
+
+    BlazoredTextEditor QuillHtml;
+    string QuillHTMLContent;
+
+    public async void GetHTML()
+    {
+        QuillHTMLContent = await this.QuillHtml.GetHTML();
+        StateHasChanged();
+    }
+
+    public async void SetHTML()
+    {
+        string QuillContent =
+            @"<a href='http://BlazorHelpWebsite.com/'>" +
+            "<img src='images/BlazorHelpWebsite.gif' /></a>";
+
+        await this.QuillHtml.LoadHTMLContent(QuillContent);
+        StateHasChanged();
+    }
+}
+
+
