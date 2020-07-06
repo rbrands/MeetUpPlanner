@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
+using MeetUpPlanner.Server.Repositories;
 
 namespace MeetUpPlanner.Server
 {
@@ -25,6 +26,15 @@ namespace MeetUpPlanner.Server
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            //
+            // rbrands: Add standard services with dependency injection
+            // 
+            services.Configure<MeetUpFunctionsConfig>(Configuration.GetSection("MeetUpFunctionsConfig"));
+            MeetUpFunctionsConfig functionsConfig = Configuration.GetSection("MeetUpFunctionsConfig").Get<MeetUpFunctionsConfig>();
+            MeetUpFunctions meetUpFunctions = new MeetUpFunctions(functionsConfig);
+            services.AddSingleton(typeof(IMeetUpFunctions), meetUpFunctions);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

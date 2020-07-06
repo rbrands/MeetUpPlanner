@@ -1,28 +1,37 @@
 ﻿@page "/about"
+@inject HttpClient Http
 
-    <div class="card">
-        <div class="card-header">
-            <h4>Über den MeetUp-Planner</h4>
-        </div>
-        <div class="card-body">
-            <p>
-                Diese kleine Anwendung habe ich in den "Corona"-Zeiten entwickelt, damit Radausfahrten so organisiert werden können, damit
-                die Teilnehmer sich registrieren können und so alle Kontakte nachvollziehbar sind.
-            </p>
-            <p>
-                Und nebenbei oder vielleicht sogar vor allem möchte ich hiermit eine neue Technik ausprobieren: <a href="https://blazor.net" target="_blank">Blazor ...</a>
-            </p>
-            <p class="bg-light">
-                Versionen: Client - @clientVersion Server - @serverVersion Functions - @functionsVersion
-            </p>
-        </div>
-        <div class="card-footer">
-            Datenschutz | Impressum
-        </div>
+
+<div class="card">
+    <div class="card-header">
+        <h4>Über den MeetUp-Planner</h4>
     </div>
+    <div class="card-body">
+        <p>
+            Diese kleine Anwendung habe ich in den "Corona"-Zeiten entwickelt, damit Radausfahrten so organisiert werden können, damit
+            die Teilnehmer sich registrieren können und so alle Kontakte nachvollziehbar sind.
+        </p>
+        <p>
+            Und nebenbei oder vielleicht sogar vor allem möchte ich hiermit eine neue Technik ausprobieren: <a href="https://blazor.net" target="_blank">Blazor ...</a>
+        </p>
+        <p class="bg-light font-italic">
+            Versionen: Client - @clientVersion / Server - @serverVersion / Functions - @functionsVersion
+        </p>
+    </div>
+    <div class="card-footer">
+        Datenschutz | Impressum
+    </div>
+</div>
 
 @code {
     private const string clientVersion = "2020-06-19";
-    private string serverVersion = "2020-06-19";
-    private string functionsVersion = "2020-06-19";
+    private string serverVersion = "tbd";
+    private string functionsVersion = "tbd";
+
+    protected override async Task OnInitializedAsync()
+    {
+        serverVersion = await Http.GetStringAsync("Util/version");
+        functionsVersion = await Http.GetStringAsync("Util/functionsVersion");
+    }
+
 }
