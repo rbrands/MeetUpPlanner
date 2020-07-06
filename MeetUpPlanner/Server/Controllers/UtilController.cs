@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MeetUpPlanner.Server.Repositories;
-
+using MeetUpPlanner.Shared;
 
 namespace MeetUpPlanner.Server.Controllers
 {
@@ -39,6 +39,14 @@ namespace MeetUpPlanner.Server.Controllers
             string functionsVersions = await _meetUpFunctions.GetVersion();
             
             return functionsVersion;
+        }
+
+        [HttpGet("clientsettings")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetClientSettings()
+        {
+            ClientSettings clientSettings = await _meetUpFunctions.GetClientSettings();
+            return Ok(clientSettings);
         }
     }
 }

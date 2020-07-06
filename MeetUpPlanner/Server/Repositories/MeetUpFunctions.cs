@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Flurl.Http;
 using Flurl;
+using MeetUpPlanner.Shared;
 
 
 namespace MeetUpPlanner.Server.Repositories
@@ -23,6 +24,13 @@ namespace MeetUpPlanner.Server.Repositories
                             .WithHeader("x-functions-key", _functionsConfig.ApiKey)
                             .GetStringAsync();
             return version;
+        }
+        public async Task<ClientSettings> GetClientSettings()
+        {
+            ClientSettings clientSettings = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/GetClientSettings"
+                            .WithHeader("x-functions-key", _functionsConfig.ApiKey)
+                            .GetJsonAsync<ClientSettings>();
+            return clientSettings;
         }
     }
 

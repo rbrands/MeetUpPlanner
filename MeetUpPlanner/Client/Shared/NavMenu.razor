@@ -1,5 +1,7 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">MeetUpPlanner</a>
+﻿@inject HttpClient Http
+
+<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="">@title</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -22,7 +24,7 @@
                 <span class="oi oi-list-rich" aria-hidden="true"></span> Über ...
             </NavLink>
         </li>
-        
+
     </ul>
 </div>
 
@@ -31,8 +33,17 @@
 
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
+    private string title = "MeetUpPlanner";
+
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
     }
+
+    protected override async Task OnInitializedAsync()
+    {
+        MeetUpPlanner.Shared.ClientSettings clientSettings = await Http.GetFromJsonAsync<MeetUpPlanner.Shared.ClientSettings>("Util/clientsettings");
+        title = clientSettings.Title;
+    }
+
 }

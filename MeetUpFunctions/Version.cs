@@ -12,7 +12,7 @@ namespace MeetUpFunctions
 {
     public static class Version
     {
-        const string functionsVersion = "2020-07-03";
+        const string functionsVersion = "2020-07-06";
         
         [FunctionName("GetVersion")]
         public static async Task<IActionResult> Run(
