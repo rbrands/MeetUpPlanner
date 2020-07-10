@@ -1,7 +1,12 @@
 ﻿@inject HttpClient Http
+@inject AppState AppState
+@inject KeywordCheck KeywordCheck
+@implements IDisposable
+@using MeetUpPlanner.Shared
+
 
 <div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">@title</a>
+    <a class="navbar-brand" href="">@AppState.ClientSettings?.Title</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -11,18 +16,28 @@
     <ul class="nav flex-column">
         <li class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
+                <span class="oi oi-account-login" aria-hidden="true"></span> Start
             </NavLink>
         </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
+        <li class="nav-item px-3" hidden="@(!KeywordCheck.IsUser)">
+            <NavLink class="nav-link" href="calendar">
+                <span class="oi oi-calendar" aria-hidden="true"></span> Termine
+            </NavLink>
+        </li>
+        <li class="nav-item px-3" hidden="@(!KeywordCheck.IsAdmin)">
+            <NavLink class="nav-link" href="admin">
+                <span class="oi oi-wrench" aria-hidden="true"></span> Administration
             </NavLink>
         </li>
         <li class="nav-item px-3">
             <NavLink class="nav-link" href="about">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Über ...
+                <span class="oi oi-lightbulb" aria-hidden="true"></span> Über ...
             </NavLink>
+        </li>
+        <li class="nav-item px-3" hidden="@String.IsNullOrEmpty(AppState.ClientSettings.FurtherInfoLink)">
+            <a class="nav-link" href="@AppState.ClientSettings.FurtherInfoLink" target="_blank">
+                <span class="oi oi-external-link" aria-hidden="true"></span> @AppState.ClientSettings.FurtherInfoTitle
+            </a>
         </li>
 
     </ul>
@@ -30,20 +45,22 @@
 
 @code {
     private bool collapseNavMenu = true;
-
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private string title = "MeetUpPlanner";
-
+    
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        MeetUpPlanner.Shared.ClientSettings clientSettings = await Http.GetFromJsonAsync<MeetUpPlanner.Shared.ClientSettings>("Util/clientsettings");
-        title = clientSettings.Title;
+       AppState.OnChange += StateHasChanged;
     }
 
+    public void Dispose()
+    {
+        AppState.OnChange -= StateHasChanged;
+    }
 }
+
+

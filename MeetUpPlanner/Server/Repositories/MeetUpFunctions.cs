@@ -11,7 +11,7 @@ namespace MeetUpPlanner.Server.Repositories
 {
     public class MeetUpFunctions : IMeetUpFunctions
     {
-        private MeetUpFunctionsConfig _functionsConfig;
+        private readonly MeetUpFunctionsConfig _functionsConfig;
 
         public MeetUpFunctions(MeetUpFunctionsConfig functionsConfig)
         {

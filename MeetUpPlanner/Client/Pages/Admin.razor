@@ -1,0 +1,55 @@
+﻿@page "/admin"
+@inject HttpClient Http
+@inject AppState AppStateStore
+@inject KeywordCheck KeywordCheck
+@using MeetUpPlanner.Shared
+
+<h2>Administration</h2>
+
+<EditForm OnValidSubmit="SaveClientSettings" Model="@AppStateStore.ClientSettings">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label for="title">Titel</label>
+        <InputText id="title" aria-describedby="titleHelp" class="form-control" @bind-Value="AppStateStore.ClientSettings.Title" autocomplete="on" placeholder="Überschrift zum MeetUp-Planner" title="Überschrift." />
+        <small id="titleHelp" class="form-text text-muted">
+            Wird als Titel der Anwendung angezeigt statt dem neutralen "MeetUp-Planner".
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="link">Link</label>
+        <InputText id="link" aria-describedby="linkHelp" class="form-control" @bind-Value="AppStateStore.ClientSettings.FurtherInfoLink" autocomplete="on" placeholder="Url zu externer Web-Seite" title="Überschrift." />
+        <small id="linkHelp" class="form-text text-muted">
+            Hier kann der Link zu einer externen Web-Seite angegeben werden.
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="linkTitle">Titel des Links</label>
+        <InputText id="linkTitle" aria-describedby="linkTitleHelp" class="form-control" @bind-Value="AppStateStore.ClientSettings.FurtherInfoTitle" autocomplete="on" placeholder="Titel zum externen Link" title="Titel zum externen Link." />
+        <small id="linkTitleHelp" class="form-text text-muted">
+            Hier die "Beschriftung" des externen Links angeben.
+        </small>
+    </div>
+    <button type="submit" id="BtnSaveSettings" class="btn btn-primary">Einstellungen speichern ...</button>
+</EditForm>
+<br />
+<div class="alert-info">
+    <p>
+        @logMessage
+    </p>
+</div>
+<hr />
+
+
+@code {
+    private string logMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+    private async Task SaveClientSettings()
+    {
+        logMessage = "Einstellungen gespeichert.";
+    }
+}

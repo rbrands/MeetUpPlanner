@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeetUpPlanner.Client", "Mee
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeetUpPlanner.Shared", "MeetUpPlanner\Shared\MeetUpPlanner.Shared.csproj", "{0C2846F6-C6AC-4669-B267-E0F5AAE45D3D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeetUpFunctions", "MeetUpFunctions\MeetUpFunctions.csproj", "{7831B180-DFD7-4C01-B86D-58F3B02334C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeetUpPlanner.Functions", "MeetUpFunctions\MeetUpPlanner.Functions.csproj", "{7831B180-DFD7-4C01-B86D-58F3B02334C5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0C2846F6-C6AC-4669-B267-E0F5AAE45D3D} = {0C2846F6-C6AC-4669-B267-E0F5AAE45D3D}
 	EndProjectSection

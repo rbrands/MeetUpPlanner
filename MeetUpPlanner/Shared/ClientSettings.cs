@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel.DataAnnotations;
-
-
+using Newtonsoft.Json;
 
 namespace MeetUpPlanner.Shared
 {
     public class ClientSettings : CosmosDBEntity
     {
+        [JsonProperty(PropertyName = "title")]
         public string Title { get; set; } = "MeetUp-Planner";
         [DataType(DataType.Url, ErrorMessage = "Bitte eine gültige URL eingeben.")]
-        [Display(Name = "Link", Prompt = "Optionaler Link für weitere Infos."), UIHint("Url")]
-        public string FurtherInfoLink { get; set; }
-        [Display(Name = "Titel des Links", Prompt = "Titel zu dem weiterführenden Link."), MaxLength(40, ErrorMessage = "Titel zu dem Link zu lang.")]
-        public string FurtherInfoTitle { get; set; }
+        [JsonProperty(PropertyName = "furtherInfoLink", NullValueHandling = NullValueHandling.Ignore)]
+        public string FurtherInfoLink { get; set; } = "https://scuderia-suedstadt.de";
+        [JsonProperty(PropertyName = "furtherInfoTitle", NullValueHandling = NullValueHandling.Ignore)]
+        public string FurtherInfoTitle { get; set; } = "Scuderia Südstadt";
     }
 }

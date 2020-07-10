@@ -14,7 +14,7 @@ namespace MeetUpPlanner.Server.Controllers
     [ApiController]
     public class UtilController : ControllerBase
     {
-        IMeetUpFunctions _meetUpFunctions;
+        private readonly IMeetUpFunctions _meetUpFunctions;
         private readonly ILogger<UtilController> logger;
         const string serverVersion = "2020-07-02";
         string functionsVersion = "2020-07-03";
@@ -36,7 +36,7 @@ namespace MeetUpPlanner.Server.Controllers
         public async Task<String> GetFunctionsVersion()
         {
             logger.LogInformation("Functions version returned: {functionsVersion}", functionsVersion);
-            string functionsVersions = await _meetUpFunctions.GetVersion();
+            functionsVersion = await _meetUpFunctions.GetVersion();
             
             return functionsVersion;
         }
@@ -47,6 +47,24 @@ namespace MeetUpPlanner.Server.Controllers
         {
             ClientSettings clientSettings = await _meetUpFunctions.GetClientSettings();
             return Ok(clientSettings);
+        }
+
+        [HttpGet("checkkeyword")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> CheckKeyword(string keyword)
+        {
+            KeywordCheck keywordCheck = new KeywordCheck();
+            if (!String.IsNullOrEmpty(keyword))
+            {
+                keywordCheck.IsUser = keyword.Equals("Abstand");
+                keywordCheck.IsAdmin = keyword.Equals("Super1Geheim");
+            }
+            if (keywordCheck.IsAdmin)
+            {
+                // Admin is user, too
+                keywordCheck.IsUser = true;
+            }
+            return Ok(keywordCheck);
         }
     }
 }
