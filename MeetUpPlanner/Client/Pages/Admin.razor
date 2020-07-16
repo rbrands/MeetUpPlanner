@@ -6,6 +6,7 @@
 
 <h2>Administration</h2>
 
+<h4>Client Einstellungen</h4>
 <EditForm OnValidSubmit="SaveClientSettings" Model="@AppStateStore.ClientSettings">
     <DataAnnotationsValidator />
     <ValidationSummary />
@@ -39,17 +40,58 @@
     </p>
 </div>
 <hr />
+<h4>Server Einstellungen</h4>
+<EditForm OnValidSubmit="SaveServerSettings" Model="serverSettings">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label for="userKeyword">Schlüsselwort</label>
+        <InputText id="userKeyword" aria-describedby="userKeywordHelp" class="form-control" @bind-Value="serverSettings.UserKeyword" autocomplete="on" placeholder="Schlüsselwort für den allgemeinen Zugang" title="Schlüsselwort" />
+        <small id="userKeywordHelp" class="form-text text-muted">
+            Schlüsselwort für den Zugang zu den Terminen.
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="adminKeyword">Admin Schlüsselwort</label>
+        <InputText id="adminKeyword" aria-describedby="adminKeywordHelp" class="form-control" @bind-Value="serverSettings.AdminKeyword" autocomplete="on" placeholder="Schlüsselwort für Admins" title="Admin Schlüsselwort" />
+        <small id="adminKeywordHelp" class="form-text text-muted">
+            Das Schlüsselwort für Administratoren des MeetUp-Planners.
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="autoDelete">Anzahl Tage</label>
+        <InputNumber id="autoDelete" aria-describedby="autoDeleteHelp" class="form-control" @bind-Value="serverSettings.AutoDeleteAfterDays" autocomplete="on" placeholder="Speicherungsdauer in Tagen für Termine" title="Speicherdauer" />
+        <small id="autoDeleteHelp" class="form-text text-muted">
+            Anzahl Tage, die die Termine gespeichert werden sollen. Danach werden sie automatisch gelöscht.
+        </small>
+    </div>
 
+    <button type="submit" id="BtnSaveServerSettings" class="btn btn-primary">Einstellungen speichern ...</button>
+</EditForm>
+<br />
+<div class="alert-info">
+    <p>
+        @serverLogMessage
+    </p>
+</div>
 
 @code {
     private string logMessage;
+    private string serverLogMessage;
+    private ServerSettings serverSettings;
 
     protected override async Task OnInitializedAsync()
     {
+        serverSettings = new ServerSettings();
     }
 
     private async Task SaveClientSettings()
     {
         logMessage = "Einstellungen gespeichert.";
+    }
+
+    private async Task SaveServerSettings()
+    {
+        serverLogMessage = "Einstellungen gespeichert";
     }
 }

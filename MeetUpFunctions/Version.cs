@@ -7,12 +7,13 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using MeetUpPlanner.Functions;
 
 namespace MeetUpFunctions
 {
     public static class Version
     {
-        const string functionsVersion = "2020-07-06";
+        const string functionsVersion = Constants.VERSION;
         
         [FunctionName("GetVersion")]
         public static async Task<IActionResult> Run(
