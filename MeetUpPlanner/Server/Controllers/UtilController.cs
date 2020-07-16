@@ -14,12 +14,12 @@ namespace MeetUpPlanner.Server.Controllers
     [ApiController]
     public class UtilController : ControllerBase
     {
-        private readonly IMeetUpFunctions _meetUpFunctions;
+        private readonly MeetUpFunctions _meetUpFunctions;
         private readonly ILogger<UtilController> logger;
         const string serverVersion = "2020-07-02";
         string functionsVersion = "2020-07-03";
 
-        public UtilController(ILogger<UtilController> logger, IMeetUpFunctions meetUpFunctions)
+        public UtilController(ILogger<UtilController> logger, MeetUpFunctions meetUpFunctions)
         {
             _meetUpFunctions = meetUpFunctions;
             this.logger = logger;
@@ -53,18 +53,31 @@ namespace MeetUpPlanner.Server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> CheckKeyword(string keyword)
         {
-            KeywordCheck keywordCheck = new KeywordCheck();
-            if (!String.IsNullOrEmpty(keyword))
-            {
-                keywordCheck.IsUser = keyword.Equals("Abstand");
-                keywordCheck.IsAdmin = keyword.Equals("Super1Geheim");
-            }
-            if (keywordCheck.IsAdmin)
-            {
-                // Admin is user, too
-                keywordCheck.IsUser = true;
-            }
+            KeywordCheck keywordCheck = await _meetUpFunctions.CheckKeyword(keyword);
+
             return Ok(keywordCheck);
+        }
+
+        [HttpGet("serversettings")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetServerSettings([FromQuery] string adminKeyword)
+        {
+            ServerSettings serverSettings = await _meetUpFunctions.GetServerSettings(adminKeyword);
+            return Ok(serverSettings);
+        }
+        [HttpPost("writeserversettings")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> WriteServerSettings([FromQuery] string adminKeyword, [FromBody] ServerSettings serverSettings)
+        {
+            await _meetUpFunctions.WriteServerSettings(adminKeyword, serverSettings);
+            return Ok();
+        }
+        [HttpPost("writesettings")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> WriteClientSettings([FromQuery] string adminKeyword, [FromBody] ClientSettings clientSettings)
+        {
+            await _meetUpFunctions.WriteClientSettings(adminKeyword, clientSettings);
+            return Ok();
         }
     }
 }

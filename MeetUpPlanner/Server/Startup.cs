@@ -33,8 +33,7 @@ namespace MeetUpPlanner.Server
             services.Configure<MeetUpFunctionsConfig>(Configuration.GetSection("MeetUpFunctionsConfig"));
             MeetUpFunctionsConfig functionsConfig = Configuration.GetSection("MeetUpFunctionsConfig").Get<MeetUpFunctionsConfig>();
             MeetUpFunctions meetUpFunctions = new MeetUpFunctions(functionsConfig);
-            services.AddSingleton(typeof(IMeetUpFunctions), meetUpFunctions);
-
+            services.AddSingleton(meetUpFunctions);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

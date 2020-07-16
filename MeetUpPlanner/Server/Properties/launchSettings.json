@@ -16,7 +16,7 @@
         "MeetUpFunctionsConfig:FunctionAppName": "meetupplanner-dev",
         "MeetUpFunctionsConfig:ApiKey": "NxfLA9Q/xtSa4vV9ft0oWHoMSnfhYDikr46eVMSVl3WAHXk1hTuQoQ==",
         "ASPNETCORE_ENVIRONMENT": "Development"
-      },
+      }
      
     },
     "MeetUpPlanner.Server": {
@@ -26,7 +26,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:5001;http://localhost:5000",
+      "applicationUrl": "https://localhost:5001;http://localhost:5000"
     }
   }
 }

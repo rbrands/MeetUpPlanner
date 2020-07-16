@@ -41,7 +41,7 @@
 </div>
 <hr />
 <h4>Server Einstellungen</h4>
-<EditForm OnValidSubmit="SaveServerSettings" Model="serverSettings">
+<EditForm OnValidSubmit="SaveServerSettings" Model="@serverSettings">
     <DataAnnotationsValidator />
     <ValidationSummary />
     <div class="form-group">
@@ -78,20 +78,29 @@
 @code {
     private string logMessage;
     private string serverLogMessage;
-    private ServerSettings serverSettings;
+    private ServerSettings serverSettings = new ServerSettings();
 
     protected override async Task OnInitializedAsync()
     {
-        serverSettings = new ServerSettings();
+        string keyword = AppStateStore.KeyWord;
+        // Get server settings from server
+        serverSettings = await Http.GetFromJsonAsync<ServerSettings>($"Util/serversettings?adminKeyword={keyword}");
     }
 
     private async Task SaveClientSettings()
     {
+        string keyword = AppStateStore.KeyWord;
+        // Write client settings to server
+        await Http.PostAsJsonAsync<ClientSettings>($"Util/writesettings?adminKeyword={keyword}", AppStateStore.ClientSettings);
+        AppStateStore.NotifyStateChanged();
         logMessage = "Einstellungen gespeichert.";
     }
 
     private async Task SaveServerSettings()
     {
+        string keyword = AppStateStore.KeyWord;
+        // Save server settings to server
+        await Http.PostAsJsonAsync<ServerSettings>($"Util/writeserversettings?adminKeyword={keyword}", serverSettings);
         serverLogMessage = "Einstellungen gespeichert";
     }
 }
