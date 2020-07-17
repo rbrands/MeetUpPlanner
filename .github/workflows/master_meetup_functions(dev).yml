@@ -1,7 +1,7 @@
 name: Functions-master to slot dev
 
 on:
-    push:
+  push:
     branches:
       - master
     paths:
