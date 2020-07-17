@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy ASP.Net Core app to Azure Web App - meetup-planner(dev)
+name: Server-master to slot dev
 
 on:
   push:
@@ -9,6 +9,10 @@ on:
       - master
     paths:
       - 'MeetUpPlanner/**'
+
+defaults:
+  run:
+    working-directory: MeetUpPlanner/Server
 
 jobs:
   build-and-deploy:
