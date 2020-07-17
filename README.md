@@ -13,3 +13,5 @@ Design principles are:
 
 About this repository: Folder "MeetUpFunctions" has the source code of the Azure Functions used for the backend. The master branch is CI enabled with GitHub Actions and deployed to the slot "dev" of the Azure Functions App. 
 Folder MeetUpPlanner holds the source code of the Blazor WebAssembly and the ASP.NET Core hosting app. The master branch is CI enabled with GitHub Action and deployed to https://meetup-planner-dev.azurewebsites.net
+
+For documentation including deployment instructions see Wiki
