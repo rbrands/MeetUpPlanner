@@ -6,10 +6,10 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Microsoft.Extensions.Configuration;
 using MeetUpPlanner.Shared;
 using System.Web.Http;
+using Aliencube.AzureFunctions.Extensions.OpenApi.Attributes;
 
 namespace MeetUpPlanner.Functions
 {
@@ -26,7 +26,10 @@ namespace MeetUpPlanner.Functions
             _cosmosRepository = cosmosRepository;
         }
         [FunctionName("GetServerSettings")]
-        public  async Task<IActionResult> Run(
+        [OpenApiOperation(Summary = "Gets the active ServerSettings", 
+                          Description = "Reading the ServerSettings is only needed for editing for administrators. To be able to read ServerSettings the admin keyword must be set as header x-meetup-keyword.")]
+        [OpenApiResponseBody(System.Net.HttpStatusCode.OK, "application/json", typeof(ServerSettings))]
+        public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
             ILogger log)
         {
