@@ -1,11 +1,28 @@
 {
-    "version": "2.0",
-    "logging": {
-        "applicationInsights": {
-            "samplingExcludedTypes": "Request",
-            "samplingSettings": {
-                "isEnabled": true
-            }
-        }
+  "version": "2.0",
+  "logging": {
+    "applicationInsights": {
+      "samplingExcludedTypes": "Request",
+      "samplingSettings": {
+        "isEnabled": true
+      }
     }
+  },
+  "openApi": {
+    "info": {
+      "version": "1.0.0",
+      "title": "MeetUp-Planner Functions Backend",
+      "description": "An API for administration of MeetUps and their participants.",
+      "termsOfService": "https://github.com/rbrands/MeetUpPlanner",
+      "contact": {
+        "name": "Robert Brands",
+        "email": "mail@robert-brands.com",
+        "url": "https://robert-brands.com"
+      },
+      "license": {
+        "name": "MIT",
+        "url": "http://opensource.org/licenses/MIT"
+      }
+    }
+  }
 }

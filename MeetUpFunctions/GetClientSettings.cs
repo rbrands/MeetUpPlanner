@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using MeetUpPlanner.Shared;
 using Microsoft.Extensions.Configuration;
 using MeetUpPlanner.Functions;
+using Aliencube.AzureFunctions.Extensions.OpenApi.Attributes;
 
 namespace MeetUpFunctions
 {
@@ -25,7 +26,14 @@ namespace MeetUpFunctions
             _cosmosRepository = cosmosRepository;
         }
 
+        /// <summary>
+        /// Get the current ClientSettings
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
         [FunctionName(nameof(GetClientSettings))]
+        [OpenApiOperation(Summary = "Gets the active ClientSettings", Description = "Reading the ClientSettings should be done at the very beginning of the client application.")]
+        [OpenApiResponseBody(System.Net.HttpStatusCode.OK, "application/json", typeof(ClientSettings))]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req)
         {
