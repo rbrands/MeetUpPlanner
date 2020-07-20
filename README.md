@@ -1,3 +1,5 @@
+![Server-master to slot dev](https://github.com/rbrands/MeetUpPlanner/workflows/Server-master%20to%20slot%20dev/badge.svg)
+
 # MeetUp-Planner
 Everything you need to organize and track a "MeetUp", e.g. organizing a group bike-ride. 
 
