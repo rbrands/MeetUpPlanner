@@ -16,6 +16,6 @@ namespace MeetUpPlanner.Shared
         [JsonProperty(PropertyName = "furtherInfoTitle", NullValueHandling = NullValueHandling.Ignore)]
         public string FurtherInfoTitle { get; set; } = "Scuderia Südstadt";
         [JsonProperty(PropertyName ="maxGroupSize", NullValueHandling = NullValueHandling.Ignore)]
-        public int MaxGroupSitze { get; set; } = 10;
+        public int MaxGroupSize { get; set; } = 10;
     }
 }

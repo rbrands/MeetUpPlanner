@@ -14,7 +14,8 @@ namespace MeetUpPlanner.Client
         public string PrivateKeyWord1 { get; set; }
         public string PrivateKeyWord2 { get; set; }
         public string PrivateKeyWord3 { get; set; }
-        public string Name { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public string PhoneMail { get; set; }
     }
 }

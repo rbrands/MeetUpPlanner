@@ -39,6 +39,7 @@ namespace MeetUpPlanner.Functions
             CosmosClient cosmosClient = new CosmosClient(config["COSMOS_DB_CONNECTION_STRING"]);
             builder.Services.AddSingleton(config);
             builder.Services.AddSingleton(new CosmosDBRepository<ClientSettings>(config, cosmosClient));
+            builder.Services.AddSingleton(new CosmosDBRepository<CalendarItem>(config, cosmosClient));
             builder.Services.AddSingleton(new ServerSettingsRepository(config, cosmosClient));
         }
     }

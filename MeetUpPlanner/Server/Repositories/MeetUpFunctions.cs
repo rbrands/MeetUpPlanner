@@ -69,6 +69,15 @@ namespace MeetUpPlanner.Server.Repositories
             return new OkResult();
         }
 
+        public async Task<IActionResult> WriteCalendarItem(string keyword, CalendarItem calendarItem)
+        {
+            await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/WriteCalendarItem"
+                            .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
+                            .WithHeader(HEADER_KEYWORD, keyword)
+                            .PostJsonAsync(calendarItem);
+            return new OkResult();
+        }
+
 
     }
 

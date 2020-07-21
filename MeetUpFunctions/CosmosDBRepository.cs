@@ -100,6 +100,21 @@ namespace MeetUpPlanner.Functions
             }
             return results;
         }
+        public async Task<IEnumerable<T>> GetItems()
+        {
+            Container container = _cosmosClient.GetDatabase(_cosmosDbDatabase).GetContainer(_cosmosDbContainer);
+            PartitionKey partitionKey = new PartitionKey(typeof(T).Name);
+
+            FeedIterator<T> itemIterator = container.GetItemLinqQueryable<T>(true, null, new QueryRequestOptions { PartitionKey = partitionKey })
+                                             .Where(d => d.Type == typeof(T).Name)
+                                             .ToFeedIterator<T>();
+            List<T> results = new List<T>();
+            while (itemIterator.HasMoreResults)
+            {
+                results.AddRange(await itemIterator.ReadNextAsync());
+            }
+            return results;
+        }
 
         public async Task<T> UpsertItem(T item)
         {

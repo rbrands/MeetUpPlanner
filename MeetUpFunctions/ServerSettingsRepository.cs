@@ -15,7 +15,6 @@ namespace MeetUpPlanner.Functions
         {
 
         }
-
         public async Task<ServerSettings> GetServerSettings()
         {
             ServerSettings serverSettings = await this.GetItemByKey(Constants.KEY_SERVER_SETTINGS);

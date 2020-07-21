@@ -1,0 +1,147 @@
+﻿@page "/newmeetup"
+@inject HttpClient Http
+@inject AppState AppStateStore
+@using MeetUpPlanner.Shared
+@using Blazored.TextEditor
+
+<h2>Ausfahrt</h2>
+<EditForm Model="@meetup" OnValidSubmit="OnSave">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label for="title">Titel</label>
+        <InputText id="title" aria-describedby="titleHelp" class="form-control" @bind-Value="meetup.Title" autocomplete="on" placeholder="Kurzer Titel der Ausfahrt" title="Titel" />
+        <small id="titleHelp" class="form-text text-muted">
+            Kurzer Titel zur Ausfahrt als Überschrift.
+        </small>
+    </div>
+    <div class="form-group">
+        <label>Beschreibung zur Tour</label>
+        <BlazoredTextEditor @ref="@htmlDescription" Placeholder="Mehr oder weniger ausführliche Beschreibung der Tour">
+            <ToolbarContent>
+                <select class="ql-header">
+                    <option selected=""></option>
+                    <option value="1"></option>
+                    <option value="2"></option>
+                    <option value="3"></option>
+                    <option value="4"></option>
+                    <option value="5"></option>
+                </select>
+                <span class="ql-formats">
+                    <button class="ql-bold"></button>
+                    <button class="ql-italic"></button>
+                    <button class="ql-underline"></button>
+                    <button class="ql-strike"></button>
+                </span>
+                <span class="ql-formats">
+                    <select class="ql-color"></select>
+                    <select class="ql-background"></select>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-list" value="ordered"></button>
+                    <button class="ql-list" value="bullet"></button>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-link"></button>
+                </span>
+            </ToolbarContent>
+        </BlazoredTextEditor>
+    </div>
+    <div class="form-group">
+        <label for="link">Link</label>
+        <InputText id="link" aria-describedby="linkHelp" class="form-control" @bind-Value="meetup.Link" title="Link zu weiterer Streckeninfo" />
+        <small id="linkHelp" class="form-text text-muted">
+            Optional: Link zu weiteren Strecken-Infos, z.B. Komoot, Strava usw.
+        </small>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-3">
+            <label for="whenDate">Datum</label>
+            <InputDate id="whenDate" aria-describedby="whenDateHelp" class="form-control" @bind-Value="whenDate" title="Startdatum" />
+            <small id="whenDateHelp" class="form-text text-muted">
+                Wann geht's los?
+            </small>
+        </div>
+        <div class="form-group col-md-3">
+            <label for="whenTime">Uhrzeit</label>
+            <input type="time" class="form-control" @bind="@whenTime" title="Startzeit" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="place">Startort</label>
+        <InputText id="place" aria-describedby="placeHelp" class="form-control" @bind-Value="meetup.Place" autocomplete="on" placeholder="Startpunkt der Ausfahrt" />
+        <small id="placeHelp" class="form-text text-muted">
+            Treffpunkt der Gruppe für die Ausfahrt, z.B. "Torburg", "Therme", "Unibib", "Mexikaner Merowinger"
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="level">Länge</label>
+        <InputText id="level" aria-describedby="levelHelp" class="form-control" @bind-Value="meetup.LevelDescription" autocomplete="on" placeholder="km / Hm" />
+        <small id="levelHelp" class="form-text text-muted">
+            Länge der Tour (zumindest ungefähr) und möglichst Höhenmeter oder auch ungefähre Fahrtzeit.
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="tempo">Tempo</label>
+        <InputText id="tempo" aria-describedby="tempoHelp" class="form-control" @bind-Value="meetup.Tempo" autocomplete="on" placeholder="Geplante Geschwindigkeit" />
+        <small id="tempoHelp" class="form-text text-muted">
+            Geschwindigkeit als "Latte", "Cappuccino", "Espresso" oder auch km/h Angabe
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="size">Max. Gruppengröße</label>
+        <InputNumber id="size" aria-describedby="sizeHelp" class="form-control" @bind-Value="meetup.MaxRegistrationsCount" autocomplete="on" />
+        <small id="sizeHelp" class="form-text text-muted">
+            Hier kann die Größe der Gruppe entsprechend beschränkt werden.
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="privateKeyword">Private Ausfahrt?</label>
+        <InputText id="privateKeyword" aria-describedby="privateKeywordHelp" class="form-control" @bind-Value="meetup.PrivateKeyword" autocomplete="on" placeholder="Schlüsselwort für private Ausfahrt" />
+        <small id="privateKeywordHelp" class="form-text text-muted">
+            Falls die Ausfahrt "privat" sein soll, hier ein Schlüsselwort festlegen und den potentiellen Mitfahrern separat mitteilen.
+        </small>
+    </div>
+    <ValidationSummary />
+    <button type="submit" id="BtnSave" class="btn btn-primary">Termin speichern ...</button>
+</EditForm>
+<br />
+<div class="alert-info">
+    <p>
+        @logMessage
+    </p>
+</div>
+
+
+@code {
+    private string logMessage;
+    CalendarItem meetup = new CalendarItem();
+    DateTime whenTime = DateTime.Now;
+    DateTime whenDate = DateTime.Now;
+    BlazoredTextEditor htmlDescription;
+
+    protected override async Task OnInitializedAsync()
+    {
+        whenDate = meetup.StartDate;
+        whenTime = meetup.StartDate;
+        meetup.HostFirstName = AppStateStore.FirstName;
+        meetup.HostLastName = AppStateStore.LastName;
+        meetup.MaxRegistrationsCount = AppStateStore.ClientSettings.MaxGroupSize;
+    }
+
+    private async Task OnSave()
+    {
+        meetup.StartDate = new DateTime(whenDate.Year, whenDate.Month, whenDate.Day, whenTime.Hour, whenTime.Minute, whenTime.Second);
+        meetup.Summary = await htmlDescription.GetHTML();
+        if (meetup.MaxRegistrationsCount > AppStateStore.ClientSettings.MaxGroupSize)
+        {
+            logMessage = "Max. Gruppengröße überschritten.";
+            return;
+        }
+        string keyword = AppStateStore.KeyWord;
+        // Save calendarItem server
+        await Http.PostAsJsonAsync<CalendarItem>($"Calendar/writecalendaritem?keyword={keyword}", meetup);
+
+        logMessage = meetup.StartDate.ToString();
+
+    }
+}

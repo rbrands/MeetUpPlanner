@@ -1,7 +1,6 @@
 ﻿@page "/admin"
 @inject HttpClient Http
 @inject AppState AppStateStore
-@inject KeywordCheck KeywordCheck
 @using MeetUpPlanner.Shared
 
 <h2>Administration</h2>
@@ -29,6 +28,13 @@
         <InputText id="linkTitle" aria-describedby="linkTitleHelp" class="form-control" @bind-Value="AppStateStore.ClientSettings.FurtherInfoTitle" autocomplete="on" placeholder="Titel zum externen Link" title="Titel zum externen Link." />
         <small id="linkTitleHelp" class="form-text text-muted">
             Hier die "Beschriftung" des externen Links angeben.
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="maxGroup">Max. Gruppengröße</label>
+        <InputNumber id="maxGroup" aria-describedby="maxGroupHelp" class="form-control" @bind-Value="AppStateStore.ClientSettings.MaxGroupSize" autocomplete="on" />
+        <small id="maxGroupHelp" class="form-text text-muted">
+            Festlegung der maximalen Gruppengröße.
         </small>
     </div>
     <button type="submit" id="BtnSaveSettings" class="btn btn-primary">Einstellungen speichern ...</button>

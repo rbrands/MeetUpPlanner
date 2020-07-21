@@ -20,7 +20,9 @@
         </small>
     </div>
     <div class="form-row">
-        <label for="optkeyword1">Optionale Schlüsselwörter für private Ausfahrten</label>
+        <div class="form-group col-md-12">
+            <label for="optkeyword1">Optionale Schlüsselwörter für private Ausfahrten</label>
+        </div>
     </div>
     <div class="form-row">
         <div class="form-group col-md-4">
@@ -37,18 +39,31 @@
         </div>
     </div>
     <hr />
-    <div class="form-group">
-        <label for="name">Name</label>
-        <InputText id="name" aria-describedby="nameHelp" class="form-control" @bind-Value="AppStateStore.Name" autocomplete="on" placeholder="Vor- und Nachname" title="Vollständiger Name für die Nachvollziehbarkeit." />
-        <small id="nameHelp" class="form-text text-muted">
-            Zur eindeutigen Nachverfolgbarkeit bitte den Namen mit Vor- und Nachnamen eingeben.
-        </small>
+    <div class="form-row">
+        <div class="form-group col-md-12">
+            <label for="firstname">Kontaktdaten</label>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-12">
+            <small id="nameHelp" class="form-text text-muted">
+                Zur eindeutigen Nachverfolgbarkeit bitte Vor- und Nachname eingeben. In der Teilnehmerliste der Ausfahrten werden nur die Vornamen angezeigt.
+            </small>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <InputText id="firstname" aria-describedby="nameHelp" class="form-control" @bind-Value="AppStateStore.FirstName" autocomplete="on" placeholder="Vorname" title="Vorname" />
+        </div>
+        <div class="form-group col-md-4">
+            <InputText id="lastName" area-describedby="nameHelp" class="form-control" @bind-Value="AppStateStore.LastName" autocomplete="on" placeholder="Nachname" title="Nachname" />
+        </div>
     </div>
     <div class="form-group">
         <label for="Phone">Telefon/Mail</label>
         <InputText id="Phone" aria-describedby="phoneHelp" class="form-control" @bind-Value="AppStateStore.PhoneMail" autocomplete="on" placeholder="Telefon-Nr. oder Mail-Adresse" title="Bitte Telefonnummer oder Mailadresse angeben." />
         <small id="phoneHelp" class="form-text text-muted">
-            Für die einfache Erreichbarkeit hier bitte eure Mail-Adresse oder Telefonnummer eingeben.
+            Für die einfache Erreichbarkeit hier bitte deine Mail-Adresse oder Telefonnummer eingeben.
         </small>
     </div>
     <div class="form-group">
@@ -57,7 +72,7 @@
             <label for="SaveSettings" class="form-check-label">Einstellungen im Browser merken?</label>
         </div>
     </div>
-    <button type="submit" id="BtnSaveKeyword" class="btn btn-primary">Zu den Terminen ...</button>
+    <button type="submit" id="BtnSaveKeyword" class="btn btn-primary">Zu den Ausfahrten ...</button>
 </EditForm>
 <br />
 <div class="alert-info">
@@ -67,12 +82,12 @@
 </div>
 <hr />
 <p>
-    Um Termine für Ausfahrten zu sehen und zu erstellen, muss das "Schlüsselwort" angegeben werden. Nur wenn dieses richtig ist, werden die öffentliche Termine
+    Um Termine für Ausfahrten zu sehen und zu erstellen, muss das "Schlüsselwort" angegeben werden. Nur wenn dieses richtig ist, werden die öffentlichen Ausfahrten
     frei geschaltet.
 </p>
 <p>
-    Termine können auch mit einem privaten Schlüsselwort geschützt werden. Bei Eingabe von optionalen Schlüsselwörtern (bis zu drei) werden die entsprechend
-    "versteckten" Termine neben den öffentlichen angezeigt.
+    Ausfahrten können auch mit einem privaten Schlüsselwort geschützt werden. Bei Eingabe von optionalen Schlüsselwörtern (bis zu drei) werden die entsprechend
+    "versteckten" Ausfahrten neben den öffentlichen angezeigt.
 </p>
 
 @code {
@@ -88,7 +103,8 @@
             PermAppState permAppState = await localStorage.GetItemAsync<PermAppState>("permAppState");
             // Copy the settings needed to application state
             AppStateStore.KeyWord = permAppState.KeyWord;
-            AppStateStore.Name = permAppState.Name;
+            AppStateStore.FirstName = permAppState.FirstName;
+            AppStateStore.LastName = permAppState.LastName;
             AppStateStore.PhoneMail = permAppState.PhoneMail;
             AppStateStore.PrivateKeyWord1 = permAppState.PrivateKeyWord1;
             AppStateStore.PrivateKeyWord2 = permAppState.PrivateKeyWord2;
@@ -116,7 +132,8 @@
             // Copy from app state to permanent storage
             PermAppState permAppState = new PermAppState();
             permAppState.KeyWord = AppStateStore.KeyWord;
-            permAppState.Name = AppStateStore.Name;
+            permAppState.FirstName = AppStateStore.FirstName;
+            permAppState.LastName = AppStateStore.LastName;
             permAppState.PhoneMail = AppStateStore.PhoneMail;
             permAppState.PrivateKeyWord1 = AppStateStore.PrivateKeyWord1;
             permAppState.PrivateKeyWord2 = AppStateStore.PrivateKeyWord2;
