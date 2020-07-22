@@ -22,4 +22,4 @@ About this repository:
   * Shared - Model classes shared with all projects for serializing the objects to JSON
 
 
-For documentation including deployment instructions see Wiki
+For documentation including deployment instructions see [Wiki](https://github.com/rbrands/MeetUpPlanner/wiki)
