@@ -63,7 +63,7 @@
         <label for="Phone">Telefon/Mail</label>
         <InputText id="Phone" aria-describedby="phoneHelp" class="form-control" @bind-Value="AppStateStore.PhoneMail" autocomplete="on" placeholder="Telefon-Nr. oder Mail-Adresse" title="Bitte Telefonnummer oder Mailadresse angeben." />
         <small id="phoneHelp" class="form-text text-muted">
-            Für die einfache Erreichbarkeit hier bitte deine Mail-Adresse oder Telefonnummer eingeben.
+            Für die Nachverfolgbarkeit hier bitte deine Mail-Adresse oder Telefonnummer eingeben. Diese Info wird nicht in der allgemeinen Teilnehmerliste zu Ausfahrten angezeigt.
         </small>
     </div>
     <div class="form-group">
@@ -72,7 +72,7 @@
             <label for="SaveSettings" class="form-check-label">Einstellungen im Browser merken?</label>
         </div>
     </div>
-    <button type="submit" id="BtnSaveKeyword" class="btn btn-primary">Zu den Ausfahrten ...</button>
+    <button type="submit" id="BtnSaveKeyword" class="btn btn-primary">Zugang prüfen ...</button>
 </EditForm>
 <br />
 <div class="alert-info">
@@ -113,6 +113,11 @@
 
         // Get client settings from server
         AppStateStore.ClientSettings = await Http.GetFromJsonAsync<ClientSettings>("Util/clientsettings");
+
+        // Reset user status
+        KeywordCheck.IsUser = false;
+        KeywordCheck.IsAdmin = false;
+        AppStateStore.NotifyStateChanged();
     }
 
     private async Task CheckKeyword()

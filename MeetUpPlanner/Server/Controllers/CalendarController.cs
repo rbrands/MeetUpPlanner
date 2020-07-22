@@ -29,5 +29,12 @@ namespace MeetUpPlanner.Server.Controllers
             return Ok();
         }
 
+        [HttpGet("calendaritems")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetCalendarItems([FromQuery] string keyword, [FromQuery] string privatekeywords)
+        {
+            IEnumerable<CalendarItem> calendarItems = await _meetUpFunctions.GetCalendarItems(keyword, privatekeywords);
+            return Ok(calendarItems);
+        }
     }
 }

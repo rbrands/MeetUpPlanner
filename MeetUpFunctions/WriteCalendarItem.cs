@@ -50,6 +50,7 @@ namespace MeetUpPlanner.Functions
             }
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             CalendarItem calendarItem = JsonConvert.DeserializeObject<CalendarItem>(requestBody);
+            calendarItem.TimeToLive = serverSettings.AutoDeleteAfterDays * 24 * 3600; 
             calendarItem = await _cosmosRepository.UpsertItem(calendarItem);
 
             return new OkObjectResult(calendarItem);

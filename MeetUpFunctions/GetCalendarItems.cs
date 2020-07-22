@@ -28,9 +28,12 @@ namespace MeetUpPlanner.Functions
         }
 
         [FunctionName("GetCalendarItems")]
+        [OpenApiOperation(Summary = "Gets the relevant CalendarIitems",
+                          Description = "Reading current CalendarItems starting in the future or the configured past (in hours). To be able to read CalenderItems the user keyword must be set as header x-meetup-keyword.")]
+        [OpenApiResponseBody(System.Net.HttpStatusCode.OK, "application/json", typeof(ServerSettings))]
+        [OpenApiParameter("privatekeywords", Description = "Holds a list of private keywords, separated by ;")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
-            ILogger log)
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function GetCalendarItems processed a request.");
             ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings();
@@ -38,6 +41,7 @@ namespace MeetUpPlanner.Functions
             string keyWord = req.Headers[Constants.HEADER_KEYWORD];
             if (String.IsNullOrEmpty(keyWord) || !serverSettings.IsUser(keyWord))
             {
+                _logger.LogWarning("GetCalendarItems called with wrong keyword.");
                 return new BadRequestErrorMessageResult("Keyword is missing or wrong.");
             }
             string privateKeywordsString = req.Query["privatekeywords"];
@@ -48,13 +52,14 @@ namespace MeetUpPlanner.Functions
             }
 
             // Get a list of all CalendarItems and filter all applicable ones
-            DateTime compareDate = DateTime.Today.AddDays(-2);
+            DateTime compareDate = DateTime.Now.AddHours((-serverSettings.CalendarItemsPastWindowHours));
+
             IEnumerable<CalendarItem> rawListOfCalendarItems = await _cosmosRepository.GetItems(d => d.StartDate > compareDate);
             List<CalendarItem> resultCalendarItems = new List<CalendarItem>(10);
             foreach (CalendarItem item in rawListOfCalendarItems)
             {
                 if ( String.IsNullOrEmpty(item.PrivateKeyword))
-                { 
+                {
                     // No private keyword for item ==> use it
                     resultCalendarItems.Add(item);
                 } else if (null != privateKeywords)

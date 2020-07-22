@@ -71,6 +71,13 @@
             Anzahl Tage, die die Termine gespeichert werden sollen. Danach werden sie automatisch gelöscht.
         </small>
     </div>
+    <div class="form-group">
+        <label for="displayWindow">Anzeigefenster für Termine in der Vergangenheit</label>
+        <InputNumber id="displayWindow" aria-describedby="displayWindowHelp" class="form-control" @bind-Value="serverSettings.CalendarItemsPastWindowHours" autocomplete="on" />
+        <small id="maxGroupHelp" class="form-text text-muted">
+            Anzeige von Terminen mit Startzeit die hier festgelegte Anzahl Stunden in der Vergangenheit.
+        </small>
+    </div>
 
     <button type="submit" id="BtnSaveServerSettings" class="btn btn-primary">Einstellungen speichern ...</button>
 </EditForm>

@@ -1,11 +1,29 @@
 ﻿@page "/calendar"
 @using MeetUpPlanner.Shared
 @inject AppState AppStateStore
+@inject HttpClient Http
 
 
 <h2>Ausfahrten</h2>
 <a href="/newmeetup">Neue Ausfahrt erstellen</a>
 
+<p>
+    @logMessage
+</p>
+
 @code {
+    private string logMessage = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        string keyword = AppStateStore.KeyWord;
+        string privateKeywords = AppStateStore.PrivateKeyWord1 + ";" + AppStateStore.PrivateKeyWord2 + ";" + AppStateStore.PrivateKeyWord3; ;
+        // Get server settings from server
+        IList<CalendarItem> calendarItems = await Http.GetFromJsonAsync<IList<CalendarItem>>($"Calendar/calendaritems?keyword={keyword}&privatekeywords={privateKeywords}");
+        foreach (CalendarItem item in calendarItems)
+        {
+            logMessage += item.Title + " | ";
+        }
+    }
 
 }
