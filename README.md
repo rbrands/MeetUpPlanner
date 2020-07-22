@@ -4,10 +4,10 @@
 # MeetUp-Planner
 Everything you need to organize and track a "MeetUp", e.g. organizing a group bike-ride. 
 
-The first idea for this application came in the "Corona" times: In order to arrange group bike rides or other "MeetUps" 
-and at the same time to ensure the traceability of the participants, the corresponding tool was missing. 
+The first idea for this application came up during "Corona"-time: In order to arrange group bike rides or other "MeetUps" 
+with ensuring the traceability of the participants, the corresponding tool was missing. 
 
-Design principles are:
+Therefore the following design principles for this web-app are:
 * Easy to use without complicated registration and authentication process. Therefore only "keywords" are used as very basic access control.
 * Responsive design, usable on PC and smartphones
 * Minimal administrative effort: All meetups data should be deleted automatically after the configured time (typically 28 days). Everyone should be able to organize a MeetUp.
