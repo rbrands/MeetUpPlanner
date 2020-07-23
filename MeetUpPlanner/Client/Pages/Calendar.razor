@@ -3,6 +3,19 @@
 @inject AppState AppStateStore
 @inject HttpClient Http
 
+@if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.WhiteboardMessage)){
+<div class="row">
+    @if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.LogoLink))
+    {
+        <div class="col-md-1">
+            <img src="@AppStateStore.ClientSettings.LogoLink" class="img-fluid" />
+        </div>
+    }
+    <div class="col-md-11">
+        @((MarkupString)AppStateStore.ClientSettings.WhiteboardMessage)
+    </div>
+</div>
+}
 
 <h2>Ausfahrten</h2>
 <a href="/newmeetup">Neue Ausfahrt erstellen</a>

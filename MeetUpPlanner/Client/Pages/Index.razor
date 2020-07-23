@@ -6,8 +6,21 @@
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject NavigationManager NavigationManager
 
+@if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.WelcomeMessage)){
+    <div class="row">
+        @if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.LogoLink))
+        {
+        <div class="col-md-1">
+            <img src="@AppStateStore.ClientSettings.LogoLink" class="img-fluid" />
+        </div>
+        }
+        <div class="col-md-11">
+            @((MarkupString)AppStateStore.ClientSettings.WelcomeMessage)
+        </div>
+    </div>
+}
 
-<h2>Zugangsdaten</h2>
+<h4>Zugangsdaten</h4>
 
 <EditForm OnValidSubmit="CheckKeyword" Model="@AppStateStore">
     <DataAnnotationsValidator />
@@ -39,11 +52,7 @@
         </div>
     </div>
     <hr />
-    <div class="form-row">
-        <div class="form-group col-md-12">
-            <label for="firstname">Kontaktdaten</label>
-        </div>
-    </div>
+    <h4>Kontaktdaten</h4>
     <div class="form-row">
         <div class="form-group col-md-12">
             <small id="nameHelp" class="form-text text-muted">
@@ -72,7 +81,7 @@
             <label for="SaveSettings" class="form-check-label">Einstellungen im Browser merken?</label>
         </div>
     </div>
-    <button type="submit" id="BtnSaveKeyword" class="btn btn-primary">Zugang prüfen ...</button>
+    <button type="submit" id="BtnSaveKeyword" class="btn btn-primary">Los geht's ...</button>
 </EditForm>
 <br />
 <div class="alert-info">

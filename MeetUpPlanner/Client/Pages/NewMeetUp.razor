@@ -4,6 +4,20 @@
 @using MeetUpPlanner.Shared
 @using Blazored.TextEditor
 
+@if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.NewMeetupMessage))
+{
+    <div class="row">
+        @if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.LogoLink))
+        {
+            <div class="col-md-1">
+                <img src="@AppStateStore.ClientSettings.LogoLink" class="img-fluid" />
+            </div>
+        }
+        <div class="col-md-11">
+            @((MarkupString)AppStateStore.ClientSettings.NewMeetupMessage)
+        </div>
+    </div>
+}
 <h2>Ausfahrt</h2>
 <EditForm Model="@meetup" OnValidSubmit="OnSave">
     <DataAnnotationsValidator />
@@ -91,7 +105,7 @@
         <label for="size">Max. Gruppengröße</label>
         <InputNumber id="size" aria-describedby="sizeHelp" class="form-control" @bind-Value="meetup.MaxRegistrationsCount" autocomplete="on" />
         <small id="sizeHelp" class="form-text text-muted">
-            Hier kann die Größe der Gruppe entsprechend beschränkt werden.
+            Hier kann die Größe der Gruppe entsprechend beschränkt werden. Maximale Gruppengröße ist momentan @(AppStateStore.ClientSettings.MaxGroupSize).
         </small>
     </div>
     <div class="form-group">
@@ -119,7 +133,7 @@
     DateTime whenDate = DateTime.Now;
     BlazoredTextEditor htmlDescription;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         whenDate = meetup.StartDate;
         whenTime = meetup.StartDate;

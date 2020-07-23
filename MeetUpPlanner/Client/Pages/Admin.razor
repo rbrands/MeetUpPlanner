@@ -2,6 +2,7 @@
 @inject HttpClient Http
 @inject AppState AppStateStore
 @using MeetUpPlanner.Shared
+@using Blazored.TextEditor
 
 <h2>Administration</h2>
 
@@ -37,6 +38,110 @@
             Festlegung der maximalen Gruppengröße.
         </small>
     </div>
+    <div class="form-group">
+        <label for="welcomeMessage">Welcome Nachricht</label>
+        <BlazoredTextEditor @ref="@htmlWelcomeMessage" Placeholder="Nachricht für Startseite">
+            <ToolbarContent>
+                <select class="ql-header">
+                    <option selected=""></option>
+                    <option value="1"></option>
+                    <option value="2"></option>
+                    <option value="3"></option>
+                    <option value="4"></option>
+                    <option value="5"></option>
+                </select>
+                <span class="ql-formats">
+                    <button class="ql-bold"></button>
+                    <button class="ql-italic"></button>
+                    <button class="ql-underline"></button>
+                    <button class="ql-strike"></button>
+                </span>
+                <span class="ql-formats">
+                    <select class="ql-color"></select>
+                    <select class="ql-background"></select>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-list" value="ordered"></button>
+                    <button class="ql-list" value="bullet"></button>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-link"></button>
+                </span>
+            </ToolbarContent>
+        </BlazoredTextEditor>
+    </div>
+    <div class="form-group">
+        <label for="logoLink">Link zu einem Logo-Bild</label>
+        <InputText id="logoLink" aria-describedby="logoLinkHelp" class="form-control" @bind-Value="AppStateStore.ClientSettings.LogoLink" />
+        <small id="logoLinkHelp" class="form-text text-muted">
+            Hier kann der Link zu einem Logo angegeben werden.
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="whiteboardMessage">Whiteboard Nachricht</label>
+        <BlazoredTextEditor @ref="@htmlWhiteboardMessage" Placeholder="Nachricht für die Terminseite">
+            <ToolbarContent>
+                <select class="ql-header">
+                    <option selected=""></option>
+                    <option value="1"></option>
+                    <option value="2"></option>
+                    <option value="3"></option>
+                    <option value="4"></option>
+                    <option value="5"></option>
+                </select>
+                <span class="ql-formats">
+                    <button class="ql-bold"></button>
+                    <button class="ql-italic"></button>
+                    <button class="ql-underline"></button>
+                    <button class="ql-strike"></button>
+                </span>
+                <span class="ql-formats">
+                    <select class="ql-color"></select>
+                    <select class="ql-background"></select>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-list" value="ordered"></button>
+                    <button class="ql-list" value="bullet"></button>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-link"></button>
+                </span>
+            </ToolbarContent>
+        </BlazoredTextEditor>
+    </div>
+    <div class="form-group">
+        <label for="newMeetUpMessage">Nachricht für neue MeetUps</label>
+        <BlazoredTextEditor @ref="@htmlNewMeetupMessage" Placeholder="Nachricht für neue Termine">
+            <ToolbarContent>
+                <select class="ql-header">
+                    <option selected=""></option>
+                    <option value="1"></option>
+                    <option value="2"></option>
+                    <option value="3"></option>
+                    <option value="4"></option>
+                    <option value="5"></option>
+                </select>
+                <span class="ql-formats">
+                    <button class="ql-bold"></button>
+                    <button class="ql-italic"></button>
+                    <button class="ql-underline"></button>
+                    <button class="ql-strike"></button>
+                </span>
+                <span class="ql-formats">
+                    <select class="ql-color"></select>
+                    <select class="ql-background"></select>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-list" value="ordered"></button>
+                    <button class="ql-list" value="bullet"></button>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-link"></button>
+                </span>
+            </ToolbarContent>
+        </BlazoredTextEditor>
+    </div>
+
     <button type="submit" id="BtnSaveSettings" class="btn btn-primary">Einstellungen speichern ...</button>
 </EditForm>
 <br />
@@ -92,21 +197,35 @@
     private string logMessage;
     private string serverLogMessage;
     private ServerSettings serverSettings = new ServerSettings();
+    BlazoredTextEditor htmlWelcomeMessage;
+    BlazoredTextEditor htmlWhiteboardMessage;
+    BlazoredTextEditor htmlNewMeetupMessage;
+
 
     protected override async Task OnInitializedAsync()
     {
         string keyword = AppStateStore.KeyWord;
         // Get server settings from server
         serverSettings = await Http.GetFromJsonAsync<ServerSettings>($"Util/serversettings?adminKeyword={keyword}");
+        await htmlWelcomeMessage.LoadHTMLContent(AppStateStore.ClientSettings.WelcomeMessage);
+        await htmlWhiteboardMessage.LoadHTMLContent(AppStateStore.ClientSettings.WhiteboardMessage);
+        await htmlNewMeetupMessage.LoadHTMLContent(AppStateStore.ClientSettings.NewMeetupMessage);
     }
 
     private async Task SaveClientSettings()
     {
         string keyword = AppStateStore.KeyWord;
+        AppStateStore.ClientSettings.WelcomeMessage = StripEmptyHtml(await htmlWelcomeMessage.GetHTML());
+        AppStateStore.ClientSettings.WhiteboardMessage = StripEmptyHtml(await htmlWhiteboardMessage.GetHTML());
+        AppStateStore.ClientSettings.NewMeetupMessage = StripEmptyHtml(await htmlNewMeetupMessage.GetHTML());
         // Write client settings to server
         await Http.PostAsJsonAsync<ClientSettings>($"Util/writesettings?adminKeyword={keyword}", AppStateStore.ClientSettings);
         AppStateStore.NotifyStateChanged();
         logMessage = "Einstellungen gespeichert.";
+    }
+    private string StripEmptyHtml(string htmlContent)
+    {
+        return htmlContent.Equals("<p><br></p>") ? null : htmlContent;
     }
 
     private async Task SaveServerSettings()
