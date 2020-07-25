@@ -7,7 +7,7 @@
 @inject NavigationManager NavigationManager
 
 @if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.WelcomeMessage)){
-    <div class="row">
+    <div class="row jumbotron">
         @if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.LogoLink))
         {
         <div class="col-md-1">
@@ -77,11 +77,22 @@
     </div>
     <div class="form-group">
         <div class="form-check">
-            <InputCheckbox id="SaveSettings" class="form-check-input" @bind-Value="AppStateStore.SaveSettings"></InputCheckbox>
+            <InputCheckbox id="SaveSettings" aria-describedby="saveSettingsHelp" class="form-check-input" @bind-Value="AppStateStore.SaveSettings"></InputCheckbox>
             <label for="SaveSettings" class="form-check-label">Einstellungen im Browser merken?</label>
         </div>
+        <small id="saveSettingsHelp">Damit beim nächsten Mal der Name usw. nicht neu eingegeben werden muss, können diese Eingaben im Browser gespeichert werden.</small>
     </div>
-    <button type="submit" id="BtnSaveKeyword" class="btn btn-primary">Los geht's ...</button>
+    <div class="form-group">
+        <div class="form-check">
+            <InputCheckbox class="form-check-input" @bind-Value="@UsageRightsAccepted" onclic/>
+            <label for="form-check-input" class="form-checklabel">
+                Hiermit bestätige ich, dass ich damit einverstanden bin, dass die Teilnehmerlisten zu den Ausfahrten mit den Kontaktdaten, 
+                die ich hier angebe, bis zu 4 Wochen für die Nachverfolgbarkeit gespeichert werden. Ich bin auch damit einverstanden,
+                dass in der Liste der Ausfahrten die Teilnehmer mit Vornamen und abgekürztem Nachnamen (erste Buchstabe) angezeigt werden
+            </label>
+        </div>
+    </div>
+    <button type="submit" id="BtnSaveKeyword" class="btn btn-primary" disabled="@(!UsageRightsAccepted)">Los geht's ...</button>
 </EditForm>
 <br />
 <div class="alert-info">
@@ -89,18 +100,22 @@
         @logMessage
     </p>
 </div>
-<hr />
-<p>
-    Um Termine für Ausfahrten zu sehen und zu erstellen, muss das "Schlüsselwort" angegeben werden. Nur wenn dieses richtig ist, werden die öffentlichen Ausfahrten
-    frei geschaltet.
-</p>
-<p>
-    Ausfahrten können auch mit einem privaten Schlüsselwort geschützt werden. Bei Eingabe von optionalen Schlüsselwörtern (bis zu drei) werden die entsprechend
-    "versteckten" Ausfahrten neben den öffentlichen angezeigt.
-</p>
+
 
 @code {
     string logMessage = String.Empty;
+    Boolean _usageRightsAccepted = false;
+    Boolean UsageRightsAccepted
+    {
+        get
+        {
+            return _usageRightsAccepted;
+        }
+        set
+        {
+            _usageRightsAccepted = value;
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -158,11 +173,7 @@
         {
             await localStorage.RemoveItemAsync("permAppState");
         }
-        if (KeywordCheck.IsAdmin)
-        {
-            NavigationManager.NavigateTo("admin");
-        }
-        else if (KeywordCheck.IsUser)
+        if (KeywordCheck.IsUser)
         {
             NavigationManager.NavigateTo("calendar");
         }

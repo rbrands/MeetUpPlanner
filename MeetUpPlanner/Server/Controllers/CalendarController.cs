@@ -36,5 +36,19 @@ namespace MeetUpPlanner.Server.Controllers
             IEnumerable<CalendarItem> calendarItems = await _meetUpFunctions.GetCalendarItems(keyword, privatekeywords);
             return Ok(calendarItems);
         }
+        [HttpGet("extendedcalendaritems")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetExtendedCalendarItems([FromQuery] string keyword, [FromQuery] string privatekeywords)
+        {
+            IEnumerable<ExtendedCalendarItem> calendarItems = await _meetUpFunctions.GetExtendedCalendarItems(keyword, privatekeywords);
+            return Ok(calendarItems);
+        }
+        [HttpGet("calendaritem")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetCalendarItem([FromQuery] string keyword, [FromQuery] string itemId)
+        {
+            CalendarItem calendarItem = await _meetUpFunctions.GetCalendarItem(keyword, itemId);
+            return Ok(calendarItem);
+        }
     }
 }

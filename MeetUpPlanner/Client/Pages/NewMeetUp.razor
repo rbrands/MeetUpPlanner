@@ -1,12 +1,14 @@
 ﻿@page "/newmeetup"
+@page "/newmeetup/{ItemId}"
 @inject HttpClient Http
 @inject AppState AppStateStore
+@inject NavigationManager NavigationManager
 @using MeetUpPlanner.Shared
 @using Blazored.TextEditor
 
 @if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.NewMeetupMessage))
 {
-    <div class="row">
+    <div class="row jumbotron">
         @if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.LogoLink))
         {
             <div class="col-md-1">
@@ -58,6 +60,9 @@
                     <button class="ql-link"></button>
                 </span>
             </ToolbarContent>
+            <EditorContent>
+                @((MarkupString)meetup.Summary)
+            </EditorContent>
         </BlazoredTextEditor>
     </div>
     <div class="form-group">
@@ -127,25 +132,39 @@
 
 
 @code {
+    [Parameter]
+    public string ItemId { get; set; }
+
+
     private string logMessage;
     CalendarItem meetup = new CalendarItem();
     DateTime whenTime = DateTime.Now;
     DateTime whenDate = DateTime.Now;
     BlazoredTextEditor htmlDescription;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        if (!String.IsNullOrEmpty(ItemId))
+        {
+            string keyword = AppStateStore.KeyWord;
+            // Get referenced calendar item
+            meetup = await Http.GetFromJsonAsync<CalendarItem>($"Calendar/calendaritem?keyword={keyword}&itemId={ItemId}");
+        }
+        else
+        {
+            meetup.HostFirstName = AppStateStore.FirstName;
+            meetup.HostLastName = AppStateStore.LastName;
+            meetup.MaxRegistrationsCount = AppStateStore.ClientSettings.MaxGroupSize;
+        }
         whenDate = meetup.StartDate;
         whenTime = meetup.StartDate;
-        meetup.HostFirstName = AppStateStore.FirstName;
-        meetup.HostLastName = AppStateStore.LastName;
-        meetup.MaxRegistrationsCount = AppStateStore.ClientSettings.MaxGroupSize;
     }
 
     private async Task OnSave()
     {
         meetup.StartDate = new DateTime(whenDate.Year, whenDate.Month, whenDate.Day, whenTime.Hour, whenTime.Minute, whenTime.Second);
         meetup.Summary = await htmlDescription.GetHTML();
+
         if (meetup.MaxRegistrationsCount > AppStateStore.ClientSettings.MaxGroupSize)
         {
             logMessage = "Max. Gruppengröße überschritten.";
@@ -156,6 +175,6 @@
         await Http.PostAsJsonAsync<CalendarItem>($"Calendar/writecalendaritem?keyword={keyword}", meetup);
 
         logMessage = meetup.StartDate.ToString();
-
+        NavigationManager.NavigateTo("/calendar");
     }
 }

@@ -15,34 +15,41 @@ using Aliencube.AzureFunctions.Extensions.OpenApi.Attributes;
 
 namespace MeetUpPlanner.Functions
 {
-    public class GetCalendarItems
+    public class GetExtendedCalendarItems
     {
         private readonly ILogger _logger;
         private ServerSettingsRepository _serverSettingsRepository;
         private CosmosDBRepository<CalendarItem> _cosmosRepository;
+        private CosmosDBRepository<Participant> _participantRepository;
+        private CosmosDBRepository<CalendarComment> _commentRepository;
 
-        public GetCalendarItems(ILogger<GetCalendarItems> logger, ServerSettingsRepository serverSettingsRepository, CosmosDBRepository<CalendarItem> cosmosRepository)
+        public GetExtendedCalendarItems(ILogger<GetExtendedCalendarItems> logger, ServerSettingsRepository serverSettingsRepository, 
+                                                                                  CosmosDBRepository<CalendarItem> cosmosRepository, 
+                                                                                  CosmosDBRepository<Participant> participantRepository,
+                                                                                  CosmosDBRepository<CalendarComment> commentRepository)
         {
             _logger = logger;
             _serverSettingsRepository = serverSettingsRepository;
             _cosmosRepository = cosmosRepository;
+            _participantRepository = participantRepository;
+            _commentRepository = commentRepository;
         }
 
-        [FunctionName("GetCalendarItems")]
+        [FunctionName("GetExtendedCalendarItems")]
         [OpenApiOperation(Summary = "Gets the relevant CalendarIitems",
                           Description = "Reading current CalendarItems starting in the future or the configured past (in hours). To be able to read CalenderItems the user keyword must be set as header x-meetup-keyword.")]
-        [OpenApiResponseBody(System.Net.HttpStatusCode.OK, "application/json", typeof(IEnumerable<CalendarItem>))]
+        [OpenApiResponseBody(System.Net.HttpStatusCode.OK, "application/json", typeof(IEnumerable<ExtendedCalendarItem>))]
         [OpenApiParameter("privatekeywords", Description = "Holds a list of private keywords, separated by ;")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req)
         {
-            _logger.LogInformation("C# HTTP trigger function GetCalendarItems processed a request.");
+            _logger.LogInformation("C# HTTP trigger function GetExtendedCalendarItems processed a request.");
             ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings();
 
             string keyWord = req.Headers[Constants.HEADER_KEYWORD];
             if (String.IsNullOrEmpty(keyWord) || !serverSettings.IsUser(keyWord))
             {
-                _logger.LogWarning("GetCalendarItems called with wrong keyword.");
+                _logger.LogWarning("GetExtendedCalendarItems called with wrong keyword.");
                 return new BadRequestErrorMessageResult("Keyword is missing or wrong.");
             }
             string privateKeywordsString = req.Query["privatekeywords"];
@@ -56,27 +63,33 @@ namespace MeetUpPlanner.Functions
             DateTime compareDate = DateTime.Now.AddHours((-serverSettings.CalendarItemsPastWindowHours));
 
             IEnumerable<CalendarItem> rawListOfCalendarItems = await _cosmosRepository.GetItems(d => d.StartDate > compareDate);
-            List<CalendarItem> resultCalendarItems = new List<CalendarItem>(10);
+            List<ExtendedCalendarItem> resultCalendarItems = new List<ExtendedCalendarItem>(10);
             foreach (CalendarItem item in rawListOfCalendarItems)
             {
-                if ( String.IsNullOrEmpty(item.PrivateKeyword))
+                ExtendedCalendarItem extendedItem = new ExtendedCalendarItem(item);
+                if (String.IsNullOrEmpty(extendedItem.PrivateKeyword))
                 {
                     // No private keyword for item ==> use it
-                    resultCalendarItems.Add(item);
-                } else if (null != privateKeywords)
+                    resultCalendarItems.Add(extendedItem);
+                }
+                else if (null != privateKeywords)
                 {
                     // Private keyword for item ==> check given keyword list against it
                     foreach (string keyword in privateKeywords)
                     {
-                        if (keyword.Equals(item.PrivateKeyword))
+                        if (keyword.Equals(extendedItem.PrivateKeyword))
                         {
-                            resultCalendarItems.Add(item);
+                            resultCalendarItems.Add(extendedItem);
                             break;
                         }
                     }
                 }
+                // Read all participants for this calendar item
+                extendedItem.ParticipantsList = await _participantRepository.GetItems(p => p.CalendarItemId.Equals(extendedItem.Id));
+                // Read all comments
+                extendedItem.CommentsList = await _commentRepository.GetItems(c => c.CalendarItemId.Equals(extendedItem.Id));
             }
-            IEnumerable<CalendarItem> orderedList = resultCalendarItems.OrderBy(d => d.StartDate);
+            IEnumerable<ExtendedCalendarItem> orderedList = resultCalendarItems.OrderBy(d => d.StartDate);
             return new OkObjectResult(orderedList);
         }
     }

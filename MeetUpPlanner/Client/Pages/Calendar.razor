@@ -2,23 +2,52 @@
 @using MeetUpPlanner.Shared
 @inject AppState AppStateStore
 @inject HttpClient Http
+@inject NavigationManager NavigationManager
 
-@if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.WhiteboardMessage)){
-<div class="row">
-    @if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.LogoLink))
-    {
-        <div class="col-md-1">
-            <img src="@AppStateStore.ClientSettings.LogoLink" class="img-fluid" />
+@if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.WhiteboardMessage))
+{
+    <div class="row jumbotron">
+        @if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.LogoLink))
+        {
+            <div class="col-md-1">
+                <img src="@AppStateStore.ClientSettings.LogoLink" class="img-fluid" />
+            </div>
+        }
+        <div class="col-md-11">
+            @((MarkupString)AppStateStore.ClientSettings.WhiteboardMessage)
         </div>
-    }
-    <div class="col-md-11">
-        @((MarkupString)AppStateStore.ClientSettings.WhiteboardMessage)
     </div>
-</div>
 }
 
 <h2>Ausfahrten</h2>
 <a href="/newmeetup">Neue Ausfahrt erstellen</a>
+<div class="row">
+    @foreach (ExtendedCalendarItem item in calendarItems)
+    {
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    @item.GetStartDateAsString() - @item.Place
+                </div>
+                <div class="card-body">
+                    <div class="card-text">
+                        <h6 class="text-muted">@item.Tempo - @item.LevelDescription</h6>
+                        <h5 class="card-title">@item.Title</h5>
+                        @if (!String.IsNullOrEmpty(item.Link))
+                        {
+                            <h6><small><a href="@item.Link" target="_blank">@item.Link</a></small></h6>
+                        }
+                        @((MarkupString)item.Summary)
+                    <small>Dabei (@item.ParticipantCounter von 10): <b>@item.HostDisplayName</b>@item.ParticipantsDisplay</small>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-primary" @onclick="@(() => EditCalendarItem(item.Id))">Edit</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
 
 <p>
     @logMessage
@@ -26,17 +55,20 @@
 
 @code {
     private string logMessage = "";
+    private IList<ExtendedCalendarItem> calendarItems = new List<ExtendedCalendarItem>();
 
     protected override async Task OnInitializedAsync()
     {
         string keyword = AppStateStore.KeyWord;
         string privateKeywords = AppStateStore.PrivateKeyWord1 + ";" + AppStateStore.PrivateKeyWord2 + ";" + AppStateStore.PrivateKeyWord3; ;
-        // Get server settings from server
-        IList<CalendarItem> calendarItems = await Http.GetFromJsonAsync<IList<CalendarItem>>($"Calendar/calendaritems?keyword={keyword}&privatekeywords={privateKeywords}");
-        foreach (CalendarItem item in calendarItems)
-        {
-            logMessage += item.Title + " | ";
-        }
+        // Get list of calendar items
+        calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"Calendar/extendedcalendaritems?keyword={keyword}&privatekeywords={privateKeywords}");
     }
+
+    protected void EditCalendarItem(string itemId)
+    {
+        NavigationManager.NavigateTo($"/NewMeetUp/{itemId}");
+    }
+
 
 }

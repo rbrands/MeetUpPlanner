@@ -32,6 +32,10 @@ namespace MeetUpPlanner.Shared
         [JsonProperty(PropertyName = "link", NullValueHandling = NullValueHandling.Ignore), MaxLength(120, ErrorMessage = "Link zu lang"), UIHint("url") ]
         public string Link { get; set; }
 
+        /// <summary>
+        /// Constructor with some suggestions about start-time: Schedule for the next day. On Saturdays and Sundays 
+        /// StartTime is 10 am otherwise 18 pm
+        /// </summary>
         public CalendarItem()
         {
             DateTime startDate = DateTime.Today.AddDays(1.0); // Default is tomorrow
@@ -44,6 +48,25 @@ namespace MeetUpPlanner.Shared
             {
                 this.StartDate = DateTime.Today.AddDays(1.0).AddHours(18.0);
             }
+        }
+        [JsonIgnore]
+        public string HostDisplayName
+        {
+            get
+            {
+                return HostFirstName + " " + HostLastName[0] + ".";
+            }
+        }
+        /// <summary>
+        /// Returns a string ready to display in (German) UI.
+        /// </summary>
+        /// <returns></returns>
+        public string GetStartDateAsString()
+        {
+            string[] weekdays = { "So", "Mo", "Di", "Mi", "Do", "Fr", "Sa" };
+            string dateString = String.Empty;
+            dateString = weekdays[(int)StartDate.DayOfWeek] + ", " + this.StartDate.ToString("dd.MM.yyy HH:mm") + " Uhr";
+            return dateString;
         }
     }
 }

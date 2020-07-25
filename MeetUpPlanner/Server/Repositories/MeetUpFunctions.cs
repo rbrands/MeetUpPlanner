@@ -87,6 +87,25 @@ namespace MeetUpPlanner.Server.Repositories
                           .GetJsonAsync<IEnumerable<CalendarItem>>();
             return calendarItems;
         }
+        public async Task<IEnumerable<ExtendedCalendarItem>> GetExtendedCalendarItems(string keyword, string privatekeywords)
+        {
+
+            IEnumerable<ExtendedCalendarItem> calendarItems = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/GetExtendedCalendarItems"
+                          .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
+                          .WithHeader(HEADER_KEYWORD, keyword)
+                          .SetQueryParam("privatekeywords", privatekeywords)
+                          .GetJsonAsync<IEnumerable<ExtendedCalendarItem>>();
+            return calendarItems;
+        }
+        public async Task<CalendarItem> GetCalendarItem(string keyword, string itemId)
+        {
+
+            CalendarItem calendarItem = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/GetCalendarItem/{itemId}"
+                          .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
+                          .WithHeader(HEADER_KEYWORD, keyword)
+                          .GetJsonAsync<CalendarItem>();
+            return calendarItem;
+        }
 
 
     }
