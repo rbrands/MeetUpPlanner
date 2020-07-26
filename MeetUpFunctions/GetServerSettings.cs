@@ -25,6 +25,12 @@ namespace MeetUpPlanner.Functions
             _config = config;
             _cosmosRepository = cosmosRepository;
         }
+        /// <summary>
+        /// Gets the current version of ServerSettings. Should be used before allow administrators to edit it.
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="log"></param>
+        /// <returns></returns>
         [FunctionName("GetServerSettings")]
         [OpenApiOperation(Summary = "Gets the active ServerSettings", 
                           Description = "Reading the ServerSettings is only needed for editing for administrators. To be able to read ServerSettings the admin keyword must be set as header x-meetup-keyword.")]

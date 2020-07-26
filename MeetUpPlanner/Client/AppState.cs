@@ -33,9 +33,12 @@ namespace MeetUpPlanner.Client
         public string PrivateKeyWord2 { get; set; }
         [MaxLength(50, ErrorMessage = "Privates Schlüsselwort zu lang.")]
         public string PrivateKeyWord3 { get; set; }
-        [MaxLength(120, ErrorMessage = "Der Name ist zu lang."), MinLength(4, ErrorMessage = "Der Name ist zu kurz.") ]
-        [Required(ErrorMessage = "Der Name fehlt.")]
-        public string Name { get; set; }
+        [MaxLength(80, ErrorMessage = "Der Vorname ist zu lang."), MinLength(3, ErrorMessage = "Der Vorname ist zu kurz.") ]
+        [Required(ErrorMessage = "Der Vorname fehlt.")]
+        public string FirstName { get; set; }
+        [MaxLength(80, ErrorMessage = "Der Nachname ist zu lang."), MinLength(3, ErrorMessage = "Der Nachname ist zu kurz.")]
+        [Required(ErrorMessage = "Der Nachname fehlt.")]
+        public string LastName { get; set; }
         [MaxLength(60, ErrorMessage = "Die Tel-Nr/Mail-Adresse ist zu lang"), MinLength(8, ErrorMessage = "Die Tel-Nr/Mail-Adresse ist zu kurz.")]
         [Required(ErrorMessage = "Tel-Nr/Mail-Adresse fehlen.")]
         public string PhoneMail { get; set; }

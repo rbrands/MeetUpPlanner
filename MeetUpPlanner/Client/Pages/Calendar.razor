@@ -1,11 +1,135 @@
 ﻿@page "/calendar"
 @using MeetUpPlanner.Shared
 @inject AppState AppStateStore
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@using Newtonsoft.Json
+@using System.IO
 
+@if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.WhiteboardMessage))
+{
+    <div class="row jumbotron">
+        @if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.LogoLink))
+        {
+            <div class="col-md-1">
+                <img src="@AppStateStore.ClientSettings.LogoLink" class="img-fluid" />
+            </div>
+        }
+        <div class="col-md-11">
+            @((MarkupString)AppStateStore.ClientSettings.WhiteboardMessage)
+        </div>
+    </div>
+}
 
-<h2>Termine</h2>
+<h2>Ausfahrten</h2>
+<a href="/newmeetup">Neue Ausfahrt erstellen</a>
+<div class="row">
+    @foreach (ExtendedCalendarItem item in calendarItems)
+    {
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    @item.GetStartDateAsString() - @item.Place
+                </div>
+                <div class="card-body">
+                    <div class="card-text">
+                        <h6 class="text-muted">@item.Tempo - @item.LevelDescription</h6>
+                        <h5 class="card-title">@item.Title</h5>
+                        @if (!String.IsNullOrEmpty(item.Link))
+                        {
+                            <h6><small><a href="@item.Link" target="_blank">@item.Link</a></small></h6>
+                        }
+                        @((MarkupString)item.Summary)
+                    <small>Dabei (@item.ParticipantCounter von 10): <b>@item.HostDisplayName</b>@item.ParticipantsDisplay</small>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="btn-group">
+                        @if (AppStateStore.FirstName.Equals(item.HostFirstName) && AppStateStore.LastName.Equals(item.HostLastName))
+                        {
+                            <button class="btn btn-sm btn-outline-secondary" @onclick="@(() => EditCalendarItem(item.Id))">Edit</button>
+                        } else
+                        { 
+                            <button class="btn btn-sm btn-outline-secondary" hidden="@CheckIfUserIsAlreadyRegistered(item)" @onclick="@(() => Checkin(item.Id))">Anmelden</button>
+                            <button class="btn btn-sm btn-outline-secondary" hidden="@(!CheckIfUserIsAlreadyRegistered(item))" @onclick="@(() => Checkout(item))">Abmelden</button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
 
+<p class="alert-info">
+    @logMessage
+</p>
 
 @code {
+    private string logMessage = "";
+    private IList<ExtendedCalendarItem> calendarItems = new List<ExtendedCalendarItem>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        string keyword = AppStateStore.KeyWord;
+        string privateKeywords = AppStateStore.PrivateKeyWord1 + ";" + AppStateStore.PrivateKeyWord2 + ";" + AppStateStore.PrivateKeyWord3; ;
+        // Get list of calendar items
+        calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"Calendar/extendedcalendaritems?keyword={keyword}&privatekeywords={privateKeywords}");
+    }
+
+    protected void EditCalendarItem(string itemId)
+    {
+        NavigationManager.NavigateTo($"/NewMeetUp/{itemId}");
+    }
+
+    protected async Task Checkin(string itemId)
+    {
+        Participant participant = new Participant();
+        participant.ParticipantFirstName = AppStateStore.FirstName;
+        participant.ParticipantLastName = AppStateStore.LastName;
+        participant.CalendarItemId = itemId;
+        string keyword = AppStateStore.KeyWord;
+        HttpResponseMessage response = await Http.PostAsJsonAsync<Participant>($"Calendar/addparticipant?keyword={keyword}", participant);
+        string responseBody = await response.Content.ReadAsStringAsync();
+
+        BackendResult result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
+        if (result.Success)
+        {
+            string privateKeywords = AppStateStore.PrivateKeyWord1 + ";" + AppStateStore.PrivateKeyWord2 + ";" + AppStateStore.PrivateKeyWord3; ;
+            // Get list of calendar items
+            calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"Calendar/extendedcalendaritems?keyword={keyword}&privatekeywords={privateKeywords}");
+            StateHasChanged();
+        }
+        else
+        {
+            logMessage = result.Message;
+        }
+    }
+    protected async Task Checkout(ExtendedCalendarItem calendarItem)
+    {
+        // Find corresponding participant item
+        Participant participant = calendarItem.FindParticipant(AppStateStore.FirstName, AppStateStore.LastName);
+
+        string keyword = AppStateStore.KeyWord;
+        HttpResponseMessage response = await Http.PostAsJsonAsync<Participant>($"Calendar/removeparticipant?keyword={keyword}", participant);
+        string responseBody = await response.Content.ReadAsStringAsync();
+
+        BackendResult result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
+        if (result.Success)
+        {
+            string privateKeywords = AppStateStore.PrivateKeyWord1 + ";" + AppStateStore.PrivateKeyWord2 + ";" + AppStateStore.PrivateKeyWord3; ;
+            // Get list of calendar items
+            calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"Calendar/extendedcalendaritems?keyword={keyword}&privatekeywords={privateKeywords}");
+            StateHasChanged();
+        }
+        else
+        {
+            logMessage = result.Message;
+        }
+    }
+    protected bool CheckIfUserIsAlreadyRegistered(ExtendedCalendarItem calendarItem)
+    {
+        bool alreadyRegistered = calendarItem.FindParticipant(AppStateStore.FirstName, AppStateStore.LastName) != null;
+        return alreadyRegistered;
+    }
 
 }

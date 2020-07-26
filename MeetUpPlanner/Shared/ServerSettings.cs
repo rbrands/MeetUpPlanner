@@ -24,5 +24,27 @@ namespace MeetUpPlanner.Shared
         [Required(ErrorMessage = "Speicherzeitraum für die Termine in Tagen eingeben.")]
         [Range(1, 365, ErrorMessage = "Bitte als Speicherzeitraum einen Wert zwischen 1 und 365 Tagen eingeben.")]
         public int AutoDeleteAfterDays { get; set; } = 28;
+        [JsonProperty(PropertyName = "calendarItemsPastWindowHours")]
+        [Required(ErrorMessage = "Anzeigewindows in Stunden für Ausfahrten eingeben.")]
+        [Range(0, 240, ErrorMessage = "Für Anzeigewindows Werte zwischen 0 und 240 eingeben.")]
+        public int CalendarItemsPastWindowHours { get; set; } = 12;
+        /// <summary>
+        /// Checks if the given keyword matches the admin keyword
+        /// </summary>
+        /// <param name="keyword"></param>
+        /// <returns></returns>
+        public bool IsAdmin(string keyword)
+        {
+            return AdminKeyword.Equals(keyword);
+        }
+        /// <summary>
+        /// Checks if the given keyword matches the user keyword or the admin keyword
+        /// </summary>
+        /// <param name="keyword"></param>
+        /// <returns></returns>
+        public bool IsUser(string keyword)
+        {
+            return this.UserKeyword.Equals(keyword) || this.AdminKeyword.Equals(keyword);
+        }
     }
 }
