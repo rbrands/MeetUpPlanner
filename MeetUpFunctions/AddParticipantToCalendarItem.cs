@@ -20,7 +20,7 @@ namespace MeetUpPlanner.Functions
         private ServerSettingsRepository _serverSettingsRepository;
         private CosmosDBRepository<Participant> _cosmosRepository;
         private CosmosDBRepository<CalendarItem> _calendarRepository;
-        public AddParticipantToCalendarItem(ILogger<WriteCalendarItem> logger, 
+        public AddParticipantToCalendarItem(ILogger<AddParticipantToCalendarItem> logger, 
                                             ServerSettingsRepository serverSettingsRepository, 
                                             CosmosDBRepository<Participant> cosmosRepository,
                                             CosmosDBRepository<CalendarItem> calendarRepository)
@@ -59,11 +59,15 @@ namespace MeetUpPlanner.Functions
             {
                 return new OkObjectResult(new BackendResult(false, "Angegebenen Termin nicht gefunden."));
             }
-            // Get participant list to check max registrations
+            // Get participant list to check max registrations and if caller is already registered.
             IEnumerable<Participant> participants = await _cosmosRepository.GetItems(p => p.CalendarItemId.Equals(calendarItem.Id));
             int counter = 1;
             foreach (Participant p in participants)
             {
+                if (p.ParticipantFirstName.Equals(participant.ParticipantFirstName) && p.ParticipantLastName.Equals(participant.ParticipantLastName))
+                {
+                    return new OkObjectResult(new BackendResult(false, "Bereits registriert."));
+                }
                 ++counter;
             }
             if (counter >= calendarItem.MaxRegistrationsCount)

@@ -57,5 +57,12 @@ namespace MeetUpPlanner.Server.Controllers
             BackendResult result = await _meetUpFunctions.AddParticipantToCalendarItem(keyword, participant);
             return Ok(result);
         }
+        [HttpPost("removeparticipant")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> RemoveParticipant([FromQuery] string keyword, [FromBody] Participant participant)
+        {
+            BackendResult result = await _meetUpFunctions.RemoveParticipantFromCalendarItem(keyword, participant);
+            return Ok(result);
+        }
     }
 }

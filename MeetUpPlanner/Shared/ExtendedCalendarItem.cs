@@ -68,6 +68,28 @@ namespace MeetUpPlanner.Shared
                 return counter;
             }
         }
+        /// <summary>
+        /// Helper function to look for given person in the participants list
+        /// </summary>
+        /// <param name="firstName"></param>
+        /// <param name="lastName"></param>
+        /// <returns>Participant object if found otherwise null</returns>
+        public Participant FindParticipant(string firstName, string lastName)
+        {
+            Participant participant = null;
+            if (null != ParticipantsList)
+            { 
+                foreach (Participant p in ParticipantsList)
+                {
+                    if (p.ParticipantFirstName.Equals(firstName) && p.ParticipantLastName.Equals(lastName))
+                    {
+                        participant = p;
+                        break;
+                    }
+                }
+            }
+            return participant;
+        }
 
 
     }
