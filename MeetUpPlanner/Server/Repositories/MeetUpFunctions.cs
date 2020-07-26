@@ -106,6 +106,15 @@ namespace MeetUpPlanner.Server.Repositories
                           .GetJsonAsync<CalendarItem>();
             return calendarItem;
         }
+        public async Task<BackendResult> AddParticipantToCalendarItem(string keyword, Participant participant)
+        {
+            BackendResult result = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/AddParticipantToCalendarItem"
+                            .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
+                            .WithHeader(HEADER_KEYWORD, keyword)
+                            .PostJsonAsync(participant)
+                            .ReceiveJson<BackendResult>();
+            return result;
+        }
 
 
     }

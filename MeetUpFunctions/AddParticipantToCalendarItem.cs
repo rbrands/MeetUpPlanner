@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 using System.Web.Http;
 using Aliencube.AzureFunctions.Extensions.OpenApi.Attributes;
 using MeetUpPlanner.Shared;
-
+using System.Collections.Generic;
 
 namespace MeetUpPlanner.Functions
 {
@@ -19,18 +19,23 @@ namespace MeetUpPlanner.Functions
         private readonly ILogger _logger;
         private ServerSettingsRepository _serverSettingsRepository;
         private CosmosDBRepository<Participant> _cosmosRepository;
-        public AddParticipantToCalendarItem(ILogger<WriteCalendarItem> logger, ServerSettingsRepository serverSettingsRepository, CosmosDBRepository<Participant> cosmosRepository)
+        private CosmosDBRepository<CalendarItem> _calendarRepository;
+        public AddParticipantToCalendarItem(ILogger<WriteCalendarItem> logger, 
+                                            ServerSettingsRepository serverSettingsRepository, 
+                                            CosmosDBRepository<Participant> cosmosRepository,
+                                            CosmosDBRepository<CalendarItem> calendarRepository)
         {
             _logger = logger;
             _serverSettingsRepository = serverSettingsRepository;
             _cosmosRepository = cosmosRepository;
+            _calendarRepository = calendarRepository;
         }
 
         [FunctionName("AddParticipantToCalendarItem")]
         [OpenApiOperation(Summary = "Add a participant to the referenced CalendarItem.",
                           Description = "If the Participants already exists (same id) it it overwritten.")]
         [OpenApiRequestBody("application/json", typeof(Participant), Description = "New Participant to be written.")]
-        [OpenApiResponseBody(System.Net.HttpStatusCode.OK, "application/json", typeof(Participant), Description = "New Participant as written to database.")]
+        [OpenApiResponseBody(System.Net.HttpStatusCode.OK, "application/json", typeof(BackendResult), Description = "Status of operation.")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
         {
@@ -44,10 +49,37 @@ namespace MeetUpPlanner.Functions
             }
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             Participant participant = JsonConvert.DeserializeObject<Participant>(requestBody);
+            // Get and check corresponding CalendarItem
+            if (String.IsNullOrEmpty(participant.CalendarItemId))
+            {
+                return new OkObjectResult(new BackendResult(false, "Terminangabe fehlt."));
+            }
+            CalendarItem calendarItem = await _calendarRepository.GetItem(participant.CalendarItemId);
+            if (null == calendarItem)
+            {
+                return new OkObjectResult(new BackendResult(false, "Angegebenen Termin nicht gefunden."));
+            }
+            // Get participant list to check max registrations
+            IEnumerable<Participant> participants = await _cosmosRepository.GetItems(p => p.CalendarItemId.Equals(calendarItem.Id));
+            int counter = 1;
+            foreach (Participant p in participants)
+            {
+                ++counter;
+            }
+            if (counter >= calendarItem.MaxRegistrationsCount)
+            {
+                return new OkObjectResult(new BackendResult(false, "Maximale Anzahl Registrierungen bereits erreicht."));
+            }
+            // Set TTL for participant the same as for CalendarItem
+            System.TimeSpan diffTime = calendarItem.StartDate.Subtract(DateTime.Now);
+            participant.TimeToLive = serverSettings.AutoDeleteAfterDays * 24 * 3600 + (int)diffTime.TotalSeconds;
+            // Checkindate to track bookings
             participant.CheckInDate = DateTime.Now;
+            
             participant = await _cosmosRepository.UpsertItem(participant);
+            BackendResult result = new BackendResult(true);
 
-            return new OkObjectResult(participant);
+            return new OkObjectResult(result);
 
 
         }

@@ -3,6 +3,8 @@
 @inject AppState AppStateStore
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@using Newtonsoft.Json
+@using System.IO
 
 @if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.WhiteboardMessage))
 {
@@ -42,14 +44,20 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <button class="btn btn-primary" @onclick="@(() => EditCalendarItem(item.Id))">Edit</button>
+                    <div class="btn-group">
+                        @if (AppStateStore.FirstName.Equals(item.HostFirstName) && AppStateStore.LastName.Equals(item.HostLastName))
+                        { 
+                            <button class="btn btn-sm btn-outline-secondary" @onclick="@(() => EditCalendarItem(item.Id))">Edit</button>
+                        }
+                        <button class="btn btn-sm btn-outline-secondary" @onclick="@(() => Checkin(item.Id))">Anmelden</button>
+                    </div>
                 </div>
             </div>
         </div>
     }
 </div>
 
-<p>
+<p class="alert-info">
     @logMessage
 </p>
 
@@ -70,5 +78,28 @@
         NavigationManager.NavigateTo($"/NewMeetUp/{itemId}");
     }
 
+    protected async Task Checkin(string itemId)
+    {
+        Participant participant = new Participant();
+        participant.ParticipantFirstName = AppStateStore.FirstName;
+        participant.ParticipantLastName = AppStateStore.LastName;
+        participant.CalendarItemId = itemId;
+        string keyword = AppStateStore.KeyWord;
+        HttpResponseMessage response = await Http.PostAsJsonAsync<Participant>($"Calendar/addparticipant?keyword={keyword}", participant);
+        string responseBody = await response.Content.ReadAsStringAsync();
+
+        BackendResult result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
+        if (result.Success)
+        {
+            string privateKeywords = AppStateStore.PrivateKeyWord1 + ";" + AppStateStore.PrivateKeyWord2 + ";" + AppStateStore.PrivateKeyWord3; ;
+            // Get list of calendar items
+            calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"Calendar/extendedcalendaritems?keyword={keyword}&privatekeywords={privateKeywords}");
+            StateHasChanged();
+        }
+        else
+        {
+            logMessage = result.Message;
+        }
+    }
 
 }

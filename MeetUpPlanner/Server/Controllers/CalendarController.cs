@@ -50,5 +50,12 @@ namespace MeetUpPlanner.Server.Controllers
             CalendarItem calendarItem = await _meetUpFunctions.GetCalendarItem(keyword, itemId);
             return Ok(calendarItem);
         }
+        [HttpPost("addparticipant")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> AddParticipant([FromQuery] string keyword, [FromBody] Participant participant)
+        {
+            BackendResult result = await _meetUpFunctions.AddParticipantToCalendarItem(keyword, participant);
+            return Ok(result);
+        }
     }
 }
