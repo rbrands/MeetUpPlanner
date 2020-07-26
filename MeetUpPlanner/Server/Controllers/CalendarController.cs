@@ -64,5 +64,12 @@ namespace MeetUpPlanner.Server.Controllers
             BackendResult result = await _meetUpFunctions.RemoveParticipantFromCalendarItem(keyword, participant);
             return Ok(result);
         }
+        [HttpPost("addcomment")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> AddComment([FromQuery] string keyword, [FromBody] CalendarComment comment)
+        {
+            BackendResult result = await _meetUpFunctions.AddCommentToCalendarItem(keyword, comment);
+            return Ok(result);
+        }
     }
 }

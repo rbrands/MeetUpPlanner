@@ -23,6 +23,7 @@ namespace MeetUpPlanner.Client
             builder.Services.AddSingleton<AppState>();
             builder.Services.AddSingleton<KeywordCheck>();
             builder.Services.AddBlazoredLocalStorage();
+            builder.Services.AddTransient<BlazorTimer>();
             await builder.Build().RunAsync();
         }
     }

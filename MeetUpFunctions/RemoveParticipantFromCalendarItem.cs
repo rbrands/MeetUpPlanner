@@ -19,7 +19,6 @@ namespace MeetUpPlanner.Functions
         private readonly ILogger _logger;
         private ServerSettingsRepository _serverSettingsRepository;
         private CosmosDBRepository<Participant> _cosmosRepository;
-        private CosmosDBRepository<CalendarItem> _calendarRepository;
         public RemoveParticipantFromCalendarItem(ILogger<RemoveParticipantFromCalendarItem> logger,
                                             ServerSettingsRepository serverSettingsRepository,
                                             CosmosDBRepository<Participant> cosmosRepository

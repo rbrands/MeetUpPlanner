@@ -27,7 +27,16 @@ namespace MeetUpPlanner.Shared
         {
             get
             {
+                if (null == AuthorFirstName) AuthorFirstName = String.Empty;
+                if (null == AuthorLastName) AuthorLastName = String.Empty;
                 return AuthorFirstName + " " + AuthorLastName[0] + ".";
+            }
+        }
+        public string DisplayDate
+        {
+            get
+            {
+                return CommentDate.ToString("dd.MM HH.mm");
             }
         }
 
