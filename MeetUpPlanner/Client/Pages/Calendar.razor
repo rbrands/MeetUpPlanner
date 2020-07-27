@@ -4,6 +4,7 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @inject BlazorTimer Timer
+@inject BlazorTimer Timer2
 @using Newtonsoft.Json
 @using System.IO
 
@@ -30,7 +31,7 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header">
-                    @item.GetStartDateAsString() - @item.Place
+                    <strong>@item.GetStartDateAsString() - @item.Place</strong>
                 </div>
                 <div class="card-body">
                     <div class="card-text">
@@ -41,9 +42,9 @@
                             <h6><small><a href="@item.Link" target="_blank">@item.Link</a></small></h6>
                         }
                         @((MarkupString)item.Summary)
-                        <hr/>
+                        <hr />
                         <small>Dabei (@item.ParticipantCounter von 10): <b>@item.HostDisplayName</b>@item.ParticipantsDisplay</small>
-                        <hr/>
+                        <hr />
                         <ul class="list-unstyled">
                             @foreach (CalendarComment c in item.CommentsList)
                             {
@@ -78,6 +79,7 @@
     private string logMessage = "";
     private IList<ExtendedCalendarItem> calendarItems = new List<ExtendedCalendarItem>();
     const double refreshInterval = 10000;
+    const double navigateAwayInterval = 10 * 60 * 1000;
 
     protected override async Task OnInitializedAsync()
     {
@@ -87,6 +89,8 @@
         calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"Calendar/extendedcalendaritems?keyword={keyword}&privatekeywords={privateKeywords}");
         Timer.SetTimer(refreshInterval);
         Timer.OnElapsed += TimerElapsedHandler;
+        Timer2.SetTimer(navigateAwayInterval);
+        Timer2.OnElapsed += NavigateAwayHandler;
     }
 
     protected void EditCalendarItem(string itemId)
@@ -153,5 +157,10 @@
         Timer.SetTimer(refreshInterval);
         StateHasChanged();
     }
+    private void NavigateAwayHandler()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+
 
 }
