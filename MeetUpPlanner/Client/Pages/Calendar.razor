@@ -32,10 +32,14 @@
             <div class="card">
                 <div class="card-header">
                     <strong>@item.GetStartDateAsString() - @item.Place</strong>
+                    @if (!String.IsNullOrEmpty(item.PrivateKeyword))
+                    {
+                        <div class="text-right"><small class="text-muted"><span class="oi oi-key"></span> @item.PrivateKeyword</small></div>
+                    }
                 </div>
                 <div class="card-body">
                     <div class="card-text">
-                        <h6 class="text-muted">@item.Tempo - @item.LevelDescription</h6>
+                        <h6 class="text-muted">@item.LevelDescription - @item.Tempo</h6>
                         <h5 class="card-title">@item.Title</h5>
                         @if (!String.IsNullOrEmpty(item.Link))
                         {
@@ -48,7 +52,7 @@
                         <ul class="list-unstyled">
                             @foreach (CalendarComment c in item.CommentsList)
                             {
-                                <li><small><em>@c.AuthorDisplayName (@c.DisplayDate): </em>@((MarkupString)c.Comment)</small></li>
+                                <li><small><em>@c.AuthorDisplayName (@c.DisplayDate): </em>@c.Comment</small></li>
                             }
                         </ul>
                     </div>
