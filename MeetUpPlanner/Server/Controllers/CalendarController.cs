@@ -50,6 +50,13 @@ namespace MeetUpPlanner.Server.Controllers
             CalendarItem calendarItem = await _meetUpFunctions.GetCalendarItem(keyword, itemId);
             return Ok(calendarItem);
         }
+        [HttpGet("extendedcalendaritem")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetExtendedCalendarItem([FromQuery] string keyword, [FromQuery] string itemId)
+        {
+            ExtendedCalendarItem calendarItem = await _meetUpFunctions.GetExtendedCalendarItem(keyword, itemId);
+            return Ok(calendarItem);
+        }
         [HttpPost("addparticipant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> AddParticipant([FromQuery] string keyword, [FromBody] Participant participant)
@@ -69,6 +76,13 @@ namespace MeetUpPlanner.Server.Controllers
         public async Task<IActionResult> AddComment([FromQuery] string keyword, [FromBody] CalendarComment comment)
         {
             BackendResult result = await _meetUpFunctions.AddCommentToCalendarItem(keyword, comment);
+            return Ok(result);
+        }
+        [HttpPost("removecomment")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> RemoveComment([FromQuery] string keyword, [FromBody] CalendarComment comment)
+        {
+            BackendResult result = await _meetUpFunctions.RemoveCommentFromCalendarItem(keyword, comment);
             return Ok(result);
         }
     }

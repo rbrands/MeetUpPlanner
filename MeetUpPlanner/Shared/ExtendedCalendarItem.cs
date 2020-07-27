@@ -13,9 +13,9 @@ namespace MeetUpPlanner.Shared
     public class ExtendedCalendarItem : CalendarItem
     {
         [JsonProperty(PropertyName = "participantsList")]
-        public IEnumerable<Participant> ParticipantsList { get; set; }
+        public IEnumerable<Participant> ParticipantsList { get; set; } = new List<Participant>();
         [JsonProperty(PropertyName = "commentsList")]
-        public IEnumerable<CalendarComment> CommentsList { get; set; }
+        public IEnumerable<CalendarComment> CommentsList { get; set; } = new List<CalendarComment>();
 
         public ExtendedCalendarItem()
         {
@@ -39,6 +39,8 @@ namespace MeetUpPlanner.Shared
             this.LevelDescription = calendarItem.LevelDescription;
             this.Tempo = calendarItem.Tempo;
             this.Link = calendarItem.Link;
+            this.ParticipantsList = new List<Participant>();
+            this.CommentsList = new List<CalendarComment>();
         }
 
         [JsonIgnore]

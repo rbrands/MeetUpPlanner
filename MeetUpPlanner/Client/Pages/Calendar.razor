@@ -1,6 +1,7 @@
 ﻿@page "/calendar"
 @using MeetUpPlanner.Shared
 @inject AppState AppStateStore
+@inject KeywordCheck KeywordCheck
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @inject BlazorTimer Timer
@@ -34,7 +35,7 @@
                     <strong>@item.GetStartDateAsString() - @item.Place</strong>
                     @if (!String.IsNullOrEmpty(item.PrivateKeyword))
                     {
-                        <div class="text-right"><small class="text-muted"><span class="oi oi-key"></span> @item.PrivateKeyword</small></div>
+                        <div class="text-right"><small class="text-muted"><span class="oi oi-key" title="Private Ausfahrt"></span> @item.PrivateKeyword</small></div>
                     }
                 </div>
                 <div class="card-body">
@@ -47,7 +48,7 @@
                         }
                         @((MarkupString)item.Summary)
                         <hr />
-                        <small>Dabei (@item.ParticipantCounter von 10): <b>@item.HostDisplayName</b>@item.ParticipantsDisplay</small>
+                        <small>Dabei (@item.ParticipantCounter von @item.MaxRegistrationsCount): <b>@item.HostDisplayName</b>@item.ParticipantsDisplay</small>
                         <hr />
                         <ul class="list-unstyled">
                             @foreach (CalendarComment c in item.CommentsList)
@@ -59,15 +60,16 @@
                 </div>
                 <div class="card-footer">
                     <div class="btn-group">
-                        @if (AppStateStore.FirstName.Equals(item.HostFirstName) && AppStateStore.LastName.Equals(item.HostLastName))
+                        @if (AppStateStore.FirstName.Equals(item.HostFirstName) && AppStateStore.LastName.Equals(item.HostLastName) || KeywordCheck.IsAdmin)
                         {
-                            <button class="btn btn-sm btn-outline-secondary" @onclick="@(() => EditCalendarItem(item.Id))">Edit</button>
+                            <button class="btn btn-sm btn-outline-secondary" @onclick="@(() => EditCalendarItem(item.Id))"><span class="oi oi-pencil" title="Editieren"></span></button>
                         }
                         else
                         {
                             <button class="btn btn-sm btn-outline-secondary" hidden="@CheckIfUserIsAlreadyRegistered(item)" @onclick="@(() => Checkin(item.Id))">Anmelden</button>
                             <button class="btn btn-sm btn-outline-secondary" hidden="@(!CheckIfUserIsAlreadyRegistered(item))" @onclick="@(() => Checkout(item))">Abmelden</button>
                         }
+                        <button class="btn btn-sm btn-outline-secondary" @onclick="@(() => ShowComment(item))"><span class="oi oi-comment-square" title="Nachricht"></span></button>
                     </div>
                 </div>
             </div>
@@ -87,18 +89,25 @@
 
     protected override async Task OnInitializedAsync()
     {
-        string keyword = AppStateStore.KeyWord;
-        string privateKeywords = AppStateStore.PrivateKeyWord1 + ";" + AppStateStore.PrivateKeyWord2 + ";" + AppStateStore.PrivateKeyWord3; ;
         // Get list of calendar items
-        calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"Calendar/extendedcalendaritems?keyword={keyword}&privatekeywords={privateKeywords}");
+        await ReadData();
         Timer.SetTimer(refreshInterval);
         Timer.OnElapsed += TimerElapsedHandler;
         Timer2.SetTimer(navigateAwayInterval);
         Timer2.OnElapsed += NavigateAwayHandler;
     }
+    protected async Task ReadData()
+    {
+        string keyword = AppStateStore.KeyWord;
+        string privateKeywords = AppStateStore.PrivateKeyWord1 + ";" + AppStateStore.PrivateKeyWord2 + ";" + AppStateStore.PrivateKeyWord3; ;
+        // Get list of calendar items
+        calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"Calendar/extendedcalendaritems?keyword={keyword}&privatekeywords={privateKeywords}");
+    }
 
     protected void EditCalendarItem(string itemId)
     {
+        Timer.DisableTimer();
+        Timer2.DisableTimer();
         NavigationManager.NavigateTo($"/NewMeetUp/{itemId}");
     }
 
@@ -115,9 +124,7 @@
         BackendResult result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
         if (result.Success)
         {
-            string privateKeywords = AppStateStore.PrivateKeyWord1 + ";" + AppStateStore.PrivateKeyWord2 + ";" + AppStateStore.PrivateKeyWord3; ;
-            // Get list of calendar items
-            calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"Calendar/extendedcalendaritems?keyword={keyword}&privatekeywords={privateKeywords}");
+            await ReadData();
             StateHasChanged();
         }
         else
@@ -137,9 +144,7 @@
         BackendResult result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
         if (result.Success)
         {
-            string privateKeywords = AppStateStore.PrivateKeyWord1 + ";" + AppStateStore.PrivateKeyWord2 + ";" + AppStateStore.PrivateKeyWord3; ;
-            // Get list of calendar items
-            calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"Calendar/extendedcalendaritems?keyword={keyword}&privatekeywords={privateKeywords}");
+            await ReadData();
             StateHasChanged();
         }
         else
@@ -154,17 +159,21 @@
     }
     private async void TimerElapsedHandler()
     {
-        string keyword = AppStateStore.KeyWord;
-        string privateKeywords = AppStateStore.PrivateKeyWord1 + ";" + AppStateStore.PrivateKeyWord2 + ";" + AppStateStore.PrivateKeyWord3; ;
-        // Get list of calendar items
-        calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"Calendar/extendedcalendaritems?keyword={keyword}&privatekeywords={privateKeywords}");
+        await ReadData();
         Timer.SetTimer(refreshInterval);
         StateHasChanged();
     }
     private void NavigateAwayHandler()
     {
+        Timer.DisableTimer();
+        Timer2.DisableTimer();
         NavigationManager.NavigateTo("/");
     }
-
+    protected void ShowComment(ExtendedCalendarItem calendarItem)
+    {
+        Timer.DisableTimer();
+        Timer2.DisableTimer();
+        NavigationManager.NavigateTo($"/Comment/{calendarItem.Id}");
+    }
 
 }

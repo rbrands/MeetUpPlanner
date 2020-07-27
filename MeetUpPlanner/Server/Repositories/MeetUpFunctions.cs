@@ -106,6 +106,15 @@ namespace MeetUpPlanner.Server.Repositories
                           .GetJsonAsync<CalendarItem>();
             return calendarItem;
         }
+        public async Task<ExtendedCalendarItem> GetExtendedCalendarItem(string keyword, string itemId)
+        {
+
+            ExtendedCalendarItem calendarItem = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/GetExtendedCalendarItem/{itemId}"
+                          .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
+                          .WithHeader(HEADER_KEYWORD, keyword)
+                          .GetJsonAsync<ExtendedCalendarItem>();
+            return calendarItem;
+        }
         public async Task<BackendResult> AddParticipantToCalendarItem(string keyword, Participant participant)
         {
             BackendResult result = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/AddParticipantToCalendarItem"
@@ -130,6 +139,15 @@ namespace MeetUpPlanner.Server.Repositories
                             .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
                             .WithHeader(HEADER_KEYWORD, keyword)
                             .PostJsonAsync(participant)
+                            .ReceiveJson<BackendResult>();
+            return result;
+        }
+        public async Task<BackendResult> RemoveCommentFromCalendarItem(string keyword, CalendarComment comment)
+        {
+            BackendResult result = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/RemoveCommentFromCalendarItem"
+                            .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
+                            .WithHeader(HEADER_KEYWORD, keyword)
+                            .PostJsonAsync(comment)
                             .ReceiveJson<BackendResult>();
             return result;
         }

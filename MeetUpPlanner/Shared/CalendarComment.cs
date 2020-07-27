@@ -28,7 +28,7 @@ namespace MeetUpPlanner.Shared
             get
             {
                 if (null == AuthorFirstName) AuthorFirstName = String.Empty;
-                if (null == AuthorLastName) AuthorLastName = String.Empty;
+                if (null == AuthorLastName) AuthorLastName = " ";
                 return AuthorFirstName + " " + AuthorLastName[0] + ".";
             }
         }
@@ -36,7 +36,7 @@ namespace MeetUpPlanner.Shared
         {
             get
             {
-                return CommentDate.ToString("dd.MM HH.mm");
+                return (null != CommentDate) ? CommentDate.ToString("dd.MM HH.mm") : String.Empty;
             }
         }
 

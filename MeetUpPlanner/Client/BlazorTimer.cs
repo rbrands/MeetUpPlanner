@@ -13,6 +13,10 @@ namespace MeetUpPlanner.Client
             _timer.Elapsed += NotifyTimerElapsed;
             _timer.Enabled = true;
         }
+        public void DisableTimer()
+        {
+            _timer.Enabled = false;
+        }
 
         public event Action OnElapsed;
 
