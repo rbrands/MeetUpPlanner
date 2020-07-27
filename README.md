@@ -25,7 +25,7 @@ Therefore the following design principles for this web-app are:
 For documentation including deployment instructions see [Wiki](https://github.com/rbrands/MeetUpPlanner/wiki)
 
 # References
-<a href="https://github.com/Blazored">Blazored</a> is an excellent colletion with some tools to make the life with Blazor easier. MeetUpPlanner uses the TextEdit, LocalStorage and Modal components.
+<a href="https://github.com/Blazored">Blazored</a> is an excellent colletion with some tools to make the life with Blazor easier. MeetUpPlanner uses the TextEdit and LocalStorage components.
 
 And of course <a href="https://getbootstrap.com/">Bootstrap</a> for the responsive design is used.
 
