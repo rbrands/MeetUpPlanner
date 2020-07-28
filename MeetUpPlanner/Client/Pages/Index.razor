@@ -6,13 +6,14 @@
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject NavigationManager NavigationManager
 
-@if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.WelcomeMessage)){
+@if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.WelcomeMessage))
+{
     <div class="row jumbotron">
         @if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.LogoLink))
         {
-        <div class="col-md-1">
-            <img src="@AppStateStore.ClientSettings.LogoLink" class="img-fluid" />
-        </div>
+            <div class="col-md-1">
+                <img src="@AppStateStore.ClientSettings.LogoLink" class="img-fluid" />
+            </div>
         }
         <div class="col-md-11">
             @((MarkupString)AppStateStore.ClientSettings.WelcomeMessage)
@@ -83,11 +84,11 @@
     </div>
     <div class="form-group">
         <div class="form-check">
-            <InputCheckbox class="form-check-input" @bind-Value="@UsageRightsAccepted" onclic/>
+            <InputCheckbox class="form-check-input" @bind-Value="@UsageRightsAccepted" onclic />
             <label for="form-check-input" class="form-checklabel">
-                Hiermit bestätige ich, dass ich damit einverstanden bin, dass die Teilnehmerlisten zu den Ausfahrten mit den Kontaktdaten, 
+                Hiermit bestätige ich, dass ich damit einverstanden bin, dass die Teilnehmerlisten zu den Ausfahrten mit den Kontaktdaten,
                 die ich hier angebe, bis zu 4 Wochen für die Nachverfolgbarkeit gespeichert werden. Ich bin auch damit einverstanden,
-                dass in der Liste der Ausfahrten die Teilnehmer mit Vornamen und abgekürztem Nachnamen (erste Buchstabe) angezeigt werden
+                dass in der Liste der Ausfahrten die Teilnehmer mit Vornamen und abgekürztem Nachnamen (erste Buchstabe) angezeigt werden.
             </label>
         </div>
     </div>
@@ -97,6 +98,7 @@
 <p class="alert-info">
     @logMessage
 </p>
+
 
 
 @code {
@@ -139,6 +141,7 @@
         KeywordCheck.IsUser = false;
         KeywordCheck.IsAdmin = false;
         AppStateStore.NotifyStateChanged();
+
     }
 
     private async Task CheckKeyword()

@@ -14,14 +14,14 @@ using System.Collections.Generic;
 
 namespace MeetUpPlanner.Functions
 {
-    public class RemoveParticipantFromCalendarItem
+    public class RemoveCommentFromCalendarItem
     {
         private readonly ILogger _logger;
         private ServerSettingsRepository _serverSettingsRepository;
-        private CosmosDBRepository<Participant> _cosmosRepository;
-        public RemoveParticipantFromCalendarItem(ILogger<RemoveParticipantFromCalendarItem> logger,
-                                            ServerSettingsRepository serverSettingsRepository,
-                                            CosmosDBRepository<Participant> cosmosRepository
+        private CosmosDBRepository<CalendarComment> _cosmosRepository;
+        public RemoveCommentFromCalendarItem(ILogger<RemoveCommentFromCalendarItem> logger,
+                                             ServerSettingsRepository serverSettingsRepository,
+                                             CosmosDBRepository<CalendarComment> cosmosRepository
                                             )
         {
             _logger = logger;
@@ -29,15 +29,15 @@ namespace MeetUpPlanner.Functions
             _cosmosRepository = cosmosRepository;
         }
 
-        [FunctionName("RemoveParticipantFromCalendarItem")]
-        [OpenApiOperation(Summary = "Removes a participant from the CalendarItem by the given participant id.",
-                          Description = "Every participant has a unique id that is used to delete it.")]
-        [OpenApiRequestBody("application/json", typeof(Participant), Description = "Participant to be removed.")]
+        [FunctionName("RemoveCommentFromCalendarItem")]
+        [OpenApiOperation(Summary = "Removes a comment from CalendarItem by the given comment id.",
+                          Description = "Every comment has a unique id that is used to delete it.")]
+        [OpenApiRequestBody("application/json", typeof(Participant), Description = "CalendarComment to be removed.")]
         [OpenApiResponseBody(System.Net.HttpStatusCode.OK, "application/json", typeof(BackendResult), Description = "Status of operation.")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
         {
-            _logger.LogInformation($"C# HTTP trigger function RemoveParticipantFromCalendarItem processed a request.");
+            _logger.LogInformation($"C# HTTP trigger function RemoveCommentFromCalendarItem processed a request.");
             ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings();
 
             string keyWord = req.Headers[Constants.HEADER_KEYWORD];
@@ -46,12 +46,12 @@ namespace MeetUpPlanner.Functions
                 return new BadRequestErrorMessageResult("Keyword is missing or wrong.");
             }
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            Participant participant = JsonConvert.DeserializeObject<Participant>(requestBody);
-            if (String.IsNullOrEmpty(participant.Id))
+            CalendarComment comment = JsonConvert.DeserializeObject<CalendarComment>(requestBody);
+            if (String.IsNullOrEmpty(comment.Id))
             {
-                return new OkObjectResult(new BackendResult(false, "Die Id des Teilnehmers fehlt."));
+                return new OkObjectResult(new BackendResult(false, "Die Id des Kommentars fehlt."));
             }
-            await _cosmosRepository.DeleteItemAsync(participant.Id);
+            await _cosmosRepository.DeleteItemAsync(comment.Id);
 
             return new OkObjectResult(new BackendResult(true));
         }

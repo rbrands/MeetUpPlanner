@@ -50,6 +50,13 @@ namespace MeetUpPlanner.Server.Controllers
             CalendarItem calendarItem = await _meetUpFunctions.GetCalendarItem(keyword, itemId);
             return Ok(calendarItem);
         }
+        [HttpGet("extendedcalendaritem")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetExtendedCalendarItem([FromQuery] string keyword, [FromQuery] string itemId)
+        {
+            ExtendedCalendarItem calendarItem = await _meetUpFunctions.GetExtendedCalendarItem(keyword, itemId);
+            return Ok(calendarItem);
+        }
         [HttpPost("addparticipant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> AddParticipant([FromQuery] string keyword, [FromBody] Participant participant)
@@ -62,6 +69,27 @@ namespace MeetUpPlanner.Server.Controllers
         public async Task<IActionResult> RemoveParticipant([FromQuery] string keyword, [FromBody] Participant participant)
         {
             BackendResult result = await _meetUpFunctions.RemoveParticipantFromCalendarItem(keyword, participant);
+            return Ok(result);
+        }
+        [HttpPost("addcomment")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> AddComment([FromQuery] string keyword, [FromBody] CalendarComment comment)
+        {
+            BackendResult result = await _meetUpFunctions.AddCommentToCalendarItem(keyword, comment);
+            return Ok(result);
+        }
+        [HttpPost("removecomment")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> RemoveComment([FromQuery] string keyword, [FromBody] CalendarComment comment)
+        {
+            BackendResult result = await _meetUpFunctions.RemoveCommentFromCalendarItem(keyword, comment);
+            return Ok(result);
+        }
+        [HttpPost("deletecalendaritem")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> DeleteCalendarItem([FromQuery] string keyword, [FromBody] CalendarItem calendarItem)
+        {
+            BackendResult result = await _meetUpFunctions.DeleteCalendarItem(keyword, calendarItem);
             return Ok(result);
         }
     }

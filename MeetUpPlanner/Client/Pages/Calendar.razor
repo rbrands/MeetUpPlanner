@@ -1,8 +1,12 @@
 ﻿@page "/calendar"
 @using MeetUpPlanner.Shared
 @inject AppState AppStateStore
+@inject KeywordCheck KeywordCheck
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@inject BlazorTimer Timer
+@inject BlazorTimer Timer2
+@implements IDisposable
 @using Newtonsoft.Json
 @using System.IO
 
@@ -22,37 +26,65 @@
 }
 
 <h2>Ausfahrten</h2>
-<a href="/newmeetup">Neue Ausfahrt erstellen</a>
+<p>
+    <a class="btn btn-primary" href="/newmeetup">Neue Ausfahrt erstellen</a>
+</p>
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <input type="text" class="form-control" aria-describedby="checkinCommentHelp" id="checkinComment" @bind="checkinComment.Comment" title="Kommentar zur Anmeldung" placeholder="Kommentar zur Anmeldung z.B. 'Ab Therme'" />
+            <small id="checkinCommentHelp" class="form-text text-muted">
+                Optional: Bei der Anmeldung zu einer Ausfahrt direkt einen Kommentar eingeben.
+            </small>
+        </div>
+    </div>
+</div>
+
 <div class="row">
     @foreach (ExtendedCalendarItem item in calendarItems)
     {
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header">
-                    @item.GetStartDateAsString() - @item.Place
+                    <strong>@item.GetStartDateAsString() - @item.Place</strong>
+                    @if (!String.IsNullOrEmpty(item.PrivateKeyword))
+                    {
+                        <div class="text-right"><small class="text-muted"><span class="oi oi-key" title="Private Ausfahrt"></span> @item.PrivateKeyword</small></div>
+                    }
                 </div>
                 <div class="card-body">
                     <div class="card-text">
-                        <h6 class="text-muted">@item.Tempo - @item.LevelDescription</h6>
+                        <h6 class="text-muted">@item.LevelDescription - @item.Tempo</h6>
                         <h5 class="card-title">@item.Title</h5>
                         @if (!String.IsNullOrEmpty(item.Link))
                         {
                             <h6><small><a href="@item.Link" target="_blank">@item.Link</a></small></h6>
                         }
                         @((MarkupString)item.Summary)
-                    <small>Dabei (@item.ParticipantCounter von 10): <b>@item.HostDisplayName</b>@item.ParticipantsDisplay</small>
+                        <hr />
+                        <small>Dabei (@item.ParticipantCounter von @item.MaxRegistrationsCount): <b>@item.HostDisplayName</b>@item.ParticipantsDisplay</small>
+                        <hr />
+                        <ul class="list-unstyled">
+                            @foreach (CalendarComment c in item.CommentsList)
+                            {
+                                <li><small><em>@c.AuthorDisplayName (@c.DisplayDate): </em>@c.Comment</small></li>
+                            }
+                        </ul>
                     </div>
                 </div>
                 <div class="card-footer">
                     <div class="btn-group">
-                        @if (AppStateStore.FirstName.Equals(item.HostFirstName) && AppStateStore.LastName.Equals(item.HostLastName))
+                        @if (CheckIfUserIsHost(item) || KeywordCheck.IsAdmin)
                         {
-                            <button class="btn btn-sm btn-outline-secondary" @onclick="@(() => EditCalendarItem(item.Id))">Edit</button>
-                        } else
-                        { 
-                            <button class="btn btn-sm btn-outline-secondary" hidden="@CheckIfUserIsAlreadyRegistered(item)" @onclick="@(() => Checkin(item.Id))">Anmelden</button>
-                            <button class="btn btn-sm btn-outline-secondary" hidden="@(!CheckIfUserIsAlreadyRegistered(item))" @onclick="@(() => Checkout(item))">Abmelden</button>
+                            <button class="btn btn-sm btn-outline-secondary" title="Ändern" @onclick="@(() => EditCalendarItem(item.Id))">Ändern</button>
+                            <button class="btn btn-sm btn-outline-secondary" title="Ändern" @onclick="@(() => DeleteCalendarItem(item))">Löschen</button>
                         }
+                        @if (!CheckIfUserIsHost(item))
+                        {
+                            <button class="btn btn-sm btn-outline-secondary" title="Anmelden" hidden="@CheckIfUserIsAlreadyRegistered(item)" @onclick="@(() => Checkin(item.Id))">Anmelden</button>
+                            <button class="btn btn-sm btn-outline-secondary" title="Abmelden" hidden="@(!CheckIfUserIsAlreadyRegistered(item))" @onclick="@(() => Checkout(item))">Abmelden</button>
+                        }
+                        <button class="btn btn-sm btn-outline-secondary" title="Kommentieren" @onclick="@(() => ShowComment(item))">Kommentieren</button>
                     </div>
                 </div>
             </div>
@@ -66,9 +98,21 @@
 
 @code {
     private string logMessage = "";
+    private CalendarComment checkinComment = new CalendarComment();
     private IList<ExtendedCalendarItem> calendarItems = new List<ExtendedCalendarItem>();
+    const double refreshInterval = 30000;
+    const double navigateAwayInterval = 10 * 60 * 1000;
 
     protected override async Task OnInitializedAsync()
+    {
+        // Get list of calendar items
+        await ReadData();
+        Timer.SetTimer(refreshInterval);
+        Timer.OnElapsed += TimerElapsedHandler;
+        Timer2.SetTimer(navigateAwayInterval);
+        Timer2.OnElapsed += NavigateAwayHandler;
+    }
+    protected async Task ReadData()
     {
         string keyword = AppStateStore.KeyWord;
         string privateKeywords = AppStateStore.PrivateKeyWord1 + ";" + AppStateStore.PrivateKeyWord2 + ";" + AppStateStore.PrivateKeyWord3; ;
@@ -94,9 +138,16 @@
         BackendResult result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
         if (result.Success)
         {
-            string privateKeywords = AppStateStore.PrivateKeyWord1 + ";" + AppStateStore.PrivateKeyWord2 + ";" + AppStateStore.PrivateKeyWord3; ;
-            // Get list of calendar items
-            calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"Calendar/extendedcalendaritems?keyword={keyword}&privatekeywords={privateKeywords}");
+            // Save Checkin-Comment to server
+            checkinComment.CalendarItemId = itemId;
+            checkinComment.AuthorFirstName = AppStateStore.FirstName;
+            checkinComment.AuthorLastName = AppStateStore.LastName;
+            if (!String.IsNullOrEmpty(checkinComment.Comment))
+            {
+                await Http.PostAsJsonAsync<CalendarComment>($"Calendar/addcomment?keyword={keyword}", checkinComment);
+            }
+            // Read data again
+            await ReadData();
             StateHasChanged();
         }
         else
@@ -116,9 +167,7 @@
         BackendResult result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
         if (result.Success)
         {
-            string privateKeywords = AppStateStore.PrivateKeyWord1 + ";" + AppStateStore.PrivateKeyWord2 + ";" + AppStateStore.PrivateKeyWord3; ;
-            // Get list of calendar items
-            calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"Calendar/extendedcalendaritems?keyword={keyword}&privatekeywords={privateKeywords}");
+            await ReadData();
             StateHasChanged();
         }
         else
@@ -130,6 +179,34 @@
     {
         bool alreadyRegistered = calendarItem.FindParticipant(AppStateStore.FirstName, AppStateStore.LastName) != null;
         return alreadyRegistered;
+    }
+    protected bool CheckIfUserIsHost(ExtendedCalendarItem calendarItem)
+    {
+        bool isHost = (calendarItem.HostFirstName.Equals(AppStateStore.FirstName) && calendarItem.HostLastName.Equals(AppStateStore.LastName));
+        return isHost;
+    }
+    private async void TimerElapsedHandler()
+    {
+        await ReadData();
+        Timer.SetTimer(refreshInterval);
+        StateHasChanged();
+    }
+    private void NavigateAwayHandler()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+    protected void ShowComment(ExtendedCalendarItem calendarItem)
+    {
+        NavigationManager.NavigateTo($"/Comment/{calendarItem.Id}");
+    }
+    protected void DeleteCalendarItem(ExtendedCalendarItem calendarItem)
+    {
+        NavigationManager.NavigateTo($"/ConfirmDelete/{calendarItem.Id}");
+    }
+    public void Dispose()
+    {
+        Timer.DisableTimer();
+        Timer2.DisableTimer();
     }
 
 }

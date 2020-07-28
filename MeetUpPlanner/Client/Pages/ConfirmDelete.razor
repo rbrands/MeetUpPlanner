@@ -1,0 +1,69 @@
+﻿@page "/confirmdelete/{ItemId}"
+@inject HttpClient Http
+@inject AppState AppStateStore
+@inject NavigationManager NavigationManager
+@using MeetUpPlanner.Shared
+@using Newtonsoft.Json
+
+<div class="jumbotron">
+    <h6 class="text-muted">@meetup.LevelDescription - @meetup.Tempo</h6>
+    <h4>@meetup.GetStartDateAsString() - @meetup.Title</h4>
+    @if (!String.IsNullOrEmpty(meetup.Link))
+    {
+        <h6><small><a href="@meetup.Link" target="_blank">@meetup.Link</a></small></h6>
+    }
+    <p class="lead">
+        @((MarkupString)meetup.Summary)
+    </p>
+    <p>
+        <small>Dabei (@meetup.ParticipantCounter von @meetup.MaxRegistrationsCount): <b>@meetup.HostDisplayName</b>@meetup.ParticipantsDisplay</small>
+    </p>
+</div>
+<button type="submit" id="BtnSave" class="btn btn-primary" @onclick="@(() => OnDelete())">Ausfahrt wirklich löschen?</button>
+<button type="reset" id="BtnCancel" class="btn btn-secondary" @onclick="@(() => OnCancel())">Zurück ...</button>
+
+<hr />
+<p class="alert-info">
+    @logMessage
+</p>
+
+
+@code {
+    [Parameter]
+    public string ItemId { get; set; }
+    ExtendedCalendarItem meetup = new ExtendedCalendarItem();
+    string logMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ReadData();
+    }
+    private async Task ReadData()
+    {
+        string keyword = AppStateStore.KeyWord;
+        // Get referenced calendar item
+        meetup = await Http.GetFromJsonAsync<ExtendedCalendarItem>($"Calendar/extendedcalendaritem?keyword={keyword}&itemId={ItemId}");
+    }
+    protected void OnCancel()
+    {
+        NavigationManager.NavigateTo("/calendar");
+    }
+    protected async Task OnDelete()
+    {
+        string keyword = AppStateStore.KeyWord;
+        HttpResponseMessage response = await Http.PostAsJsonAsync<CalendarItem>($"Calendar/deletecalendaritem?keyword={keyword}", meetup);
+        string responseBody = await response.Content.ReadAsStringAsync();
+
+        BackendResult result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
+        if (result.Success)
+        {
+            NavigationManager.NavigateTo("/calendar");
+        }
+        else
+        {
+            logMessage = result.Message;
+        }
+    }
+
+
+}

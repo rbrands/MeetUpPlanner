@@ -60,14 +60,13 @@
                     <button class="ql-link"></button>
                 </span>
             </ToolbarContent>
-            <EditorContent>
-                @((MarkupString)meetup.Summary)
-            </EditorContent>
+            <EditorContent>@if (null != meetup.Summary)
+            {@((MarkupString)meetup.Summary)}</EditorContent>
         </BlazoredTextEditor>
     </div>
     <div class="form-group">
         <label for="link">Link</label>
-        <InputText id="link" aria-describedby="linkHelp" class="form-control" @bind-Value="meetup.Link" title="Link zu weiterer Streckeninfo" />
+        <InputText id="link" aria-describedby="linkHelp" class="form-control" @bind-Value="meetup.Link" placeholder="URL" title="Link zu weiterer Streckeninfo" />
         <small id="linkHelp" class="form-text text-muted">
             Optional: Link zu weiteren Strecken-Infos, z.B. Komoot, Strava usw.
         </small>
@@ -122,6 +121,7 @@
     </div>
     <ValidationSummary />
     <button type="submit" id="BtnSave" class="btn btn-primary">Termin speichern ...</button>
+    <button type="reset" id="BtnCancel" class="btn btn-secondary" @onclick="@(() => OnCancel())">Zurück ohne Speichern</button>
 </EditForm>
 <br />
 <div class="alert-info">
@@ -177,4 +177,9 @@
         logMessage = meetup.StartDate.ToString();
         NavigationManager.NavigateTo("/calendar");
     }
+    protected void OnCancel()
+    {
+        NavigationManager.NavigateTo("/calendar");
+    }
+
 }

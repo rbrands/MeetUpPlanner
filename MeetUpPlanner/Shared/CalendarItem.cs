@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
-
+using System.Linq;
 
 namespace MeetUpPlanner.Shared
 {
@@ -54,7 +54,16 @@ namespace MeetUpPlanner.Shared
         {
             get
             {
-                return HostFirstName + " " + HostLastName[0] + ".";
+                StringBuilder sb = new StringBuilder();
+                if (!String.IsNullOrEmpty(HostFirstName))
+                { 
+                    sb.Append(HostFirstName).Append(" ");
+                }
+                if (!String.IsNullOrEmpty(HostLastName))
+                {
+                    sb.Append(HostLastName[0].ToString()).Append(".");
+                }
+                return sb.ToString();
             }
         }
         /// <summary>
@@ -65,7 +74,10 @@ namespace MeetUpPlanner.Shared
         {
             string[] weekdays = { "So", "Mo", "Di", "Mi", "Do", "Fr", "Sa" };
             string dateString = String.Empty;
-            dateString = weekdays[(int)StartDate.DayOfWeek] + ", " + this.StartDate.ToString("dd.MM.yyy HH:mm") + " Uhr";
+            if (null != StartDate)
+            {
+                dateString = weekdays[(int)StartDate.DayOfWeek] + ", " + this.StartDate.ToString("dd.MM.yyy HH:mm") + " Uhr";
+            }
             return dateString;
         }
     }
