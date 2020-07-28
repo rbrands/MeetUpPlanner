@@ -74,12 +74,16 @@
                 </div>
                 <div class="card-footer">
                     <div class="btn-group">
-                        @if (AppStateStore.FirstName.Equals(item.HostFirstName) && AppStateStore.LastName.Equals(item.HostLastName) || KeywordCheck.IsAdmin)
+                        @if (CheckIfUserIsHost(item) || KeywordCheck.IsAdmin)
                         {
                             <button class="btn btn-sm btn-outline-secondary" title="Ändern" @onclick="@(() => EditCalendarItem(item.Id))">Ändern</button>
+                            <button class="btn btn-sm btn-outline-secondary" title="Ändern" @onclick="@(() => DeleteCalendarItem(item))">Löschen</button>
                         }
-                        <button class="btn btn-sm btn-outline-secondary" title="Anmelden" hidden="@CheckIfUserIsAlreadyRegistered(item)" @onclick="@(() => Checkin(item.Id))">Anmelden</button>
-                        <button class="btn btn-sm btn-outline-secondary" title="Abmelden" hidden="@(!CheckIfUserIsAlreadyRegistered(item))" @onclick="@(() => Checkout(item))">Abmelden</button>
+                        @if (!CheckIfUserIsHost(item))
+                        {
+                            <button class="btn btn-sm btn-outline-secondary" title="Anmelden" hidden="@CheckIfUserIsAlreadyRegistered(item)" @onclick="@(() => Checkin(item.Id))">Anmelden</button>
+                            <button class="btn btn-sm btn-outline-secondary" title="Abmelden" hidden="@(!CheckIfUserIsAlreadyRegistered(item))" @onclick="@(() => Checkout(item))">Abmelden</button>
+                        }
                         <button class="btn btn-sm btn-outline-secondary" title="Kommentieren" @onclick="@(() => ShowComment(item))">Kommentieren</button>
                     </div>
                 </div>
@@ -176,6 +180,11 @@
         bool alreadyRegistered = calendarItem.FindParticipant(AppStateStore.FirstName, AppStateStore.LastName) != null;
         return alreadyRegistered;
     }
+    protected bool CheckIfUserIsHost(ExtendedCalendarItem calendarItem)
+    {
+        bool isHost = (calendarItem.HostFirstName.Equals(AppStateStore.FirstName) && calendarItem.HostLastName.Equals(AppStateStore.LastName));
+        return isHost;
+    }
     private async void TimerElapsedHandler()
     {
         await ReadData();
@@ -189,6 +198,10 @@
     protected void ShowComment(ExtendedCalendarItem calendarItem)
     {
         NavigationManager.NavigateTo($"/Comment/{calendarItem.Id}");
+    }
+    protected void DeleteCalendarItem(ExtendedCalendarItem calendarItem)
+    {
+        NavigationManager.NavigateTo($"/ConfirmDelete/{calendarItem.Id}");
     }
     public void Dispose()
     {

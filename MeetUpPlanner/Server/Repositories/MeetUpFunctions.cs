@@ -151,6 +151,15 @@ namespace MeetUpPlanner.Server.Repositories
                             .ReceiveJson<BackendResult>();
             return result;
         }
+        public async Task<BackendResult> DeleteCalendarItem(string keyword, CalendarItem calendarItem)
+        {
+            BackendResult result = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/DeleteCalendarItem"
+                            .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
+                            .WithHeader(HEADER_KEYWORD, keyword)
+                            .PostJsonAsync(calendarItem)
+                            .ReceiveJson<BackendResult>();
+            return result;
+        }
 
 
     }

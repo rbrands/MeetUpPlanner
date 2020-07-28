@@ -85,5 +85,12 @@ namespace MeetUpPlanner.Server.Controllers
             BackendResult result = await _meetUpFunctions.RemoveCommentFromCalendarItem(keyword, comment);
             return Ok(result);
         }
+        [HttpPost("deletecalendaritem")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> DeleteCalendarItem([FromQuery] string keyword, [FromBody] CalendarItem calendarItem)
+        {
+            BackendResult result = await _meetUpFunctions.DeleteCalendarItem(keyword, calendarItem);
+            return Ok(result);
+        }
     }
 }
