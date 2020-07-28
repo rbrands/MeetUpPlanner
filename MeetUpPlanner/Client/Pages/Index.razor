@@ -11,11 +11,11 @@
     <div class="row jumbotron">
         @if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.LogoLink))
         {
-            <div class="col-md-1">
+            <div class="col-3">
                 <img src="@AppStateStore.ClientSettings.LogoLink" class="img-fluid" />
             </div>
         }
-        <div class="col-md-11">
+        <div class="col">
             @((MarkupString)AppStateStore.ClientSettings.WelcomeMessage)
         </div>
     </div>
