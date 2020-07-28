@@ -88,7 +88,7 @@
 
     protected async Task RemoveComment(CalendarComment comment)
     {
-        string keyword = AppStateStore.KeyWord; 
+        string keyword = AppStateStore.KeyWord;
         HttpResponseMessage response = await Http.PostAsJsonAsync<CalendarComment>($"Calendar/removecomment?keyword={keyword}", comment);
         string responseBody = await response.Content.ReadAsStringAsync();
 
@@ -103,5 +103,4 @@
             logMessage = result.Message;
         }
     }
-
 }

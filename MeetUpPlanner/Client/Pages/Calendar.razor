@@ -6,6 +6,7 @@
 @inject NavigationManager NavigationManager
 @inject BlazorTimer Timer
 @inject BlazorTimer Timer2
+@implements IDisposable
 @using Newtonsoft.Json
 @using System.IO
 
@@ -62,14 +63,14 @@
                     <div class="btn-group">
                         @if (AppStateStore.FirstName.Equals(item.HostFirstName) && AppStateStore.LastName.Equals(item.HostLastName) || KeywordCheck.IsAdmin)
                         {
-                            <button class="btn btn-sm btn-outline-secondary" @onclick="@(() => EditCalendarItem(item.Id))"><span class="oi oi-pencil" title="Editieren"></span></button>
+                            <button class="btn btn-sm btn-outline-secondary" title="Ändern" @onclick="@(() => EditCalendarItem(item.Id))">Ändern</button>
                         }
                         else
                         {
-                            <button class="btn btn-sm btn-outline-secondary" hidden="@CheckIfUserIsAlreadyRegistered(item)" @onclick="@(() => Checkin(item.Id))">Anmelden</button>
-                            <button class="btn btn-sm btn-outline-secondary" hidden="@(!CheckIfUserIsAlreadyRegistered(item))" @onclick="@(() => Checkout(item))">Abmelden</button>
+                            <button class="btn btn-sm btn-outline-secondary" title="Anmelden" hidden="@CheckIfUserIsAlreadyRegistered(item)" @onclick="@(() => Checkin(item.Id))">Anmelden</button>
+                            <button class="btn btn-sm btn-outline-secondary" title="Abmelden" hidden="@(!CheckIfUserIsAlreadyRegistered(item))" @onclick="@(() => Checkout(item))">Abmelden</button>
                         }
-                        <button class="btn btn-sm btn-outline-secondary" @onclick="@(() => ShowComment(item))"><span class="oi oi-comment-square" title="Nachricht"></span></button>
+                        <button class="btn btn-sm btn-outline-secondary" title="Kommentieren" @onclick="@(() => ShowComment(item))">Kommentieren</button>
                     </div>
                 </div>
             </div>
@@ -84,7 +85,7 @@
 @code {
     private string logMessage = "";
     private IList<ExtendedCalendarItem> calendarItems = new List<ExtendedCalendarItem>();
-    const double refreshInterval = 10000;
+    const double refreshInterval = 30000;
     const double navigateAwayInterval = 10 * 60 * 1000;
 
     protected override async Task OnInitializedAsync()
@@ -106,8 +107,6 @@
 
     protected void EditCalendarItem(string itemId)
     {
-        Timer.DisableTimer();
-        Timer2.DisableTimer();
         NavigationManager.NavigateTo($"/NewMeetUp/{itemId}");
     }
 
@@ -165,15 +164,16 @@
     }
     private void NavigateAwayHandler()
     {
-        Timer.DisableTimer();
-        Timer2.DisableTimer();
         NavigationManager.NavigateTo("/");
     }
     protected void ShowComment(ExtendedCalendarItem calendarItem)
     {
+        NavigationManager.NavigateTo($"/Comment/{calendarItem.Id}");
+    }
+    public void Dispose()
+    {
         Timer.DisableTimer();
         Timer2.DisableTimer();
-        NavigationManager.NavigateTo($"/Comment/{calendarItem.Id}");
     }
 
 }
