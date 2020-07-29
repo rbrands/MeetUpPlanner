@@ -1,0 +1,41 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Server-master to slot dev
+
+on:
+  push:
+    branches:
+      - releases/*
+    paths:
+      - 'MeetUpPlanner/**'
+
+defaults:
+  run:
+    working-directory: MeetUpPlanner/Server
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@main
+
+    - name: Set up .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '3.1.102'
+
+    - name: Build with dotnet
+      run: dotnet build --configuration Release
+
+    - name: dotnet publish
+      run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v1
+      with:
+        app-name: 'meetup-planner(release)'
+        slot-name: 'release'
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_RELEASE }}
+        package: ${{env.DOTNET_ROOT}}/myapp 
