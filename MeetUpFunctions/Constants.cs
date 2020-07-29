@@ -19,5 +19,6 @@ namespace MeetUpPlanner.Functions
         public const string DEFAULT_LINK_TITLE = "https://robert-brands.com";
 
         public const string VERSION = "2020-07-28";
+        public const int ADMINOVERBOOKFACTOR = 2;
     }
 }

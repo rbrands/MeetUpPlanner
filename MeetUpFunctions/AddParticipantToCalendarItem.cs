@@ -70,6 +70,12 @@ namespace MeetUpPlanner.Functions
                 }
                 ++counter;
             }
+            int maxRegistrationCount = calendarItem.MaxRegistrationsCount;
+            if (serverSettings.IsAdmin(keyWord))
+            {
+                // Admin can "overbook" a meetup to be able to add some extra guests
+                maxRegistrationCount *= Constants.ADMINOVERBOOKFACTOR;
+            }
             if (counter >= calendarItem.MaxRegistrationsCount)
             {
                 return new OkObjectResult(new BackendResult(false, "Maximale Anzahl Registrierungen bereits erreicht."));
