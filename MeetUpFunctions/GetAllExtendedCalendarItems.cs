@@ -15,7 +15,7 @@ using Aliencube.AzureFunctions.Extensions.OpenApi.Attributes;
 
 namespace MeetUpPlanner.Functions
 {
-    public class GetExtendedCalendarItems
+    public class GetAllExtendedCalendarItems
     {
         private readonly ILogger _logger;
         private ServerSettingsRepository _serverSettingsRepository;
@@ -23,8 +23,8 @@ namespace MeetUpPlanner.Functions
         private CosmosDBRepository<Participant> _participantRepository;
         private CosmosDBRepository<CalendarComment> _commentRepository;
 
-        public GetExtendedCalendarItems(ILogger<GetExtendedCalendarItems> logger, ServerSettingsRepository serverSettingsRepository, 
-                                                                                  CosmosDBRepository<CalendarItem> cosmosRepository, 
+        public GetAllExtendedCalendarItems(ILogger<GetExtendedCalendarItems> logger, ServerSettingsRepository serverSettingsRepository,
+                                                                                  CosmosDBRepository<CalendarItem> cosmosRepository,
                                                                                   CosmosDBRepository<Participant> participantRepository,
                                                                                   CosmosDBRepository<CalendarComment> commentRepository)
         {
@@ -35,11 +35,10 @@ namespace MeetUpPlanner.Functions
             _commentRepository = commentRepository;
         }
 
-        [FunctionName("GetExtendedCalendarItems")]
-        [OpenApiOperation(Summary = "Gets the relevant ExtendedCalendarIitems",
-                          Description = "Reading current ExtendedCalendarItems (CalendarItem including correpondent participants and comments) starting in the future or the configured past (in hours). To be able to read CalenderItems the user keyword must be set as header x-meetup-keyword.")]
+        [FunctionName("GetAllExtendedCalendarItems")]
+        [OpenApiOperation(Summary = "Gets all ExtendedCalendarIitems",
+                          Description = "Reading all ExtendedCalendarItems (including particpants and comments) for tracking issues. To be able to read all ExtendedCalenderItems the admin keyword must be set as header x-meetup-keyword.")]
         [OpenApiResponseBody(System.Net.HttpStatusCode.OK, "application/json", typeof(IEnumerable<ExtendedCalendarItem>))]
-        [OpenApiParameter("privatekeywords", Description = "Holds a list of private keywords, separated by ;")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req)
         {
@@ -47,43 +46,19 @@ namespace MeetUpPlanner.Functions
             ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings();
 
             string keyWord = req.Headers[Constants.HEADER_KEYWORD];
-            if (String.IsNullOrEmpty(keyWord) || !serverSettings.IsUser(keyWord))
+            if (String.IsNullOrEmpty(keyWord) || !serverSettings.IsAdmin(keyWord))
             {
-                _logger.LogWarning("GetExtendedCalendarItems called with wrong keyword.");
+                _logger.LogWarning("GetAllExtendedCalendarItems called with wrong keyword.");
                 return new BadRequestErrorMessageResult("Keyword is missing or wrong.");
             }
-            string privateKeywordsString = req.Query["privatekeywords"];
-            string[] privateKeywords = null;
-            if (!String.IsNullOrEmpty(privateKeywordsString))
-            {
-                privateKeywords = privateKeywordsString.Split(';');
-            }
+            // Get a list of all CalendarItems
 
-            // Get a list of all CalendarItems and filter all applicable ones
-            DateTime compareDate = DateTime.Now.AddHours((-serverSettings.CalendarItemsPastWindowHours));
-
-            IEnumerable<CalendarItem> rawListOfCalendarItems = await _cosmosRepository.GetItems(d => d.StartDate > compareDate);
-            List<ExtendedCalendarItem> resultCalendarItems = new List<ExtendedCalendarItem>(10);
+            IEnumerable<CalendarItem> rawListOfCalendarItems = await _cosmosRepository.GetItems();
+            List<ExtendedCalendarItem> resultCalendarItems = new List<ExtendedCalendarItem>(50);
             foreach (CalendarItem item in rawListOfCalendarItems)
             {
                 ExtendedCalendarItem extendedItem = new ExtendedCalendarItem(item);
-                if (String.IsNullOrEmpty(extendedItem.PrivateKeyword))
-                {
-                    // No private keyword for item ==> use it
-                    resultCalendarItems.Add(extendedItem);
-                }
-                else if (null != privateKeywords)
-                {
-                    // Private keyword for item ==> check given keyword list against it
-                    foreach (string keyword in privateKeywords)
-                    {
-                        if (keyword.Equals(extendedItem.PrivateKeyword))
-                        {
-                            resultCalendarItems.Add(extendedItem);
-                            break;
-                        }
-                    }
-                }
+                resultCalendarItems.Add(extendedItem);
                 // Read all participants for this calendar item
                 extendedItem.ParticipantsList = await _participantRepository.GetItems(p => p.CalendarItemId.Equals(extendedItem.Id));
                 // Read all comments
