@@ -9,7 +9,7 @@ ensuring the traceability of the participants the corresponding tool was missing
 
 Therefore the following design principles for this web-app are:
 * Easy to use without complex registration and authentication process. Therefore only "keywords" are used as very basic access control.
-* Responsive design, usable on PC and smartphones with all modern brwosers (Chrome, Edge, Firefox, Safari) supporting the <a href="https://webassembly.org/">WebAssembly Standard</a>. 
+* Responsive design, usable on PC and smartphones with all modern browsers (Chrome, Edge, Firefox, Safari) supporting the <a href="https://webassembly.org/">WebAssembly Standard</a>. 
 * Minimal administrative effort: All meetups data should be deleted automatically after the configured time (typically 28 days). Everyone should be able to organize a MeetUp.
 * Availability of "private" MeetUps: The ability to organize a MeetUp and protect it with a "keyword" that can be given to potential participants. 
 * Adaptable: The application has a front-end layer implemented with <a href="https://docs.microsoft.com/en-us/aspnet/core/blazor">ASP.NET Core Blazor</a>  The application logic is provided as microservices (<a href="https://docs.microsoft.com/en-us/azure/azure-functions/">Azure Functions</a>). In this way it is possible to use the application layer independently with a different front-end.  
