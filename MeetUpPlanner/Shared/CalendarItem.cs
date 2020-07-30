@@ -76,7 +76,7 @@ namespace MeetUpPlanner.Shared
             string dateString = String.Empty;
             if (null != StartDate)
             {
-                dateString = weekdays[(int)StartDate.DayOfWeek] + ", " + this.StartDate.ToString("dd.MM.yyy HH:mm") + " Uhr";
+                dateString = weekdays[(int)StartDate.DayOfWeek] + ", " + this.StartDate.ToString("dd.MM HH:mm") + " Uhr";
             }
             return dateString;
         }
