@@ -105,12 +105,15 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // Get list of calendar items
-        await ReadData();
-        Timer.SetTimer(refreshInterval);
-        Timer.OnElapsed += TimerElapsedHandler;
-        Timer2.SetTimer(navigateAwayInterval);
-        Timer2.OnElapsed += NavigateAwayHandler;
+        if (null != AppStateStore && !String.IsNullOrEmpty(AppStateStore.KeyWord))
+        {
+            // Get list of calendar items
+            await ReadData();
+            Timer.SetTimer(refreshInterval);
+            Timer.OnElapsed += TimerElapsedHandler;
+            Timer2.SetTimer(navigateAwayInterval);
+            Timer2.OnElapsed += NavigateAwayHandler;
+        }
     }
     protected async Task ReadData()
     {
