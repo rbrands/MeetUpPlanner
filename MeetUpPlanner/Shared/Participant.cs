@@ -18,6 +18,8 @@ namespace MeetUpPlanner.Shared
         public string ParticipantFirstName { get; set; }
         [JsonProperty(PropertyName = "participantLastName"), MaxLength(100), Required(ErrorMessage = "Nachnamen bitte eingeben.")]
         public string ParticipantLastName { get; set; }
+        [JsonProperty(PropertyName = "participantAddressName", NullValueHandling = NullValueHandling.Ignore), MaxLength(100) ]
+        public string ParticipantAdressInfo { get; set; }
         [JsonProperty(PropertyName = "checkInDate")]
         public DateTime CheckInDate { get; set; }
         [JsonIgnore]

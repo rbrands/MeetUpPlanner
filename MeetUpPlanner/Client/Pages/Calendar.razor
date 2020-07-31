@@ -137,6 +137,7 @@
         Participant participant = new Participant();
         participant.ParticipantFirstName = AppStateStore.FirstName;
         participant.ParticipantLastName = AppStateStore.LastName;
+        participant.ParticipantAdressInfo = AppStateStore.PhoneMail;
         participant.CalendarItemId = itemId;
         string keyword = AppStateStore.KeyWord;
         HttpResponseMessage response = await Http.PostAsJsonAsync<Participant>($"Calendar/addparticipant?keyword={keyword}", participant);
