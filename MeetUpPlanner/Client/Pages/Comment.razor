@@ -57,9 +57,16 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await ReadData();
-        comment.AuthorFirstName = AppStateStore.FirstName;
-        comment.AuthorLastName = AppStateStore.LastName;
+        if (!String.IsNullOrEmpty(AppStateStore?.KeyWord))
+        {
+            await ReadData();
+            comment.AuthorFirstName = AppStateStore.FirstName;
+            comment.AuthorLastName = AppStateStore.LastName;
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/");
+        }
     }
     private async Task ReadData()
     {

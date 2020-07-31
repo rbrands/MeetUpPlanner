@@ -36,7 +36,14 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await ReadData();
+        if (!String.IsNullOrEmpty(AppStateStore?.KeyWord))
+        {
+            await ReadData();
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/");
+        }
     }
     private async Task ReadData()
     {

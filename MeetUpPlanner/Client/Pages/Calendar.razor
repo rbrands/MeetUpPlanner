@@ -10,17 +10,17 @@
 @using Newtonsoft.Json
 @using System.IO
 
-@if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.WhiteboardMessage))
+@if (!String.IsNullOrEmpty(AppStateStore.ClientSettings?.WhiteboardMessage))
 {
     <div class="row jumbotron">
-        @if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.LogoLink))
+        @if (!String.IsNullOrEmpty(AppStateStore.ClientSettings?.LogoLink))
         {
             <div class="col-3">
-                <img src="@AppStateStore.ClientSettings.LogoLink" class="img-fluid" />
+                <img src="@AppStateStore.ClientSettings?.LogoLink" class="img-fluid" />
             </div>
         }
         <div class="col">
-            @((MarkupString)AppStateStore.ClientSettings.WhiteboardMessage)
+            @((MarkupString)AppStateStore.ClientSettings?.WhiteboardMessage)
         </div>
     </div>
 }
@@ -113,6 +113,10 @@
             Timer.OnElapsed += TimerElapsedHandler;
             Timer2.SetTimer(navigateAwayInterval);
             Timer2.OnElapsed += NavigateAwayHandler;
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/");
         }
     }
     protected async Task ReadData()
