@@ -27,5 +27,7 @@ For documentation including deployment instructions see [Wiki](https://github.co
 # References
 <a href="https://github.com/Blazored">Blazored</a> is an excellent colletion with some tools to make the life with Blazor easier. MeetUpPlanner uses the TextEdit and LocalStorage components.
 
+Another handy tool to provide file download in Blazor: https://github.com/arivera12/BlazorDownloadFile
+
 And of course <a href="https://getbootstrap.com/">Bootstrap</a> for the responsive design is used.
 
