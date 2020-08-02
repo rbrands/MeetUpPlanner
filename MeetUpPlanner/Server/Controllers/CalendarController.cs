@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -92,5 +93,21 @@ namespace MeetUpPlanner.Server.Controllers
             BackendResult result = await _meetUpFunctions.DeleteCalendarItem(keyword, calendarItem);
             return Ok(result);
         }
+        [HttpPost("requesttrackingreport")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> ExportTrackingReport([FromQuery] string keyword, [FromBody] TrackingReportRequest request)
+        {
+            TrackingReport report = await _meetUpFunctions.ExportTrackingReport(keyword, request);
+            return Ok(report);
+        }
+
+        [HttpGet("getexportlog")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetExportLog([FromQuery] string keyword)
+        {
+            IEnumerable<ExportLogItem> result = await _meetUpFunctions.GetExportLog(keyword);
+            return Ok(result);
+        }
+
     }
 }

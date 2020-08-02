@@ -1,6 +1,7 @@
 ﻿@page "/admin"
 @inject HttpClient Http
 @inject AppState AppStateStore
+@inject NavigationManager NavigationManager
 @using MeetUpPlanner.Shared
 @using Blazored.TextEditor
 
@@ -204,12 +205,19 @@
 
     protected override async Task OnInitializedAsync()
     {
-        string keyword = AppStateStore.KeyWord;
-        // Get server settings from server
-        serverSettings = await Http.GetFromJsonAsync<ServerSettings>($"Util/serversettings?adminKeyword={keyword}");
-        await htmlWelcomeMessage.LoadHTMLContent(AppStateStore.ClientSettings.WelcomeMessage);
-        await htmlWhiteboardMessage.LoadHTMLContent(AppStateStore.ClientSettings.WhiteboardMessage);
-        await htmlNewMeetupMessage.LoadHTMLContent(AppStateStore.ClientSettings.NewMeetupMessage);
+        if (!String.IsNullOrEmpty(AppStateStore?.KeyWord))
+        {
+            string keyword = AppStateStore.KeyWord;
+            // Get server settings from server
+            serverSettings = await Http.GetFromJsonAsync<ServerSettings>($"Util/serversettings?adminKeyword={keyword}");
+            await htmlWelcomeMessage.LoadHTMLContent(AppStateStore.ClientSettings.WelcomeMessage);
+            await htmlWhiteboardMessage.LoadHTMLContent(AppStateStore.ClientSettings.WhiteboardMessage);
+            await htmlNewMeetupMessage.LoadHTMLContent(AppStateStore.ClientSettings.NewMeetupMessage);
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/");
+        }
     }
 
     private async Task SaveClientSettings()

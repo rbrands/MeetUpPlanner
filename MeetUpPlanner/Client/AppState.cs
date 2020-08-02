@@ -39,7 +39,7 @@ namespace MeetUpPlanner.Client
         [MaxLength(80, ErrorMessage = "Der Nachname ist zu lang."), MinLength(3, ErrorMessage = "Der Nachname ist zu kurz.")]
         [Required(ErrorMessage = "Der Nachname fehlt.")]
         public string LastName { get; set; }
-        [MaxLength(60, ErrorMessage = "Die Tel-Nr/Mail-Adresse ist zu lang"), MinLength(8, ErrorMessage = "Die Tel-Nr/Mail-Adresse ist zu kurz.")]
+        [MaxLength(120, ErrorMessage = "Die Tel-Nr/Mail-Adresse ist zu lang"), MinLength(8, ErrorMessage = "Die Tel-Nr/Mail-Adresse ist zu kurz.")]
         [Required(ErrorMessage = "Tel-Nr/Mail-Adresse fehlen.")]
         public string PhoneMail { get; set; }
         public bool SaveSettings { get; set; } = true;

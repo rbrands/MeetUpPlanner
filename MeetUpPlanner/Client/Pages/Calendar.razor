@@ -10,17 +10,17 @@
 @using Newtonsoft.Json
 @using System.IO
 
-@if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.WhiteboardMessage))
+@if (!String.IsNullOrEmpty(AppStateStore.ClientSettings?.WhiteboardMessage))
 {
     <div class="row jumbotron">
-        @if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.LogoLink))
+        @if (!String.IsNullOrEmpty(AppStateStore.ClientSettings?.LogoLink))
         {
             <div class="col-3">
-                <img src="@AppStateStore.ClientSettings.LogoLink" class="img-fluid" />
+                <img src="@AppStateStore.ClientSettings?.LogoLink" class="img-fluid" />
             </div>
         }
         <div class="col">
-            @((MarkupString)AppStateStore.ClientSettings.WhiteboardMessage)
+            @((MarkupString)AppStateStore.ClientSettings?.WhiteboardMessage)
         </div>
     </div>
 }
@@ -46,7 +46,7 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header">
-                    <strong>@item.GetStartDateAsString() - @item.Place</strong>
+                    <em>@item.GetStartDateAsString() - @item.Place</em>
                     @if (!String.IsNullOrEmpty(item.PrivateKeyword))
                     {
                         <div class="text-right"><small class="text-muted"><span class="oi oi-key" title="Private Ausfahrt"></span> @item.PrivateKeyword</small></div>
@@ -105,19 +105,26 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // Get list of calendar items
-        await ReadData();
-        Timer.SetTimer(refreshInterval);
-        Timer.OnElapsed += TimerElapsedHandler;
-        Timer2.SetTimer(navigateAwayInterval);
-        Timer2.OnElapsed += NavigateAwayHandler;
+        if (null != AppStateStore && !String.IsNullOrEmpty(AppStateStore.KeyWord))
+        {
+            // Get list of calendar items
+            await ReadData();
+            Timer.SetTimer(refreshInterval);
+            Timer.OnElapsed += TimerElapsedHandler;
+            Timer2.SetTimer(navigateAwayInterval);
+            Timer2.OnElapsed += NavigateAwayHandler;
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/");
+        }
     }
     protected async Task ReadData()
     {
         string keyword = AppStateStore.KeyWord;
         string privateKeywords = AppStateStore.PrivateKeyWord1 + ";" + AppStateStore.PrivateKeyWord2 + ";" + AppStateStore.PrivateKeyWord3; ;
         // Get list of calendar items
-        calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"Calendar/extendedcalendaritems?keyword={keyword}&privatekeywords={privateKeywords}");
+        calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"calendar/extendedcalendaritems?keyword={keyword}&privatekeywords={privateKeywords}");
     }
 
     protected void EditCalendarItem(string itemId)
@@ -130,6 +137,7 @@
         Participant participant = new Participant();
         participant.ParticipantFirstName = AppStateStore.FirstName;
         participant.ParticipantLastName = AppStateStore.LastName;
+        participant.ParticipantAdressInfo = AppStateStore.PhoneMail;
         participant.CalendarItemId = itemId;
         string keyword = AppStateStore.KeyWord;
         HttpResponseMessage response = await Http.PostAsJsonAsync<Participant>($"Calendar/addparticipant?keyword={keyword}", participant);
