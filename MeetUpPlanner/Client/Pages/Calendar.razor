@@ -124,7 +124,7 @@
         string keyword = AppStateStore.KeyWord;
         string privateKeywords = AppStateStore.PrivateKeyWord1 + ";" + AppStateStore.PrivateKeyWord2 + ";" + AppStateStore.PrivateKeyWord3; ;
         // Get list of calendar items
-        calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"Calendar/extendedcalendaritems?keyword={keyword}&privatekeywords={privateKeywords}");
+        calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"calendar/extendedcalendaritems?keyword={keyword}&privatekeywords={privateKeywords}");
     }
 
     protected void EditCalendarItem(string itemId)

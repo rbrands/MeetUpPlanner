@@ -1,18 +1,134 @@
 ﻿@page "/export"
 @inject HttpClient Http
+@inject KeywordCheck KeywordCheck
 @inject AppState AppStateStore
 @inject NavigationManager NavigationManager
 @using MeetUpPlanner.Shared
 @using Newtonsoft.Json
+@using BlazorDownloadFile 
+@using System.IO 
 
 <div class="jumbotron">
-<h4>Export</h4>
+<h4>Kontaktliste</h4>
 <p>
     Wenn der Fall eingetreten ist, dass jemand positiv auf Covid-19 getestet wurde, braucht er/sie seine Kontakte der letzten Wochen. Dazu bitte den Export per e-mail anfordern oder sofern 
     das Admin-Schlüsselwort bekannt ist, hier direkt ausführen.
 </p>
 </div>
+<div hidden="@(!KeywordCheck.IsAdmin)">
+    <h4>Export</h4>
+    <EditForm Model="@trackingRequest" OnValidSubmit="StartExport">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-row">
+            <div class="form-group col">
+                <InputText id="firstname" class="form-control" @bind-Value="trackingRequest.TrackFirstName" autocomplete="on" placeholder="Kontaktliste für: Vorname" title="Vorname" />
+            </div>
+            <div class="form-group col">
+                <InputText id="lastName" class="form-control" @bind-Value="trackingRequest.TrackLastName" autocomplete="on" placeholder="Kontaktliste für: Nachname" title="Nachname" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Comment">Begründung</label>
+            <InputTextArea id="Comment" aria-describedby="commentHelp" class="form-control" @bind-Value="trackingRequest.Comment" autocomplete="on" placeholder="Begründung für den Export der Kontaktliste" title="Begründung" />
+            <small id="commentHelp" class="form-text text-muted">
+                Bitte hier kurz begründen wieso eine Kontakliste benötigt wird.
+            </small>
+        </div>
+        <button type="submit" id="BtnRequest" class="btn btn-primary">Export starten</button>
+    </EditForm>
+
+    <h4>Export Historie</h4>
+    <div class="table-responsive">
+        <table class="table table-condensed table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Datum</th>
+                    <th>Von</th>
+                    <th>Für</th>
+                    <th>Kommentar</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (ExportLogItem e in log)
+                {
+                    <tr>
+                        <td>@e.RequestDate.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>@e.RequestorFirstName @e.RequestorLastName</td>
+                        <td>@e.RequestedFirstName @e.RequestedLastName</td>
+                        <td>@e.RequestReason</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
 
 @code {
+    [Inject] public IBlazorDownloadFileService BlazorDownloadFileService { get; set; }
+    protected IEnumerable<ExportLogItem> log = new List<ExportLogItem>();
+    TrackingReportRequest trackingRequest = new TrackingReportRequest();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (null != AppStateStore && !String.IsNullOrEmpty(AppStateStore.KeyWord))
+        {
+            // Get list of log items
+            await ReadData();
+            trackingRequest.RequestorFirstName = AppStateStore.FirstName;
+            trackingRequest.RequestorLastName = AppStateStore.LastName;
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+    protected async Task ReadData()
+    {
+        string keyword = AppStateStore.KeyWord;
+        // Get log
+        if (KeywordCheck.IsAdmin)
+        {
+            log = await Http.GetFromJsonAsync<IEnumerable<ExportLogItem>>($"calendar/getexportlog?keyword={keyword}");
+        }
+    }
+
+    protected async Task StartExport()
+    {
+        // Get tracking report
+        string keyword = AppStateStore.KeyWord;
+        HttpResponseMessage response = await Http.PostAsJsonAsync<TrackingReportRequest>($"Calendar/requesttrackingreport?keyword={keyword}", trackingRequest);
+        string responseBody = await response.Content.ReadAsStringAsync();
+        TrackingReport report = JsonConvert.DeserializeObject<TrackingReport>(responseBody);
+
+        // Filename for export file
+        string fileName = String.Format("{0:yyyy}-{1:MM}-{2:dd}{3}_{4}.csv", report.CreationDate, report.CreationDate, report.CreationDate, report.ReportRequest.TrackFirstName, report.ReportRequest.TrackLastName);
+
+        // Assemble Excel (CSV) file
+        StringWriter csvData = new StringWriter();
+        // Write header line
+        csvData.Write("Mitfahrer;");
+        foreach(CompanionCalendarInfo c in report.CalendarList)
+        {
+            csvData.Write(c.StartDate.ToString("dd.MM.yyyy HH:mm") + ";");
+        }
+        csvData.WriteLine();
+        // Write line for every companion
+        foreach(Companion c in report.CompanionList)
+        {
+            csvData.Write(c.FirstName + " " + c.LastName + " - " + c.AddressInfo + ";");
+            foreach (bool b in c.EventList)
+            {
+                csvData.Write(b ? "1;" : " ;");
+            }
+            csvData.WriteLine();
+        }
+
+        await BlazorDownloadFileService.DownloadFileFromText(fileName, csvData.ToString(), "text/csv");
+        await ReadData();
+    }
 
 }

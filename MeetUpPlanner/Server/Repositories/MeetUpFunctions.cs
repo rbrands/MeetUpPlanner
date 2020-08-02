@@ -160,7 +160,23 @@ namespace MeetUpPlanner.Server.Repositories
                             .ReceiveJson<BackendResult>();
             return result;
         }
-
+        public async Task<TrackingReport> ExportTrackingReport(string keyword, TrackingReportRequest request)
+        {
+            TrackingReport result = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/ExportTrackingReport"
+                            .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
+                            .WithHeader(HEADER_KEYWORD, keyword)
+                            .PostJsonAsync(request)
+                            .ReceiveJson<TrackingReport>();
+            return result;
+        }
+        public async Task<IEnumerable<ExportLogItem>> GetExportLog(string keyword)
+        {
+            IEnumerable<ExportLogItem> result = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/GetExportLog"
+                            .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
+                            .WithHeader(HEADER_KEYWORD, keyword)
+                            .GetJsonAsync<IEnumerable<ExportLogItem>>();
+            return result;
+        }
 
     }
 

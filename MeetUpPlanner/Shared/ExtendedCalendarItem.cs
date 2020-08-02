@@ -33,6 +33,7 @@ namespace MeetUpPlanner.Shared
             this.Place = calendarItem.Place;
             this.HostFirstName = calendarItem.HostFirstName;
             this.HostLastName = calendarItem.HostLastName;
+            this.HostAdressInfo = calendarItem.HostAdressInfo;
             this.Summary = calendarItem.Summary;
             this.MaxRegistrationsCount = calendarItem.MaxRegistrationsCount;
             this.PrivateKeyword = calendarItem.PrivateKeyword;

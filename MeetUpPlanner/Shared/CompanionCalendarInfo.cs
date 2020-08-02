@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace MeetUpPlanner.Shared
@@ -13,6 +14,7 @@ namespace MeetUpPlanner.Shared
         public DateTime StartDate { get; set; }
         public string HostFirstName { get; set; }
         public string HostLastName { get; set; }
+        public string HostAddressInfo { get; set; }
         public string LevelDescription { get; set; }
 
         public CompanionCalendarInfo()
@@ -25,6 +27,7 @@ namespace MeetUpPlanner.Shared
             StartDate = calendarItem.StartDate;
             HostFirstName = calendarItem.HostFirstName;
             HostLastName = calendarItem.HostLastName;
+            HostAddressInfo = calendarItem.HostAdressInfo;
             LevelDescription = calendarItem.LevelDescription;
         }
     }

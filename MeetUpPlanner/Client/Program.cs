@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using BlazorDownloadFile;
 using Blazored.LocalStorage;
 using MeetUpPlanner.Shared;
 
@@ -23,6 +24,7 @@ namespace MeetUpPlanner.Client
             builder.Services.AddSingleton<KeywordCheck>();
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddTransient<BlazorTimer>();
+            builder.Services.AddBlazorDownloadFile();
             await builder.Build().RunAsync();
         }
     }
