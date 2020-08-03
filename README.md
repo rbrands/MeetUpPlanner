@@ -16,7 +16,7 @@ Therefore the following design principles for this web-app are:
 
 # About this repository
 * Folder "MeetUpFunctions" has the source code of the Azure Functions used for the backend. The master branch is CI enabled with GitHub Actions and deployed to the slot "dev" of the Azure Functions App. 
-* Folder MeetUpPlanner holds the source code of the Blazor WebAssembly and the ASP.NET Core hosting app. The master branch is CI enabled with GitHub Action and deployed to https://meetup-planner-dev.azurewebsites.net
+* Folder MeetUpPlanner holds the source code of the Blazor WebAssembly and the ASP.NET Core hosting app. The master branch is CI enabled with GitHub Action and deployed slot "dev" of the web application.
   * Client - The Blazor WebAssembly project
   * Server - The ASP.NET Core web backend for the application
   * Shared - Model classes shared with all projects for serializing the objects to JSON
