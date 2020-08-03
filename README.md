@@ -25,7 +25,7 @@ Therefore the following design principles for this web-app are:
 For documentation including deployment instructions see [Wiki](https://github.com/rbrands/MeetUpPlanner/wiki)
 
 # References
-The application is build with the following technology stack:
+The application is build on the following technology stack:
 * Blazor (see https://blazor.net) as front end based on the WebAssembly (see https://webassembly.org) standard, supported by all modern browsers (desktop and mobile). That means that the client is an application running in the browser, sandboxed like JavaScript. 
 * ASP.NET Core Backend (see https://docs.microsoft.com/en-us/aspnet/core/blazor/hosting-models?view=aspnetcore-3.1#blazor-webassembly)
 * Business Logic in Azure Functions v3 (see https://docs.microsoft.com/en-us/azure/azure-functions/)
