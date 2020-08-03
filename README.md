@@ -32,7 +32,7 @@ The application is build with the following technology stack:
 * Data Layer No-SQL database Azure Cosmos DB (see https://docs.microsoft.com/en-us/azure/cosmos-db/)
 
 Some helpers:
-<a href="https://github.com/Blazored">Blazored</a> is an excellent colletion with some tools to make the life with Blazor easier. MeetUpPlanner uses the TextEdit and LocalStorage components.
+<a href="https://github.com/Blazored">Blazored</a> is an excellent colletion with some tools to make the life easier with Blazor. MeetUpPlanner uses the TextEdit and LocalStorage components.
 
 Another handy tool to provide file download in Blazor: https://github.com/arivera12/BlazorDownloadFile
 
