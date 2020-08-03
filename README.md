@@ -25,6 +25,13 @@ Therefore the following design principles for this web-app are:
 For documentation including deployment instructions see [Wiki](https://github.com/rbrands/MeetUpPlanner/wiki)
 
 # References
+The application is build with the following technology stack:
+* Blazor (see https://blazor.net) as front end based on the WebAssembly (see https://webassembly.org) standard, supported by all modern browsers (desktop and mobile). That means that the client is an application running in the browser, sandboxed like JavaScript. 
+* ASP.NET Core Backend (see https://docs.microsoft.com/en-us/aspnet/core/blazor/hosting-models?view=aspnetcore-3.1#blazor-webassembly)
+* Business Logic in Azure Functions v3 (see https://docs.microsoft.com/en-us/azure/azure-functions/)
+* Data Layer No-SQL database Azure Cosmos DB (see https://docs.microsoft.com/en-us/azure/cosmos-db/)
+
+Some helpers:
 <a href="https://github.com/Blazored">Blazored</a> is an excellent colletion with some tools to make the life with Blazor easier. MeetUpPlanner uses the TextEdit and LocalStorage components.
 
 Another handy tool to provide file download in Blazor: https://github.com/arivera12/BlazorDownloadFile
