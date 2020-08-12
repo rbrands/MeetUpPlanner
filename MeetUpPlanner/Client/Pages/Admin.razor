@@ -143,6 +143,36 @@
         </BlazoredTextEditor>
     </div>
 
+    <div class="form-row">
+        <div class="form-group col-md-12">
+            <label for="mondayBadge">Die Wochentage können mit "Badges" gekennzeichnet werden.</label>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col">
+            <InputText id="mondayBadge" placeholder="Montag" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.MondayBadge" title="Badge für Montag" />
+        </div>
+        <div class="form-group col">
+            <InputText id="tuesdayBadge" placeholder="Dienstag" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.TuesdayBadge" title="Badge für Dienstag" />
+        </div>
+        <div class="form-group col">
+            <InputText id="wednsesdayBadge" placeholder="Mittwoch" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.WednesdayBadge" title="Badge für Mittwoch" />
+        </div>
+        <div class="form-group col">
+            <InputText id="thursdayBadge" placeholder="Donnerstag" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.ThursdayBadge" title="Badge für Donnerstag" />
+        </div>
+        <div class="form-group col">
+            <InputText id="fridayBadge" placeholder="Freitag" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.FridayBadge" title="Badge für Freitag" />
+        </div>
+        <div class="form-group col">
+            <InputText id="saturdayBadge" placeholder="Samstag" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.SaturdayBadge" title="Badge für Samstag" />
+        </div>
+        <div class="form-group col">
+            <InputText id="sundayBadge" placeholder="Sonntag" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.SundayBadge" title="Badge für Sonntag" />
+        </div>
+    </div>
+
     <button type="submit" id="BtnSaveSettings" class="btn btn-primary">Einstellungen speichern ...</button>
 </EditForm>
 <br />

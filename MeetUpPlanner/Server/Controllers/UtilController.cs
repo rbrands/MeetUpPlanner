@@ -103,5 +103,23 @@ namespace MeetUpPlanner.Server.Controllers
             }
             return imageUrl;
         }
+        [HttpGet("qrcodeimage")]
+        public IActionResult GetQrCodeImage([FromQuery] string link)
+        {
+            QRCodeGenerator qrGenerator = new QRCodeGenerator();
+            QRCodeData qrCodeData = qrGenerator.CreateQrCode(link, QRCodeGenerator.ECCLevel.Q);
+            QRCode qrCode = new QRCode(qrCodeData);
+            byte[] byteImage;
+
+            using (Bitmap bitMap = qrCode.GetGraphic(20))
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    bitMap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                    byteImage = ms.ToArray();
+                }
+            }
+            return File(byteImage, "image/png");
+        }
     }
 }

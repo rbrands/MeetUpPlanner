@@ -20,7 +20,8 @@
     protected override async Task OnInitializedAsync()
     {
         _checkinUrl = Http.BaseAddress + "register/4711";
-        _imageUrl = await Http.GetStringAsync($"Util/qrcode?link={_checkinUrl}");
+        //_imageUrl = await Http.GetStringAsync($"Util/qrcode?link={_checkinUrl}");
+        _imageUrl = $"Util/qrcodeimage?link={_checkinUrl}";
     }
 
 }
