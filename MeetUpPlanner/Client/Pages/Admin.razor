@@ -143,6 +143,15 @@
         </BlazoredTextEditor>
     </div>
 
+    <div class="form-group">
+        <div class="form-check">
+            <InputCheckbox id="guestsEnabled" class="form-check-input" @bind-Value="@AppStateStore.ClientSettings.GuestsEnabled" />
+            <label for="guestsEnabled" class="form-checklabel">
+                Einladen von Gästen möglich?
+            </label>
+        </div>
+    </div>
+
     <div class="form-row">
         <div class="form-group col-md-12">
             <label for="mondayBadge">Die Wochentage können mit "Badges" gekennzeichnet werden.</label>

@@ -25,6 +25,7 @@ namespace MeetUpPlanner.Shared
         public string NewMeetupMessage { get; set; }
         [JsonProperty(PropertyName ="maxGroupSize", NullValueHandling = NullValueHandling.Ignore)]
         public int MaxGroupSize { get; set; } = 10;
+        public Boolean GuestsEnabled { get; set; } = false;
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore), MaxLength(30, ErrorMessage = "Wochenkennzeichnung bitte kürzer als 30 Zeichen.")]
         public string MondayBadge { get; set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore), MaxLength(30, ErrorMessage = "Wochenkennzeichnung bitte kürzer als 30 Zeichen.")]

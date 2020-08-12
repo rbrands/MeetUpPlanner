@@ -92,12 +92,15 @@
                             <button class="btn btn-sm btn-outline-secondary" title="Abmelden" hidden="@(!CheckIfUserIsAlreadyRegistered(item))" @onclick="@(() => Checkout(item))">Abmelden</button>
                         }
                         <button class="btn btn-sm btn-outline-secondary" title="Kommentieren" @onclick="@(() => ShowComment(item))">Kommentieren</button>
-                        <button class="btn btn-sm btn-outline-secondary" title="Gast einladen" @onclick="@(() => Invite(item))">Gast einladen</button>
+                        @if (AppStateStore.ClientSettings.GuestsEnabled)
+                        { 
+                            <button class="btn btn-sm btn-outline-secondary" title="Gast einladen" @onclick="@(() => Invite(item))">Gast einladen</button>
+                        }
                     </div>
                 </div>
             </div>
         </div>
-    }
+                        }
 </div>
 
 <p class="alert-info">
