@@ -92,6 +92,7 @@
                             <button class="btn btn-sm btn-outline-secondary" title="Abmelden" hidden="@(!CheckIfUserIsAlreadyRegistered(item))" @onclick="@(() => Checkout(item))">Abmelden</button>
                         }
                         <button class="btn btn-sm btn-outline-secondary" title="Kommentieren" @onclick="@(() => ShowComment(item))">Kommentieren</button>
+                        <button class="btn btn-sm btn-outline-secondary" title="Gast einladen" @onclick="@(() => Invite(item))">Gast einladen</button>
                     </div>
                 </div>
             </div>
@@ -213,6 +214,10 @@
     protected void ShowComment(ExtendedCalendarItem calendarItem)
     {
         NavigationManager.NavigateTo($"/Comment/{calendarItem.Id}");
+    }
+    protected void Invite(ExtendedCalendarItem calendarItem)
+    {
+        NavigationManager.NavigateTo($"/Invite/{calendarItem.Id}");
     }
     protected void DeleteCalendarItem(ExtendedCalendarItem calendarItem)
     {

@@ -1,0 +1,47 @@
+﻿@page "/register/{ItemId}"
+@inject HttpClient Http
+@inject AppState AppStateStore
+@using MeetUpPlanner.Shared
+@inject NavigationManager NavigationManager
+
+<div class="jumbotron">
+    <h6 class="text-muted">@meetup.LevelDescription - @meetup.Tempo</h6>
+    <h4>@meetup.GetStartDateAsString() - @meetup.Title</h4>
+    @if (!String.IsNullOrEmpty(meetup.Link))
+    {
+        <h6><small><a href="@meetup.Link" target="_blank">@meetup.Link</a></small></h6>
+    }
+    <p class="lead">
+        @((MarkupString)meetup.Summary)
+    </p>
+    <p>
+        <small>@(meetup.MaxRegistrationsCount - meetup.ParticipantCounter) von @meetup.MaxRegistrationsCount Plätzen noch frei.</small>
+    </p>
+</div>
+
+
+@code {
+    [Parameter]
+    public string ItemId { get; set; }
+    ExtendedCalendarItem meetup = new ExtendedCalendarItem();
+    string logMessage;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        AppStateStore.ClientSettings = new ClientSettings();
+
+        // Get client settings from server
+        AppStateStore.ClientSettings = await Http.GetFromJsonAsync<ClientSettings>("Util/clientsettings");
+        await ReadData();
+
+        AppStateStore.NotifyStateChanged();
+    }
+    private async Task ReadData()
+    {
+        string keyword = AppStateStore.KeyWord;
+        // Get referenced calendar item
+        meetup = await Http.GetFromJsonAsync<ExtendedCalendarItem>($"Calendar/extendedcalendaritemforguest?itemId={ItemId}");
+    }
+
+}

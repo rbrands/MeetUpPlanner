@@ -21,6 +21,10 @@ namespace MeetUpPlanner.Server.Repositories
         {
             _functionsConfig = functionsConfig;
         }
+        public string InviteGuestKey
+        {
+            get { return _functionsConfig.InviteGuestKey; }
+        }
 
         public async Task<string> GetVersion()
         {
@@ -184,6 +188,7 @@ namespace MeetUpPlanner.Server.Repositories
     {
         public string FunctionAppName { get; set; }
         public string ApiKey { get; set; }
+        public string InviteGuestKey { get; set; }
     }
 
 }

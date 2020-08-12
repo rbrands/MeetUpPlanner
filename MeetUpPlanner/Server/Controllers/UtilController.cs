@@ -85,7 +85,7 @@ namespace MeetUpPlanner.Server.Controllers
         }
         [HttpGet("qrcode")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<String> GetQrCode([FromQuery] string link)
+        public String GetQrCode([FromQuery] string link)
         {
             string imageUrl = "";
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
