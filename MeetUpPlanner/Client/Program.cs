@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using BlazorDownloadFile;
 using Blazored.LocalStorage;
+using CurrieTechnologies.Razor.Clipboard;
 using MeetUpPlanner.Shared;
 
 namespace MeetUpPlanner.Client
@@ -25,6 +26,7 @@ namespace MeetUpPlanner.Client
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddTransient<BlazorTimer>();
             builder.Services.AddBlazorDownloadFile();
+            builder.Services.AddClipboard();
             await builder.Build().RunAsync();
         }
     }

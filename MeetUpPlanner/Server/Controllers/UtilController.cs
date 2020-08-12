@@ -5,6 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Drawing;
+using System.IO;
+using QRCoder;
+
 using MeetUpPlanner.Server.Repositories;
 using MeetUpPlanner.Shared;
 
@@ -78,6 +82,26 @@ namespace MeetUpPlanner.Server.Controllers
         {
             await _meetUpFunctions.WriteClientSettings(adminKeyword, clientSettings);
             return Ok();
+        }
+        [HttpGet("qrcode")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<String> GetQrCode([FromQuery] string link)
+        {
+            string imageUrl = "";
+            QRCodeGenerator qrGenerator = new QRCodeGenerator();
+            QRCodeData qrCodeData = qrGenerator.CreateQrCode(link, QRCodeGenerator.ECCLevel.Q);
+            QRCode qrCode = new QRCode(qrCodeData);
+
+            using (Bitmap bitMap = qrCode.GetGraphic(20))
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    bitMap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                    byte[] byteImage = ms.ToArray();
+                    imageUrl = "data:image/png;base64," + Convert.ToBase64String(byteImage);
+                }
+            }
+            return imageUrl;
         }
     }
 }

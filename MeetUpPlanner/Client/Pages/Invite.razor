@@ -1,0 +1,26 @@
+﻿@page "/invite"
+@inject HttpClient Http
+@using CurrieTechnologies.Razor.Clipboard
+@inject ClipboardService clipboard
+
+<div class="form-row">
+    <div class="col">
+        <input type="text" class="form-control" readonly @bind-value="@_checkinUrl" />
+    </div>
+    <div class="col">
+        <button class="btn btn-outline-secondary" @onclick="(async e => await clipboard.WriteTextAsync(_checkinUrl))" title="In die Zwischenablage kopieren"><span class="oi oi-clipboard"></span></button>
+    </div>
+</div>
+<img class="img-fluid" src="@_imageUrl" title="QRCode - Link" alt="QRCode-Link" />
+
+@code {
+    string _imageUrl;
+    string _checkinUrl = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        _checkinUrl = Http.BaseAddress + "register/4711";
+        _imageUrl = await Http.GetStringAsync($"Util/qrcode?link={_checkinUrl}");
+    }
+
+}
