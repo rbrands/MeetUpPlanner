@@ -123,6 +123,11 @@
         string keyword = AppStateStore.KeyWord;
         // Get referenced calendar item
         meetup = await Http.GetFromJsonAsync<ExtendedCalendarItem>($"Calendar/extendedcalendaritemforguest?itemId={ItemId}");
+        if (meetup.StartDate.CompareTo(DateTime.Now.AddHours(-8)) < 0)
+        {
+            // MeetUp too old ==> navigate to start page
+            NavigationManager.NavigateTo("/");
+        }
         if (!String.IsNullOrEmpty(_guest.ParticipantLastName))
         {
             _buttonTitle = (null != meetup.FindParticipant(_guest.ParticipantFirstName, _guest.ParticipantLastName)) ? "Abmelden" : "Anmelden";
