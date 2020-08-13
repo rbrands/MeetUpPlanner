@@ -30,7 +30,7 @@
     <a class="btn btn-primary" href="/newmeetup">Neue Ausfahrt erstellen</a>
 </p>
 <div class="row">
-    <div class="col-md-4">
+    <div class="col">
         <div class="form-group">
             <input type="text" class="form-control" aria-describedby="checkinCommentHelp" id="checkinComment" @bind="checkinComment.Comment" title="Kommentar zur Anmeldung" placeholder="Kommentar zur Anmeldung z.B. 'Ab Therme'" />
             <small id="checkinCommentHelp" class="form-text text-muted">
@@ -43,7 +43,7 @@
 <div class="row">
     @foreach (ExtendedCalendarItem item in calendarItems)
     {
-        <div class="col-md-4 mt-2">
+        <div class="col mt-2">
             <div class="card">
                 <div class="card-header">
                     <em>@item.GetStartDateAsString() - @item.Place</em>
@@ -83,15 +83,15 @@
                     <div class="btn-group">
                         @if (CheckIfUserIsHost(item) || KeywordCheck.IsAdmin)
                         {
-                            <button class="btn btn-sm btn-outline-secondary" title="Ändern" @onclick="@(() => EditCalendarItem(item.Id))">Ändern</button>
-                            <button class="btn btn-sm btn-outline-secondary" title="Ändern" @onclick="@(() => DeleteCalendarItem(item))">Löschen</button>
+                            <button class="btn btn-sm btn-outline-secondary" title="Ändern" @onclick="@(() => EditCalendarItem(item.Id))"><span class="oi oi-pencil"></span></button>
+                            <button class="btn btn-sm btn-outline-secondary" title="Ändern" @onclick="@(() => DeleteCalendarItem(item))"><span class="oi oi-trash"></span></button>
                         }
+                        <button class="btn btn-sm btn-outline-secondary" title="Kommentieren" @onclick="@(() => ShowComment(item))"><span class="oi oi-comment-square"></span></button>
                         @if (!CheckIfUserIsHost(item))
                         {
                             <button class="btn btn-sm btn-outline-secondary" title="Anmelden" hidden="@CheckIfUserIsAlreadyRegistered(item)" @onclick="@(() => Checkin(item.Id))">Anmelden</button>
                             <button class="btn btn-sm btn-outline-secondary" title="Abmelden" hidden="@(!CheckIfUserIsAlreadyRegistered(item))" @onclick="@(() => Checkout(item))">Abmelden</button>
                         }
-                        <button class="btn btn-sm btn-outline-secondary" title="Kommentieren" @onclick="@(() => ShowComment(item))">Kommentieren</button>
                         @if (AppStateStore.ClientSettings.GuestsEnabled)
                         { 
                             <button class="btn btn-sm btn-outline-secondary" title="Gast einladen" @onclick="@(() => Invite(item))">Gast einladen</button>
