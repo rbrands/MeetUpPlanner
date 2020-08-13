@@ -27,16 +27,14 @@
     </p>
 </div>
 
-<div class="form-row">
+<div class="row">
     <div class="col">
-        <input type="text" class="form-control" readonly @bind-value="@_checkinUrl" />
-    </div>
-    <div class="col">
-        <button class="btn btn-outline-secondary" @onclick="(async e => await clipboard.WriteTextAsync(_checkinUrl))" title="In die Zwischenablage kopieren"><span class="oi oi-clipboard"></span></button>
+        <a href="@_checkinUrl" title="Einladungs-Link" target="_blank">@_checkinUrl</a>
+        <button class="btn btn-sm btn-outline-secondary" @onclick="(async e => await clipboard.WriteTextAsync(_checkinUrl))" title="In die Zwischenablage kopieren"><span class="oi oi-clipboard"></span></button>
     </div>
 </div>
 <div class="row">
-    <div class="col-4">
+    <div class="col">
         <img class="img-fluid" src="@_imageUrl" title="QRCode - Link" alt="QRCode-Link" />
     </div>
 </div>
