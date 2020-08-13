@@ -63,8 +63,7 @@
         <div class="form-check">
             <InputCheckbox id="accept" class="form-check-input" @bind-Value="@UsageRightsAccepted" />
             <label for="accept" class="form-checklabel">
-                Hiermit bestätige ich, dass ich damit einverstanden bin, dass die Teilnehmerlisten zu den Ausfahrten mit den Kontaktdaten,
-                die ich hier angebe, bis zu 4 Wochen für die Nachverfolgbarkeit gespeichert werden. 
+                @((MarkupString)AppStateStore.ClientSettings.GuestDisclaimer)
             </label>
         </div>
     </div>

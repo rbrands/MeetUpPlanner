@@ -41,5 +41,9 @@ namespace MeetUpPlanner.Shared
         public string SaturdayBadge { get; set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore), MaxLength(30, ErrorMessage = "Wochenkennzeichnung bitte kürzer als 30 Zeichen.")]
         public string SundayBadge { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public string Disclaimer { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public string GuestDisclaimer { get; set; }
     }
 }

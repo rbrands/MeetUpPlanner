@@ -55,7 +55,6 @@
                     <button class="ql-bold"></button>
                     <button class="ql-italic"></button>
                     <button class="ql-underline"></button>
-                    <button class="ql-strike"></button>
                 </span>
                 <span class="ql-formats">
                     <select class="ql-color"></select>
@@ -126,7 +125,52 @@
                     <button class="ql-bold"></button>
                     <button class="ql-italic"></button>
                     <button class="ql-underline"></button>
-                    <button class="ql-strike"></button>
+                </span>
+                <span class="ql-formats">
+                    <select class="ql-color"></select>
+                    <select class="ql-background"></select>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-list" value="ordered"></button>
+                    <button class="ql-list" value="bullet"></button>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-link"></button>
+                </span>
+            </ToolbarContent>
+        </BlazoredTextEditor>
+    </div>
+    <div class="form-group">
+        <label for="disclaimerMessage">Disclaimer für Teilnehmer</label>
+        <BlazoredTextEditor @ref="@htmlDisclaimer" Placeholder="Disclaimer">
+            <ToolbarContent>
+                <span class="ql-formats">
+                    <button class="ql-bold"></button>
+                    <button class="ql-italic"></button>
+                    <button class="ql-underline"></button>
+                </span>
+                <span class="ql-formats">
+                    <select class="ql-color"></select>
+                    <select class="ql-background"></select>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-list" value="ordered"></button>
+                    <button class="ql-list" value="bullet"></button>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-link"></button>
+                </span>
+            </ToolbarContent>
+        </BlazoredTextEditor>
+    </div>
+    <div class="form-group">
+        <label for="guestDisclaimerMessage">Disclaimer für Gast-Teilnehmer</label>
+        <BlazoredTextEditor @ref="@htmlGuestDisclaimer" Placeholder="Disclaimer für Gäste">
+            <ToolbarContent>
+                <span class="ql-formats">
+                    <button class="ql-bold"></button>
+                    <button class="ql-italic"></button>
+                    <button class="ql-underline"></button>
                 </span>
                 <span class="ql-formats">
                     <select class="ql-color"></select>
@@ -248,6 +292,8 @@
     BlazoredTextEditor htmlWelcomeMessage;
     BlazoredTextEditor htmlWhiteboardMessage;
     BlazoredTextEditor htmlNewMeetupMessage;
+    BlazoredTextEditor htmlDisclaimer;
+    BlazoredTextEditor htmlGuestDisclaimer;
 
 
     protected override async Task OnInitializedAsync()
@@ -260,6 +306,8 @@
             await htmlWelcomeMessage.LoadHTMLContent(AppStateStore.ClientSettings.WelcomeMessage);
             await htmlWhiteboardMessage.LoadHTMLContent(AppStateStore.ClientSettings.WhiteboardMessage);
             await htmlNewMeetupMessage.LoadHTMLContent(AppStateStore.ClientSettings.NewMeetupMessage);
+            await htmlDisclaimer.LoadHTMLContent(AppStateStore.ClientSettings.Disclaimer);
+            await htmlGuestDisclaimer.LoadHTMLContent(AppStateStore.ClientSettings.GuestDisclaimer);
         }
         else
         {
@@ -273,6 +321,9 @@
         AppStateStore.ClientSettings.WelcomeMessage = StripEmptyHtml(await htmlWelcomeMessage.GetHTML());
         AppStateStore.ClientSettings.WhiteboardMessage = StripEmptyHtml(await htmlWhiteboardMessage.GetHTML());
         AppStateStore.ClientSettings.NewMeetupMessage = StripEmptyHtml(await htmlNewMeetupMessage.GetHTML());
+        AppStateStore.ClientSettings.Disclaimer = StripEmptyHtml(await htmlDisclaimer.GetHTML());
+        AppStateStore.ClientSettings.GuestDisclaimer = StripEmptyHtml(await htmlGuestDisclaimer.GetHTML());
+
         // Write client settings to server
         await Http.PostAsJsonAsync<ClientSettings>($"Util/writesettings?adminKeyword={keyword}", AppStateStore.ClientSettings);
         AppStateStore.NotifyStateChanged();
