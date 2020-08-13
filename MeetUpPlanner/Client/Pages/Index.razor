@@ -162,6 +162,9 @@
         {
             logMessage = "Das eingegebene Schlüsselwort ist leider falsch...";
         }
+        AppStateStore.FirstName = AppStateStore.FirstName.Trim();
+        AppStateStore.LastName = AppStateStore.LastName.Trim();
+        AppStateStore.PhoneMail = AppStateStore.PhoneMail.Trim();
         if (AppStateStore.SaveSettings)
         {
             // Copy from app state to permanent storage

@@ -134,6 +134,9 @@
     }
     private async Task RegisterGuest()
     {
+        _guest.ParticipantFirstName = _guest.ParticipantFirstName.Trim();
+        _guest.ParticipantLastName = _guest.ParticipantLastName.Trim();
+        _guest.ParticipantAdressInfo = _guest.ParticipantAdressInfo.Trim();
         if (AppStateStore.SaveSettings)
         {
             // Copy from app state to permanent storage
