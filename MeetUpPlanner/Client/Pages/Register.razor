@@ -4,6 +4,7 @@
 @using MeetUpPlanner.Shared
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@using Newtonsoft.Json 
 
 
 <div class="jumbotron">
@@ -63,12 +64,11 @@
             <InputCheckbox id="accept" class="form-check-input" @bind-Value="@UsageRightsAccepted" />
             <label for="accept" class="form-checklabel">
                 Hiermit bestätige ich, dass ich damit einverstanden bin, dass die Teilnehmerlisten zu den Ausfahrten mit den Kontaktdaten,
-                die ich hier angebe, bis zu 4 Wochen für die Nachverfolgbarkeit gespeichert werden. Ich bin auch damit einverstanden,
-                dass in der Liste der Ausfahrten die Teilnehmer mit Vornamen und abgekürztem Nachnamen (erste Buchstabe) angezeigt werden.
+                die ich hier angebe, bis zu 4 Wochen für die Nachverfolgbarkeit gespeichert werden. 
             </label>
         </div>
     </div>
-    <button type="submit" id="BtnSaveKeyword" class="btn btn-primary" disabled="@(!UsageRightsAccepted)">An/Abmelden</button>
+    <button type="submit" id="BtnSaveKeyword" class="btn btn-primary" title="An/Abmelden" disabled="@(!UsageRightsAccepted)">@_buttonTitle</button>
 </EditForm>
 <br />
 <p class="alert-info">
@@ -84,6 +84,7 @@
     Boolean _usageRightsAccepted = false;
     Participant _guest = new Participant();
     const string PERM_STORAGE = "permGuestState";
+    string _buttonTitle = "An/Abmelden";
 
     Boolean UsageRightsAccepted
     {
@@ -122,6 +123,10 @@
         string keyword = AppStateStore.KeyWord;
         // Get referenced calendar item
         meetup = await Http.GetFromJsonAsync<ExtendedCalendarItem>($"Calendar/extendedcalendaritemforguest?itemId={ItemId}");
+        if (!String.IsNullOrEmpty(_guest.ParticipantLastName))
+        {
+            _buttonTitle = (null != meetup.FindParticipant(_guest.ParticipantFirstName, _guest.ParticipantLastName)) ? "Abmelden" : "Anmelden";
+        }
     }
     private async Task RegisterGuest()
     {
@@ -137,6 +142,40 @@
         else
         {
             await LocalStorage.RemoveItemAsync(PERM_STORAGE);
+        }
+        _guest.IsGuest = true;
+        _guest.CalendarItemId = ItemId;
+        BackendResult result;
+        Participant participant = meetup.FindParticipant(_guest.ParticipantFirstName, _guest.ParticipantLastName);
+        if (null == participant)
+        {
+            HttpResponseMessage response = await Http.PostAsJsonAsync<Participant>($"Calendar/addguest", _guest);
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
+            if (result.Success)
+            {
+                logMessage = "Du bist jetzt angemeldet. Über diese Seite und den Button oben kannst du dich auch wieder abmelden.";
+            }
+        }
+        else
+        {
+            HttpResponseMessage response = await Http.PostAsJsonAsync<Participant>($"Calendar/removeguest?", participant);
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
+            if (result.Success)
+            {
+                logMessage = "Du bist wieder abgemeldet von der Ausfahrt.";
+            }
+        }
+        if (result.Success)
+        {
+            await ReadData();
+        }
+        else
+        {
+            logMessage = result.Message;
         }
 
     }
