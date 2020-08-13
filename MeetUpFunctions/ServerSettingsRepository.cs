@@ -11,9 +11,16 @@ namespace MeetUpPlanner.Functions
 {
     public class ServerSettingsRepository : CosmosDBRepository<ServerSettings>
     {
+        private string _inviteGuestKey;
         public ServerSettingsRepository(IConfiguration config, CosmosClient cosmosClient) : base(config, cosmosClient)
         {
+            _inviteGuestKey = config[Constants.INVITE_GUEST_KEY_CONFIG];
+        }
+        public string InviteGuestKey { get;  }
 
+        public bool IsInvitedGuest(string keyword)
+        {
+            return _inviteGuestKey.Equals(keyword);
         }
         public async Task<ServerSettings> GetServerSettings()
         {

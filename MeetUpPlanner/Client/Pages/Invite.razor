@@ -1,0 +1,71 @@
+﻿@page "/invite/{ItemId}"
+@inject HttpClient Http
+@inject AppState AppStateStore
+@using CurrieTechnologies.Razor.Clipboard
+@using MeetUpPlanner.Shared
+@inject ClipboardService clipboard
+@inject NavigationManager NavigationManager
+
+
+<div class="jumbotron">
+    <h6 class="text-muted">@meetup.LevelDescription - @meetup.Tempo</h6>
+    <h4>@meetup.GetStartDateAsString() - @meetup.Title</h4>
+    @if (!String.IsNullOrEmpty(meetup.Link))
+    {
+        <h6><small><a href="@meetup.Link" target="_blank">@meetup.Link</a></small></h6>
+    }
+    <p class="lead">
+        @((MarkupString)meetup.Summary)
+    </p>
+    <p>
+        <small>@(meetup.MaxRegistrationsCount - meetup.ParticipantCounter) von @meetup.MaxRegistrationsCount Plätzen noch frei.</small>
+    </p>
+    <p>
+        Über den unten angezeigten Link kann ein Gast eingeladen werden. Dazu den Link kopieren (über den kleinen Button rechts neben dem Link) und 
+        per Mail, Messenger oder wie auch immer verschicken.
+        Oder einfach den QR-Code zeigen.
+    </p>
+</div>
+
+<div class="form-row">
+    <div class="col">
+        <input type="text" class="form-control" readonly @bind-value="@_checkinUrl" />
+    </div>
+    <div class="col">
+        <button class="btn btn-outline-secondary" @onclick="(async e => await clipboard.WriteTextAsync(_checkinUrl))" title="In die Zwischenablage kopieren"><span class="oi oi-clipboard"></span></button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-4">
+        <img class="img-fluid" src="@_imageUrl" title="QRCode - Link" alt="QRCode-Link" />
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string ItemId { get; set; }
+    ExtendedCalendarItem meetup = new ExtendedCalendarItem();
+    string _imageUrl;
+    string _checkinUrl = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        _checkinUrl = $"{Http.BaseAddress}register/{ItemId}";
+        _imageUrl = $"Util/qrcodeimage?link={_checkinUrl}";
+        if (!String.IsNullOrEmpty(AppStateStore?.KeyWord))
+        {
+            await ReadData();
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+    private async Task ReadData()
+    {
+        string keyword = AppStateStore.KeyWord;
+        // Get referenced calendar item
+        meetup = await Http.GetFromJsonAsync<ExtendedCalendarItem>($"Calendar/extendedcalendaritem?keyword={keyword}&itemId={ItemId}");
+    }
+
+}

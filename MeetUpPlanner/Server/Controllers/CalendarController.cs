@@ -58,6 +58,13 @@ namespace MeetUpPlanner.Server.Controllers
             ExtendedCalendarItem calendarItem = await _meetUpFunctions.GetExtendedCalendarItem(keyword, itemId);
             return Ok(calendarItem);
         }
+        [HttpGet("extendedcalendaritemforguest")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetExtendedCalendarItemForGuest([FromQuery] string itemId)
+        {
+            ExtendedCalendarItem calendarItem = await _meetUpFunctions.GetExtendedCalendarItem(_meetUpFunctions.InviteGuestKey, itemId);
+            return Ok(calendarItem);
+        }
         [HttpPost("addparticipant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> AddParticipant([FromQuery] string keyword, [FromBody] Participant participant)
@@ -65,11 +72,25 @@ namespace MeetUpPlanner.Server.Controllers
             BackendResult result = await _meetUpFunctions.AddParticipantToCalendarItem(keyword, participant);
             return Ok(result);
         }
+        [HttpPost("addguest")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> AddGuest([FromBody] Participant participant)
+        {
+            BackendResult result = await _meetUpFunctions.AddParticipantToCalendarItem(_meetUpFunctions.InviteGuestKey, participant);
+            return Ok(result);
+        }
         [HttpPost("removeparticipant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> RemoveParticipant([FromQuery] string keyword, [FromBody] Participant participant)
         {
             BackendResult result = await _meetUpFunctions.RemoveParticipantFromCalendarItem(keyword, participant);
+            return Ok(result);
+        }
+        [HttpPost("removeguest")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> RemoveGuest([FromBody] Participant participant)
+        {
+            BackendResult result = await _meetUpFunctions.RemoveParticipantFromCalendarItem(_meetUpFunctions.InviteGuestKey, participant);
             return Ok(result);
         }
         [HttpPost("addcomment")]

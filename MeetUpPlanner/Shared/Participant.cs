@@ -22,12 +22,14 @@ namespace MeetUpPlanner.Shared
         public string ParticipantAdressInfo { get; set; }
         [JsonProperty(PropertyName = "checkInDate")]
         public DateTime CheckInDate { get; set; }
+        [JsonProperty(PropertyName = "isGuest")]
+        public Boolean IsGuest { get; set; } = false;
         [JsonIgnore]
         public string ParticipantDisplayName
         {
             get
             {
-                return ParticipantFirstName + " " + ParticipantLastName[0] + ".";
+                return (IsGuest ? "Gast" : ParticipantFirstName + " " + ParticipantLastName[0] + ".");
             }
         }
 

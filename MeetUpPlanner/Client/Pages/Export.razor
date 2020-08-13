@@ -126,8 +126,7 @@
             }
             csvData.WriteLine();
         }
-
-        await BlazorDownloadFileService.DownloadFileFromText(fileName, csvData.ToString(), "text/csv");
+        await BlazorDownloadFileService.DownloadFile(fileName, new System.Text.UTF32Encoding().GetBytes(csvData.ToString()), "text/csv");
         await ReadData();
     }
 

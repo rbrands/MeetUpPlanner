@@ -69,6 +69,13 @@
         </div>
     </div>
     <div class="form-group">
+        <div class="form-check">
+            <InputCheckbox id="addressNotNeeded" @oninput="@(e => { AppStateStore.PhoneMail = ((bool)e.Value ? "Vereinsmitglied" : String.Empty); })" aria-describedby="addressNotNeededHelp" class="form-check-input" @bind-Value="AppStateStore.NoAddressNeeded"></InputCheckbox>
+            <label for="addressNotNeeded" class="form-check-label">Vereinsmitglied?</label>
+        </div>
+        <small id="addressNotNeededHelp">Als Vereinsmitglied werden keine weiteren Adressinfos benötgt, Vor- und Nachname reichen dann.</small>
+    </div>
+    <div class="form-group" hidden="@AppStateStore.NoAddressNeeded">
         <label for="Phone">Telefon/Mail</label>
         <InputText id="Phone" aria-describedby="phoneHelp" class="form-control" @bind-Value="AppStateStore.PhoneMail" autocomplete="on" placeholder="Telefon-Nr. oder Mail-Adresse" title="Bitte Telefonnummer oder Mailadresse angeben." />
         <small id="phoneHelp" class="form-text text-muted">
@@ -84,11 +91,9 @@
     </div>
     <div class="form-group">
         <div class="form-check">
-            <InputCheckbox class="form-check-input" @bind-Value="@UsageRightsAccepted" onclic />
-            <label for="form-check-input" class="form-checklabel">
-                Hiermit bestätige ich, dass ich damit einverstanden bin, dass die Teilnehmerlisten zu den Ausfahrten mit den Kontaktdaten,
-                die ich hier angebe, bis zu 4 Wochen für die Nachverfolgbarkeit gespeichert werden. Ich bin auch damit einverstanden,
-                dass in der Liste der Ausfahrten die Teilnehmer mit Vornamen und abgekürztem Nachnamen (erste Buchstabe) angezeigt werden.
+            <InputCheckbox id="accept" class="form-check-input" @bind-Value="@UsageRightsAccepted" />
+            <label for="accept" class="form-checklabel">
+                @((MarkupString)AppStateStore.ClientSettings.Disclaimer)
             </label>
         </div>
     </div>
@@ -132,6 +137,7 @@
             AppStateStore.PrivateKeyWord1 = permAppState.PrivateKeyWord1;
             AppStateStore.PrivateKeyWord2 = permAppState.PrivateKeyWord2;
             AppStateStore.PrivateKeyWord2 = permAppState.PrivateKeyWord2;
+            AppStateStore.NoAddressNeeded = permAppState.NoAddressNeeded;
         }
 
         // Get client settings from server
@@ -167,6 +173,7 @@
             permAppState.PrivateKeyWord1 = AppStateStore.PrivateKeyWord1;
             permAppState.PrivateKeyWord2 = AppStateStore.PrivateKeyWord2;
             permAppState.PrivateKeyWord2 = AppStateStore.PrivateKeyWord2;
+            permAppState.NoAddressNeeded = AppStateStore.NoAddressNeeded;
             await localStorage.SetItemAsync<PermAppState>("permAppState", permAppState);
         }
         else

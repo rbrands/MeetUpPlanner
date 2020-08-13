@@ -55,7 +55,6 @@
                     <button class="ql-bold"></button>
                     <button class="ql-italic"></button>
                     <button class="ql-underline"></button>
-                    <button class="ql-strike"></button>
                 </span>
                 <span class="ql-formats">
                     <select class="ql-color"></select>
@@ -126,7 +125,6 @@
                     <button class="ql-bold"></button>
                     <button class="ql-italic"></button>
                     <button class="ql-underline"></button>
-                    <button class="ql-strike"></button>
                 </span>
                 <span class="ql-formats">
                     <select class="ql-color"></select>
@@ -141,6 +139,99 @@
                 </span>
             </ToolbarContent>
         </BlazoredTextEditor>
+    </div>
+    <div class="form-group">
+        <label for="disclaimerMessage">Disclaimer für Teilnehmer</label>
+        <BlazoredTextEditor @ref="@htmlDisclaimer" Placeholder="Disclaimer">
+            <ToolbarContent>
+                <span class="ql-formats">
+                    <button class="ql-bold"></button>
+                    <button class="ql-italic"></button>
+                    <button class="ql-underline"></button>
+                </span>
+                <span class="ql-formats">
+                    <select class="ql-color"></select>
+                    <select class="ql-background"></select>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-list" value="ordered"></button>
+                    <button class="ql-list" value="bullet"></button>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-link"></button>
+                </span>
+            </ToolbarContent>
+        </BlazoredTextEditor>
+    </div>
+    <div class="form-group">
+        <label for="guestDisclaimerMessage">Disclaimer für Gast-Teilnehmer</label>
+        <BlazoredTextEditor @ref="@htmlGuestDisclaimer" Placeholder="Disclaimer für Gäste">
+            <ToolbarContent>
+                <span class="ql-formats">
+                    <button class="ql-bold"></button>
+                    <button class="ql-italic"></button>
+                    <button class="ql-underline"></button>
+                </span>
+                <span class="ql-formats">
+                    <select class="ql-color"></select>
+                    <select class="ql-background"></select>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-list" value="ordered"></button>
+                    <button class="ql-list" value="bullet"></button>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-link"></button>
+                </span>
+            </ToolbarContent>
+        </BlazoredTextEditor>
+    </div>
+
+    <div class="form-group">
+        <div class="form-check">
+            <InputCheckbox id="guestsEnabled" class="form-check-input" @bind-Value="@AppStateStore.ClientSettings.GuestsEnabled" />
+            <label for="guestsEnabled" class="form-checklabel">
+                Einladen von Gästen möglich?
+            </label>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="form-check">
+            <InputCheckbox id="onlyScoped" class="form-check-input" @bind-Value="@AppStateStore.ClientSettings.OnlyScopedMeetUpsAllowed" />
+            <label for="onlyScoped" class="form-checklabel">
+                Nur MeetUps an den Tagen zulassen, die mit den "Badges" unten gekennzeichnet sind?
+            </label>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-12">
+            <label for="mondayBadge">Die Wochentage können mit "Badges" gekennzeichnet werden.</label>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col">
+            <InputText id="mondayBadge" placeholder="Montag" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.MondayBadge" title="Badge für Montag" />
+        </div>
+        <div class="form-group col">
+            <InputText id="tuesdayBadge" placeholder="Dienstag" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.TuesdayBadge" title="Badge für Dienstag" />
+        </div>
+        <div class="form-group col">
+            <InputText id="wednsesdayBadge" placeholder="Mittwoch" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.WednesdayBadge" title="Badge für Mittwoch" />
+        </div>
+        <div class="form-group col">
+            <InputText id="thursdayBadge" placeholder="Donnerstag" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.ThursdayBadge" title="Badge für Donnerstag" />
+        </div>
+        <div class="form-group col">
+            <InputText id="fridayBadge" placeholder="Freitag" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.FridayBadge" title="Badge für Freitag" />
+        </div>
+        <div class="form-group col">
+            <InputText id="saturdayBadge" placeholder="Samstag" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.SaturdayBadge" title="Badge für Samstag" />
+        </div>
+        <div class="form-group col">
+            <InputText id="sundayBadge" placeholder="Sonntag" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.SundayBadge" title="Badge für Sonntag" />
+        </div>
     </div>
 
     <button type="submit" id="BtnSaveSettings" class="btn btn-primary">Einstellungen speichern ...</button>
@@ -201,6 +292,8 @@
     BlazoredTextEditor htmlWelcomeMessage;
     BlazoredTextEditor htmlWhiteboardMessage;
     BlazoredTextEditor htmlNewMeetupMessage;
+    BlazoredTextEditor htmlDisclaimer;
+    BlazoredTextEditor htmlGuestDisclaimer;
 
 
     protected override async Task OnInitializedAsync()
@@ -213,6 +306,8 @@
             await htmlWelcomeMessage.LoadHTMLContent(AppStateStore.ClientSettings.WelcomeMessage);
             await htmlWhiteboardMessage.LoadHTMLContent(AppStateStore.ClientSettings.WhiteboardMessage);
             await htmlNewMeetupMessage.LoadHTMLContent(AppStateStore.ClientSettings.NewMeetupMessage);
+            await htmlDisclaimer.LoadHTMLContent(AppStateStore.ClientSettings.Disclaimer);
+            await htmlGuestDisclaimer.LoadHTMLContent(AppStateStore.ClientSettings.GuestDisclaimer);
         }
         else
         {
@@ -226,6 +321,9 @@
         AppStateStore.ClientSettings.WelcomeMessage = StripEmptyHtml(await htmlWelcomeMessage.GetHTML());
         AppStateStore.ClientSettings.WhiteboardMessage = StripEmptyHtml(await htmlWhiteboardMessage.GetHTML());
         AppStateStore.ClientSettings.NewMeetupMessage = StripEmptyHtml(await htmlNewMeetupMessage.GetHTML());
+        AppStateStore.ClientSettings.Disclaimer = StripEmptyHtml(await htmlDisclaimer.GetHTML());
+        AppStateStore.ClientSettings.GuestDisclaimer = StripEmptyHtml(await htmlGuestDisclaimer.GetHTML());
+
         // Write client settings to server
         await Http.PostAsJsonAsync<ClientSettings>($"Util/writesettings?adminKeyword={keyword}", AppStateStore.ClientSettings);
         AppStateStore.NotifyStateChanged();

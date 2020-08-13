@@ -28,7 +28,7 @@ namespace MeetUpPlanner.Shared
         public int MaxRegistrationsCount { get; set; } = 10;
         [JsonProperty(PropertyName = "privateKeyword", NullValueHandling = NullValueHandling.Ignore), MaxLength(50, ErrorMessage = "Privates Schlüsselwort zu lang.")]
         public string PrivateKeyword { get; set; }
-        [JsonProperty(PropertyName = "levelDescription")]
+        [JsonProperty(PropertyName = "levelDescription"), Required(ErrorMessage = "Bitte Angaben zur Länge/Dauer machen."), MaxLength(60, ErrorMessage = "Längenangabe zu lang.")]
         public string LevelDescription { get; set; }
         [JsonProperty(PropertyName = "tempo"), Required(ErrorMessage = "Bitte geplante Geschwindigkeit angeben."), MaxLength(40, ErrorMessage = "Tempo-Angabe zu lang.")]
         public string Tempo { get; set; }

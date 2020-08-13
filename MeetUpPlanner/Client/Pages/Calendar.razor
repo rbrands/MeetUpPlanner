@@ -43,13 +43,20 @@
 <div class="row">
     @foreach (ExtendedCalendarItem item in calendarItems)
     {
-        <div class="col-md-4">
+        <div class="col-md-4 mt-2">
             <div class="card">
                 <div class="card-header">
                     <em>@item.GetStartDateAsString() - @item.Place</em>
                     @if (!String.IsNullOrEmpty(item.PrivateKeyword))
                     {
-                        <div class="text-right"><small class="text-muted"><span class="oi oi-key" title="Private Ausfahrt"></span> @item.PrivateKeyword</small></div>
+                        <span class="badge badge-danger"><span class="oi oi-key" title="Private Ausfahrt"></span> @item.PrivateKeyword</span>
+                    }
+                    @{
+                        string badge = GetCalendarBadge(item);
+                        if (!String.IsNullOrEmpty(badge))
+                        {
+                            <span class="badge badge-info">@badge</span>
+                        }
                     }
                 </div>
                 <div class="card-body">
@@ -85,11 +92,15 @@
                             <button class="btn btn-sm btn-outline-secondary" title="Abmelden" hidden="@(!CheckIfUserIsAlreadyRegistered(item))" @onclick="@(() => Checkout(item))">Abmelden</button>
                         }
                         <button class="btn btn-sm btn-outline-secondary" title="Kommentieren" @onclick="@(() => ShowComment(item))">Kommentieren</button>
+                        @if (AppStateStore.ClientSettings.GuestsEnabled)
+                        { 
+                            <button class="btn btn-sm btn-outline-secondary" title="Gast einladen" @onclick="@(() => Invite(item))">Gast einladen</button>
+                        }
                     </div>
                 </div>
             </div>
         </div>
-    }
+                        }
 </div>
 
 <p class="alert-info">
@@ -207,6 +218,10 @@
     {
         NavigationManager.NavigateTo($"/Comment/{calendarItem.Id}");
     }
+    protected void Invite(ExtendedCalendarItem calendarItem)
+    {
+        NavigationManager.NavigateTo($"/Invite/{calendarItem.Id}");
+    }
     protected void DeleteCalendarItem(ExtendedCalendarItem calendarItem)
     {
         NavigationManager.NavigateTo($"/ConfirmDelete/{calendarItem.Id}");
@@ -215,6 +230,39 @@
     {
         Timer.DisableTimer();
         Timer2.DisableTimer();
+    }
+
+    private string GetCalendarBadge(ExtendedCalendarItem calendarItem)
+    {
+        string badge = null;
+        DayOfWeek weekday = calendarItem.StartDate.DayOfWeek;
+        switch (weekday)
+        {
+            case DayOfWeek.Monday :
+                badge = AppStateStore.ClientSettings.MondayBadge;
+                break;
+            case DayOfWeek.Tuesday:
+                badge = AppStateStore.ClientSettings.TuesdayBadge;
+                break;
+            case DayOfWeek.Wednesday:
+                badge = AppStateStore.ClientSettings.WednesdayBadge;
+                break;
+            case DayOfWeek.Thursday:
+                badge = AppStateStore.ClientSettings.ThursdayBadge;
+                break;
+            case DayOfWeek.Friday:
+                badge = AppStateStore.ClientSettings.FridayBadge;
+                break;
+            case DayOfWeek.Saturday:
+                badge = AppStateStore.ClientSettings.SaturdayBadge;
+                break;
+            case DayOfWeek.Sunday:
+                badge = AppStateStore.ClientSettings.SundayBadge;
+                break;
+        }
+
+
+        return badge;
     }
 
 }
