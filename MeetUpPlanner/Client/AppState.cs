@@ -42,6 +42,7 @@ namespace MeetUpPlanner.Client
         [MaxLength(120, ErrorMessage = "Die Tel-Nr/Mail-Adresse ist zu lang"), MinLength(8, ErrorMessage = "Die Tel-Nr/Mail-Adresse ist zu kurz.")]
         [Required(ErrorMessage = "Tel-Nr/Mail-Adresse fehlen.")]
         public string PhoneMail { get; set; }
+        public Boolean NoAddressNeeded { get; set; } = false;
         public bool SaveSettings { get; set; } = true;
 
         public void NotifyStateChanged() => OnChange?.Invoke();
