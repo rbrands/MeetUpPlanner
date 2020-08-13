@@ -22,5 +22,7 @@ namespace MeetUpPlanner.Functions
         public const int ADMINOVERBOOKFACTOR = 2;
 
         public const int LOG_TTL = 30 * 24 * 3600; // 30 days TTL for Log items
+
+        public const string INVITE_GUEST_KEY_CONFIG = "InviteGuestKey";
     }
 }

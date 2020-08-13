@@ -3,6 +3,8 @@
 @inject AppState AppStateStore
 @using MeetUpPlanner.Shared
 @inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
 
 <div class="jumbotron">
     <h6 class="text-muted">@meetup.LevelDescription - @meetup.Tempo</h6>
@@ -17,7 +19,61 @@
     <p>
         <small>@(meetup.MaxRegistrationsCount - meetup.ParticipantCounter) von @meetup.MaxRegistrationsCount Plätzen noch frei.</small>
     </p>
+    <p>
+        Für die Teilnahme an der Ausfahrt bitte die Kontaktdaten unten eingeben, um damit die Nachverfolgbarkeit zu gewährleisten. Falls du doch nicht
+        dabei sein kannst, kannst du dich über diese Seite auch wieder abmelden.
+    </p>
 </div>
+
+<EditForm OnValidSubmit="RegisterGuest" Model="@_guest">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <h5>Kontaktdaten</h5>
+    <div class="form-row">
+        <div class="form-group col-md-12">
+            <small id="nameHelp" class="form-text text-muted">
+                Zur eindeutigen Nachverfolgbarkeit bitte Vor- und Nachname eingeben. In der Teilnehmerliste der Ausfahrten werden nur die Vornamen angezeigt.
+            </small>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <InputText id="firstname" aria-describedby="nameHelp" class="form-control" @bind-Value="_guest.ParticipantFirstName" autocomplete="on" placeholder="Vorname" title="Vorname" />
+        </div>
+        <div class="form-group col-md-4">
+            <InputText id="lastName" area-describedby="nameHelp" class="form-control" @bind-Value="_guest.ParticipantLastName" autocomplete="on" placeholder="Nachname" title="Nachname" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="Phone">Telefon/Mail</label>
+        <InputText id="Phone" aria-describedby="phoneHelp" class="form-control" @bind-Value="_guest.ParticipantAdressInfo" autocomplete="on" placeholder="Telefon-Nr. oder Mail-Adresse" title="Bitte Telefonnummer oder Mailadresse angeben." />
+        <small id="phoneHelp" class="form-text text-muted">
+            Für die Nachverfolgbarkeit hier bitte deine Mail-Adresse oder Telefonnummer eingeben. Diese Info wird nicht in der allgemeinen Teilnehmerliste zu Ausfahrten angezeigt.
+        </small>
+    </div>
+    <div class="form-group">
+        <div class="form-check">
+            <InputCheckbox id="SaveSettings" aria-describedby="saveSettingsHelp" class="form-check-input" @bind-Value="AppStateStore.SaveSettings"></InputCheckbox>
+            <label for="SaveSettings" class="form-check-label">Einstellungen im Browser merken?</label>
+        </div>
+        <small id="saveSettingsHelp">Damit beim nächsten Mal der Name usw. nicht neu eingegeben werden muss, können diese Eingaben im Browser gespeichert werden.</small>
+    </div>
+    <div class="form-group">
+        <div class="form-check">
+            <InputCheckbox id="accept" class="form-check-input" @bind-Value="@UsageRightsAccepted" />
+            <label for="accept" class="form-checklabel">
+                Hiermit bestätige ich, dass ich damit einverstanden bin, dass die Teilnehmerlisten zu den Ausfahrten mit den Kontaktdaten,
+                die ich hier angebe, bis zu 4 Wochen für die Nachverfolgbarkeit gespeichert werden. Ich bin auch damit einverstanden,
+                dass in der Liste der Ausfahrten die Teilnehmer mit Vornamen und abgekürztem Nachnamen (erste Buchstabe) angezeigt werden.
+            </label>
+        </div>
+    </div>
+    <button type="submit" id="BtnSaveKeyword" class="btn btn-primary" disabled="@(!UsageRightsAccepted)">An/Abmelden</button>
+</EditForm>
+<br />
+<p class="alert-info">
+    @logMessage
+</p>
 
 
 @code {
@@ -25,12 +81,36 @@
     public string ItemId { get; set; }
     ExtendedCalendarItem meetup = new ExtendedCalendarItem();
     string logMessage;
+    Boolean _usageRightsAccepted = false;
+    Participant _guest = new Participant();
+    const string PERM_STORAGE = "permGuestState";
+
+    Boolean UsageRightsAccepted
+    {
+        get
+        {
+            return _usageRightsAccepted;
+        }
+        set
+        {
+            _usageRightsAccepted = value;
+        }
+    }
+
 
 
     protected override async Task OnInitializedAsync()
     {
         AppStateStore.ClientSettings = new ClientSettings();
-
+        if (await LocalStorage.ContainKeyAsync(PERM_STORAGE))
+        {
+            // Read the user data if available from browser storage
+            PermAppState permAppState = await LocalStorage.GetItemAsync<PermAppState>(PERM_STORAGE);
+            // Copy the settings needed to application state
+            _guest.ParticipantFirstName = permAppState.FirstName;
+            _guest.ParticipantLastName = permAppState.LastName;
+            _guest.ParticipantAdressInfo = permAppState.PhoneMail;
+        }
         // Get client settings from server
         AppStateStore.ClientSettings = await Http.GetFromJsonAsync<ClientSettings>("Util/clientsettings");
         await ReadData();
@@ -43,5 +123,21 @@
         // Get referenced calendar item
         meetup = await Http.GetFromJsonAsync<ExtendedCalendarItem>($"Calendar/extendedcalendaritemforguest?itemId={ItemId}");
     }
+    private async Task RegisterGuest()
+    {
+        if (AppStateStore.SaveSettings)
+        {
+            // Copy from app state to permanent storage
+            PermAppState permAppState = new PermAppState();
+            permAppState.FirstName = _guest.ParticipantFirstName;
+            permAppState.LastName = _guest.ParticipantLastName;
+            permAppState.PhoneMail = _guest.ParticipantAdressInfo;
+            await LocalStorage.SetItemAsync<PermAppState>(PERM_STORAGE, permAppState);
+        }
+        else
+        {
+            await LocalStorage.RemoveItemAsync(PERM_STORAGE);
+        }
 
+    }
 }

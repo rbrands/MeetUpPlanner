@@ -62,8 +62,7 @@ namespace MeetUpPlanner.Server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetExtendedCalendarItemForGuest([FromQuery] string itemId)
         {
-//            ExtendedCalendarItem calendarItem = await _meetUpFunctions.GetExtendedCalendarItem(_meetUpFunctions.InviteGuestKey, itemId);
-            ExtendedCalendarItem calendarItem = await _meetUpFunctions.GetExtendedCalendarItem("Abstand", itemId);
+            ExtendedCalendarItem calendarItem = await _meetUpFunctions.GetExtendedCalendarItem(_meetUpFunctions.InviteGuestKey, itemId);
             return Ok(calendarItem);
         }
         [HttpPost("addparticipant")]
