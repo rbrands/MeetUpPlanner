@@ -202,6 +202,11 @@
             whenDate = DateTime.Parse(whenDateString);
         }
         meetup.StartDate = new DateTime(whenDate.Year, whenDate.Month, whenDate.Day, whenTime.Hour, whenTime.Minute, whenTime.Second);
+        if (meetup.StartDate.CompareTo(DateTime.Now) < 0)
+        {
+            logMessage = "Bitte Startdatum korrigieren.";
+            return;
+        }
         meetup.Summary = await htmlDescription.GetHTML();
         string keyword = AppStateStore.KeyWord;
         // Save calendarItem server
