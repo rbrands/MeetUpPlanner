@@ -62,10 +62,10 @@
                 <div class="card-body">
                     <div class="card-text">
                         <h6 class="text-muted">@item.LevelDescription - @item.Tempo</h6>
-                        <h5 class="card-title">@item.Title</h5>
+                        <h4 class="card-title">@item.Title</h4>
                         @if (!String.IsNullOrEmpty(item.Link))
                         {
-                            <h6><small><a href="@item.Link" target="_blank">@item.Link</a></small></h6>
+                           <div><small><a href="@item.Link" target="_blank">@item.Link</a></small></div>
                         }
                         @((MarkupString)item.Summary)
                         <hr />
