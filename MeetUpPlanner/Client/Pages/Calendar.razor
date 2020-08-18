@@ -4,6 +4,7 @@
 @inject KeywordCheck KeywordCheck
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@inject NotificationService notificationService
 @inject BlazorTimer Timer
 @inject BlazorTimer Timer2
 @implements IDisposable
@@ -65,7 +66,7 @@
                         <h4 class="card-title">@item.Title</h4>
                         @if (!String.IsNullOrEmpty(item.Link))
                         {
-                           <div><small><a href="@item.Link" target="_blank">@item.Link</a></small></div>
+                            <div><small><a href="@item.Link" target="_blank">@item.Link</a></small></div>
                         }
                         @((MarkupString)item.Summary)
                         <hr />
@@ -93,14 +94,14 @@
                             <button class="btn btn-sm btn-outline-secondary" title="Abmelden" hidden="@(!CheckIfUserIsAlreadyRegistered(item))" @onclick="@(() => Checkout(item))">Abmelden</button>
                         }
                         @if (AppStateStore.ClientSettings.GuestsEnabled)
-                        { 
+                        {
                             <button class="btn btn-sm btn-outline-secondary" title="Gast einladen" @onclick="@(() => Invite(item))">Gast einladen</button>
                         }
                     </div>
                 </div>
             </div>
         </div>
-                        }
+    }
 </div>
 
 <p class="alert-info">
@@ -165,6 +166,7 @@
             {
                 await Http.PostAsJsonAsync<CalendarComment>($"Calendar/addcomment?keyword={keyword}", checkinComment);
             }
+            notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Angemeldet", Detail = "Du bist jetzt angemeldet. Falls du doch nicht dabei sein kannst, melde dich bitte wieder ab.", Duration = 4000 });
             // Read data again
             await ReadData();
             StateHasChanged();
@@ -238,7 +240,7 @@
         DayOfWeek weekday = calendarItem.StartDate.DayOfWeek;
         switch (weekday)
         {
-            case DayOfWeek.Monday :
+            case DayOfWeek.Monday:
                 badge = AppStateStore.ClientSettings.MondayBadge;
                 break;
             case DayOfWeek.Tuesday:
