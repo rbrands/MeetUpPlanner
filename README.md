@@ -34,7 +34,7 @@ The application is build on the following technology stack:
 Some helpers:
 <a href="https://github.com/Blazored">Blazored</a> is an excellent colletion with some tools to make the life easier with Blazor. MeetUpPlanner uses the TextEdit and LocalStorage components.
 
-Blazor Component Library from <a href="https://blazor.radzen.com/">Radzen</a> provides a complete set of components used by MeetUpPlanner for notification messages and numeric input. 
+The Blazor Component Library from <a href="https://blazor.radzen.com/">Radzen</a> provides a complete set of components used by MeetUpPlanner for notification messages and numeric input. 
 
 Another handy tool to provide file download in Blazor: https://github.com/arivera12/BlazorDownloadFile
 
