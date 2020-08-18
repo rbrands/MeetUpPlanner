@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using BlazorDownloadFile;
 using Blazored.LocalStorage;
 using CurrieTechnologies.Razor.Clipboard;
+using Radzen;
 using MeetUpPlanner.Shared;
 
 namespace MeetUpPlanner.Client
@@ -27,6 +28,8 @@ namespace MeetUpPlanner.Client
             builder.Services.AddTransient<BlazorTimer>();
             builder.Services.AddBlazorDownloadFile();
             builder.Services.AddClipboard();
+            builder.Services.AddScoped<DialogService>();
+            builder.Services.AddScoped<NotificationService>();
             await builder.Build().RunAsync();
         }
     }
