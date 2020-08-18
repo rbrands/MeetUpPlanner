@@ -3,6 +3,7 @@
 @inject HttpClient Http
 @inject AppState AppStateStore
 @inject NavigationManager NavigationManager
+@inject NotificationService notificationService
 @using MeetUpPlanner.Shared
 @using Blazored.TextEditor
 
@@ -52,7 +53,8 @@
                     <button class="ql-link"></button>
                 </span>
             </ToolbarContent>
-            <EditorContent>@if (null != meetup.Summary){@((MarkupString)meetup.Summary)}</EditorContent>
+            <EditorContent>@if (null != meetup.Summary)
+            {@((MarkupString)meetup.Summary)}</EditorContent>
         </BlazoredTextEditor>
     </div>
     <div class="form-group">
@@ -69,13 +71,13 @@
             {
                 <InputSelect @bind-Value="whenDateString" class="form-control">
                     @foreach (KeyValuePair<string, string> c in GetScopedDays())
-                    {
+                        {
                         <option value="@c.Key">@c.Value</option>
-                    }
+                        }
                 </InputSelect>
             }
             else
-            { 
+            {
                 <InputDate id="whenDate" aria-describedby="whenDateHelp" class="form-control" @bind-Value="whenDate" title="Startdatum" />
             }
             <small id="whenDateHelp" class="form-text text-muted">
@@ -110,7 +112,7 @@
     </div>
     <div class="form-group">
         <label for="size">Max. Gruppengröße</label>
-        <InputNumber id="size" aria-describedby="sizeHelp" class="form-control" @bind-Value="meetup.MaxRegistrationsCount" autocomplete="on" />
+        <RadzenNumeric id="size" aria-describedby="sizeHelp" class="form-control" TValue="int" Min="2" Max="@AppStateStore.ClientSettings.MaxGroupSize" @bind-Value="meetup.MaxRegistrationsCount" />
         <small id="sizeHelp" class="form-text text-muted">
             Hier kann die Größe der Gruppe entsprechend beschränkt werden. Maximale Gruppengröße ist momentan @(AppStateStore.ClientSettings?.MaxGroupSize).
         </small>
@@ -126,20 +128,12 @@
     <button type="submit" id="BtnSave" class="btn btn-primary">Termin speichern ...</button>
     <button type="reset" id="BtnCancel" class="btn btn-secondary" @onclick="@(() => OnCancel())">Zurück ohne Speichern</button>
 </EditForm>
-<br />
-<div class="alert-info">
-    <p>
-        @logMessage
-    </p>
-</div>
-
 
 @code {
     [Parameter]
     public string ItemId { get; set; }
 
 
-    private string logMessage = "";
     CalendarItem meetup = new CalendarItem();
     string whenDateString;
     DateTime whenTime = DateTime.Now;
@@ -194,7 +188,7 @@
     {
         if (meetup.MaxRegistrationsCount > AppStateStore.ClientSettings.MaxGroupSize)
         {
-            logMessage = "Max. Gruppengröße überschritten.";
+            notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Gruppengröße", Detail = "Max. Gruppengröße überschritten.", Duration = 4000 });
             return;
         }
         if (onlyScopedMeetUps)
@@ -202,6 +196,11 @@
             whenDate = DateTime.Parse(whenDateString);
         }
         meetup.StartDate = new DateTime(whenDate.Year, whenDate.Month, whenDate.Day, whenTime.Hour, whenTime.Minute, whenTime.Second);
+        if (meetup.StartDate.CompareTo(DateTime.Now) < 0)
+        {
+            notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Startdatum",  Detail = "Bitte Startdatum korrigieren.", Duration = 4000 });
+            return;
+        }
         meetup.Summary = await htmlDescription.GetHTML();
         string keyword = AppStateStore.KeyWord;
         // Save calendarItem server
@@ -214,12 +213,12 @@
         NavigationManager.NavigateTo("/calendar");
     }
 
-    private List<KeyValuePair<string,string>> GetScopedDays()
+    private List<KeyValuePair<string, string>> GetScopedDays()
     {
         List<KeyValuePair<string, string>> scopedDays = new List<KeyValuePair<string, string>>();
 
         DateTime currentDate = DateTime.Now;
-        for (int i=0; i < 7; ++i, currentDate = currentDate.AddDays(1))
+        for (int i = 0; i < 7; ++i, currentDate = currentDate.AddDays(1))
         {
             switch (currentDate.DayOfWeek)
             {

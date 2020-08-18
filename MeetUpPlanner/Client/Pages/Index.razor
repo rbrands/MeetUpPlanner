@@ -5,6 +5,7 @@
 @using MeetUpPlanner.Shared
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject NavigationManager NavigationManager
+@inject NotificationService notificationService
 
 @if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.WelcomeMessage))
 {
@@ -99,15 +100,10 @@
     </div>
     <button type="submit" id="BtnSaveKeyword" class="btn btn-primary" disabled="@(!UsageRightsAccepted)">Los geht's ...</button>
 </EditForm>
-<br />
-<p class="alert-info">
-    @logMessage
-</p>
 
 
 
 @code {
-    string logMessage = String.Empty;
     Boolean _usageRightsAccepted = false;
     Boolean UsageRightsAccepted
     {
@@ -160,7 +156,7 @@
         AppStateStore.NotifyStateChanged();
         if (!KeywordCheck.IsUser && !KeywordCheck.IsAdmin)
         {
-            logMessage = "Das eingegebene Schlüsselwort ist leider falsch...";
+            notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Schlüsselwort", Detail = "Das eingegebene Schlüsselwort ist leider falsch.", Duration = 4000 });
         }
         AppStateStore.FirstName = AppStateStore.FirstName.Trim();
         AppStateStore.LastName = AppStateStore.LastName.Trim();
