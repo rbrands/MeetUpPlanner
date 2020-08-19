@@ -88,6 +88,10 @@
                             <button class="btn btn-sm btn-outline-secondary" title="Löschen" @onclick="@(() => DeleteCalendarItem(item))"><span class="oi oi-trash"></span></button>
                         }
                         <button class="btn btn-sm btn-outline-secondary" title="Kommentieren" @onclick="@(() => ShowComment(item))"><span class="oi oi-comment-square"></span></button>
+                        @if ((CheckIfUserIsHost(item) || KeywordCheck.IsAdmin) && item.ParticipantCounter > 1)
+                        {
+                            <button class="btn btn-sm btn-outline-secondary" title="Neuer Guide" @onclick="@(() => AssignNewHost(item))"><span class="oi oi-share-boxed"></span></button>
+                        }
                         @if (!CheckIfUserIsHost(item))
                         {
                             <button class="btn btn-sm btn-outline-secondary" title="Anmelden" hidden="@CheckIfUserIsAlreadyRegistered(item)" @onclick="@(() => Checkin(item.Id))">Anmelden</button>
@@ -227,6 +231,10 @@
     protected void DeleteCalendarItem(ExtendedCalendarItem calendarItem)
     {
         NavigationManager.NavigateTo($"/ConfirmDelete/{calendarItem.Id}");
+    }
+    protected void AssignNewHost(ExtendedCalendarItem calendarItem)
+    {
+        NavigationManager.NavigateTo($"/AssignNewHost/{calendarItem.Id}");
     }
     public void Dispose()
     {

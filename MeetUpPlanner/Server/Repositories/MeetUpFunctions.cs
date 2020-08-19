@@ -146,6 +146,15 @@ namespace MeetUpPlanner.Server.Repositories
                             .ReceiveJson<BackendResult>();
             return result;
         }
+        public async Task<BackendResult> AssignNewHostToCalendarItem(string keyword, Participant participant)
+        {
+            BackendResult result = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/AssignNewHostToCalendarItem"
+                            .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
+                            .WithHeader(HEADER_KEYWORD, keyword)
+                            .PostJsonAsync(participant)
+                            .ReceiveJson<BackendResult>();
+            return result;
+        }
         public async Task<BackendResult> RemoveCommentFromCalendarItem(string keyword, CalendarComment comment)
         {
             BackendResult result = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/RemoveCommentFromCalendarItem"
