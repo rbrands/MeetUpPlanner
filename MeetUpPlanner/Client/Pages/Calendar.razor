@@ -108,12 +108,7 @@
     }
 </div>
 
-<p class="alert-info">
-    @logMessage
-</p>
-
 @code {
-    private string logMessage = "";
     private CalendarComment checkinComment = new CalendarComment();
     private IList<ExtendedCalendarItem> calendarItems = new List<ExtendedCalendarItem>();
     const double refreshInterval = 30000;
@@ -177,7 +172,7 @@
         }
         else
         {
-            logMessage = result.Message;
+            notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Fehler", Detail = result.Message, Duration = 4000 });
         }
     }
     protected async Task Checkout(ExtendedCalendarItem calendarItem)
@@ -197,7 +192,7 @@
         }
         else
         {
-            logMessage = result.Message;
+            notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Fehler", Detail = result.Message, Duration = 4000 });
         }
     }
     protected bool CheckIfUserIsAlreadyRegistered(ExtendedCalendarItem calendarItem)
