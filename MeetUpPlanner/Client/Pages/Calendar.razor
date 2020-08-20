@@ -11,21 +11,7 @@
 @using Newtonsoft.Json
 @using System.IO
 
-@if (!String.IsNullOrEmpty(AppStateStore.ClientSettings?.WhiteboardMessage))
-{
-    <div class="row jumbotron">
-        @if (!String.IsNullOrEmpty(AppStateStore.ClientSettings?.LogoLink))
-        {
-            <div class="col-3">
-                <img src="@AppStateStore.ClientSettings?.LogoLink" class="img-fluid" />
-            </div>
-        }
-        <div class="col">
-            @((MarkupString)AppStateStore.ClientSettings?.WhiteboardMessage)
-        </div>
-    </div>
-}
-
+<MessageBoard Message="@AppStateStore.ClientSettings?.WhiteboardMessage" ShowLogo="false" />
 <h1>Ausfahrten</h1>
 <p>
     <a class="btn btn-primary" href="/newmeetup">Neue Ausfahrt erstellen</a>

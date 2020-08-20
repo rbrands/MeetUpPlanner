@@ -7,20 +7,7 @@
 @using MeetUpPlanner.Shared
 @using Blazored.TextEditor
 
-@if (!String.IsNullOrEmpty(AppStateStore.ClientSettings?.NewMeetupMessage))
-{
-    <div class="row jumbotron">
-        @if (!String.IsNullOrEmpty(AppStateStore.ClientSettings?.LogoLink))
-        {
-            <div class="col-3">
-                <img src="@AppStateStore.ClientSettings?.LogoLink" class="img-fluid" />
-            </div>
-        }
-        <div class="col">
-            @((MarkupString)AppStateStore.ClientSettings?.NewMeetupMessage)
-        </div>
-    </div>
-}
+<MessageBoard Message="@AppStateStore.ClientSettings?.NewMeetupMessage" ShowLogo="false"/>
 <h1>Ausfahrt</h1>
 <EditForm Model="@meetup" OnValidSubmit="OnSave">
     <DataAnnotationsValidator />

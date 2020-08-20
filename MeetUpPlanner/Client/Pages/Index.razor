@@ -7,21 +7,7 @@
 @inject NavigationManager NavigationManager
 @inject NotificationService notificationService
 
-@if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.WelcomeMessage))
-{
-    <div class="row jumbotron">
-        @if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.LogoLink))
-        {
-            <div class="col-3">
-                <img src="@AppStateStore.ClientSettings.LogoLink" class="img-fluid" />
-            </div>
-        }
-        <div class="col">
-            @((MarkupString)AppStateStore.ClientSettings.WelcomeMessage)
-        </div>
-    </div>
-}
-
+<MessageBoard Message="@AppStateStore.ClientSettings?.WelcomeMessage" ShowLogo="true" />
 <h2>Zugangsdaten</h2>
 
 <EditForm OnValidSubmit="CheckKeyword" Model="@AppStateStore">
