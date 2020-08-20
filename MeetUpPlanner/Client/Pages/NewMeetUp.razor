@@ -94,11 +94,14 @@
     </div>
     <div class="form-group">
         <div class="form-check">
-            <InputCheckbox id="cross" class="form-check-input" @bind-Value="meetup.IsCross" />
+            <InputCheckbox id="cross" aria-describedby="crossHelp" class="form-check-input" @bind-Value="meetup.IsCross" />
             <label for="cross" class="form-checklabel">
                 Cross/Gravel Runde?
             </label>
         </div>
+        <small id="crossHelp" class="form-text text-muted">
+            Die Ausfahrt wird in der Liste gut sichtbar als "Cross" markiert.
+        </small>
     </div>
     <div class="form-group">
         <label for="link">Link</label>
