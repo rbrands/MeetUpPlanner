@@ -189,7 +189,7 @@
 
     <div class="form-group">
         <div class="form-check">
-            <InputCheckbox id="guestsEnabled" class="form-check-input" @bind-Value="@AppStateStore.ClientSettings.GuestsEnabled" />
+            <InputCheckbox id="guestsEnabled" class="form-check-input" @bind-Value="AppStateStore.ClientSettings.GuestsEnabled" />
             <label for="guestsEnabled" class="form-checklabel">
                 Einladen von Gästen möglich?
             </label>
@@ -197,7 +197,7 @@
     </div>
     <div class="form-group">
         <div class="form-check">
-            <InputCheckbox id="onlyScoped" class="form-check-input" @bind-Value="@AppStateStore.ClientSettings.OnlyScopedMeetUpsAllowed" />
+            <InputCheckbox id="onlyScoped" class="form-check-input" @bind-Value="AppStateStore.ClientSettings.OnlyScopedMeetUpsAllowed" />
             <label for="onlyScoped" class="form-checklabel">
                 Nur MeetUps an den Tagen zulassen, die mit den "Badges" unten gekennzeichnet sind?
             </label>

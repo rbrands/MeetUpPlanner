@@ -52,6 +52,7 @@
                     {
                         <span class="badge badge-danger"><span class="oi oi-key" title="Private Ausfahrt"></span> @item.PrivateKeyword</span>
                     }
+                    <span class="badge badge-warning" hidden="@(!item.IsCross)">Cross</span>
                     @{
                         string badge = GetCalendarBadge(item);
                         if (!String.IsNullOrEmpty(badge))
