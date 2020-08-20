@@ -43,87 +43,87 @@
             <EditorContent>
                 @if (null != meetup.Summary)
                 {@((MarkupString)meetup.Summary)}
-        </EditorContent>
-    </BlazoredTextEditor>
-</div>
-<div class="form-group">
-    <label for="link">Link</label>
-    <InputText id="link" aria-describedby="linkHelp" class="form-control" @bind-Value="meetup.Link" placeholder="URL" title="Link zu weiterer Streckeninfo" />
-    <small id="linkHelp" class="form-text text-muted">
-        Optional: Link zu weiteren Strecken-Infos, z.B. Komoot, Strava usw.
-    </small>
-</div>
-<div class="form-row">
-    <div class="form-group col-md-3">
-        <label for="whenDate">Datum</label>
-        @if (onlyScopedMeetUps)
-        {
-            <InputSelect @bind-Value="whenDateString" class="form-control">
-                @foreach (KeyValuePair<string, string> c in GetScopedDays())
-                    {
-                    <option value="@c.Key">@c.Value</option>
-                    }
-            </InputSelect>
-        }
-        else
-        {
-            <InputDate id="whenDate" aria-describedby="whenDateHelp" class="form-control" @bind-Value="whenDate" title="Startdatum" />
-        }
-        <small id="whenDateHelp" class="form-text text-muted">
-            Wann geht's los?
+            </EditorContent>
+        </BlazoredTextEditor>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-3">
+            <label for="whenDate">Datum</label>
+            @if (onlyScopedMeetUps)
+            {
+                <InputSelect @bind-Value="whenDateString" class="form-control">
+                    @foreach (KeyValuePair<string, string> c in GetScopedDays())
+                        {
+                        <option value="@c.Key">@c.Value</option>
+                        }
+                </InputSelect>
+            }
+            else
+            {
+                <InputDate id="whenDate" aria-describedby="whenDateHelp" class="form-control" @bind-Value="whenDate" title="Startdatum" />
+            }
+            <small id="whenDateHelp" class="form-text text-muted">
+                Wann geht's los?
+            </small>
+        </div>
+        <div class="form-group col-md-3">
+            <label for="whenTime">Uhrzeit</label>
+            <input type="time" class="form-control" @bind="@whenTime" title="Startzeit" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="place">Startort</label>
+        <InputText id="place" aria-describedby="placeHelp" class="form-control" @bind-Value="meetup.Place" autocomplete="on" placeholder="Startpunkt der Ausfahrt" />
+        <small id="placeHelp" class="form-text text-muted">
+            Treffpunkt der Gruppe für die Ausfahrt, z.B. "Torburg", "Therme", "Unibib", "Mexikaner Merowinger"
         </small>
     </div>
-    <div class="form-group col-md-3">
-        <label for="whenTime">Uhrzeit</label>
-        <input type="time" class="form-control" @bind="@whenTime" title="Startzeit" />
+    <div class="form-group">
+        <label for="level">Länge</label>
+        <InputText id="level" aria-describedby="levelHelp" class="form-control" @bind-Value="meetup.LevelDescription" autocomplete="on" placeholder="km / Hm" />
+        <small id="levelHelp" class="form-text text-muted">
+            Länge der Tour (zumindest ungefähr) und möglichst Höhenmeter oder auch ungefähre Fahrtzeit.
+        </small>
     </div>
-</div>
-<div class="form-group">
-    <label for="place">Startort</label>
-    <InputText id="place" aria-describedby="placeHelp" class="form-control" @bind-Value="meetup.Place" autocomplete="on" placeholder="Startpunkt der Ausfahrt" />
-    <small id="placeHelp" class="form-text text-muted">
-        Treffpunkt der Gruppe für die Ausfahrt, z.B. "Torburg", "Therme", "Unibib", "Mexikaner Merowinger"
-    </small>
-</div>
-<div class="form-group">
-    <label for="level">Länge</label>
-    <InputText id="level" aria-describedby="levelHelp" class="form-control" @bind-Value="meetup.LevelDescription" autocomplete="on" placeholder="km / Hm" />
-    <small id="levelHelp" class="form-text text-muted">
-        Länge der Tour (zumindest ungefähr) und möglichst Höhenmeter oder auch ungefähre Fahrtzeit.
-    </small>
-</div>
-<div class="form-group">
-    <label for="tempo">Tempo</label>
-    <InputText id="tempo" aria-describedby="tempoHelp" class="form-control" @bind-Value="meetup.Tempo" autocomplete="on" placeholder="Geplante Geschwindigkeit" />
-    <small id="tempoHelp" class="form-text text-muted">
-        Geschwindigkeit als "Latte", "Cappuccino", "Espresso" oder auch km/h Angabe
-    </small>
-</div>
-<div class="form-group">
-    <div class="form-check">
-        <InputCheckbox id="cross" class="form-check-input" @bind-Value="meetup.IsCross" />
-        <label for="cross" class="form-checklabel">
-            Cross/Gravel Runde?
-        </label>
+    <div class="form-group">
+        <label for="tempo">Tempo</label>
+        <InputText id="tempo" aria-describedby="tempoHelp" class="form-control" @bind-Value="meetup.Tempo" autocomplete="on" placeholder="Geplante Geschwindigkeit" />
+        <small id="tempoHelp" class="form-text text-muted">
+            Geschwindigkeit als "Latte", "Cappuccino", "Espresso" oder auch km/h Angabe
+        </small>
     </div>
-</div>
-<div class="form-group">
-    <label for="size">Max. Gruppengröße</label>
-    <RadzenNumeric id="size" aria-describedby="sizeHelp" class="form-control" TValue="int" Min="2" Max="@AppStateStore.ClientSettings.MaxGroupSize" @bind-Value="meetup.MaxRegistrationsCount" />
-    <small id="sizeHelp" class="form-text text-muted">
-        Hier kann die Größe der Gruppe entsprechend beschränkt werden. Maximale Gruppengröße ist momentan @(AppStateStore.ClientSettings?.MaxGroupSize).
-    </small>
-</div>
-<div class="form-group">
-    <label for="privateKeyword">Private Ausfahrt?</label>
-    <InputText id="privateKeyword" aria-describedby="privateKeywordHelp" class="form-control" @bind-Value="meetup.PrivateKeyword" autocomplete="on" placeholder="Schlüsselwort für private Ausfahrt" />
-    <small id="privateKeywordHelp" class="form-text text-muted">
-        Falls die Ausfahrt "privat" sein soll, hier ein Schlüsselwort festlegen und den potentiellen Mitfahrern separat mitteilen.
-    </small>
-</div>
-<ValidationSummary />
-<button type="submit" id="BtnSave" class="btn btn-primary">Termin speichern ...</button>
-<button type="reset" id="BtnCancel" class="btn btn-secondary" @onclick="@(() => OnCancel())">Zurück ohne Speichern</button>
+    <div class="form-group">
+        <div class="form-check">
+            <InputCheckbox id="cross" class="form-check-input" @bind-Value="meetup.IsCross" />
+            <label for="cross" class="form-checklabel">
+                Cross/Gravel Runde?
+            </label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="link">Link</label>
+        <InputText id="link" aria-describedby="linkHelp" class="form-control" @bind-Value="meetup.Link" placeholder="URL" title="Link zu weiterer Streckeninfo" />
+        <small id="linkHelp" class="form-text text-muted">
+            Optional: Link zu weiteren Strecken-Infos, z.B. Komoot, Strava usw.
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="size">Max. Gruppengröße</label>
+        <RadzenNumeric id="size" aria-describedby="sizeHelp" class="form-control" TValue="int" Min="2" Max="@AppStateStore.ClientSettings.MaxGroupSize" @bind-Value="meetup.MaxRegistrationsCount" />
+        <small id="sizeHelp" class="form-text text-muted">
+            Hier kann die Größe der Gruppe entsprechend beschränkt werden. Maximale Gruppengröße ist momentan @(AppStateStore.ClientSettings?.MaxGroupSize).
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="privateKeyword">Private Ausfahrt?</label>
+        <InputText id="privateKeyword" aria-describedby="privateKeywordHelp" class="form-control" @bind-Value="meetup.PrivateKeyword" autocomplete="on" placeholder="Schlüsselwort für private Ausfahrt" />
+        <small id="privateKeywordHelp" class="form-text text-muted">
+            Falls die Ausfahrt "privat" sein soll, hier ein Schlüsselwort festlegen und den potentiellen Mitfahrern separat mitteilen.
+        </small>
+    </div>
+    <ValidationSummary />
+    <button type="submit" id="BtnSave" class="btn btn-primary">Termin speichern ...</button>
+    <button type="reset" id="BtnCancel" class="btn btn-secondary" @onclick="@(() => OnCancel())">Zurück ohne Speichern</button>
 </EditForm>
 
 @code {
