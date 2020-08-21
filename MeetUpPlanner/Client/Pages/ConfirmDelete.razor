@@ -4,6 +4,8 @@
 @inject NavigationManager NavigationManager
 @using MeetUpPlanner.Shared
 @using Newtonsoft.Json
+@using Microsoft.AspNetCore.SignalR.Client
+
 
 <MeetUp CalendarItem="@meetup" />
 <button type="submit" id="BtnSave" class="btn btn-primary" @onclick="@(() => OnDelete())">Ausfahrt wirklich löschen?</button>
@@ -20,11 +22,17 @@
     public string ItemId { get; set; }
     ExtendedCalendarItem meetup = new ExtendedCalendarItem();
     string logMessage;
+    private HubConnection hubConnection;
 
     protected override async Task OnInitializedAsync()
     {
         if (!String.IsNullOrEmpty(AppStateStore?.KeyWord))
         {
+            hubConnection = new HubConnectionBuilder()
+                 .WithUrl(NavigationManager.ToAbsoluteUri("/broadcastHub"))
+                 .Build();
+            await hubConnection.StartAsync();
+
             await ReadData();
         }
         else
@@ -51,12 +59,21 @@
         BackendResult result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
         if (result.Success)
         {
+            if (IsConnected) await SendMessage();
             NavigationManager.NavigateTo("/calendar");
         }
         else
         {
             logMessage = result.Message;
         }
+    }
+    Task SendMessage() => hubConnection.SendAsync("SendMessage");
+
+    public bool IsConnected => hubConnection.State == HubConnectionState.Connected;
+
+    public void Dispose()
+    {
+        _ = hubConnection.DisposeAsync();
     }
 
 

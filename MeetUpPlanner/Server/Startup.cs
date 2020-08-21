@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
 using MeetUpPlanner.Server.Repositories;
+using MeetUpPlanner.Server.Hubs; 
 
 namespace MeetUpPlanner.Server
 {
@@ -23,9 +24,14 @@ namespace MeetUpPlanner.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddSignalR();
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.AddResponseCompression(opts =>
+            {
+                opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                    new[] { "application/octet-stream" });
+            });
 
             //
             // rbrands: Add standard services with dependency injection
@@ -39,6 +45,7 @@ namespace MeetUpPlanner.Server
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseResponseCompression();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -61,6 +68,7 @@ namespace MeetUpPlanner.Server
             {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
+                endpoints.MapHub<BroadcastHub>("/broadcastHub");
                 endpoints.MapFallbackToFile("index.html");
             });
         }

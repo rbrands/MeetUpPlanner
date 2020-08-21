@@ -4,10 +4,11 @@
 @inject AppState AppStateStore
 @inject NavigationManager NavigationManager
 @inject NotificationService notificationService
+@using Microsoft.AspNetCore.SignalR.Client
 @using MeetUpPlanner.Shared
 @using Blazored.TextEditor
 
-<MessageBoard Message="@AppStateStore.ClientSettings?.NewMeetupMessage" ShowLogo="false"/>
+<MessageBoard Message="@AppStateStore.ClientSettings?.NewMeetupMessage" ShowLogo="false" />
 <h1>Ausfahrt</h1>
 <EditForm Model="@meetup" OnValidSubmit="OnSave">
     <DataAnnotationsValidator />
@@ -132,8 +133,7 @@
 @code {
     [Parameter]
     public string ItemId { get; set; }
-
-
+    private HubConnection hubConnection;
     CalendarItem meetup = new CalendarItem();
     string whenDateString;
     DateTime whenTime = DateTime.Now;
@@ -146,6 +146,11 @@
     {
         if (null != AppStateStore && !String.IsNullOrEmpty(AppStateStore.KeyWord))
         {
+            hubConnection = new HubConnectionBuilder()
+                 .WithUrl(NavigationManager.ToAbsoluteUri("/broadcastHub"))
+                 .Build();
+            await hubConnection.StartAsync();
+
             onlyScopedMeetUps = AppStateStore.ClientSettings.OnlyScopedMeetUpsAllowed;
             scopedDates = GetScopedDays();
             if (!String.IsNullOrEmpty(ItemId))
@@ -198,13 +203,15 @@
         meetup.StartDate = new DateTime(whenDate.Year, whenDate.Month, whenDate.Day, whenTime.Hour, whenTime.Minute, whenTime.Second);
         if (meetup.StartDate.CompareTo(DateTime.Now) < 0)
         {
-            notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Startdatum",  Detail = "Bitte Startdatum korrigieren.", Duration = 4000 });
+            notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Startdatum", Detail = "Bitte Startdatum korrigieren.", Duration = 4000 });
             return;
         }
         meetup.Summary = await htmlDescription.GetHTML();
         string keyword = AppStateStore.KeyWord;
         // Save calendarItem server
         await Http.PostAsJsonAsync<CalendarItem>($"Calendar/writecalendaritem?keyword={keyword}", meetup);
+        if (IsConnected) await SendMessage();
+
 
         NavigationManager.NavigateTo("/calendar");
     }
@@ -212,7 +219,14 @@
     {
         NavigationManager.NavigateTo("/calendar");
     }
+    Task SendMessage() => hubConnection.SendAsync("SendMessage");
 
+    public bool IsConnected => hubConnection.State == HubConnectionState.Connected;
+
+    public void Dispose()
+    {
+        _ = hubConnection.DisposeAsync();
+    }
     private List<KeyValuePair<string, string>> GetScopedDays()
     {
         List<KeyValuePair<string, string>> scopedDays = new List<KeyValuePair<string, string>>();
