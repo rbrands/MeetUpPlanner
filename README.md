@@ -30,6 +30,7 @@ The application is build on the following technology stack:
 * ASP.NET Core Backend (see https://docs.microsoft.com/en-us/aspnet/core/blazor/hosting-models?view=aspnetcore-3.1#blazor-webassembly)
 * Business Logic in Azure Functions v3 (see https://docs.microsoft.com/en-us/azure/azure-functions/)
 * Data Layer No-SQL database Azure Cosmos DB (see https://docs.microsoft.com/en-us/azure/cosmos-db/)
+* To get real-time updates for MeetUps SignalR (see https://docs.microsoft.com/en-us/aspnet/core/tutorials/signalr-blazor-webassembly) is used, inspired by the example from https://www.c-sharpcorner.com/article/easily-create-a-real-time-application-with-blazor-and-signalr/ 
 
 Some helpers:
 <a href="https://github.com/Blazored">Blazored</a> is an excellent colletion with some tools to make the life easier with Blazor. MeetUpPlanner uses the TextEdit and LocalStorage components.
