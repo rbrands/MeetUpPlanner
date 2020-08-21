@@ -10,6 +10,7 @@
 @implements IDisposable
 @using Newtonsoft.Json
 @using System.IO
+@using Microsoft.AspNetCore.SignalR.Client
 
 <MessageBoard Message="@AppStateStore.ClientSettings?.WhiteboardMessage" ShowLogo="false" />
 <h1>Ausfahrten</h1>
@@ -100,29 +101,52 @@
     private IList<ExtendedCalendarItem> calendarItems = new List<ExtendedCalendarItem>();
     const double refreshInterval = 30000;
     const double navigateAwayInterval = 10 * 60 * 1000;
+    private HubConnection hubConnection;
 
     protected override async Task OnInitializedAsync()
     {
         if (null != AppStateStore && !String.IsNullOrEmpty(AppStateStore.KeyWord))
         {
-            // Get list of calendar items
+            hubConnection = new HubConnectionBuilder()
+                .WithUrl(NavigationManager.ToAbsoluteUri("/broadcastHub"))
+                .Build();
+
+            hubConnection.On("ReceiveMessage", () =>
+            {
+                CallReadData();
+                StateHasChanged();
+            });
+
+            await hubConnection.StartAsync();
+
+            // Polling with timer only if SignalR has problems
+            //Timer.SetTimer(refreshInterval);
+            //Timer.OnElapsed += TimerElapsedHandler;
+            //Timer2.SetTimer(navigateAwayInterval);
+            //Timer2.OnElapsed += NavigateAwayHandler;
+
             await ReadData();
-            Timer.SetTimer(refreshInterval);
-            Timer.OnElapsed += TimerElapsedHandler;
-            Timer2.SetTimer(navigateAwayInterval);
-            Timer2.OnElapsed += NavigateAwayHandler;
         }
         else
         {
             NavigationManager.NavigateTo("/");
         }
     }
+
     protected async Task ReadData()
     {
         string keyword = AppStateStore.KeyWord;
         string privateKeywords = AppStateStore.PrivateKeyWord1 + ";" + AppStateStore.PrivateKeyWord2 + ";" + AppStateStore.PrivateKeyWord3; ;
         // Get list of calendar items
         calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"calendar/extendedcalendaritems?keyword={keyword}&privatekeywords={privateKeywords}");
+        StateHasChanged();
+    }
+    private void CallReadData()
+    {
+        Task.Run(async () =>
+        {
+            await ReadData();
+        });
     }
 
     protected void EditCalendarItem(string itemId)
@@ -220,9 +244,13 @@
     }
     public void Dispose()
     {
-        Timer.DisableTimer();
-        Timer2.DisableTimer();
+        _ = hubConnection.DisposeAsync();
+        // only if Timer is used instead of SignalR
+        // Timer.DisableTimer();
+        // Timer2.DisableTimer();
     }
+    public bool IsConnected => hubConnection.State == HubConnectionState.Connected;
+    Task SendMessage() => hubConnection.SendAsync("SendMessage");
 
     private string GetCalendarBadge(ExtendedCalendarItem calendarItem)
     {

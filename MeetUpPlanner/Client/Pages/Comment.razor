@@ -5,6 +5,7 @@
 @inject DialogService dialogService
 @using MeetUpPlanner.Shared
 @using Newtonsoft.Json
+@using Microsoft.AspNetCore.SignalR.Client
 
 <MeetUp CalendarItem="@meetup" />
 <EditForm Model="@comment" OnValidSubmit="SaveComment">
@@ -43,11 +44,17 @@
     CalendarComment comment = new CalendarComment();
     string logMessage;
     CalendarComment commentToBeDeleted;
+    private HubConnection hubConnection;
 
     protected override async Task OnInitializedAsync()
     {
         if (!String.IsNullOrEmpty(AppStateStore?.KeyWord))
         {
+            hubConnection = new HubConnectionBuilder()
+                 .WithUrl(NavigationManager.ToAbsoluteUri("/broadcastHub"))
+                 .Build();
+            await hubConnection.StartAsync();
+
             await ReadData();
             comment.AuthorFirstName = AppStateStore.FirstName;
             comment.AuthorLastName = AppStateStore.LastName;
@@ -74,6 +81,7 @@
         if (!String.IsNullOrEmpty(comment.Comment))
         {
             await Http.PostAsJsonAsync<CalendarComment>($"Calendar/addcomment?keyword={keyword}", comment);
+            if (IsConnected) await SendMessage();
         }
 
         NavigationManager.NavigateTo("/calendar");
@@ -97,6 +105,7 @@
         BackendResult result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
         if (result.Success)
         {
+            if (IsConnected) await SendMessage(); 
             await ReadData();
             StateHasChanged();
         }
@@ -116,5 +125,13 @@
             }
         }
         commentToBeDeleted = null;
+    }
+    Task SendMessage() => hubConnection.SendAsync("SendMessage");
+
+    public bool IsConnected => hubConnection.State == HubConnectionState.Connected;
+
+    public void Dispose()
+    {
+        _ = hubConnection.DisposeAsync();
     }
 }
