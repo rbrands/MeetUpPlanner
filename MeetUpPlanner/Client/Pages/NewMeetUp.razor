@@ -7,21 +7,8 @@
 @using MeetUpPlanner.Shared
 @using Blazored.TextEditor
 
-@if (!String.IsNullOrEmpty(AppStateStore.ClientSettings?.NewMeetupMessage))
-{
-    <div class="row jumbotron">
-        @if (!String.IsNullOrEmpty(AppStateStore.ClientSettings?.LogoLink))
-        {
-            <div class="col-3">
-                <img src="@AppStateStore.ClientSettings?.LogoLink" class="img-fluid" />
-            </div>
-        }
-        <div class="col">
-            @((MarkupString)AppStateStore.ClientSettings?.NewMeetupMessage)
-        </div>
-    </div>
-}
-<h2>Ausfahrt</h2>
+<MessageBoard Message="@AppStateStore.ClientSettings?.NewMeetupMessage" ShowLogo="false"/>
+<h1>Ausfahrt</h1>
 <EditForm Model="@meetup" OnValidSubmit="OnSave">
     <DataAnnotationsValidator />
     <div class="form-group">
@@ -53,16 +40,11 @@
                     <button class="ql-link"></button>
                 </span>
             </ToolbarContent>
-            <EditorContent>@if (null != meetup.Summary)
-            {@((MarkupString)meetup.Summary)}</EditorContent>
+            <EditorContent>
+                @if (null != meetup.Summary)
+                {@((MarkupString)meetup.Summary)}
+            </EditorContent>
         </BlazoredTextEditor>
-    </div>
-    <div class="form-group">
-        <label for="link">Link</label>
-        <InputText id="link" aria-describedby="linkHelp" class="form-control" @bind-Value="meetup.Link" placeholder="URL" title="Link zu weiterer Streckeninfo" />
-        <small id="linkHelp" class="form-text text-muted">
-            Optional: Link zu weiteren Strecken-Infos, z.B. Komoot, Strava usw.
-        </small>
     </div>
     <div class="form-row">
         <div class="form-group col-md-3">
@@ -108,6 +90,24 @@
         <InputText id="tempo" aria-describedby="tempoHelp" class="form-control" @bind-Value="meetup.Tempo" autocomplete="on" placeholder="Geplante Geschwindigkeit" />
         <small id="tempoHelp" class="form-text text-muted">
             Geschwindigkeit als "Latte", "Cappuccino", "Espresso" oder auch km/h Angabe
+        </small>
+    </div>
+    <div class="form-group">
+        <div class="form-check">
+            <InputCheckbox id="cross" aria-describedby="crossHelp" class="form-check-input" @bind-Value="meetup.IsCross" />
+            <label for="cross" class="form-checklabel">
+                Cross/Gravel Runde?
+            </label>
+        </div>
+        <small id="crossHelp" class="form-text text-muted">
+            Die Ausfahrt wird in der Liste gut sichtbar als "Cross" markiert.
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="link">Link</label>
+        <InputText id="link" aria-describedby="linkHelp" class="form-control" @bind-Value="meetup.Link" placeholder="URL" title="Link zu weiterer Streckeninfo" />
+        <small id="linkHelp" class="form-text text-muted">
+            Optional: Link zu weiteren Strecken-Infos, z.B. Komoot, Strava usw.
         </small>
     </div>
     <div class="form-group">

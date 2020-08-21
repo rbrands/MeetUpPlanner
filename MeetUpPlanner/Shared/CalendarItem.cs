@@ -34,6 +34,8 @@ namespace MeetUpPlanner.Shared
         public string Tempo { get; set; }
         [JsonProperty(PropertyName = "link", NullValueHandling = NullValueHandling.Ignore), MaxLength(120, ErrorMessage = "Link zu lang"), UIHint("url") ]
         public string Link { get; set; }
+        [JsonProperty(PropertyName = "isCross")]
+        public Boolean IsCross { get; set; } = false;
 
         /// <summary>
         /// Constructor with some suggestions about start-time: Schedule for the next day. On Saturdays and Sundays 

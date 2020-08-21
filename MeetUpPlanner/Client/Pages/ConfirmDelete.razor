@@ -5,20 +5,7 @@
 @using MeetUpPlanner.Shared
 @using Newtonsoft.Json
 
-<div class="jumbotron">
-    <h6 class="text-muted">@meetup.LevelDescription - @meetup.Tempo</h6>
-    <h4>@meetup.GetStartDateAsString() - @meetup.Title</h4>
-    @if (!String.IsNullOrEmpty(meetup.Link))
-    {
-        <h6><small><a href="@meetup.Link" target="_blank">@meetup.Link</a></small></h6>
-    }
-    <p class="lead">
-        @((MarkupString)meetup.Summary)
-    </p>
-    <p>
-        <small>Dabei (@meetup.ParticipantCounter von @meetup.MaxRegistrationsCount): <b>@meetup.HostDisplayName</b>@meetup.ParticipantsDisplay</small>
-    </p>
-</div>
+<MeetUp CalendarItem="@meetup" />
 <button type="submit" id="BtnSave" class="btn btn-primary" @onclick="@(() => OnDelete())">Ausfahrt wirklich löschen?</button>
 <button type="reset" id="BtnCancel" class="btn btn-secondary" @onclick="@(() => OnCancel())">Zurück ...</button>
 

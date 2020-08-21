@@ -1,0 +1,25 @@
+﻿@using MeetUpPlanner.Shared
+@inject AppState AppStateStore
+
+@if (!String.IsNullOrEmpty(Message))
+{
+    <div class="row jumbotron">
+        @if (ShowLogo && !String.IsNullOrEmpty(AppStateStore.ClientSettings?.LogoLink))
+        {
+            <div class="col-3">
+                <img src="@AppStateStore.ClientSettings?.LogoLink" class="img-fluid" />
+            </div>
+        }
+        <div class="col">
+            @((MarkupString)Message)
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string Message { get; set; }
+    [Parameter]
+    public bool ShowLogo { get; set; }
+
+}

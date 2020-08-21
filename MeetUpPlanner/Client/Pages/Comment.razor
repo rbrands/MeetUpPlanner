@@ -2,23 +2,11 @@
 @inject HttpClient Http
 @inject AppState AppStateStore
 @inject NavigationManager NavigationManager
+@inject DialogService dialogService
 @using MeetUpPlanner.Shared
 @using Newtonsoft.Json
 
-<div class="jumbotron">
-    <h6 class="text-muted">@meetup.LevelDescription - @meetup.Tempo</h6>
-    <h4>@meetup.GetStartDateAsString() - @meetup.Title</h4>
-    @if (!String.IsNullOrEmpty(meetup.Link))
-    {
-        <h6><small><a href="@meetup.Link" target="_blank">@meetup.Link</a></small></h6>
-    }
-    <p class="lead">
-        @((MarkupString)meetup.Summary)
-    </p>
-    <p>
-        <small>Dabei (@meetup.ParticipantCounter von @meetup.MaxRegistrationsCount): <b>@meetup.HostDisplayName</b>@meetup.ParticipantsDisplay</small>
-    </p>
-</div>
+<MeetUp CalendarItem="@meetup" />
 <EditForm Model="@comment" OnValidSubmit="SaveComment">
     <DataAnnotationsValidator />
     <ValidationSummary />
@@ -39,7 +27,7 @@
         <p class="mb-0">@c.Comment</p>
         <footer class="blockquote-footer">
             <cite title="Autor">@c.AuthorDisplayName</cite> @c.DisplayDate
-            <button class="btn btn-sm btn-outline-secondary" @onclick="@(() => RemoveComment(c))"><span class="oi oi-trash" title="Kommentar löschen"></span></button>
+            <button class="btn btn-sm btn-outline-secondary" @onclick="@(() => ConfirmDelete(c))"><span class="oi oi-trash" title="Kommentar löschen"></span></button>
         </footer>
     </blockquote>
 }
@@ -54,6 +42,7 @@
     ExtendedCalendarItem meetup = new ExtendedCalendarItem();
     CalendarComment comment = new CalendarComment();
     string logMessage;
+    CalendarComment commentToBeDeleted;
 
     protected override async Task OnInitializedAsync()
     {
@@ -62,6 +51,7 @@
             await ReadData();
             comment.AuthorFirstName = AppStateStore.FirstName;
             comment.AuthorLastName = AppStateStore.LastName;
+            dialogService.OnClose += DeleteConfirmed;
         }
         else
         {
@@ -93,10 +83,15 @@
         NavigationManager.NavigateTo("/calendar");
     }
 
-    protected async Task RemoveComment(CalendarComment comment)
+    protected void ConfirmDelete(CalendarComment c)
+    {
+        commentToBeDeleted = c;
+        dialogService.Confirm("Kommentar wirklich löschen?", "Kommentar", new ConfirmOptions() { OkButtonText = "Ja", CancelButtonText = "Nein" });
+    }
+    protected async Task RemoveComment(CalendarComment c)
     {
         string keyword = AppStateStore.KeyWord;
-        HttpResponseMessage response = await Http.PostAsJsonAsync<CalendarComment>($"Calendar/removecomment?keyword={keyword}", comment);
+        HttpResponseMessage response = await Http.PostAsJsonAsync<CalendarComment>($"Calendar/removecomment?keyword={keyword}", c);
         string responseBody = await response.Content.ReadAsStringAsync();
 
         BackendResult result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
@@ -109,5 +104,17 @@
         {
             logMessage = result.Message;
         }
+    }
+    protected async void DeleteConfirmed(dynamic result)
+    {
+        bool? removeIt = result;
+        if (null != removeIt && null != commentToBeDeleted)
+        {
+            if ((bool)removeIt)
+            {
+                await RemoveComment(commentToBeDeleted);
+            }
+        }
+        commentToBeDeleted = null;
     }
 }

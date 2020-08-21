@@ -86,6 +86,13 @@ namespace MeetUpPlanner.Server.Controllers
             BackendResult result = await _meetUpFunctions.RemoveParticipantFromCalendarItem(keyword, participant);
             return Ok(result);
         }
+        [HttpPost("assignnewhost")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> AssignNewHost([FromQuery] string keyword, [FromBody] Participant participant)
+        {
+            BackendResult result = await _meetUpFunctions.AssignNewHostToCalendarItem(keyword, participant);
+            return Ok(result);
+        }
         [HttpPost("removeguest")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> RemoveGuest([FromBody] Participant participant)
