@@ -20,8 +20,8 @@ namespace MeetUpPlanner.Server.Controllers
     {
         private readonly MeetUpFunctions _meetUpFunctions;
         private readonly ILogger<UtilController> logger;
-        const string serverVersion = "2020-08-13";
-        string functionsVersion = "2020-07-03";
+        const string serverVersion = "2020-08-21";
+        string functionsVersion = "tbd";
 
         public UtilController(ILogger<UtilController> logger, MeetUpFunctions meetUpFunctions)
         {
