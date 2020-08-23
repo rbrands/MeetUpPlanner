@@ -38,8 +38,17 @@ namespace MeetUpFunctions
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function GetClientSettings processed a request.");
-
-            ClientSettings clientSettings = await _cosmosRepository.GetItemByKey(Constants.KEY_CLIENT_SETTINGS);
+            string tenant = req.Headers[Constants.HEADER_TENANT];
+            if (String.IsNullOrEmpty(tenant))
+            {
+                tenant = null;
+            }
+            string key = Constants.KEY_CLIENT_SETTINGS;
+            if (null != tenant)
+            {
+                key += "-" + tenant;
+            }
+            ClientSettings clientSettings = await _cosmosRepository.GetItemByKey(key);
             if (null == clientSettings)
             {
                 clientSettings = new ClientSettings()

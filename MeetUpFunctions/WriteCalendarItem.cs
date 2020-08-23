@@ -48,10 +48,12 @@ namespace MeetUpPlanner.Functions
             {
                 return new BadRequestErrorMessageResult("Keyword is missing or wrong.");
             }
+            string tenant = req.Headers[Constants.HEADER_TENANT];
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             CalendarItem calendarItem = JsonConvert.DeserializeObject<CalendarItem>(requestBody);
             System.TimeSpan diffTime = calendarItem.StartDate.Subtract(DateTime.Now);
-            calendarItem.TimeToLive = serverSettings.AutoDeleteAfterDays * 24 * 3600 + (int)diffTime.TotalSeconds; 
+            calendarItem.TimeToLive = serverSettings.AutoDeleteAfterDays * 24 * 3600 + (int)diffTime.TotalSeconds;
+            calendarItem.Tenant = tenant;
             calendarItem = await _cosmosRepository.UpsertItem(calendarItem);
 
             return new OkObjectResult(calendarItem);

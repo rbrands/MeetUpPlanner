@@ -51,9 +51,19 @@ namespace MeetUpPlanner.Functions
             {
                 return new BadRequestErrorMessageResult("Keyword is missing or wrong.");
             }
+            string tenant = req.Headers[Constants.HEADER_TENANT];
+            if (String.IsNullOrEmpty(tenant))
+            {
+                tenant = null;
+            }
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             ClientSettings clientSettings = JsonConvert.DeserializeObject<ClientSettings>(requestBody);
             clientSettings.LogicalKey = Constants.KEY_CLIENT_SETTINGS;
+            if (null != tenant)
+            {
+                clientSettings.LogicalKey += "-" + tenant;
+                clientSettings.Tenant = tenant;
+            }
             clientSettings = await _cosmosRepository.UpsertItem(clientSettings);
 
             return new OkObjectResult(clientSettings);

@@ -139,6 +139,10 @@
         string keyword = AppStateStore.KeyWord;
         string privateKeywords = AppStateStore.PrivateKeyWord1 + ";" + AppStateStore.PrivateKeyWord2 + ";" + AppStateStore.PrivateKeyWord3; ;
         // Get list of calendar items
+        if (null != AppStateStore.Tenant)
+        {
+            Http.DefaultRequestHeaders.Add("x-meetup-tenant", AppStateStore.Tenant);
+        }
         calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"calendar/extendedcalendaritems?keyword={keyword}&privatekeywords={privateKeywords}");
         StateHasChanged();
     }

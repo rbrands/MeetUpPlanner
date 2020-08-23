@@ -24,6 +24,7 @@ namespace MeetUpPlanner.Client
                 NotifyStateChanged();
             }
         }
+        public string Tenant = null;
         [MaxLength(50, ErrorMessage = "Schlüsselwort zu lang.")]
         [Required(ErrorMessage = "Schlüsselwort fehlt.")]
         public string KeyWord { get; set; }

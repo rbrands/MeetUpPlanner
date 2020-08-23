@@ -16,6 +16,7 @@ namespace MeetUpPlanner.Server.Repositories
         private readonly MeetUpFunctionsConfig _functionsConfig;
         public const string HEADER_KEYWORD = "x-meetup-keyword";
         public const string HEADER_FUNCTIONS_KEY = "x-functions-key";
+        public const string HEADER_TENANT = "x-meetup-tenant";
 
         public MeetUpFunctions(MeetUpFunctionsConfig functionsConfig)
         {
@@ -91,12 +92,13 @@ namespace MeetUpPlanner.Server.Repositories
                           .GetJsonAsync<IEnumerable<CalendarItem>>();
             return calendarItems;
         }
-        public async Task<IEnumerable<ExtendedCalendarItem>> GetExtendedCalendarItems(string keyword, string privatekeywords)
+        public async Task<IEnumerable<ExtendedCalendarItem>> GetExtendedCalendarItems(string tenant, string keyword, string privatekeywords)
         {
 
             IEnumerable<ExtendedCalendarItem> calendarItems = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/GetExtendedCalendarItems"
                           .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
                           .WithHeader(HEADER_KEYWORD, keyword)
+                          .WithHeader(HEADER_TENANT, tenant)
                           .SetQueryParam("privatekeywords", privatekeywords)
                           .GetJsonAsync<IEnumerable<ExtendedCalendarItem>>();
             return calendarItems;
