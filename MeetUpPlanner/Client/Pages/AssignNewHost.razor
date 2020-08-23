@@ -5,8 +5,10 @@
 @inject NotificationService notificationService
 @using MeetUpPlanner.Shared
 @using Newtonsoft.Json
+@using Microsoft.AspNetCore.SignalR.Client
 
-<MeetUp CalendarItem="@meetup"/>
+
+<MeetUp CalendarItem="@meetup" />
 <div>
     <div class="form-group">
         <label for="newhost">Neuer Guide</label>
@@ -27,11 +29,18 @@
     public string ItemId { get; set; }
     ExtendedCalendarItem meetup = new ExtendedCalendarItem();
     Participant selectedParticipant;
+    private HubConnection hubConnection;
+
 
     protected override async Task OnInitializedAsync()
     {
         if (!String.IsNullOrEmpty(AppStateStore?.KeyWord))
         {
+            hubConnection = new HubConnectionBuilder()
+                 .WithUrl(NavigationManager.ToAbsoluteUri("/broadcastHub"))
+                 .WithAutomaticReconnect()
+                 .Build();
+            await hubConnection.StartAsync();
             await ReadData();
         }
         else
@@ -63,6 +72,7 @@
         BackendResult result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
         if (result.Success)
         {
+            if (IsConnected) await SendMessage();
             notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Info, Summary = "Neuer Guide", Detail = selectedParticipant.ParticipantDisplayName, Duration = 4000 });
             NavigationManager.NavigateTo("/calendar");
         }
@@ -72,10 +82,14 @@
         }
     }
 
-    void Change(object value, Participant participant)
-    {
 
-        StateHasChanged();
+    Task SendMessage() => hubConnection.SendAsync("SendMessage");
+
+    public bool IsConnected => hubConnection.State == HubConnectionState.Connected;
+
+    public void Dispose()
+    {
+        _ = hubConnection.DisposeAsync();
     }
 
 }

@@ -52,6 +52,7 @@
         {
             hubConnection = new HubConnectionBuilder()
                  .WithUrl(NavigationManager.ToAbsoluteUri("/broadcastHub"))
+                 .WithAutomaticReconnect()
                  .Build();
             await hubConnection.StartAsync();
 

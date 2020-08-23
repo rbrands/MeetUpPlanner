@@ -109,6 +109,7 @@
         {
             hubConnection = new HubConnectionBuilder()
                 .WithUrl(NavigationManager.ToAbsoluteUri("/broadcastHub"))
+                .WithAutomaticReconnect()
                 .Build();
 
             hubConnection.On("ReceiveMessage", () =>
@@ -176,6 +177,7 @@
             {
                 await Http.PostAsJsonAsync<CalendarComment>($"Calendar/addcomment?keyword={keyword}", checkinComment);
             }
+            if (IsConnected) await SendMessage();
             notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Angemeldet", Detail = "Du bist jetzt angemeldet. Falls du doch nicht dabei sein kannst, melde dich bitte wieder ab.", Duration = 4000 });
             // Read data again
             await ReadData();
@@ -198,6 +200,7 @@
         BackendResult result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
         if (result.Success)
         {
+            if (IsConnected) await SendMessage();
             await ReadData();
             StateHasChanged();
         }
