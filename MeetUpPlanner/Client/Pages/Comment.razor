@@ -68,9 +68,9 @@
     }
     private async Task ReadData()
     {
-        string keyword = AppStateStore.KeyWord;
+        PrepareHttpClient();
         // Get referenced calendar item
-        meetup = await Http.GetFromJsonAsync<ExtendedCalendarItem>($"Calendar/extendedcalendaritem?keyword={keyword}&itemId={ItemId}");
+        meetup = await Http.GetFromJsonAsync<ExtendedCalendarItem>($"Calendar/extendedcalendaritem?itemId={ItemId}");
     }
     private async Task SaveComment()
     {
@@ -81,7 +81,8 @@
         comment.AuthorLastName = AppStateStore.LastName;
         if (!String.IsNullOrEmpty(comment.Comment))
         {
-            await Http.PostAsJsonAsync<CalendarComment>($"Calendar/addcomment?keyword={keyword}", comment);
+            PrepareHttpClient();
+            await Http.PostAsJsonAsync<CalendarComment>($"Calendar/addcomment", comment);
             if (IsConnected) await SendMessage();
         }
 
@@ -99,14 +100,14 @@
     }
     protected async Task RemoveComment(CalendarComment c)
     {
-        string keyword = AppStateStore.KeyWord;
-        HttpResponseMessage response = await Http.PostAsJsonAsync<CalendarComment>($"Calendar/removecomment?keyword={keyword}", c);
+        PrepareHttpClient();
+        HttpResponseMessage response = await Http.PostAsJsonAsync<CalendarComment>($"Calendar/removecomment", c);
         string responseBody = await response.Content.ReadAsStringAsync();
 
         BackendResult result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
         if (result.Success)
         {
-            if (IsConnected) await SendMessage(); 
+            if (IsConnected) await SendMessage();
             await ReadData();
             StateHasChanged();
         }
@@ -135,4 +136,21 @@
     {
         _ = hubConnection.DisposeAsync();
     }
+
+    private void PrepareHttpClient()
+    {
+        if (null != AppStateStore.Tenant?.Name)
+        {
+            if (!Http.DefaultRequestHeaders.Contains("x-meetup-tenant"))
+            {
+                Http.DefaultRequestHeaders.Add("x-meetup-tenant", AppStateStore.Tenant.Name);
+            }
+        }
+        if (!Http.DefaultRequestHeaders.Contains("x-meetup-keyword"))
+        {
+            Http.DefaultRequestHeaders.Add("x-meetup-keyword", AppStateStore.KeyWord);
+        }
+
+    }
+
 }

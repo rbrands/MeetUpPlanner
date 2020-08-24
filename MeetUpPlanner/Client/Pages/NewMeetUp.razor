@@ -202,15 +202,15 @@
             whenDate = DateTime.Parse(whenDateString);
         }
         meetup.StartDate = new DateTime(whenDate.Year, whenDate.Month, whenDate.Day, whenTime.Hour, whenTime.Minute, whenTime.Second);
-        if (meetup.StartDate.CompareTo(DateTime.Now) < 0)
+        if (meetup.StartDate.CompareTo(DateTime.Now.AddHours(-3.0)) < 0)
         {
             notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Startdatum", Detail = "Bitte Startdatum korrigieren.", Duration = 4000 });
             return;
         }
         meetup.Summary = await htmlDescription.GetHTML();
-        string keyword = AppStateStore.KeyWord;
+        PrepareHttpClient();
         // Save calendarItem server
-        await Http.PostAsJsonAsync<CalendarItem>($"Calendar/writecalendaritem?keyword={keyword}", meetup);
+        await Http.PostAsJsonAsync<CalendarItem>($"Calendar/writecalendaritem", meetup);
         if (IsConnected) await SendMessage();
 
 
@@ -284,4 +284,20 @@
 
         return scopedDays;
     }
+    private void PrepareHttpClient()
+    {
+        if (null != AppStateStore.Tenant.Name)
+        {
+            if (!Http.DefaultRequestHeaders.Contains("x-meetup-tenant"))
+            {
+                Http.DefaultRequestHeaders.Add("x-meetup-tenant", AppStateStore.Tenant.Name);
+            }
+        }
+        if (!Http.DefaultRequestHeaders.Contains("x-meetup-keyword"))
+        {
+            Http.DefaultRequestHeaders.Add("x-meetup-keyword", AppStateStore.KeyWord);
+        }
+
+    }
+
 }

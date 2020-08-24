@@ -42,7 +42,21 @@ namespace MeetUpPlanner.Functions
         {
             log.LogInformation("C# HTTP trigger function WriteServerSettings processed a request.");
 
-            ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings();
+            string tenant = req.Headers[Constants.HEADER_TENANT];
+            if (String.IsNullOrWhiteSpace(tenant))
+            {
+                tenant = null;
+            }
+            ServerSettings serverSettings;
+            if (null == tenant)
+            {
+                serverSettings = await _serverSettingsRepository.GetServerSettings();
+            }
+            else
+            {
+                serverSettings = await _serverSettingsRepository.GetServerSettings(tenant);
+            }
+
             string keyWord = req.Headers[Constants.HEADER_KEYWORD];
             if (String.IsNullOrEmpty(keyWord) || !serverSettings.AdminKeyword.Equals(keyWord))
             {
@@ -50,6 +64,10 @@ namespace MeetUpPlanner.Functions
             }
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             ServerSettings newServerSettings = JsonConvert.DeserializeObject<ServerSettings>(requestBody);
+            if (null != tenant)
+            {
+                newServerSettings.Tenant = tenant;
+            }
             newServerSettings = await _serverSettingsRepository.WriteServerSettings(newServerSettings);
 
             return new OkObjectResult(newServerSettings);

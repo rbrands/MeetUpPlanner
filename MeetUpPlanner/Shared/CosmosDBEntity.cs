@@ -42,7 +42,7 @@ namespace MeetUpPlanner.Shared
         // used to set Time-to-live for expiration policy
         [JsonProperty(PropertyName = "ttl", NullValueHandling = NullValueHandling.Ignore)]
         public int? TimeToLive { get; set; }
-        [JsonProperty(PropertyName = "tenant", NullValueHandling = NullValueHandling.Include)]
+        [JsonProperty(PropertyName = "tenant", NullValueHandling = NullValueHandling.Ignore)]
         public string Tenant { get; set; }
         public void SetUniqueKey()
         {

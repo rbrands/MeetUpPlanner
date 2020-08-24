@@ -37,18 +37,26 @@ namespace MeetUpPlanner.Functions
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function GetCalendarItems processed a request.");
-            ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings();
+            string tenant = req.Headers[Constants.HEADER_TENANT];
+            if (String.IsNullOrWhiteSpace(tenant))
+            {
+                tenant = null;
+            }
+            ServerSettings serverSettings;
+            if (null == tenant)
+            {
+                serverSettings = await _serverSettingsRepository.GetServerSettings();
+            }
+            else
+            {
+                serverSettings = await _serverSettingsRepository.GetServerSettings(tenant);
+            }
 
             string keyWord = req.Headers[Constants.HEADER_KEYWORD];
             if (String.IsNullOrEmpty(keyWord) || !serverSettings.IsUser(keyWord))
             {
                 _logger.LogWarning("GetCalendarItems called with wrong keyword.");
                 return new BadRequestErrorMessageResult("Keyword is missing or wrong.");
-            }
-            string tenant = req.Headers[Constants.HEADER_TENANT];
-            if (String.IsNullOrEmpty(tenant))
-            {
-                tenant = null;
             }
             string privateKeywordsString = req.Query["privatekeywords"];
             string[] privateKeywords = null;

@@ -39,7 +39,7 @@ namespace MeetUpFunctions
         {
             _logger.LogInformation("C# HTTP trigger function GetClientSettings processed a request.");
             string tenant = req.Headers[Constants.HEADER_TENANT];
-            if (String.IsNullOrEmpty(tenant))
+            if (String.IsNullOrWhiteSpace(tenant))
             {
                 tenant = null;
             }

@@ -40,7 +40,20 @@ namespace MeetUpPlanner.Functions
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
         {
             _logger.LogInformation($"C# HTTP trigger function AddCommentToCalendarItem processed a request.");
-            ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings();
+            string tenant = req.Headers[Constants.HEADER_TENANT];
+            if (String.IsNullOrWhiteSpace(tenant))
+            {
+                tenant = null;
+            }
+            ServerSettings serverSettings;
+            if (null == tenant)
+            {
+                serverSettings = await _serverSettingsRepository.GetServerSettings();
+            }
+            else
+            {
+                serverSettings = await _serverSettingsRepository.GetServerSettings(tenant);
+            }
 
             string keyWord = req.Headers[Constants.HEADER_KEYWORD];
             if (String.IsNullOrEmpty(keyWord) || !serverSettings.IsUser(keyWord))
@@ -64,6 +77,10 @@ namespace MeetUpPlanner.Functions
             comment.TimeToLive = serverSettings.AutoDeleteAfterDays * 24 * 3600 + (int)diffTime.TotalSeconds;
             // Checkindate to track bookings
             comment.CommentDate = DateTime.Now;
+            if (!String.IsNullOrWhiteSpace(tenant))
+            { 
+                comment.Tenant = tenant;
+            }
 
             comment = await _cosmosRepository.UpsertItem(comment);
             BackendResult result = new BackendResult(true);

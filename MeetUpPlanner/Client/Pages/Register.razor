@@ -4,7 +4,8 @@
 @using MeetUpPlanner.Shared
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
-@using Newtonsoft.Json 
+@using Newtonsoft.Json
+@using Microsoft.AspNetCore.SignalR.Client
 
 
 <div class="jumbotron">
@@ -84,6 +85,8 @@
     Participant _guest = new Participant();
     const string PERM_STORAGE = "permGuestState";
     string _buttonTitle = "An/Abmelden";
+    private HubConnection hubConnection;
+
 
     Boolean UsageRightsAccepted
     {
@@ -112,14 +115,20 @@
             _guest.ParticipantAdressInfo = permAppState.PhoneMail;
         }
         // Get client settings from server
+        AppStateStore.Tenant = TenantConfig.GetTenant(NavigationManager.BaseUri);
+        PrepareHttpClient();
         AppStateStore.ClientSettings = await Http.GetFromJsonAsync<ClientSettings>("Util/clientsettings");
         await ReadData();
+        hubConnection = new HubConnectionBuilder()
+             .WithUrl(NavigationManager.ToAbsoluteUri("/broadcastHub"))
+             .WithAutomaticReconnect()
+             .Build();
+        await hubConnection.StartAsync();
 
         AppStateStore.NotifyStateChanged();
     }
     private async Task ReadData()
     {
-        string keyword = AppStateStore.KeyWord;
         // Get referenced calendar item
         meetup = await Http.GetFromJsonAsync<ExtendedCalendarItem>($"Calendar/extendedcalendaritemforguest?itemId={ItemId}");
         if (meetup.StartDate.CompareTo(DateTime.Now.AddHours(-8)) < 0)
@@ -156,6 +165,7 @@
         Participant participant = meetup.FindParticipant(_guest.ParticipantFirstName, _guest.ParticipantLastName);
         if (null == participant)
         {
+            PrepareHttpClient();
             HttpResponseMessage response = await Http.PostAsJsonAsync<Participant>($"Calendar/addguest", _guest);
             string responseBody = await response.Content.ReadAsStringAsync();
 
@@ -163,10 +173,12 @@
             if (result.Success)
             {
                 logMessage = "Du bist jetzt angemeldet. Über diese Seite und den Button oben kannst du dich auch wieder abmelden.";
+                if (IsConnected) await SendMessage();
             }
         }
         else
         {
+            PrepareHttpClient();
             HttpResponseMessage response = await Http.PostAsJsonAsync<Participant>($"Calendar/removeguest?", participant);
             string responseBody = await response.Content.ReadAsStringAsync();
 
@@ -174,6 +186,7 @@
             if (result.Success)
             {
                 logMessage = "Du bist wieder abgemeldet von der Ausfahrt.";
+                if (IsConnected) await SendMessage();
             }
         }
         if (result.Success)
@@ -186,4 +199,24 @@
         }
 
     }
+    private void PrepareHttpClient()
+    {
+        if (null != AppStateStore.Tenant)
+        {
+            if (!Http.DefaultRequestHeaders.Contains("x-meetup-tenant"))
+            {
+                Http.DefaultRequestHeaders.Add("x-meetup-tenant", AppStateStore.Tenant.Name);
+            }
+        }
+    }
+
+    Task SendMessage() => hubConnection.SendAsync("SendMessage");
+
+    public bool IsConnected => hubConnection.State == HubConnectionState.Connected;
+
+    public void Dispose()
+    {
+        _ = hubConnection.DisposeAsync();
+    }
+
 }

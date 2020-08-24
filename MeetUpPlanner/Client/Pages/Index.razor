@@ -55,7 +55,7 @@
             <InputText id="lastName" area-describedby="nameHelp" class="form-control" @bind-Value="AppStateStore.LastName" autocomplete="on" placeholder="Nachname" title="Nachname" />
         </div>
     </div>
-    <div class="form-group">
+    <div class="form-group" hidden="@(!AppStateStore.Tenant.ClubMembershipAllowed)">
         <div class="form-check">
             <InputCheckbox id="addressNotNeeded" @oninput="@(e => { AppStateStore.PhoneMail = ((bool)e.Value ? "Vereinsmitglied" : String.Empty); })" aria-describedby="addressNotNeededHelp" class="form-check-input" @bind-Value="AppStateStore.NoAddressNeeded"></InputCheckbox>
             <label for="addressNotNeeded" class="form-check-label">Vereinsmitglied?</label>
@@ -124,6 +124,7 @@
         }
 
         // Get client settings from server
+        PrepareHttpClient();
         AppStateStore.ClientSettings = await Http.GetFromJsonAsync<ClientSettings>("Util/clientsettings");
 
         // Reset user status
@@ -135,9 +136,10 @@
 
     private async Task CheckKeyword()
     {
-        string keyword = AppStateStore.KeyWord;
         // Keyword check at server side
-        KeywordCheck keywordCheck = await Http.GetFromJsonAsync<KeywordCheck>($"Util/checkkeyword?keyword={keyword}");
+        AppStateStore.KeyWord = AppStateStore.KeyWord.Trim();
+        PrepareHttpClient();
+        KeywordCheck keywordCheck = await Http.GetFromJsonAsync<KeywordCheck>($"Util/checkkeyword");
         KeywordCheck.IsAdmin = keywordCheck.IsAdmin;
         KeywordCheck.IsUser = keywordCheck.IsUser;
         AppStateStore.NotifyStateChanged();
@@ -171,7 +173,19 @@
             NavigationManager.NavigateTo("calendar");
         }
     }
+    private void PrepareHttpClient()
+    {
+        if (null != AppStateStore.Tenant?.Name)
+        {
+            if (!Http.DefaultRequestHeaders.Contains("x-meetup-tenant"))
+            {
+                Http.DefaultRequestHeaders.Add("x-meetup-tenant", AppStateStore.Tenant.Name);
+            }
+        }
+        Http.DefaultRequestHeaders.Remove("x-meetup-keyword");
+        Http.DefaultRequestHeaders.Add("x-meetup-keyword", AppStateStore.KeyWord);
 
+    }
 
 }
 

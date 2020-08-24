@@ -24,9 +24,9 @@ namespace MeetUpPlanner.Server.Controllers
         }
         [HttpPost("writecalendaritem")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> WriteCalendarItem([FromQuery] string keyword, [FromBody] CalendarItem calendarItem)
+        public async Task<IActionResult> WriteCalendarItem([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] CalendarItem calendarItem)
         {
-            await _meetUpFunctions.WriteCalendarItem(keyword, calendarItem);
+            await _meetUpFunctions.WriteCalendarItem(tenant, keyword, calendarItem);
             return Ok();
         }
 
@@ -39,7 +39,7 @@ namespace MeetUpPlanner.Server.Controllers
         }
         [HttpGet("extendedcalendaritems")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetExtendedCalendarItems([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromQuery] string keyword, [FromQuery] string privatekeywords)
+        public async Task<IActionResult> GetExtendedCalendarItems([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromQuery] string privatekeywords)
         {
             IEnumerable<ExtendedCalendarItem> calendarItems = await _meetUpFunctions.GetExtendedCalendarItems(tenant, keyword, privatekeywords);
             return Ok(calendarItems);
@@ -53,35 +53,35 @@ namespace MeetUpPlanner.Server.Controllers
         }
         [HttpGet("extendedcalendaritem")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetExtendedCalendarItem([FromQuery] string keyword, [FromQuery] string itemId)
+        public async Task<IActionResult> GetExtendedCalendarItem([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromQuery] string itemId)
         {
-            ExtendedCalendarItem calendarItem = await _meetUpFunctions.GetExtendedCalendarItem(keyword, itemId);
+            ExtendedCalendarItem calendarItem = await _meetUpFunctions.GetExtendedCalendarItem(tenant, keyword, itemId);
             return Ok(calendarItem);
         }
         [HttpGet("extendedcalendaritemforguest")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetExtendedCalendarItemForGuest([FromQuery] string itemId)
+        public async Task<IActionResult> GetExtendedCalendarItemForGuest([FromHeader(Name = "x-meetup-tenant")] string tenant, string itemId)
         {
-            ExtendedCalendarItem calendarItem = await _meetUpFunctions.GetExtendedCalendarItem(_meetUpFunctions.InviteGuestKey, itemId);
+            ExtendedCalendarItem calendarItem = await _meetUpFunctions.GetExtendedCalendarItem(tenant, _meetUpFunctions.InviteGuestKey, itemId);
             return Ok(calendarItem);
         }
         [HttpPost("addparticipant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> AddParticipant([FromQuery] string keyword, [FromBody] Participant participant)
+        public async Task<IActionResult> AddParticipant([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] Participant participant)
         {
-            BackendResult result = await _meetUpFunctions.AddParticipantToCalendarItem(keyword, participant);
+            BackendResult result = await _meetUpFunctions.AddParticipantToCalendarItem(tenant, keyword, participant);
             return Ok(result);
         }
         [HttpPost("addguest")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> AddGuest([FromBody] Participant participant)
+        public async Task<IActionResult> AddGuest([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromBody] Participant participant)
         {
-            BackendResult result = await _meetUpFunctions.AddParticipantToCalendarItem(_meetUpFunctions.InviteGuestKey, participant);
+            BackendResult result = await _meetUpFunctions.AddParticipantToCalendarItem(tenant, _meetUpFunctions.InviteGuestKey, participant);
             return Ok(result);
         }
         [HttpPost("removeparticipant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> RemoveParticipant([FromQuery] string keyword, [FromBody] Participant participant)
+        public async Task<IActionResult> RemoveParticipant([FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] Participant participant)
         {
             BackendResult result = await _meetUpFunctions.RemoveParticipantFromCalendarItem(keyword, participant);
             return Ok(result);
@@ -102,23 +102,23 @@ namespace MeetUpPlanner.Server.Controllers
         }
         [HttpPost("addcomment")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> AddComment([FromQuery] string keyword, [FromBody] CalendarComment comment)
+        public async Task<IActionResult> AddComment([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] CalendarComment comment)
         {
-            BackendResult result = await _meetUpFunctions.AddCommentToCalendarItem(keyword, comment);
+            BackendResult result = await _meetUpFunctions.AddCommentToCalendarItem(tenant, keyword, comment);
             return Ok(result);
         }
         [HttpPost("removecomment")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> RemoveComment([FromQuery] string keyword, [FromBody] CalendarComment comment)
+        public async Task<IActionResult> RemoveComment([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] CalendarComment comment)
         {
-            BackendResult result = await _meetUpFunctions.RemoveCommentFromCalendarItem(keyword, comment);
+            BackendResult result = await _meetUpFunctions.RemoveCommentFromCalendarItem(tenant, keyword, comment);
             return Ok(result);
         }
         [HttpPost("deletecalendaritem")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> DeleteCalendarItem([FromQuery] string keyword, [FromBody] CalendarItem calendarItem)
+        public async Task<IActionResult> DeleteCalendarItem([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] CalendarItem calendarItem)
         {
-            BackendResult result = await _meetUpFunctions.DeleteCalendarItem(keyword, calendarItem);
+            BackendResult result = await _meetUpFunctions.DeleteCalendarItem(tenant, keyword, calendarItem);
             return Ok(result);
         }
         [HttpPost("requesttrackingreport")]

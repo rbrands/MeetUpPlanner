@@ -10,29 +10,47 @@ namespace MeetUpPlanner.Client
     /// </summary>
     public static class TenantConfig
     {
-        private static List<Tuple<string, string>> _tenantList = new List<Tuple<string, string>>
+        private static List<TenantSettings> _tenantList = new List<TenantSettings>
         {
-            new Tuple<string, string>("ausfahrten.scuderia-suedstadt.de", null), // default is null (no special tenant)
-            new Tuple<string, string>("ausfahrten.robert-brands", "demo"),
-            new Tuple<string, string>("localhost", "demo")
+            //new TenantSettings("ausfahrten.scuderia-suedstadt.de", null, true), // default is null (no special tenant)
+            new TenantSettings("ausfahrten.robert-brands", "demo", false),
+            new TenantSettings("localhost", "demo", true)
         };
         /// <summary>
         /// For the given URL all configured tenants are checked.
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        public static string GetTenant(string url)
+        public static TenantSettings GetTenant(string url)
         {
-            string tenant = null;
-            foreach (Tuple<string, string> t in _tenantList)
+            TenantSettings tenant = new TenantSettings();
+            foreach (TenantSettings t in _tenantList)
             {
-                if (url.Contains(t.Item1))
+                if (url.Contains(t.LookFor))
                 {
-                    tenant = t.Item2;
+                    tenant = t;
                     break;
                 }
             }
             return tenant;
+        }
+    }
+
+    public class TenantSettings
+    {
+        public string LookFor { get; set; } = null;
+        public string Name { get; set; } = null;
+        public bool ClubMembershipAllowed { get; set; }
+
+        public TenantSettings()
+        {
+            ClubMembershipAllowed = true;
+        }
+        public TenantSettings(string lookFor, string name, bool clubMembershipAllowed)
+        {
+            LookFor = lookFor;
+            Name = name;
+            ClubMembershipAllowed = clubMembershipAllowed;
         }
     }
 }
