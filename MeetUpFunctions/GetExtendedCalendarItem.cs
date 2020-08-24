@@ -49,16 +49,7 @@ namespace MeetUpPlanner.Functions
             {
                 tenant = null;
             }
-            ServerSettings serverSettings;
-            if (null == tenant)
-            {
-                serverSettings = await _serverSettingsRepository.GetServerSettings();
-            }
-            else
-            {
-                serverSettings = await _serverSettingsRepository.GetServerSettings(tenant);
-            }
-
+            ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings(tenant);
             string keyWord = req.Headers[Constants.HEADER_KEYWORD];
             if (String.IsNullOrEmpty(keyWord) || !(serverSettings.IsUser(keyWord) || _serverSettingsRepository.IsInvitedGuest(keyWord)))
             {

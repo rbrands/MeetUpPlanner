@@ -156,9 +156,9 @@
             scopedDates = GetScopedDays();
             if (!String.IsNullOrEmpty(ItemId))
             {
-                string keyword = AppStateStore.KeyWord;
+                PrepareHttpClient();
                 // Get referenced calendar item
-                meetup = await Http.GetFromJsonAsync<CalendarItem>($"Calendar/calendaritem?keyword={keyword}&itemId={ItemId}");
+                meetup = await Http.GetFromJsonAsync<CalendarItem>($"Calendar/calendaritem?itemId={ItemId}");
             }
             else
             {

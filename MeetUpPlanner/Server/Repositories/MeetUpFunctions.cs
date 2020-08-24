@@ -184,12 +184,13 @@ namespace MeetUpPlanner.Server.Repositories
             }
             return calendarItems;
         }
-        public async Task<CalendarItem> GetCalendarItem(string keyword, string itemId)
+        public async Task<CalendarItem> GetCalendarItem(string tenant, string keyword, string itemId)
         {
 
             CalendarItem calendarItem = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/GetCalendarItem/{itemId}"
                           .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
                           .WithHeader(HEADER_KEYWORD, keyword)
+                          .WithHeader(HEADER_TENANT, tenant)
                           .GetJsonAsync<CalendarItem>();
             return calendarItem;
         }
@@ -236,20 +237,22 @@ namespace MeetUpPlanner.Server.Repositories
 
             return result;
         }
-        public async Task<BackendResult> RemoveParticipantFromCalendarItem(string keyword, Participant participant)
+        public async Task<BackendResult> RemoveParticipantFromCalendarItem(string tenant, string keyword, Participant participant)
         {
             BackendResult result = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/RemoveParticipantFromCalendarItem"
                             .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
                             .WithHeader(HEADER_KEYWORD, keyword)
+                            .WithHeader(HEADER_TENANT, tenant)
                             .PostJsonAsync(participant)
                             .ReceiveJson<BackendResult>();
             return result;
         }
-        public async Task<BackendResult> AssignNewHostToCalendarItem(string keyword, Participant participant)
+        public async Task<BackendResult> AssignNewHostToCalendarItem(string tenant, string keyword, Participant participant)
         {
             BackendResult result = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/AssignNewHostToCalendarItem"
                             .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
                             .WithHeader(HEADER_KEYWORD, keyword)
+                            .WithHeader(HEADER_TENANT, tenant)
                             .PostJsonAsync(participant)
                             .ReceiveJson<BackendResult>();
             return result;

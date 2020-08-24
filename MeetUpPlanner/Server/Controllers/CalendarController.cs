@@ -46,9 +46,9 @@ namespace MeetUpPlanner.Server.Controllers
         }
         [HttpGet("calendaritem")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetCalendarItem([FromQuery] string keyword, [FromQuery] string itemId)
+        public async Task<IActionResult> GetCalendarItem([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromQuery] string itemId)
         {
-            CalendarItem calendarItem = await _meetUpFunctions.GetCalendarItem(keyword, itemId);
+            CalendarItem calendarItem = await _meetUpFunctions.GetCalendarItem(tenant, keyword, itemId);
             return Ok(calendarItem);
         }
         [HttpGet("extendedcalendaritem")]
@@ -81,23 +81,23 @@ namespace MeetUpPlanner.Server.Controllers
         }
         [HttpPost("removeparticipant")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> RemoveParticipant([FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] Participant participant)
+        public async Task<IActionResult> RemoveParticipant([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] Participant participant)
         {
-            BackendResult result = await _meetUpFunctions.RemoveParticipantFromCalendarItem(keyword, participant);
+            BackendResult result = await _meetUpFunctions.RemoveParticipantFromCalendarItem(tenant, keyword, participant);
             return Ok(result);
         }
         [HttpPost("assignnewhost")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> AssignNewHost([FromQuery] string keyword, [FromBody] Participant participant)
+        public async Task<IActionResult> AssignNewHost([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] Participant participant)
         {
-            BackendResult result = await _meetUpFunctions.AssignNewHostToCalendarItem(keyword, participant);
+            BackendResult result = await _meetUpFunctions.AssignNewHostToCalendarItem(tenant, keyword, participant);
             return Ok(result);
         }
         [HttpPost("removeguest")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> RemoveGuest([FromBody] Participant participant)
+        public async Task<IActionResult> RemoveGuest([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromBody] Participant participant)
         {
-            BackendResult result = await _meetUpFunctions.RemoveParticipantFromCalendarItem(_meetUpFunctions.InviteGuestKey, participant);
+            BackendResult result = await _meetUpFunctions.RemoveParticipantFromCalendarItem(tenant, _meetUpFunctions.InviteGuestKey, participant);
             return Ok(result);
         }
         [HttpPost("addcomment")]
