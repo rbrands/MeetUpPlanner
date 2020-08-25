@@ -247,7 +247,10 @@
     }
     public void Dispose()
     {
-        _ = hubConnection.DisposeAsync();
+        if (null != hubConnection)
+        {
+            _ = hubConnection.DisposeAsync();
+        }
         // only if Timer is used instead of SignalR
         // Timer.DisableTimer();
         // Timer2.DisableTimer();
