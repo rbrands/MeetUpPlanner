@@ -32,9 +32,9 @@ namespace MeetUpPlanner.Server.Controllers
 
         [HttpGet("calendaritems")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetCalendarItems([FromQuery] string keyword, [FromQuery] string privatekeywords)
+        public async Task<IActionResult> GetCalendarItems([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromQuery] string privatekeywords)
         {
-            IEnumerable<CalendarItem> calendarItems = await _meetUpFunctions.GetCalendarItems(keyword, privatekeywords);
+            IEnumerable<CalendarItem> calendarItems = await _meetUpFunctions.GetCalendarItems(tenant, keyword, privatekeywords);
             return Ok(calendarItems);
         }
         [HttpGet("extendedcalendaritems")]
@@ -123,17 +123,17 @@ namespace MeetUpPlanner.Server.Controllers
         }
         [HttpPost("requesttrackingreport")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> ExportTrackingReport([FromQuery] string keyword, [FromBody] TrackingReportRequest request)
+        public async Task<IActionResult> ExportTrackingReport([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] TrackingReportRequest request)
         {
-            TrackingReport report = await _meetUpFunctions.ExportTrackingReport(keyword, request);
+            TrackingReport report = await _meetUpFunctions.ExportTrackingReport(tenant, keyword, request);
             return Ok(report);
         }
 
         [HttpGet("getexportlog")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetExportLog([FromQuery] string keyword)
+        public async Task<IActionResult> GetExportLog([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword)
         {
-            IEnumerable<ExportLogItem> result = await _meetUpFunctions.GetExportLog(keyword);
+            IEnumerable<ExportLogItem> result = await _meetUpFunctions.GetExportLog(tenant, keyword);
             return Ok(result);
         }
 

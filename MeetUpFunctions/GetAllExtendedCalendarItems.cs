@@ -44,19 +44,7 @@ namespace MeetUpPlanner.Functions
         {
             _logger.LogInformation("C# HTTP trigger function GetAllExtendedCalendarItems processed a request.");
             string tenant = req.Headers[Constants.HEADER_TENANT];
-            if (String.IsNullOrWhiteSpace(tenant))
-            {
-                tenant = null;
-            }
-            ServerSettings serverSettings;
-            if (null == tenant)
-            {
-                serverSettings = await _serverSettingsRepository.GetServerSettings();
-            }
-            else
-            {
-                serverSettings = await _serverSettingsRepository.GetServerSettings(tenant);
-            }
+            ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings(tenant);
 
             string keyWord = req.Headers[Constants.HEADER_KEYWORD];
             if (String.IsNullOrEmpty(keyWord) || !serverSettings.IsAdmin(keyWord))

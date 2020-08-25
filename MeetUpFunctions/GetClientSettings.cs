@@ -55,7 +55,10 @@ namespace MeetUpFunctions
                 {
                     Title = Constants.DEFAULT_TITLE,
                     FurtherInfoLink = Constants.DEFAULT_LINK,
-                    FurtherInfoTitle = Constants.DEFAULT_LINK_TITLE
+                    FurtherInfoTitle = Constants.DEFAULT_LINK_TITLE,
+                    Disclaimer = Constants.DEFAULT_DISCLAIMER,
+                    GuestDisclaimer = Constants.DEFAULT_GUEST_DISCLAIMER
+                    
                 };
             }
             return new OkObjectResult(clientSettings);

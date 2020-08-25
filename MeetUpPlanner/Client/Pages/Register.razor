@@ -4,6 +4,7 @@
 @using MeetUpPlanner.Shared
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NotificationService notificationService
 @using Newtonsoft.Json
 @using Microsoft.AspNetCore.SignalR.Client
 
@@ -70,17 +71,12 @@
     </div>
     <button type="submit" id="BtnSaveKeyword" class="btn btn-primary" title="An/Abmelden" disabled="@(!UsageRightsAccepted)">@_buttonTitle</button>
 </EditForm>
-<br />
-<p class="alert-info">
-    @logMessage
-</p>
 
 
 @code {
     [Parameter]
     public string ItemId { get; set; }
     ExtendedCalendarItem meetup = new ExtendedCalendarItem();
-    string logMessage;
     Boolean _usageRightsAccepted = false;
     Participant _guest = new Participant();
     const string PERM_STORAGE = "permGuestState";
@@ -172,8 +168,8 @@
             result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
             if (result.Success)
             {
-                logMessage = "Du bist jetzt angemeldet. Über diese Seite und den Button oben kannst du dich auch wieder abmelden.";
                 if (IsConnected) await SendMessage();
+                notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Angemeldet", Detail = "Du bist jetzt angemeldet. Über diese Seite kannst du dich auch wieder abmelden.", Duration = 4000 });
             }
         }
         else
@@ -185,8 +181,8 @@
             result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
             if (result.Success)
             {
-                logMessage = "Du bist wieder abgemeldet von der Ausfahrt.";
                 if (IsConnected) await SendMessage();
+                notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Abgemeldet", Detail = "Du bist jetzt von der Ausfahrt abgemeldet.", Duration = 4000 });
             }
         }
         if (result.Success)
@@ -195,7 +191,7 @@
         }
         else
         {
-            logMessage = result.Message;
+            notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Fehler", Detail = result.Message, Duration = 4000 });
         }
 
     }
