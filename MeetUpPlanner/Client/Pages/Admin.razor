@@ -302,7 +302,8 @@
         {
             string keyword = AppStateStore.KeyWord;
             // Get server settings from server
-            serverSettings = await Http.GetFromJsonAsync<ServerSettings>($"Util/serversettings?adminKeyword={keyword}");
+            PrepareHttpClient();
+            serverSettings = await Http.GetFromJsonAsync<ServerSettings>($"Util/serversettings");
             await htmlWelcomeMessage.LoadHTMLContent(AppStateStore.ClientSettings.WelcomeMessage);
             await htmlWhiteboardMessage.LoadHTMLContent(AppStateStore.ClientSettings.WhiteboardMessage);
             await htmlNewMeetupMessage.LoadHTMLContent(AppStateStore.ClientSettings.NewMeetupMessage);
@@ -317,7 +318,6 @@
 
     private async Task SaveClientSettings()
     {
-        string keyword = AppStateStore.KeyWord;
         AppStateStore.ClientSettings.WelcomeMessage = StripEmptyHtml(await htmlWelcomeMessage.GetHTML());
         AppStateStore.ClientSettings.WhiteboardMessage = StripEmptyHtml(await htmlWhiteboardMessage.GetHTML());
         AppStateStore.ClientSettings.NewMeetupMessage = StripEmptyHtml(await htmlNewMeetupMessage.GetHTML());
@@ -325,7 +325,8 @@
         AppStateStore.ClientSettings.GuestDisclaimer = StripEmptyHtml(await htmlGuestDisclaimer.GetHTML());
 
         // Write client settings to server
-        await Http.PostAsJsonAsync<ClientSettings>($"Util/writesettings?adminKeyword={keyword}", AppStateStore.ClientSettings);
+        PrepareHttpClient();
+        await Http.PostAsJsonAsync<ClientSettings>($"Util/writesettings", AppStateStore.ClientSettings);
         AppStateStore.NotifyStateChanged();
         logMessage = "Einstellungen gespeichert.";
     }
@@ -338,7 +339,25 @@
     {
         string keyword = AppStateStore.KeyWord;
         // Save server settings to server
-        await Http.PostAsJsonAsync<ServerSettings>($"Util/writeserversettings?adminKeyword={keyword}", serverSettings);
+        PrepareHttpClient();
+        await Http.PostAsJsonAsync<ServerSettings>($"Util/writeserversettings", serverSettings);
         serverLogMessage = "Einstellungen gespeichert";
     }
+
+    private void PrepareHttpClient()
+    {
+        if (null != AppStateStore.Tenant?.Name)
+        {
+            if (!Http.DefaultRequestHeaders.Contains("x-meetup-tenant"))
+            {
+                Http.DefaultRequestHeaders.Add("x-meetup-tenant", AppStateStore.Tenant.Name);
+            }
+        }
+        if (!Http.DefaultRequestHeaders.Contains("x-meetup-keyword"))
+        {
+            Http.DefaultRequestHeaders.Add("x-meetup-keyword", AppStateStore.KeyWord);
+        }
+
+    }
+
 }

@@ -13,10 +13,10 @@ namespace MeetUpPlanner.Shared
     {
         [JsonProperty(PropertyName = "userKeyword")]
         [Required(ErrorMessage = "Bitte ein Schlüsselwort für den Zugriff vergeben.")]
-        public string UserKeyword { get; set; } = "Abstand";
+        public string UserKeyword { get; set; } = "Demo";
         [JsonProperty(PropertyName = "adminKeyword")]
         [Required(ErrorMessage = "Bitte ein Schlüsselwort für den Admin-Zugriff vergeben.")]
-        public string AdminKeyword { get; set; } = "AdminPassword";
+        public string AdminKeyword { get; set; } = "DemoAdmin";
         /// <summary>
         /// After given days meetups are deleted
         /// </summary>

@@ -30,6 +30,7 @@
         {
             hubConnection = new HubConnectionBuilder()
                  .WithUrl(NavigationManager.ToAbsoluteUri("/broadcastHub"))
+                 .WithAutomaticReconnect()
                  .Build();
             await hubConnection.StartAsync();
 
@@ -42,9 +43,9 @@
     }
     private async Task ReadData()
     {
-        string keyword = AppStateStore.KeyWord;
+        PrepareHttpClient();
         // Get referenced calendar item
-        meetup = await Http.GetFromJsonAsync<ExtendedCalendarItem>($"Calendar/extendedcalendaritem?keyword={keyword}&itemId={ItemId}");
+        meetup = await Http.GetFromJsonAsync<ExtendedCalendarItem>($"Calendar/extendedcalendaritem?itemId={ItemId}");
     }
     protected void OnCancel()
     {
@@ -52,8 +53,8 @@
     }
     protected async Task OnDelete()
     {
-        string keyword = AppStateStore.KeyWord;
-        HttpResponseMessage response = await Http.PostAsJsonAsync<CalendarItem>($"Calendar/deletecalendaritem?keyword={keyword}", meetup);
+        PrepareHttpClient();
+        HttpResponseMessage response = await Http.PostAsJsonAsync<CalendarItem>($"Calendar/deletecalendaritem", meetup);
         string responseBody = await response.Content.ReadAsStringAsync();
 
         BackendResult result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
@@ -76,5 +77,20 @@
         _ = hubConnection.DisposeAsync();
     }
 
+    private void PrepareHttpClient()
+    {
+        if (null != AppStateStore.Tenant?.Name)
+        {
+            if (!Http.DefaultRequestHeaders.Contains("x-meetup-tenant"))
+            {
+                Http.DefaultRequestHeaders.Add("x-meetup-tenant", AppStateStore.Tenant.Name);
+            }
+        }
+        if (!Http.DefaultRequestHeaders.Contains("x-meetup-keyword"))
+        {
+            Http.DefaultRequestHeaders.Add("x-meetup-keyword", AppStateStore.KeyWord);
+        }
+
+    }
 
 }

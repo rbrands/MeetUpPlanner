@@ -88,19 +88,19 @@
     }
     protected async Task ReadData()
     {
-        string keyword = AppStateStore.KeyWord;
         // Get log
         if (KeywordCheck.IsAdmin)
         {
-            log = await Http.GetFromJsonAsync<IEnumerable<ExportLogItem>>($"calendar/getexportlog?keyword={keyword}");
+            PrepareHttpClient();
+            log = await Http.GetFromJsonAsync<IEnumerable<ExportLogItem>>($"calendar/getexportlog");
         }
     }
 
     protected async Task StartExport()
     {
         // Get tracking report
-        string keyword = AppStateStore.KeyWord;
-        HttpResponseMessage response = await Http.PostAsJsonAsync<TrackingReportRequest>($"Calendar/requesttrackingreport?keyword={keyword}", trackingRequest);
+        PrepareHttpClient();
+        HttpResponseMessage response = await Http.PostAsJsonAsync<TrackingReportRequest>($"Calendar/requesttrackingreport", trackingRequest);
         string responseBody = await response.Content.ReadAsStringAsync();
         TrackingReport report = JsonConvert.DeserializeObject<TrackingReport>(responseBody);
 
@@ -128,6 +128,22 @@
         }
         await BlazorDownloadFileService.DownloadFile(fileName, new System.Text.UTF32Encoding().GetBytes(csvData.ToString()), "text/csv");
         await ReadData();
+    }
+
+    private void PrepareHttpClient()
+    {
+        if (null != AppStateStore.Tenant?.Name)
+        {
+            if (!Http.DefaultRequestHeaders.Contains("x-meetup-tenant"))
+            {
+                Http.DefaultRequestHeaders.Add("x-meetup-tenant", AppStateStore.Tenant.Name);
+            }
+        }
+        if (!Http.DefaultRequestHeaders.Contains("x-meetup-keyword"))
+        {
+            Http.DefaultRequestHeaders.Add("x-meetup-keyword", AppStateStore.KeyWord);
+        }
+
     }
 
 }

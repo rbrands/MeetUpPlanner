@@ -46,7 +46,12 @@ namespace MeetUpPlanner.Functions
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function ExportTrackingReport processed a request.");
-            ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings();
+            string tenant = req.Headers[Constants.HEADER_TENANT];
+            if (String.IsNullOrWhiteSpace(tenant))
+            {
+                tenant = null;
+            }
+            ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings(tenant);
 
             string keyWord = req.Headers[Constants.HEADER_KEYWORD];
             if (String.IsNullOrEmpty(keyWord) || !serverSettings.IsAdmin(keyWord))
@@ -67,7 +72,15 @@ namespace MeetUpPlanner.Functions
                 return new BadRequestErrorMessageResult("Track name missing.");
             }
             // Get a list of all CalendarItems
-            IEnumerable<CalendarItem> rawListOfCalendarItems = await _cosmosRepository.GetItems();
+            IEnumerable<CalendarItem> rawListOfCalendarItems;
+            if (null == tenant)
+            { 
+                rawListOfCalendarItems = await _cosmosRepository.GetItems(d => (d.Tenant ?? String.Empty) == String.Empty);
+            }
+            else
+            {
+                rawListOfCalendarItems = await _cosmosRepository.GetItems(d => d.Tenant.Equals(tenant));
+            }
             List<ExtendedCalendarItem> resultCalendarItems = new List<ExtendedCalendarItem>(50);
             // Filter the CalendarItems that are relevant
             foreach (CalendarItem item in rawListOfCalendarItems)
@@ -110,6 +123,10 @@ namespace MeetUpPlanner.Functions
             report.CreationDate = DateTime.Now;
             ExportLogItem log = new ExportLogItem(trackingRequest);
             log.TimeToLive = Constants.LOG_TTL;
+            if (null != tenant)
+            {
+                log.Tenant = tenant;
+            }
             await _logRepository.CreateItem(log);
 
             return new OkObjectResult(report);

@@ -36,7 +36,12 @@ namespace MeetUpPlanner.Functions
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function GetExportLog processed a request.");
-            ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings();
+            string tenant = req.Headers[Constants.HEADER_TENANT];
+            if (String.IsNullOrWhiteSpace(tenant))
+            {
+                tenant = null;
+            }
+            ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings(tenant);
 
             string keyWord = req.Headers[Constants.HEADER_KEYWORD];
             if (String.IsNullOrEmpty(keyWord) || !serverSettings.IsAdmin(keyWord))
@@ -46,7 +51,15 @@ namespace MeetUpPlanner.Functions
             }
 
 
-            IEnumerable<ExportLogItem> exportLog = await _cosmosRepository.GetItems();
+            IEnumerable<ExportLogItem> exportLog;
+            if (null == tenant)
+            { 
+                exportLog = await _cosmosRepository.GetItems(l => (l.Tenant ?? String.Empty) == String.Empty);
+            }
+            else
+            {
+                exportLog = await _cosmosRepository.GetItems(l => l.Tenant.Equals(tenant));
+            }
             IEnumerable<ExportLogItem> orderedList = exportLog.OrderByDescending(l => l.RequestDate);
             return new OkObjectResult(orderedList);
         }

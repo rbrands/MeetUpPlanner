@@ -20,7 +20,7 @@ namespace MeetUpPlanner.Server.Controllers
     {
         private readonly MeetUpFunctions _meetUpFunctions;
         private readonly ILogger<UtilController> logger;
-        const string serverVersion = "2020-08-21/2";
+        const string serverVersion = "2020-08-25";
         string functionsVersion = "tbd";
 
         public UtilController(ILogger<UtilController> logger, MeetUpFunctions meetUpFunctions)
@@ -47,40 +47,40 @@ namespace MeetUpPlanner.Server.Controllers
 
         [HttpGet("clientsettings")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetClientSettings()
+        public async Task<IActionResult> GetClientSettings([FromHeader(Name = "x-meetup-tenant")] string tenant)
         {
-            ClientSettings clientSettings = await _meetUpFunctions.GetClientSettings();
+            ClientSettings clientSettings = await _meetUpFunctions.GetClientSettings(tenant);
             return Ok(clientSettings);
         }
 
         [HttpGet("checkkeyword")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> CheckKeyword(string keyword)
+        public async Task<IActionResult> CheckKeyword([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword)
         {
-            KeywordCheck keywordCheck = await _meetUpFunctions.CheckKeyword(keyword);
+            KeywordCheck keywordCheck = await _meetUpFunctions.CheckKeyword(tenant, keyword);
 
             return Ok(keywordCheck);
         }
 
         [HttpGet("serversettings")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetServerSettings([FromQuery] string adminKeyword)
+        public async Task<IActionResult> GetServerSettings([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string adminKeyword)
         {
-            ServerSettings serverSettings = await _meetUpFunctions.GetServerSettings(adminKeyword);
+            ServerSettings serverSettings = await _meetUpFunctions.GetServerSettings(tenant, adminKeyword);
             return Ok(serverSettings);
         }
         [HttpPost("writeserversettings")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> WriteServerSettings([FromQuery] string adminKeyword, [FromBody] ServerSettings serverSettings)
+        public async Task<IActionResult> WriteServerSettings([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string adminKeyword, [FromBody] ServerSettings serverSettings)
         {
-            await _meetUpFunctions.WriteServerSettings(adminKeyword, serverSettings);
+            await _meetUpFunctions.WriteServerSettings(tenant, adminKeyword, serverSettings);
             return Ok();
         }
         [HttpPost("writesettings")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> WriteClientSettings([FromQuery] string adminKeyword, [FromBody] ClientSettings clientSettings)
+        public async Task<IActionResult> WriteClientSettings([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string adminKeyword, [FromBody] ClientSettings clientSettings)
         {
-            await _meetUpFunctions.WriteClientSettings(adminKeyword, clientSettings);
+            await _meetUpFunctions.WriteClientSettings(tenant, adminKeyword, clientSettings);
             return Ok();
         }
         [HttpGet("qrcode")]

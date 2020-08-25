@@ -38,8 +38,12 @@ namespace MeetUpPlanner.Functions
             string id)
         {
             _logger.LogInformation($"C# HTTP trigger function GetCalendarItem/{id} processed a request.");
-            ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings();
-
+            string tenant = req.Headers[Constants.HEADER_TENANT];
+            if (String.IsNullOrWhiteSpace(tenant))
+            {
+                tenant = null;
+            }
+            ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings(tenant);
             string keyWord = req.Headers[Constants.HEADER_KEYWORD];
             if (String.IsNullOrEmpty(keyWord) || !serverSettings.IsUser(keyWord))
             {

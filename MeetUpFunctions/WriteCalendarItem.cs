@@ -41,7 +41,20 @@ namespace MeetUpPlanner.Functions
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function WriteCalendarItem processed a request.");
-            ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings();
+            string tenant = req.Headers[Constants.HEADER_TENANT];
+            if (String.IsNullOrWhiteSpace(tenant))
+            {
+                tenant = null;
+            }
+            ServerSettings serverSettings;
+            if (null == tenant)
+            {
+                serverSettings = await _serverSettingsRepository.GetServerSettings();
+            }
+            else
+            {
+                serverSettings = await _serverSettingsRepository.GetServerSettings(tenant);
+            }
 
             string keyWord = req.Headers[Constants.HEADER_KEYWORD];
             if (String.IsNullOrEmpty(keyWord) || !serverSettings.IsUser(keyWord))
@@ -51,7 +64,11 @@ namespace MeetUpPlanner.Functions
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             CalendarItem calendarItem = JsonConvert.DeserializeObject<CalendarItem>(requestBody);
             System.TimeSpan diffTime = calendarItem.StartDate.Subtract(DateTime.Now);
-            calendarItem.TimeToLive = serverSettings.AutoDeleteAfterDays * 24 * 3600 + (int)diffTime.TotalSeconds; 
+            calendarItem.TimeToLive = serverSettings.AutoDeleteAfterDays * 24 * 3600 + (int)diffTime.TotalSeconds;
+            if (null != tenant)
+            {
+                calendarItem.Tenant = tenant;
+            }
             calendarItem = await _cosmosRepository.UpsertItem(calendarItem);
 
             return new OkObjectResult(calendarItem);

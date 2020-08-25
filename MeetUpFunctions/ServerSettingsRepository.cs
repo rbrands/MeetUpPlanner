@@ -24,14 +24,24 @@ namespace MeetUpPlanner.Functions
         }
         public async Task<ServerSettings> GetServerSettings()
         {
-            ServerSettings serverSettings = await this.GetItemByKey(Constants.KEY_SERVER_SETTINGS);
+            return await GetServerSettings(null);
+        }
+        public async Task<ServerSettings> GetServerSettings(string tenant)
+        {
+            string settingsKey = Constants.KEY_SERVER_SETTINGS;
+            if (!String.IsNullOrWhiteSpace(tenant))
+            {
+                settingsKey += "-" + tenant;
+            }
+            ServerSettings serverSettings = await this.GetItemByKey(settingsKey);
             if (null == serverSettings)
             {
                 serverSettings = new ServerSettings()
                 {
                     UserKeyword = Constants.DEFAULT_KEYWORD_USER,
                     AdminKeyword = Constants.DEFAULT_KEYWORD_ADMIN,
-                    AutoDeleteAfterDays = Constants.DEFAULT_AUTO_DELETE_DAYS
+                    AutoDeleteAfterDays = Constants.DEFAULT_AUTO_DELETE_DAYS,
+                    Tenant = tenant
                 };
             }
             return serverSettings;
@@ -40,6 +50,10 @@ namespace MeetUpPlanner.Functions
         public async Task<ServerSettings> WriteServerSettings(ServerSettings serverSettings)
         {
             serverSettings.LogicalKey = Constants.KEY_SERVER_SETTINGS;
+            if (!String.IsNullOrWhiteSpace(serverSettings.Tenant))
+            {
+                serverSettings.LogicalKey += "-" + serverSettings.Tenant;
+            }
             return await this.UpsertItem(serverSettings);
         }
     }

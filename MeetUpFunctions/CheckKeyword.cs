@@ -40,12 +40,21 @@ namespace MeetUpPlanner.Functions
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger CheckKeyword function processed a request.");
-            ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings();
-            string keyword = req.Query["keyword"];
-
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            keyword = keyword ?? data?.keyword;
+            string tenant = req.Headers[Constants.HEADER_TENANT];
+            if (String.IsNullOrWhiteSpace(tenant))
+            {
+                tenant = null;
+            }
+            ServerSettings serverSettings;
+            if (null == tenant)
+            {
+                serverSettings = await _serverSettingsRepository.GetServerSettings();
+            }
+            else
+            {
+                serverSettings = await _serverSettingsRepository.GetServerSettings(tenant);
+            }
+            string keyword = req.Headers[Constants.HEADER_KEYWORD];
 
             KeywordCheck keywordCheck = new KeywordCheck();
             if (!String.IsNullOrEmpty(keyword))

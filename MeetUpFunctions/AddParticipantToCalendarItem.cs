@@ -40,7 +40,12 @@ namespace MeetUpPlanner.Functions
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
         {
             _logger.LogInformation($"C# HTTP trigger function AddParticipantToCalendarItem processed a request.");
-            ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings();
+            string tenant = req.Headers[Constants.HEADER_TENANT];
+            if (String.IsNullOrWhiteSpace(tenant))
+            {
+                tenant = null;
+            }
+            ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings(tenant);
 
             string keyWord = req.Headers[Constants.HEADER_KEYWORD];
             if (String.IsNullOrEmpty(keyWord) || !(serverSettings.IsUser(keyWord) || _serverSettingsRepository.IsInvitedGuest(keyWord)))
@@ -85,7 +90,11 @@ namespace MeetUpPlanner.Functions
             participant.TimeToLive = serverSettings.AutoDeleteAfterDays * 24 * 3600 + (int)diffTime.TotalSeconds;
             // Checkindate to track bookings
             participant.CheckInDate = DateTime.Now;
-            
+            if(null != tenant)
+            { 
+                participant.Tenant = tenant;
+            }
+
             participant = await _cosmosRepository.UpsertItem(participant);
             BackendResult result = new BackendResult(true);
 

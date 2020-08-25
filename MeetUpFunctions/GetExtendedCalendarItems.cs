@@ -44,8 +44,12 @@ namespace MeetUpPlanner.Functions
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function GetExtendedCalendarItems processed a request.");
-            ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings();
-
+            string tenant = req.Headers[Constants.HEADER_TENANT];
+            if (String.IsNullOrWhiteSpace(tenant))
+            {
+                tenant = null;
+            }
+            ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings(tenant);
             string keyWord = req.Headers[Constants.HEADER_KEYWORD];
             if (String.IsNullOrEmpty(keyWord) || !serverSettings.IsUser(keyWord))
             {
@@ -62,10 +66,19 @@ namespace MeetUpPlanner.Functions
             // Get a list of all CalendarItems and filter all applicable ones
             DateTime compareDate = DateTime.Now.AddHours((-serverSettings.CalendarItemsPastWindowHours));
 
-            IEnumerable<CalendarItem> rawListOfCalendarItems = await _cosmosRepository.GetItems(d => d.StartDate > compareDate);
+            IEnumerable<CalendarItem> rawListOfCalendarItems;
+            if (null == tenant)
+            {
+                rawListOfCalendarItems = await _cosmosRepository.GetItems(d => d.StartDate > compareDate && (d.Tenant ?? String.Empty) == String.Empty);
+            }
+            else
+            {
+                rawListOfCalendarItems = await _cosmosRepository.GetItems(d => d.StartDate > compareDate && d.Tenant.Equals(tenant));
+            }
             List<ExtendedCalendarItem> resultCalendarItems = new List<ExtendedCalendarItem>(10);
             foreach (CalendarItem item in rawListOfCalendarItems)
             {
+                // Create ExtendedCalendarItem and get comments and participants
                 ExtendedCalendarItem extendedItem = new ExtendedCalendarItem(item);
                 if (String.IsNullOrEmpty(extendedItem.PrivateKeyword))
                 {

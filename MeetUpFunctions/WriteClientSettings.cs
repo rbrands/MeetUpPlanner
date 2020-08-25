@@ -44,7 +44,20 @@ namespace MeetUpPlanner.Functions
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function WriteClientSettings processed a request.");
-            ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings(); 
+            string tenant = req.Headers[Constants.HEADER_TENANT];
+            if (String.IsNullOrWhiteSpace(tenant))
+            {
+                tenant = null;
+            }
+            ServerSettings serverSettings;
+            if (null == tenant)
+            {
+                serverSettings = await _serverSettingsRepository.GetServerSettings();
+            }
+            else
+            {
+                serverSettings = await _serverSettingsRepository.GetServerSettings(tenant);
+            }
 
             string keyWord = req.Headers[Constants.HEADER_KEYWORD];
             if (String.IsNullOrEmpty(keyWord) || !serverSettings.AdminKeyword.Equals(keyWord))
@@ -54,6 +67,11 @@ namespace MeetUpPlanner.Functions
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             ClientSettings clientSettings = JsonConvert.DeserializeObject<ClientSettings>(requestBody);
             clientSettings.LogicalKey = Constants.KEY_CLIENT_SETTINGS;
+            if (null != tenant)
+            {
+                clientSettings.LogicalKey += "-" + tenant;
+                clientSettings.Tenant = tenant;
+            }
             clientSettings = await _cosmosRepository.UpsertItem(clientSettings);
 
             return new OkObjectResult(clientSettings);

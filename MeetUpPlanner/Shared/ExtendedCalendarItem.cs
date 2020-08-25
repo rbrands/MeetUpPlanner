@@ -43,6 +43,7 @@ namespace MeetUpPlanner.Shared
             this.ParticipantsList = new List<Participant>();
             this.CommentsList = new List<CalendarComment>();
             this.IsCross = calendarItem.IsCross;
+            this.Tenant = calendarItem.Tenant;
         }
 
         [JsonIgnore]

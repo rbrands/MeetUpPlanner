@@ -31,7 +31,7 @@
 <div class="row">
     @foreach (ExtendedCalendarItem item in calendarItems)
     {
-        <div class="col mt-2">
+        <div class="col col-lg-4 col-md-6 col-sm-12 mt-2">
             <div class="card">
                 <div class="card-header">
                     <em>@item.GetStartDateAsString() - @item.Place</em>
@@ -109,6 +109,7 @@
         {
             hubConnection = new HubConnectionBuilder()
                 .WithUrl(NavigationManager.ToAbsoluteUri("/broadcastHub"))
+                .WithAutomaticReconnect()
                 .Build();
 
             hubConnection.On("ReceiveMessage", () =>
@@ -135,10 +136,10 @@
 
     protected async Task ReadData()
     {
-        string keyword = AppStateStore.KeyWord;
         string privateKeywords = AppStateStore.PrivateKeyWord1 + ";" + AppStateStore.PrivateKeyWord2 + ";" + AppStateStore.PrivateKeyWord3; ;
         // Get list of calendar items
-        calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"calendar/extendedcalendaritems?keyword={keyword}&privatekeywords={privateKeywords}");
+        PrepareHttpClient();
+        calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"calendar/extendedcalendaritems?privatekeywords={privateKeywords}");
         StateHasChanged();
     }
     private void CallReadData()
@@ -161,8 +162,8 @@
         participant.ParticipantLastName = AppStateStore.LastName;
         participant.ParticipantAdressInfo = AppStateStore.PhoneMail;
         participant.CalendarItemId = itemId;
-        string keyword = AppStateStore.KeyWord;
-        HttpResponseMessage response = await Http.PostAsJsonAsync<Participant>($"Calendar/addparticipant?keyword={keyword}", participant);
+        PrepareHttpClient();
+        HttpResponseMessage response = await Http.PostAsJsonAsync<Participant>($"Calendar/addparticipant", participant);
         string responseBody = await response.Content.ReadAsStringAsync();
 
         BackendResult result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
@@ -174,8 +175,9 @@
             checkinComment.AuthorLastName = AppStateStore.LastName;
             if (!String.IsNullOrEmpty(checkinComment.Comment))
             {
-                await Http.PostAsJsonAsync<CalendarComment>($"Calendar/addcomment?keyword={keyword}", checkinComment);
+                await Http.PostAsJsonAsync<CalendarComment>($"Calendar/addcomment", checkinComment);
             }
+            if (IsConnected) await SendMessage();
             notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Angemeldet", Detail = "Du bist jetzt angemeldet. Falls du doch nicht dabei sein kannst, melde dich bitte wieder ab.", Duration = 4000 });
             // Read data again
             await ReadData();
@@ -191,13 +193,14 @@
         // Find corresponding participant item
         Participant participant = calendarItem.FindParticipant(AppStateStore.FirstName, AppStateStore.LastName);
 
-        string keyword = AppStateStore.KeyWord;
-        HttpResponseMessage response = await Http.PostAsJsonAsync<Participant>($"Calendar/removeparticipant?keyword={keyword}", participant);
+        PrepareHttpClient();
+        HttpResponseMessage response = await Http.PostAsJsonAsync<Participant>($"Calendar/removeparticipant", participant);
         string responseBody = await response.Content.ReadAsStringAsync();
 
         BackendResult result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
         if (result.Success)
         {
+            if (IsConnected) await SendMessage();
             await ReadData();
             StateHasChanged();
         }
@@ -283,6 +286,22 @@
 
 
         return badge;
+    }
+
+    private void PrepareHttpClient()
+    {
+        if (null != AppStateStore.Tenant?.Name)
+        {
+            if (!Http.DefaultRequestHeaders.Contains("x-meetup-tenant"))
+            {
+                Http.DefaultRequestHeaders.Add("x-meetup-tenant", AppStateStore.Tenant.Name);
+            }
+        }
+        if (!Http.DefaultRequestHeaders.Contains("x-meetup-keyword"))
+        {
+            Http.DefaultRequestHeaders.Add("x-meetup-keyword", AppStateStore.KeyWord);
+        }
+
     }
 
 }
