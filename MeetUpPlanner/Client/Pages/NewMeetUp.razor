@@ -208,6 +208,29 @@
             return;
         }
         meetup.Summary = await htmlDescription.GetHTML();
+        if (!String.IsNullOrWhiteSpace(meetup.PrivateKeyword))
+        {
+            meetup.PrivateKeyword = meetup.PrivateKeyword.Trim();
+            // Check if the private keyword is set in session state.
+            bool privateKeyWordSet = meetup.PrivateKeyword.Equals(AppStateStore.PrivateKeyWord1);
+            if (!privateKeyWordSet) privateKeyWordSet = meetup.PrivateKeyword.Equals(AppStateStore.PrivateKeyWord2);
+            if (!privateKeyWordSet) privateKeyWordSet = meetup.PrivateKeyword.Equals(AppStateStore.PrivateKeyWord3);
+            if (!privateKeyWordSet)
+            {
+                if (String.IsNullOrEmpty(AppStateStore.PrivateKeyWord1))
+                {
+                    AppStateStore.PrivateKeyWord1 = meetup.PrivateKeyword;
+                }
+                else if (String.IsNullOrEmpty(AppStateStore.PrivateKeyWord2))
+                {
+                    AppStateStore.PrivateKeyWord2 = meetup.PrivateKeyword;
+                }
+                else
+                {
+                    AppStateStore.PrivateKeyWord3 = meetup.PrivateKeyword;
+                }
+            }
+        }
         PrepareHttpClient();
         // Save calendarItem server
         await Http.PostAsJsonAsync<CalendarItem>($"Calendar/writecalendaritem", meetup);
