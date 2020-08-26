@@ -12,9 +12,10 @@ namespace MeetUpPlanner.Client
     {
         private static List<TenantSettings> _tenantList = new List<TenantSettings>
         {
-            //new TenantSettings("ausfahrten.scuderia-suedstadt.de", null, true), // default is null (no special tenant)
-            new TenantSettings("ausfahrten.robert-brands", "demo", false),
-            new TenantSettings("localhost", "demo", true)
+            //                              lookfor                  tenant ClubMemberShipAllowed AdminForHostingRequired GuestNameShown 
+            //new TenantSettings("ausfahrten.scuderia-suedstadt.de", null,         true,                 false,               false), // default is null (no special tenant)
+            new TenantSettings("ausfahrten.robert-brands",           "demo",       false,                false,               true),
+            new TenantSettings("localhost",                          "demo",       true,                 false,               true)
         };
         /// <summary>
         /// For the given URL all configured tenants are checked.
@@ -41,16 +42,22 @@ namespace MeetUpPlanner.Client
         public string LookFor { get; set; } = null;
         public string Name { get; set; } = null;
         public bool ClubMembershipAllowed { get; set; }
+        public bool AdminForHostingRequired { get; set; }
+        public bool GuestNameShown { get; set; }
 
         public TenantSettings()
         {
             ClubMembershipAllowed = true;
+            AdminForHostingRequired = false;
+            GuestNameShown = false;
         }
-        public TenantSettings(string lookFor, string name, bool clubMembershipAllowed)
+        public TenantSettings(string lookFor, string name, bool clubMembershipAllowed, bool adminForHostingRequired, bool guestNameShown)
         {
             LookFor = lookFor;
             Name = name;
             ClubMembershipAllowed = clubMembershipAllowed;
+            AdminForHostingRequired = adminForHostingRequired;
+            GuestNameShown = guestNameShown;
         }
     }
 }
