@@ -26,7 +26,7 @@ For documentation including deployment instructions see [Wiki](https://github.co
 
 # References
 The application is build on the following technology stack:
-* Blazor (see https://blazor.net) as front end based on the WebAssembly (see https://webassembly.org) standard, supported by all modern browsers (desktop and mobile). That means that the client is an application running in the browser, sandboxed like JavaScript. 
+* Blazor (see https://blazor.net) as front end based on the WebAssembly (see https://webassembly.org) standard, supported by all modern browsers (desktop and mobile). That means that the client is an application running in the browser as SPA (<a href="https://en.wikipedia.org/wiki/Single-page_application" target="_blank">Single Page Application</a>), sandboxed like JavaScript. 
 * ASP.NET Core Backend (see https://docs.microsoft.com/en-us/aspnet/core/blazor/hosting-models?view=aspnetcore-3.1#blazor-webassembly)
 * Business Logic in Azure Functions v3 (see https://docs.microsoft.com/en-us/azure/azure-functions/)
 * Data Layer No-SQL database Azure Cosmos DB (see https://docs.microsoft.com/en-us/azure/cosmos-db/)
