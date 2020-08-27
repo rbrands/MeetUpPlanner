@@ -2,6 +2,7 @@
 @page "/newmeetup/{ItemId}"
 @inject HttpClient Http
 @inject AppState AppStateStore
+@inject KeywordCheck KeywordCheck
 @inject NavigationManager NavigationManager
 @inject NotificationService notificationService
 @using Microsoft.AspNetCore.SignalR.Client
@@ -54,9 +55,9 @@
             {
                 <InputSelect @bind-Value="whenDateString" class="form-control">
                     @foreach (KeyValuePair<string, string> c in GetScopedDays())
-                        {
+                    {
                         <option value="@c.Key">@c.Value</option>
-                        }
+                    }
                 </InputSelect>
             }
             else
@@ -113,7 +114,7 @@
     </div>
     <div class="form-group">
         <label for="size">Max. Gruppengröße</label>
-        <RadzenNumeric id="size" aria-describedby="sizeHelp" class="form-control" TValue="int" Min="2" Max="@AppStateStore.ClientSettings.MaxGroupSize" @bind-Value="meetup.MaxRegistrationsCount" />
+        <RadzenNumeric id="size" aria-describedby="sizeHelp" class="form-control" TValue="int" Min="2" Max="@AppStateStore.ClientSettings?.MaxGroupSize" @bind-Value="meetup.MaxRegistrationsCount" />
         <small id="sizeHelp" class="form-text text-muted">
             Hier kann die Größe der Gruppe entsprechend beschränkt werden. Maximale Gruppengröße ist momentan @(AppStateStore.ClientSettings?.MaxGroupSize).
         </small>
@@ -135,7 +136,7 @@
     public string ItemId { get; set; }
     private HubConnection hubConnection;
     CalendarItem meetup = new CalendarItem();
-    string whenDateString;
+    string whenDateString = String.Empty;
     DateTime whenTime = DateTime.Now;
     DateTime whenDate = DateTime.Now;
     BlazoredTextEditor htmlDescription;
@@ -144,7 +145,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (null != AppStateStore && !String.IsNullOrEmpty(AppStateStore.KeyWord))
+        if (null != AppStateStore && !String.IsNullOrEmpty(AppStateStore.KeyWord) && null != AppStateStore.Tenant && !(AppStateStore.Tenant.AdminForHostingRequired && !KeywordCheck.IsAdmin))
         {
             hubConnection = new HubConnectionBuilder()
                  .WithUrl(NavigationManager.ToAbsoluteUri("/broadcastHub"))
@@ -208,6 +209,29 @@
             return;
         }
         meetup.Summary = await htmlDescription.GetHTML();
+        if (!String.IsNullOrWhiteSpace(meetup.PrivateKeyword))
+        {
+            meetup.PrivateKeyword = meetup.PrivateKeyword.Trim();
+            // Check if the private keyword is set in session state.
+            bool privateKeyWordSet = meetup.PrivateKeyword.Equals(AppStateStore.PrivateKeyWord1);
+            if (!privateKeyWordSet) privateKeyWordSet = meetup.PrivateKeyword.Equals(AppStateStore.PrivateKeyWord2);
+            if (!privateKeyWordSet) privateKeyWordSet = meetup.PrivateKeyword.Equals(AppStateStore.PrivateKeyWord3);
+            if (!privateKeyWordSet)
+            {
+                if (String.IsNullOrEmpty(AppStateStore.PrivateKeyWord1))
+                {
+                    AppStateStore.PrivateKeyWord1 = meetup.PrivateKeyword;
+                }
+                else if (String.IsNullOrEmpty(AppStateStore.PrivateKeyWord2))
+                {
+                    AppStateStore.PrivateKeyWord2 = meetup.PrivateKeyword;
+                }
+                else
+                {
+                    AppStateStore.PrivateKeyWord3 = meetup.PrivateKeyword;
+                }
+            }
+        }
         PrepareHttpClient();
         // Save calendarItem server
         await Http.PostAsJsonAsync<CalendarItem>($"Calendar/writecalendaritem", meetup);
@@ -226,7 +250,10 @@
 
     public void Dispose()
     {
-        _ = hubConnection.DisposeAsync();
+        if (null != hubConnection)
+        {
+            _ = hubConnection.DisposeAsync();
+        }
     }
     private List<KeyValuePair<string, string>> GetScopedDays()
     {
@@ -238,43 +265,43 @@
             switch (currentDate.DayOfWeek)
             {
                 case DayOfWeek.Monday:
-                    if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.MondayBadge))
+                    if (!String.IsNullOrEmpty(AppStateStore.ClientSettings?.MondayBadge))
                     {
                         scopedDays.Add(new KeyValuePair<string, string>(currentDate.ToString("yyyy-MM-dd"), currentDate.ToString("dd.MM") + " - " + AppStateStore.ClientSettings.MondayBadge));
                     }
                     break;
                 case DayOfWeek.Tuesday:
-                    if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.TuesdayBadge))
+                    if (!String.IsNullOrEmpty(AppStateStore.ClientSettings?.TuesdayBadge))
                     {
                         scopedDays.Add(new KeyValuePair<string, string>(currentDate.ToString("yyyy-MM-dd"), currentDate.ToString("dd.MM") + " - " + AppStateStore.ClientSettings.TuesdayBadge));
                     }
                     break;
                 case DayOfWeek.Wednesday:
-                    if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.WednesdayBadge))
+                    if (!String.IsNullOrEmpty(AppStateStore.ClientSettings?.WednesdayBadge))
                     {
                         scopedDays.Add(new KeyValuePair<string, string>(currentDate.ToString("yyyy-MM-dd"), currentDate.ToString("dd.MM") + " - " + AppStateStore.ClientSettings.WednesdayBadge));
                     }
                     break;
                 case DayOfWeek.Thursday:
-                    if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.ThursdayBadge))
+                    if (!String.IsNullOrEmpty(AppStateStore.ClientSettings?.ThursdayBadge))
                     {
                         scopedDays.Add(new KeyValuePair<string, string>(currentDate.ToString("yyyy-MM-dd"), currentDate.ToString("dd.MM") + " - " + AppStateStore.ClientSettings.ThursdayBadge));
                     }
                     break;
                 case DayOfWeek.Friday:
-                    if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.FridayBadge))
+                    if (!String.IsNullOrEmpty(AppStateStore.ClientSettings?.FridayBadge))
                     {
                         scopedDays.Add(new KeyValuePair<string, string>(currentDate.ToString("yyyy-MM-dd"), currentDate.ToString("dd.MM") + " - " + AppStateStore.ClientSettings.FridayBadge));
                     }
                     break;
                 case DayOfWeek.Saturday:
-                    if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.SaturdayBadge))
+                    if (!String.IsNullOrEmpty(AppStateStore.ClientSettings?.SaturdayBadge))
                     {
                         scopedDays.Add(new KeyValuePair<string, string>(currentDate.ToString("yyyy-MM-dd"), currentDate.ToString("dd.MM") + " - " + AppStateStore.ClientSettings.SaturdayBadge));
                     }
                     break;
                 case DayOfWeek.Sunday:
-                    if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.SundayBadge))
+                    if (!String.IsNullOrEmpty(AppStateStore.ClientSettings?.SundayBadge))
                     {
                         scopedDays.Add(new KeyValuePair<string, string>(currentDate.ToString("yyyy-MM-dd"), currentDate.ToString("dd.MM") + " - " + AppStateStore.ClientSettings.SundayBadge));
                     }

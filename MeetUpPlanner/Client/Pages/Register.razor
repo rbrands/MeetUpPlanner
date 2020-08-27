@@ -35,7 +35,7 @@
     <div class="form-row">
         <div class="form-group col-md-12">
             <small id="nameHelp" class="form-text text-muted">
-                Zur eindeutigen Nachverfolgbarkeit bitte Vor- und Nachname eingeben. In der Teilnehmerliste der Ausfahrten werden nur die Vornamen angezeigt.
+                Zur eindeutigen Nachverfolgbarkeit bitte Vor- und Nachname eingeben.
             </small>
         </div>
     </div>
@@ -155,7 +155,7 @@
         {
             await LocalStorage.RemoveItemAsync(PERM_STORAGE);
         }
-        _guest.IsGuest = true;
+        _guest.IsGuest = !AppStateStore.Tenant.GuestNameShown;
         _guest.CalendarItemId = ItemId;
         BackendResult result;
         Participant participant = meetup.FindParticipant(_guest.ParticipantFirstName, _guest.ParticipantLastName);
