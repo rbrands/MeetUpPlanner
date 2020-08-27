@@ -15,8 +15,9 @@
 
 <MessageBoard Message="@AppStateStore.ClientSettings?.WhiteboardMessage" ShowLogo="false" />
 <h1>Ausfahrten</h1>
-<p hidden="@(AppStateStore.Tenant.AdminForHostingRequired && !KeywordCheck.IsAdmin)">
-    <a class="btn btn-primary" href="/newmeetup">Neue Ausfahrt erstellen</a>
+<p>
+    <a class="btn btn-primary" href="/newmeetup" title="Neue Ausfahrt" hidden="@(AppStateStore.Tenant.AdminForHostingRequired && !KeywordCheck.IsAdmin)">Neue Ausfahrt erstellen</a>
+    <button class="btn btn-primary" title="Reload" @onclick="@(() => ReadData())"><span class="oi oi-reload"></span></button>
 </p>
 <div class="row">
     <div class="col">
