@@ -128,7 +128,6 @@
                     await hubConnection.StartAsync();
                 } catch (Exception)
                 {
-                    NavigationManager.NavigateTo("/");
                 }
             };
 
@@ -170,7 +169,6 @@
         }
         catch (Exception)
         {
-            NavigationManager.NavigateTo("/");
         }
         await ReadData();
     }
