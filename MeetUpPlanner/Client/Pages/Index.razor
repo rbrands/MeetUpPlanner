@@ -76,6 +76,7 @@
         </div>
         <small id="saveSettingsHelp">Damit beim nächsten Mal der Name usw. nicht neu eingegeben werden muss, können diese Eingaben im Browser gespeichert werden.</small>
     </div>
+    <button type="submit" id="BtnSaveKeyword" class="btn btn-primary" disabled="@(!UsageRightsAccepted)">Los geht's ...</button>
     <div class="form-group">
         <div class="form-check">
             <InputCheckbox id="accept" class="form-check-input" @bind-Value="@UsageRightsAccepted" />
@@ -84,7 +85,6 @@
             </label>
         </div>
     </div>
-    <button type="submit" id="BtnSaveKeyword" class="btn btn-primary" disabled="@(!UsageRightsAccepted)">Los geht's ...</button>
 </EditForm>
 
 
