@@ -33,7 +33,7 @@
 <div class="row">
     @foreach (ExtendedCalendarItem item in calendarItems)
     {
-        <div class="col col-lg-4 col-md-6 col-sm-12 mt-2">
+        <div class="col-12 col-sm-6 col-lg-4 col-xl-3 mt-2">
             <div class="card">
                 <div class="card-header">
                     <em>@item.GetStartDateAsString() - @item.Place</em>
@@ -117,8 +117,14 @@
 
             hubConnection.On("ReceiveMessage", () =>
             {
-                CallReadData();
-                StateHasChanged();
+                try 
+                {
+                    CallReadData();
+                    StateHasChanged();
+                }
+                catch (Exception)
+                {
+                }
             });
             hubConnection.Closed += async (error) =>
             {
@@ -310,7 +316,13 @@
     {
         if (null != hubConnection)
         {
-            _ = hubConnection.DisposeAsync();
+            try
+            {
+                _ = hubConnection.DisposeAsync();
+            } catch (Exception)
+            {
+
+            }
         }
         // only if Timer is used instead of SignalR
         // Timer.DisableTimer();
