@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 using MeetUpPlanner.Shared;
 using System.Web.Http;
 using System.Linq;
-using Aliencube.AzureFunctions.Extensions.OpenApi.Attributes;
+using Aliencube.AzureFunctions.Extensions.OpenApi.Core.Attributes;
 
 namespace MeetUpPlanner.Functions
 {
@@ -31,7 +31,7 @@ namespace MeetUpPlanner.Functions
         [FunctionName("GetCalendarItems")]
         [OpenApiOperation(Summary = "Gets the relevant CalendarIitems",
                           Description = "Reading current CalendarItems starting in the future or the configured past (in hours). To be able to read CalenderItems the user keyword must be set as header x-meetup-keyword.")]
-        [OpenApiResponseBody(System.Net.HttpStatusCode.OK, "application/json", typeof(IEnumerable<CalendarItem>))]
+        [OpenApiResponseWithBody(System.Net.HttpStatusCode.OK, "application/json", typeof(IEnumerable<CalendarItem>))]
         [OpenApiParameter("privatekeywords", Description = "Holds a list of private keywords, separated by ;")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req)

@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using MeetUpPlanner.Shared;
 using System.Web.Http;
-using Aliencube.AzureFunctions.Extensions.OpenApi.Attributes;
+using Aliencube.AzureFunctions.Extensions.OpenApi.Core.Attributes;
 
 
 namespace MeetUpPlanner.Functions
@@ -38,7 +38,7 @@ namespace MeetUpPlanner.Functions
         [OpenApiOperation(Summary = "Writes new ClientSettings to database.",
                           Description = "Only needed if the ClientSettings has been changed. To be able to write ClientSettings the admin keyword must be set as header x-meetup-keyword.")]
         [OpenApiRequestBody("application/json", typeof(ServerSettings), Description = "New ClientSettings to be written.")]
-        [OpenApiResponseBody(System.Net.HttpStatusCode.OK, "application/json", typeof(ServerSettings), Description = "New ClientSettings as written to database.")]
+        [OpenApiResponseWithBody(System.Net.HttpStatusCode.OK, "application/json", typeof(ServerSettings), Description = "New ClientSettings as written to database.")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
             ILogger log)

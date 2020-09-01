@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Web.Http;
-using Aliencube.AzureFunctions.Extensions.OpenApi.Attributes;
+using Aliencube.AzureFunctions.Extensions.OpenApi.Core.Attributes;
 using MeetUpPlanner.Shared;
 using System.Collections.Generic;
 
@@ -35,7 +35,7 @@ namespace MeetUpPlanner.Functions
         [OpenApiOperation(Summary = "Add a participant to the referenced CalendarItem.",
                           Description = "If the Participants already exists (same id) it it overwritten.")]
         [OpenApiRequestBody("application/json", typeof(Participant), Description = "New Participant to be written.")]
-        [OpenApiResponseBody(System.Net.HttpStatusCode.OK, "application/json", typeof(BackendResult), Description = "Status of operation.")]
+        [OpenApiResponseWithBody(System.Net.HttpStatusCode.OK, "application/json", typeof(BackendResult), Description = "Status of operation.")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
         {
@@ -81,7 +81,7 @@ namespace MeetUpPlanner.Functions
                 // Admin can "overbook" a meetup to be able to add some extra guests
                 maxRegistrationCount *= Constants.ADMINOVERBOOKFACTOR;
             }
-            if (counter >= calendarItem.MaxRegistrationsCount)
+            if (counter >= maxRegistrationCount)
             {
                 return new OkObjectResult(new BackendResult(false, "Maximale Anzahl Registrierungen bereits erreicht."));
             }

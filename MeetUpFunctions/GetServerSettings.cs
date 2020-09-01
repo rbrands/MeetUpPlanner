@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using MeetUpPlanner.Shared;
 using System.Web.Http;
-using Aliencube.AzureFunctions.Extensions.OpenApi.Attributes;
+using Aliencube.AzureFunctions.Extensions.OpenApi.Core.Attributes;
 
 namespace MeetUpPlanner.Functions
 {
@@ -34,7 +34,7 @@ namespace MeetUpPlanner.Functions
         [FunctionName("GetServerSettings")]
         [OpenApiOperation(Summary = "Gets the active ServerSettings", 
                           Description = "Reading the ServerSettings is only needed for editing for administrators. To be able to read ServerSettings the admin keyword must be set as header x-meetup-keyword.")]
-        [OpenApiResponseBody(System.Net.HttpStatusCode.OK, "application/json", typeof(ServerSettings))]
+        [OpenApiResponseWithBody(System.Net.HttpStatusCode.OK, "application/json", typeof(ServerSettings))]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
             ILogger log)

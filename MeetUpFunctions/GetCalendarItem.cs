@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using MeetUpPlanner.Shared;
 using System.Web.Http;
-using Aliencube.AzureFunctions.Extensions.OpenApi.Attributes;
+using Aliencube.AzureFunctions.Extensions.OpenApi.Core.Attributes;
 
 
 namespace MeetUpPlanner.Functions
@@ -31,7 +31,7 @@ namespace MeetUpPlanner.Functions
         [FunctionName("GetCalendarItem")]
         [OpenApiOperation(Summary = "Gets the CalendarItem by the given itemId",
                           Description = "Reading a CalendarItem by id. To be able to read a CalenderItem the user keyword must be set as header x-meetup-keyword.")]
-        [OpenApiResponseBody(System.Net.HttpStatusCode.OK, "application/json", typeof(CalendarItem))]
+        [OpenApiResponseWithBody(System.Net.HttpStatusCode.OK, "application/json", typeof(CalendarItem))]
         [OpenApiParameter("id", Description = "Id of CalendarItem to read.")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "GetCalendarItem/{id}")] HttpRequest req,

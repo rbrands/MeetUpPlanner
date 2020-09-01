@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using MeetUpPlanner.Shared;
 using System.Web.Http;
-using Aliencube.AzureFunctions.Extensions.OpenApi.Attributes;
+using Aliencube.AzureFunctions.Extensions.OpenApi.Core.Attributes;
 
 
 namespace MeetUpPlanner.Functions
@@ -35,7 +35,7 @@ namespace MeetUpPlanner.Functions
         [OpenApiOperation(Summary = "Writes new ServerSettings to database.",
                           Description = "Only needed if the ServerSettings has been changed.")]
         [OpenApiRequestBody("application/json", typeof(ServerSettings), Description = "New ServerSettings to be written.")]
-        [OpenApiResponseBody(System.Net.HttpStatusCode.OK, "application/json", typeof(ServerSettings), Description = "New ServerSettings as written to database.")]
+        [OpenApiResponseWithBody(System.Net.HttpStatusCode.OK, "application/json", typeof(ServerSettings), Description = "New ServerSettings as written to database.")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
             ILogger log)
