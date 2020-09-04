@@ -4,7 +4,7 @@
     <h3>@CalendarItem.GetStartDateAsString() - @CalendarItem.Title</h3>
     @if (!String.IsNullOrEmpty(CalendarItem.Link))
     {
-        <small><a href="@CalendarItem.Link" target="_blank">@CalendarItem.Link</a></small>
+        <small><a href="@CalendarItem.Link" target="_blank">@(String.IsNullOrEmpty(CalendarItem.LinkTitle) ? "Weitere Info..." : CalendarItem.LinkTitle)</a></small>
     }
     <p>
         @((MarkupString)CalendarItem.Summary)

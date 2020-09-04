@@ -51,13 +51,9 @@
                     }
                 </div>
                 <div class="card-body">
-                    <div class="card-text">
-                        <h6 class="text-muted">@item.LevelDescription - @item.Tempo</h6>
-                        <h4 class="card-title">@item.Title</h4>
-                        @if (!String.IsNullOrEmpty(item.Link))
-                        {
-                            <div><small><a href="@item.Link" target="_blank">@item.Link</a></small></div>
-                        }
+                    <h6 class="text-muted card-subtitle mb-2">@item.LevelDescription - @item.Tempo</h6>
+                    <h4 class="card-title">@item.Title</h4>
+                    <p class="card-text">
                         @((MarkupString)item.Summary)
                         <hr />
                         <small>Dabei (@item.ParticipantCounter von @item.MaxRegistrationsCount): <b>@item.HostDisplayName</b>@item.ParticipantsDisplay</small>
@@ -65,10 +61,14 @@
                         <ul class="list-unstyled">
                             @foreach (CalendarComment c in item.CommentsList)
                             {
-                                <li><small><em>@c.AuthorDisplayName (@c.DisplayDate): </em>@c.Comment</small></li>
+                            <li><small><em>@c.AuthorDisplayName (@c.DisplayDate): </em>@c.Comment</small></li>
                             }
                         </ul>
-                    </div>
+                    </p>
+                    @if (!String.IsNullOrEmpty(item.Link))
+                    {
+                    <a href="@item.Link" target="_blank" class="card-link">@(String.IsNullOrEmpty(item.LinkTitle) ? "Weitere Info..." : item.LinkTitle)</a>
+                    }
                 </div>
                 <div class="card-footer">
                     <div class="btn-group">
