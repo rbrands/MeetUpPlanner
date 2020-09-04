@@ -12,7 +12,7 @@
     <h4>@meetup.GetStartDateAsString() - @meetup.Title</h4>
     @if (!String.IsNullOrEmpty(meetup.Link))
     {
-        <h6><small><a href="@meetup.Link" target="_blank">@meetup.Link</a></small></h6>
+        <h6><small><a href="@meetup.Link" target="_blank">@(String.IsNullOrEmpty(meetup.LinkTitle) ? "Weitere Info..." : meetup.LinkTitle)</a></small></h6>
     }
     <p class="lead">
         @((MarkupString)meetup.Summary)

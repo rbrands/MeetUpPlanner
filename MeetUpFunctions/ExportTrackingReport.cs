@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 using MeetUpPlanner.Shared;
 using System.Web.Http;
 using System.Linq;
-using Aliencube.AzureFunctions.Extensions.OpenApi.Attributes;
+using Aliencube.AzureFunctions.Extensions.OpenApi.Core.Attributes;
 using System.Collections;
 
 namespace MeetUpPlanner.Functions
@@ -41,7 +41,7 @@ namespace MeetUpPlanner.Functions
         [OpenApiOperation(Summary = "Export a list of participants of the given user sharing rides",
                           Description = "All CalendarItems still in database are scanned for participants who had shared an envent with the given person. To be able to read all ExtendedCalenderItems the admin keyword must be set as header x-meetup-keyword.")]
         [OpenApiRequestBody("application/json", typeof(TrackingReportRequest), Description = "Holds all information needed to assemble a tracking report")]
-        [OpenApiResponseBody(System.Net.HttpStatusCode.OK, "application/json", typeof(TrackingReport))]
+        [OpenApiResponseWithBody(System.Net.HttpStatusCode.OK, "application/json", typeof(TrackingReport))]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
         {

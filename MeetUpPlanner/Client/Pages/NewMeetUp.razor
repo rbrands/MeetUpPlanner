@@ -55,9 +55,9 @@
             {
                 <InputSelect @bind-Value="whenDateString" class="form-control">
                     @foreach (KeyValuePair<string, string> c in GetScopedDays())
-                    {
+                        {
                         <option value="@c.Key">@c.Value</option>
-                    }
+                        }
                 </InputSelect>
             }
             else
@@ -110,6 +110,13 @@
         <InputText id="link" aria-describedby="linkHelp" class="form-control" @bind-Value="meetup.Link" placeholder="URL" title="Link zu weiterer Streckeninfo" />
         <small id="linkHelp" class="form-text text-muted">
             Optional: Link zu weiteren Strecken-Infos, z.B. Komoot, Strava usw.
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="linkTitle">Link-Bezeichnung</label>
+        <InputText id="linkTitle" aria-describedby="linkTitleHelp" class="form-control" @bind-Value="meetup.LinkTitle" placeholder="Kurze Überschrift zum Link" title="Bezeichnung des Links zur weiterern Streckeninfo" />
+        <small id="linkTitleHelp" class="form-text text-muted">
+            Optional: Kurze Bezeichnung zu dem Link oben, der ansonsten steht da "Weitere Info ...".
         </small>
     </div>
     <div class="form-group">

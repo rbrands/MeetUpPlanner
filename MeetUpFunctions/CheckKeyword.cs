@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using MeetUpPlanner.Shared;
-using Aliencube.AzureFunctions.Extensions.OpenApi.Attributes;
+using Aliencube.AzureFunctions.Extensions.OpenApi.Core.Attributes;
 
 
 namespace MeetUpPlanner.Functions
@@ -34,7 +34,7 @@ namespace MeetUpPlanner.Functions
         [OpenApiOperation(Summary = "Checks the given keyword and returns if it matches the user or admin keyword.",
                           Description = "Reading the ServerSettings is only needed for editing for administrators. To be able to read ServerSettings the admin keyword must be set as header x-meetup-keyword.")]
         [OpenApiParameter("keyword", Description = "Keyword to be checked.")]
-        [OpenApiResponseBody(System.Net.HttpStatusCode.OK, "application/json", typeof(KeywordCheck), Description = "With status IsUser and IsAdmin.")]
+        [OpenApiResponseWithBody(System.Net.HttpStatusCode.OK, "application/json", typeof(KeywordCheck), Description = "With status IsUser and IsAdmin.")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
             ILogger log)
