@@ -67,7 +67,7 @@
                     </p>
                     @if (!String.IsNullOrEmpty(item.Link))
                     {
-                    <a href="@item.Link" target="_blank" class="card-link">@(String.IsNullOrEmpty(item.LinkTitle) ? "Weitere Info..." : item.LinkTitle)</a>
+                        <a href="@item.Link" target="_blank" class="card-link">@item.DisplayLinkTitle</a>
                     }
                 </div>
                 <div class="card-footer">

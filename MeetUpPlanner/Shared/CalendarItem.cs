@@ -32,9 +32,9 @@ namespace MeetUpPlanner.Shared
         public string LevelDescription { get; set; }
         [JsonProperty(PropertyName = "tempo"), Required(ErrorMessage = "Bitte geplante Geschwindigkeit angeben."), MaxLength(35, ErrorMessage = "Tempo-Angabe zu lang.")]
         public string Tempo { get; set; }
-        [JsonProperty(PropertyName = "link", NullValueHandling = NullValueHandling.Ignore), MaxLength(120, ErrorMessage = "Link zu lang"), UIHint("url") ]
+        [JsonProperty(PropertyName = "link", NullValueHandling = NullValueHandling.Ignore), MaxLength(120, ErrorMessage = "Link zu lang"), UIHint("url")]
         public string Link { get; set; }
-        [JsonProperty(PropertyName = "linkTitle", NullValueHandling = NullValueHandling.Ignore), MaxLength(60, ErrorMessage = "Link-Titel zu lang."), UIHint("url")]
+        [JsonProperty(PropertyName = "linkTitle", NullValueHandling = NullValueHandling.Ignore), MaxLength(60, ErrorMessage = "Link-Bezeichnung zu lang.")]
         public string LinkTitle { get; set; }
         [JsonProperty(PropertyName = "isCross")]
         public Boolean IsCross { get; set; } = false;
@@ -83,9 +83,33 @@ namespace MeetUpPlanner.Shared
             string dateString = String.Empty;
             if (null != StartDate)
             {
-                dateString = weekdays[(int)StartDate.DayOfWeek] + ", " + this.StartDate.ToString("dd.MM HH:mm") + " Uhr";
+                dateString = weekdays[(int)StartDate.DayOfWeek] + ", " + this.StartDate.ToString("dd.MM. HH:mm") + " Uhr";
             }
             return dateString;
+        }
+        [JsonIgnore]
+        public string DisplayLinkTitle
+        {
+            get
+            {
+                string title = this.LinkTitle;
+                if (!String.IsNullOrEmpty(this.Link) && String.IsNullOrEmpty(this.LinkTitle))
+                {
+                    if (this.Link.Contains("komoot"))
+                    {
+                        title = "Tour auf Komoot";
+                    }
+                    else if (this.Link.Contains("strava"))
+                    {
+                        title = "Tour auf Strava";
+                    }
+                    else
+                    {
+                        title = "Weitere Info...";
+                    }
+                }
+                return title;
+            }
         }
     }
 }

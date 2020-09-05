@@ -121,6 +121,8 @@
             AppStateStore.PrivateKeyWord2 = permAppState.PrivateKeyWord2;
             AppStateStore.PrivateKeyWord2 = permAppState.PrivateKeyWord2;
             AppStateStore.NoAddressNeeded = permAppState.NoAddressNeeded;
+            // If someone has stored the settings before the disclaimer has already been accepted by user
+            UsageRightsAccepted = true;
         }
 
         // Get client settings from server
@@ -131,7 +133,6 @@
         KeywordCheck.IsUser = false;
         KeywordCheck.IsAdmin = false;
         AppStateStore.NotifyStateChanged();
-
     }
 
     private async Task CheckKeyword()
