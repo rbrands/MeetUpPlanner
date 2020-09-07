@@ -40,6 +40,13 @@
         </small>
     </div>
     <div class="form-group">
+        <label for="maxGroupForAdmins">Max. Gruppengröße für Administratoren</label>
+        <InputNumber id="maxGroupForAdmins" aria-describedby="maxGroupForAdminsHelp" class="form-control" @bind-Value="AppStateStore.ClientSettings.MaxGroupSizeForAdmins" autocomplete="on" />
+        <small id="maxGroupForAdminsHelp" class="form-text text-muted">
+            Festlegung der maximalen Gruppengröße für Administratoren, die größere Gruppen erlauben dürfen.
+        </small>
+    </div>
+    <div class="form-group">
         <label for="welcomeMessage">Welcome Nachricht</label>
         <BlazoredTextEditor @ref="@htmlWelcomeMessage" Placeholder="Nachricht für Startseite">
             <ToolbarContent>

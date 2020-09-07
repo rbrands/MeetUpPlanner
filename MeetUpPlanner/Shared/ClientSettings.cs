@@ -25,6 +25,8 @@ namespace MeetUpPlanner.Shared
         public string NewMeetupMessage { get; set; }
         [JsonProperty(PropertyName ="maxGroupSize", NullValueHandling = NullValueHandling.Ignore)]
         public int MaxGroupSize { get; set; } = 10;
+        [JsonProperty(PropertyName = "maxGroupSizeForAdmins", NullValueHandling = NullValueHandling.Ignore)]
+        public int MaxGroupSizeForAdmins { get; set; } = 10;
         public Boolean GuestsEnabled { get; set; } = false;
         public Boolean OnlyScopedMeetUpsAllowed { get; set; } = false;
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore), MaxLength(30, ErrorMessage = "Wochenkennzeichnung bitte kürzer als 30 Zeichen.")]
@@ -45,5 +47,15 @@ namespace MeetUpPlanner.Shared
         public string Disclaimer { get; set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string GuestDisclaimer { get; set; }
+
+        public int GetMaxGroupSize(bool isAdmin)
+        {
+            int maxGroupSize = MaxGroupSize;
+            if (isAdmin && MaxGroupSizeForAdmins > maxGroupSize)
+            {
+                maxGroupSize = MaxGroupSizeForAdmins;
+            }
+            return maxGroupSize;
+        }
     }
 }

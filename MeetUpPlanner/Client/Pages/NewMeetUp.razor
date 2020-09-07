@@ -116,14 +116,14 @@
         <label for="linkTitle">Link-Bezeichnung</label>
         <InputText id="linkTitle" aria-describedby="linkTitleHelp" class="form-control" @bind-Value="meetup.LinkTitle" placeholder="Kurze Überschrift zum Link" title="Bezeichnung des Links zur weiterern Streckeninfo" />
         <small id="linkTitleHelp" class="form-text text-muted">
-            Optional: Kurze Bezeichnung zu dem Link oben, der ansonsten steht da "Weitere Info ...".
+            Optional: Kurze Bezeichnung zu dem Link oben, falls der Standardtext "Tour auf Komoot" oder "Weitere Info ..." nicht passt.
         </small>
     </div>
     <div class="form-group">
         <label for="size">Max. Gruppengröße</label>
-        <RadzenNumeric id="size" aria-describedby="sizeHelp" class="form-control" TValue="int" Min="2" Max="@AppStateStore.ClientSettings?.MaxGroupSize" @bind-Value="meetup.MaxRegistrationsCount" />
+        <RadzenNumeric id="size" aria-describedby="sizeHelp" class="form-control" TValue="int" Min="2" Max="@AppStateStore.ClientSettings?.GetMaxGroupSize(KeywordCheck.IsAdmin)" @bind-Value="meetup.MaxRegistrationsCount" />
         <small id="sizeHelp" class="form-text text-muted">
-            Hier kann die Größe der Gruppe entsprechend beschränkt werden. Maximale Gruppengröße ist momentan @(AppStateStore.ClientSettings?.MaxGroupSize).
+            Hier kann die Größe der Gruppe entsprechend beschränkt werden. Maximale Gruppengröße ist momentan @(AppStateStore.ClientSettings?.GetMaxGroupSize(KeywordCheck.IsAdmin)).
         </small>
     </div>
     <div class="form-group">
@@ -173,7 +173,7 @@
                 meetup.HostFirstName = AppStateStore.FirstName;
                 meetup.HostLastName = AppStateStore.LastName;
                 meetup.HostAdressInfo = AppStateStore.PhoneMail;
-                meetup.MaxRegistrationsCount = AppStateStore.ClientSettings.MaxGroupSize;
+                meetup.MaxRegistrationsCount = AppStateStore.ClientSettings.GetMaxGroupSize(KeywordCheck.IsAdmin);
                 if (onlyScopedMeetUps && scopedDates.Count > 0)
                 {
                     whenDateString = scopedDates[0].Key;
@@ -200,7 +200,7 @@
 
     private async Task OnSave()
     {
-        if (meetup.MaxRegistrationsCount > AppStateStore.ClientSettings.MaxGroupSize)
+        if (meetup.MaxRegistrationsCount > AppStateStore.ClientSettings.GetMaxGroupSize(KeywordCheck.IsAdmin))
         {
             notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Gruppengröße", Detail = "Max. Gruppengröße überschritten.", Duration = 4000 });
             return;
@@ -210,7 +210,7 @@
             whenDate = DateTime.Parse(whenDateString);
         }
         meetup.StartDate = new DateTime(whenDate.Year, whenDate.Month, whenDate.Day, whenTime.Hour, whenTime.Minute, whenTime.Second);
-        if (meetup.StartDate.CompareTo(DateTime.Now.AddHours(-3.0)) < 0)
+        if (meetup.StartDate.CompareTo(DateTime.Now.AddHours(-5.0)) < 0)
         {
             notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Startdatum", Detail = "Bitte Startdatum korrigieren.", Duration = 4000 });
             return;
