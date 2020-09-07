@@ -13,6 +13,8 @@ namespace MeetUpPlanner.Shared
         public string Title { get; set; }
         [JsonProperty(PropertyName = "startDate"), Display(Name = "Start", Prompt = "Bitte Startdatum und -zeit angeben."), Required(ErrorMessage = "Bitte den Beginn der Veranstaltung angeben.")]
         public DateTime StartDate { get; set; }
+        [JsonProperty(PropertyName = "publishDate"), Display(Name = "Veröffentlichung")]
+        public DateTime PublishDate { get; set; }
         [JsonProperty(PropertyName = "place"), Display(Name = "Ort", Prompt = "Wo findet die Veranstaltung statt bzw. wo ist der Start"), MaxLength(256), Required(ErrorMessage = "Bitte den Startort angeben.")]
         public string Place { get; set; }
         [JsonProperty(PropertyName = "hostFirstName", NullValueHandling = NullValueHandling.Ignore), MaxLength(100), Required(ErrorMessage = "Gastgeber bitte eingeben.")]
@@ -55,6 +57,7 @@ namespace MeetUpPlanner.Shared
             {
                 this.StartDate = DateTime.Today.AddDays(1.0).AddHours(18.0);
             }
+            PublishDate = DateTime.Now;
         }
         [JsonIgnore]
         public string HostDisplayName

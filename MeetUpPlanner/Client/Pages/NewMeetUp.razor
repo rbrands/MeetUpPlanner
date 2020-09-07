@@ -119,6 +119,22 @@
             Optional: Kurze Bezeichnung zu dem Link oben, falls der Standardtext "Tour auf Komoot" oder "Weitere Info ..." nicht passt.
         </small>
     </div>
+    @if (KeywordCheck.IsAdmin)
+    { 
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label for="publishDate">Veröffentlichung</label>
+                <InputDate id="publishDate" aria-describedby="publishDateHelp" class="form-control" @bind-Value="publishDate" title="Veröffentlichung" />
+                <small id="publishDateHelp" class="form-text text-muted">
+                    Wann soll der Termin veröffentlicht werden?
+                </small>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="publishTime">Uhrzeit</label>
+                <input type="time" class="form-control" @bind="@publishTime" title="Uhrzeit Veröffentlichung" />
+            </div>
+        </div>
+    }
     <div class="form-group">
         <label for="size">Max. Gruppengröße</label>
         <RadzenNumeric id="size" aria-describedby="sizeHelp" class="form-control" TValue="int" Min="2" Max="@AppStateStore.ClientSettings?.GetMaxGroupSize(KeywordCheck.IsAdmin)" @bind-Value="meetup.MaxRegistrationsCount" />
@@ -146,6 +162,8 @@
     string whenDateString = String.Empty;
     DateTime whenTime = DateTime.Now;
     DateTime whenDate = DateTime.Now;
+    DateTime publishTime = DateTime.Now.AddHours(-1.0);
+    DateTime publishDate = DateTime.Now;
     BlazoredTextEditor htmlDescription;
     bool onlyScopedMeetUps = false;
     private List<KeyValuePair<string, string>> scopedDates = new List<KeyValuePair<string, string>>();
@@ -173,7 +191,7 @@
                 meetup.HostFirstName = AppStateStore.FirstName;
                 meetup.HostLastName = AppStateStore.LastName;
                 meetup.HostAdressInfo = AppStateStore.PhoneMail;
-                meetup.MaxRegistrationsCount = AppStateStore.ClientSettings.GetMaxGroupSize(KeywordCheck.IsAdmin);
+                meetup.MaxRegistrationsCount = AppStateStore.ClientSettings.MaxGroupSize;
                 if (onlyScopedMeetUps && scopedDates.Count > 0)
                 {
                     whenDateString = scopedDates[0].Key;
@@ -191,6 +209,8 @@
             whenDate = meetup.StartDate;
             whenTime = meetup.StartDate;
             whenDateString = meetup.StartDate.ToString("yyyy-MM-dd");
+            publishDate = meetup.PublishDate.ToLocalTime();
+            publishTime = meetup.PublishDate.ToLocalTime();
         }
         else
         {
@@ -214,6 +234,10 @@
         {
             notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Startdatum", Detail = "Bitte Startdatum korrigieren.", Duration = 4000 });
             return;
+        }
+        if (KeywordCheck.IsAdmin)
+        {
+            meetup.PublishDate = new DateTime(publishDate.Year, publishDate.Month, publishDate.Day, publishTime.Hour, publishTime.Minute, publishTime.Second).ToUniversalTime();
         }
         meetup.Summary = await htmlDescription.GetHTML();
         if (!String.IsNullOrWhiteSpace(meetup.PrivateKeyword))

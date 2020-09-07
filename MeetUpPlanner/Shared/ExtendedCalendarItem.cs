@@ -30,6 +30,7 @@ namespace MeetUpPlanner.Shared
             this.Id = calendarItem.Id;
             this.Title = calendarItem.Title;
             this.StartDate = calendarItem.StartDate;
+            this.PublishDate = calendarItem.PublishDate;
             this.Place = calendarItem.Place;
             this.HostFirstName = calendarItem.HostFirstName;
             this.HostLastName = calendarItem.HostLastName;

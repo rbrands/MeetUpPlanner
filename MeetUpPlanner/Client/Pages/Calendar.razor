@@ -117,7 +117,7 @@
 
             hubConnection.On("ReceiveMessage", () =>
             {
-                try 
+                try
                 {
                     CallReadData();
                     StateHasChanged();
@@ -215,6 +215,10 @@
     {
         calendarItem.Id = null; // to create a new one
         calendarItem.StartDate = calendarItem.StartDate.AddDays(7.0);
+        if (KeywordCheck.IsAdmin)
+        {
+            calendarItem.PublishDate = calendarItem.PublishDate.AddDays(7.0);
+        }
         PrepareHttpClient();
         // Save calendarItem server
         await Http.PostAsJsonAsync<CalendarItem>($"Calendar/writecalendaritem", calendarItem);

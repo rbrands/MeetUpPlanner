@@ -80,6 +80,11 @@ namespace MeetUpPlanner.Functions
             {
                 // Create ExtendedCalendarItem and get comments and participants
                 ExtendedCalendarItem extendedItem = new ExtendedCalendarItem(item);
+                if (!serverSettings.IsAdmin(keyWord) && extendedItem.PublishDate.CompareTo(DateTime.UtcNow) > 0)
+                {
+                    // If calendar item is not ready for publishing skip it
+                    continue;
+                }
                 if (String.IsNullOrEmpty(extendedItem.PrivateKeyword))
                 {
                     // No private keyword for item ==> use it
