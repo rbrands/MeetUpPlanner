@@ -55,13 +55,17 @@
                     <h4 class="card-title">@item.Title</h4>
                     <p class="card-text">
                         @((MarkupString)item.Summary)
+                        @if (KeywordCheck.IsAdmin && item.PublishDate.ToLocalTime().CompareTo(DateTime.Now) > 0)
+                        {
+                            <small><em>Veröffentlichung @item.GetPublishDateAsString()</em></small>
+                        }
                         <hr />
                         <small>Dabei (@item.ParticipantCounter von @item.MaxRegistrationsCount): <b>@item.HostDisplayName</b>@item.ParticipantsDisplay</small>
                         <hr />
                         <ul class="list-unstyled">
                             @foreach (CalendarComment c in item.CommentsList)
                             {
-                            <li><small><em>@c.AuthorDisplayName (@c.DisplayDate): </em>@c.Comment</small></li>
+                                <li><small><em>@c.AuthorDisplayName (@c.DisplayDate): </em>@c.Comment</small></li>
                             }
                         </ul>
                     </p>

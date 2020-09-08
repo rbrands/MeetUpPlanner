@@ -90,6 +90,19 @@ namespace MeetUpPlanner.Shared
             }
             return dateString;
         }
+        /// <summary>
+        /// Returns a string ready to display in (German) UI.
+        /// </summary>
+        /// <returns></returns>
+        public string GetPublishDateAsString()
+        {
+            string dateString = String.Empty;
+            if (null != PublishDate)
+            {
+                dateString = this.PublishDate.ToLocalTime().ToString("dd.MM. HH:mm") + " Uhr";
+            }
+            return dateString;
+        }
         [JsonIgnore]
         public string DisplayLinkTitle
         {
