@@ -150,7 +150,7 @@
         </small>
     </div>
     <ValidationSummary />
-    <button type="submit" id="BtnSave" class="btn btn-primary">Termin speichern ...</button>
+    <button type="submit" id="BtnSave" disabled="@saveDisabled" class="btn btn-primary">Termin speichern ...</button>
     <button type="reset" id="BtnCancel" class="btn btn-secondary" @onclick="@(() => OnCancel())">Zurück ohne Speichern</button>
 </EditForm>
 
@@ -167,6 +167,7 @@
     BlazoredTextEditor htmlDescription;
     bool onlyScopedMeetUps = false;
     private List<KeyValuePair<string, string>> scopedDates = new List<KeyValuePair<string, string>>();
+    private bool saveDisabled = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -235,6 +236,11 @@
             notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Startdatum", Detail = "Bitte Startdatum korrigieren.", Duration = 4000 });
             return;
         }
+        if (saveDisabled)
+        {
+            return;
+        }
+        saveDisabled = true;
         if (KeywordCheck.IsAdmin)
         {
             meetup.PublishDate = new DateTime(publishDate.Year, publishDate.Month, publishDate.Day, publishTime.Hour, publishTime.Minute, publishTime.Second).ToUniversalTime();
@@ -267,7 +273,6 @@
         // Save calendarItem server
         await Http.PostAsJsonAsync<CalendarItem>($"Calendar/writecalendaritem", meetup);
         if (IsConnected) await SendMessage();
-
 
         NavigationManager.NavigateTo("/calendar");
     }
