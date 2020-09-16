@@ -46,6 +46,7 @@ namespace MeetUpPlanner.Shared
             this.CommentsList = new List<CalendarComment>();
             this.IsCross = calendarItem.IsCross;
             this.Tenant = calendarItem.Tenant;
+            this.WithoutHost = calendarItem.WithoutHost;
         }
 
         [JsonIgnore]
@@ -56,7 +57,10 @@ namespace MeetUpPlanner.Shared
                 StringBuilder sb = new StringBuilder(100);
                 foreach (Participant participant in this.ParticipantsList)
                 {
-                    sb.Append(", ");
+                    if (!WithoutHost)
+                    { 
+                        sb.Append(", ");
+                    }
                     sb.Append(participant.ParticipantDisplayName);
                 }
                 return sb.ToString();
@@ -67,7 +71,7 @@ namespace MeetUpPlanner.Shared
         {
             get
             {
-                int counter = 1;
+                int counter = WithoutHost ? 0 : 1;
                 foreach (Participant p in ParticipantsList)
                 {
                     ++counter;

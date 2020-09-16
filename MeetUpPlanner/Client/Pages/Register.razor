@@ -9,24 +9,7 @@
 @using Microsoft.AspNetCore.SignalR.Client
 
 
-<div class="jumbotron">
-    <h6 class="text-muted">@meetup.LevelDescription - @meetup.Tempo</h6>
-    <h4>@meetup.GetStartDateAsString() - @meetup.Title</h4>
-    @if (!String.IsNullOrEmpty(meetup.Link))
-    {
-        <h6><small><a href="@meetup.Link" target="_blank">@meetup.DisplayLinkTitle</a></small></h6>
-    }
-    <p class="lead">
-        @((MarkupString)meetup.Summary)
-    </p>
-    <p>
-        <small>@(meetup.MaxRegistrationsCount - meetup.ParticipantCounter) von @meetup.MaxRegistrationsCount Plätzen noch frei.</small>
-    </p>
-    <p>
-        Für die Teilnahme an der Ausfahrt bitte die Kontaktdaten unten eingeben, um damit die Nachverfolgbarkeit zu gewährleisten. Falls du doch nicht
-        dabei sein kannst, kannst du dich über diese Seite auch wieder abmelden.
-    </p>
-</div>
+<MeetUp CalendarItem="@meetup" HideParticipants="true" AdditionalText="Für die Teilnahme an der Ausfahrt bitte die Kontaktdaten unten eingeben, um damit die Nachverfolgbarkeit zu gewährleisten. Falls du doch nicht dabei sein kannst, kannst du dich über diese Seite auch wieder abmelden." />
 
 <EditForm OnValidSubmit="RegisterGuest" Model="@_guest">
     <DataAnnotationsValidator />

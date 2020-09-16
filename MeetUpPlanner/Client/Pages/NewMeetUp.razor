@@ -120,7 +120,7 @@
         </small>
     </div>
     @if (KeywordCheck.IsAdmin)
-    { 
+    {
         <div class="form-row">
             <div class="form-group col-md-3">
                 <label for="publishDate">Veröffentlichung</label>
@@ -133,6 +133,17 @@
                 <label for="publishTime">Uhrzeit</label>
                 <input type="time" class="form-control" @bind="@publishTime" title="Uhrzeit Veröffentlichung" />
             </div>
+        </div>
+        <div class="form-group">
+            <div class="form-check">
+                <InputCheckbox id="withoutHost" aria-describedby="crossHelp" class="form-check-input" @bind-Value="meetup.WithoutHost" />
+                <label for="withoutHost" class="form-checklabel">
+                    Ausfahrt ohne Guide eintragen?
+                </label>
+            </div>
+            <small id="crossHelp" class="form-text text-muted">
+                Für Termine ohne Guide, z.B. wiederkehrende Ausfahrten.
+            </small>
         </div>
     }
     <div class="form-group">

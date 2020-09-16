@@ -23,6 +23,8 @@ namespace MeetUpPlanner.Shared
         public string HostLastName { get; set; }
         [JsonProperty(PropertyName = "hostAddressName", NullValueHandling = NullValueHandling.Ignore), MaxLength(100)]
         public string HostAdressInfo { get; set; }
+        [JsonProperty(PropertyName = "withoutHost")]
+        public Boolean WithoutHost { get; set; } = false;
 
         [JsonProperty(PropertyName = "summary", NullValueHandling = NullValueHandling.Ignore), Display(Name = "Zusammenfassung", Prompt = "Kurze Zusammenfassung des Termins"), MaxLength(5000, ErrorMessage = "Zusammenfassung zu lang.")]
         public string Summary { get; set; }
@@ -65,13 +67,16 @@ namespace MeetUpPlanner.Shared
             get
             {
                 StringBuilder sb = new StringBuilder();
-                if (!String.IsNullOrEmpty(HostFirstName))
+                if (!WithoutHost)
                 { 
-                    sb.Append(HostFirstName).Append(" ");
-                }
-                if (!String.IsNullOrEmpty(HostLastName))
-                {
-                    sb.Append(HostLastName[0].ToString()).Append(".");
+                    if (!String.IsNullOrEmpty(HostFirstName))
+                    { 
+                        sb.Append(HostFirstName).Append(" ");
+                    }
+                    if (!String.IsNullOrEmpty(HostLastName))
+                    {
+                        sb.Append(HostLastName[0].ToString()).Append(".");
+                    }
                 }
                 return sb.ToString();
             }

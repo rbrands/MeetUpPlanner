@@ -291,7 +291,7 @@
     }
     protected bool CheckIfUserIsHost(ExtendedCalendarItem calendarItem)
     {
-        bool isHost = (calendarItem.HostFirstName.Equals(AppStateStore.FirstName) && calendarItem.HostLastName.Equals(AppStateStore.LastName));
+        bool isHost = !calendarItem.WithoutHost && (calendarItem.HostFirstName.Equals(AppStateStore.FirstName) && calendarItem.HostLastName.Equals(AppStateStore.LastName));
         return isHost;
     }
     private async void TimerElapsedHandler()
