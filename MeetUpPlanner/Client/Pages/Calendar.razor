@@ -18,15 +18,30 @@
 <p>
     <a class="btn btn-primary" href="/newmeetup" title="Neue Ausfahrt" hidden="@(AppStateStore.Tenant.AdminForHostingRequired && !KeywordCheck.IsAdmin)">Neue Ausfahrt erstellen</a>
     <button class="btn btn-primary" title="Reload" @onclick="@(() => Reload())"><span class="oi oi-reload"></span></button>
+    @if (KeywordCheck.IsAdmin)
+    {
+        <button class="btn btn-primary" @onclick="@(() => BackwardSelectedDate())" title="Vorheriger Tag"><span class="oi oi-media-step-backward"></span></button>
+        @if (ShowHistory())
+        {
+            <button class="btn btn-primary" @onclick="@(() => ForwardSelectedDate())" title="Nächster Tag"><span class="oi oi-media-step-forward"></span></button>
+        }
+    }
 </p>
 <div class="row">
     <div class="col">
-        <div class="form-group">
-            <input type="text" class="form-control" aria-describedby="checkinCommentHelp" id="checkinComment" @bind="checkinComment.Comment" title="Kommentar zur Anmeldung" placeholder="Kommentar zur Anmeldung z.B. 'Ab Therme'" />
-            <small id="checkinCommentHelp" class="form-text text-muted">
-                Optional: Bei der Anmeldung zu einer Ausfahrt direkt einen Kommentar eingeben.
-            </small>
-        </div>
+        @if (ShowHistory())
+        {
+            <span>@selectedDate.ToString("D")</span>
+        }
+        else
+        {
+            <div class="form-group">
+                <input type="text" class="form-control" aria-describedby="checkinCommentHelp" id="checkinComment" @bind="checkinComment.Comment" title="Kommentar zur Anmeldung" placeholder="Kommentar zur Anmeldung z.B. 'Ab Therme'" />
+                <small id="checkinCommentHelp" class="form-text text-muted">
+                    Optional: Bei der Anmeldung zu einer Ausfahrt direkt einen Kommentar eingeben.
+                </small>
+            </div>
+        }
     </div>
 </div>
 
@@ -110,6 +125,7 @@
     const double navigateAwayInterval = 10 * 60 * 1000;
     private HubConnection hubConnection;
     private ExtendedCalendarItem calendarItemToBeCloned = null;
+    private DateTime selectedDate = DateTime.Today;
 
     protected override async Task OnInitializedAsync()
     {
@@ -164,7 +180,15 @@
         string privateKeywords = AppStateStore.PrivateKeyWord1 + ";" + AppStateStore.PrivateKeyWord2 + ";" + AppStateStore.PrivateKeyWord3; ;
         // Get list of calendar items
         PrepareHttpClient();
-        calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"calendar/extendedcalendaritems?privatekeywords={privateKeywords}");
+        if (!ShowHistory())
+        {
+            calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"calendar/extendedcalendaritems?privatekeywords={privateKeywords}");
+        }
+        else
+        {
+            string dateArg = selectedDate.ToString("yyyy-MM-dd");
+            calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"calendar/extendedcalendaritemsfordate?privatekeywords={privateKeywords}&requesteddate={dateArg}");
+        }
         StateHasChanged();
     }
     protected async Task Reload()
@@ -180,6 +204,7 @@
         catch (Exception)
         {
         }
+        selectedDate = DateTime.Today;
         await ReadData();
     }
     private void CallReadData()
@@ -386,6 +411,21 @@
             Http.DefaultRequestHeaders.Add("x-meetup-keyword", AppStateStore.KeyWord);
         }
 
+    }
+    private bool ShowHistory()
+    {
+        return selectedDate.CompareTo(DateTime.Today) < 0;
+    }
+
+    private async Task ForwardSelectedDate()
+    {
+        selectedDate = selectedDate.AddDays(1.0);
+        await ReadData();
+    }
+    private async Task BackwardSelectedDate()
+    {
+        selectedDate = selectedDate.AddDays(-1.0);
+        await ReadData();
     }
 
 }
