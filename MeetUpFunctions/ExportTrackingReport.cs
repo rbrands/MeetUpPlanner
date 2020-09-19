@@ -88,7 +88,7 @@ namespace MeetUpPlanner.Functions
                 // Read all participants for this calendar item
                 IEnumerable<Participant> participants = await _participantRepository.GetItems(p => p.CalendarItemId.Equals(item.Id));
                 // Only events where the person was part of will be used.
-                if (item.EqualsHost(trackingRequest.TrackFirstName, trackingRequest.TrackLastName) || null != participants.Find(trackingRequest.TrackFirstName, trackingRequest.TrackLastName))
+                if (!item.WithoutHost && item.EqualsHost(trackingRequest.TrackFirstName, trackingRequest.TrackLastName) || null != participants.Find(trackingRequest.TrackFirstName, trackingRequest.TrackLastName))
                 {
                     ExtendedCalendarItem extendedItem = new ExtendedCalendarItem(item);
                     extendedItem.ParticipantsList = participants;

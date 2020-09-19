@@ -4,18 +4,34 @@
     <h3>@CalendarItem.GetStartDateAsString() - @CalendarItem.Title</h3>
     @if (!String.IsNullOrEmpty(CalendarItem.Link))
     {
-        <small><a href="@CalendarItem.Link" target="_blank">@CalendarItem.DisplayLinkTitle</a></small>
+        <a href="@CalendarItem.Link" target="_blank">@CalendarItem.DisplayLinkTitle</a>
     }
     <p>
         @((MarkupString)CalendarItem.Summary)
     </p>
     <p>
-        <small>Dabei (@CalendarItem.ParticipantCounter von @CalendarItem.MaxRegistrationsCount): <b>@CalendarItem.HostDisplayName</b>@CalendarItem.ParticipantsDisplay</small>
+        @if (!HideParticipants)
+        {
+            <small>Dabei (@CalendarItem.ParticipantCounter von @CalendarItem.MaxRegistrationsCount): <b>@CalendarItem.HostDisplayName</b>@CalendarItem.ParticipantsDisplay</small>
+        }
+        else
+        {
+            <small>@(CalendarItem.MaxRegistrationsCount - CalendarItem.ParticipantCounter) von @CalendarItem.MaxRegistrationsCount Plätzen noch frei.</small>
+        }
     </p>
+    @if (!String.IsNullOrEmpty(AdditionalText))
+    {
+        <p>
+            @AdditionalText
+        </p>
+    }
 </div>
 
 @code {
     [Parameter]
     public ExtendedCalendarItem CalendarItem { get; set; } = new ExtendedCalendarItem();
-
+    [Parameter]
+    public Boolean HideParticipants { get; set; } = false;
+    [Parameter]
+    public String AdditionalText { get; set; } = null;
 }

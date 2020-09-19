@@ -13,6 +13,8 @@ namespace MeetUpPlanner.Shared
         public string Title { get; set; }
         [JsonProperty(PropertyName = "startDate"), Display(Name = "Start", Prompt = "Bitte Startdatum und -zeit angeben."), Required(ErrorMessage = "Bitte den Beginn der Veranstaltung angeben.")]
         public DateTime StartDate { get; set; }
+        [JsonProperty(PropertyName = "publishDate"), Display(Name = "Veröffentlichung")]
+        public DateTime PublishDate { get; set; }
         [JsonProperty(PropertyName = "place"), Display(Name = "Ort", Prompt = "Wo findet die Veranstaltung statt bzw. wo ist der Start"), MaxLength(256), Required(ErrorMessage = "Bitte den Startort angeben.")]
         public string Place { get; set; }
         [JsonProperty(PropertyName = "hostFirstName", NullValueHandling = NullValueHandling.Ignore), MaxLength(100), Required(ErrorMessage = "Gastgeber bitte eingeben.")]
@@ -21,6 +23,8 @@ namespace MeetUpPlanner.Shared
         public string HostLastName { get; set; }
         [JsonProperty(PropertyName = "hostAddressName", NullValueHandling = NullValueHandling.Ignore), MaxLength(100)]
         public string HostAdressInfo { get; set; }
+        [JsonProperty(PropertyName = "withoutHost")]
+        public Boolean WithoutHost { get; set; } = false;
 
         [JsonProperty(PropertyName = "summary", NullValueHandling = NullValueHandling.Ignore), Display(Name = "Zusammenfassung", Prompt = "Kurze Zusammenfassung des Termins"), MaxLength(5000, ErrorMessage = "Zusammenfassung zu lang.")]
         public string Summary { get; set; }
@@ -55,6 +59,7 @@ namespace MeetUpPlanner.Shared
             {
                 this.StartDate = DateTime.Today.AddDays(1.0).AddHours(18.0);
             }
+            PublishDate = DateTime.Now;
         }
         [JsonIgnore]
         public string HostDisplayName
@@ -62,13 +67,16 @@ namespace MeetUpPlanner.Shared
             get
             {
                 StringBuilder sb = new StringBuilder();
-                if (!String.IsNullOrEmpty(HostFirstName))
+                if (!WithoutHost)
                 { 
-                    sb.Append(HostFirstName).Append(" ");
-                }
-                if (!String.IsNullOrEmpty(HostLastName))
-                {
-                    sb.Append(HostLastName[0].ToString()).Append(".");
+                    if (!String.IsNullOrEmpty(HostFirstName))
+                    { 
+                        sb.Append(HostFirstName).Append(" ");
+                    }
+                    if (!String.IsNullOrEmpty(HostLastName))
+                    {
+                        sb.Append(HostLastName[0].ToString()).Append(".");
+                    }
                 }
                 return sb.ToString();
             }
@@ -84,6 +92,19 @@ namespace MeetUpPlanner.Shared
             if (null != StartDate)
             {
                 dateString = weekdays[(int)StartDate.DayOfWeek] + ", " + this.StartDate.ToString("dd.MM. HH:mm") + " Uhr";
+            }
+            return dateString;
+        }
+        /// <summary>
+        /// Returns a string ready to display in (German) UI.
+        /// </summary>
+        /// <returns></returns>
+        public string GetPublishDateAsString()
+        {
+            string dateString = String.Empty;
+            if (null != PublishDate)
+            {
+                dateString = this.PublishDate.ToLocalTime().ToString("dd.MM. HH:mm") + " Uhr";
             }
             return dateString;
         }

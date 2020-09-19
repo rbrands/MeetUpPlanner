@@ -33,7 +33,7 @@ namespace MeetUpPlanner.Functions
 
         [FunctionName("AddParticipantToCalendarItem")]
         [OpenApiOperation(Summary = "Add a participant to the referenced CalendarItem.",
-                          Description = "If the Participants already exists (same id) it it overwritten.")]
+                          Description = "If the Participants already exists (same id) it is overwritten.")]
         [OpenApiRequestBody("application/json", typeof(Participant), Description = "New Participant to be written.")]
         [OpenApiResponseWithBody(System.Net.HttpStatusCode.OK, "application/json", typeof(BackendResult), Description = "Status of operation.")]
         public async Task<IActionResult> Run(
@@ -66,7 +66,7 @@ namespace MeetUpPlanner.Functions
             }
             // Get participant list to check max registrations and if caller is already registered.
             IEnumerable<Participant> participants = await _cosmosRepository.GetItems(p => p.CalendarItemId.Equals(calendarItem.Id));
-            int counter = 1;
+            int counter = calendarItem.WithoutHost ? 0 : 1;
             foreach (Participant p in participants)
             {
                 if (p.ParticipantFirstName.Equals(participant.ParticipantFirstName) && p.ParticipantLastName.Equals(participant.ParticipantLastName))

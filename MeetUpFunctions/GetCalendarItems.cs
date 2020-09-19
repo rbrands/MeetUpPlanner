@@ -71,6 +71,11 @@ namespace MeetUpPlanner.Functions
             List<CalendarItem> resultCalendarItems = new List<CalendarItem>(10);
             foreach (CalendarItem item in rawListOfCalendarItems)
             {
+                if (!serverSettings.IsAdmin(keyWord) && item.PublishDate.CompareTo(DateTime.UtcNow) > 0)
+                {
+                    // If calendar item is not ready for publishing skip it
+                    continue;
+                }
                 if ( String.IsNullOrEmpty(item.PrivateKeyword))
                 {
                     // No private keyword for item ==> use it

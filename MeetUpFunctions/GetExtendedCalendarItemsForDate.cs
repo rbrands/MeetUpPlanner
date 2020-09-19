@@ -15,7 +15,7 @@ using Aliencube.AzureFunctions.Extensions.OpenApi.Core.Attributes;
 
 namespace MeetUpPlanner.Functions
 {
-    public class GetExtendedCalendarItems
+    public class GetExtendedCalendarItemsForDate
     {
         private readonly ILogger _logger;
         private ServerSettingsRepository _serverSettingsRepository;
@@ -23,8 +23,8 @@ namespace MeetUpPlanner.Functions
         private CosmosDBRepository<Participant> _participantRepository;
         private CosmosDBRepository<CalendarComment> _commentRepository;
 
-        public GetExtendedCalendarItems(ILogger<GetExtendedCalendarItems> logger, ServerSettingsRepository serverSettingsRepository, 
-                                                                                  CosmosDBRepository<CalendarItem> cosmosRepository, 
+        public GetExtendedCalendarItemsForDate(ILogger<GetExtendedCalendarItems> logger, ServerSettingsRepository serverSettingsRepository,
+                                                                                  CosmosDBRepository<CalendarItem> cosmosRepository,
                                                                                   CosmosDBRepository<Participant> participantRepository,
                                                                                   CosmosDBRepository<CalendarComment> commentRepository)
         {
@@ -35,15 +35,15 @@ namespace MeetUpPlanner.Functions
             _commentRepository = commentRepository;
         }
 
-        [FunctionName("GetExtendedCalendarItems")]
-        [OpenApiOperation(Summary = "Gets the relevant ExtendedCalendarIitems",
-                          Description = "Reading current ExtendedCalendarItems (CalendarItem including correpondent participants and comments) starting in the future or the configured past (in hours). To be able to read CalenderItems the user keyword must be set as header x-meetup-keyword.")]
+        [FunctionName("GetExtendedCalendarItemsForDate")]
+        [OpenApiOperation(Summary = "Gets the ExtendedCalendarIitems for the given date",
+                          Description = "Reading current ExtendedCalendarItems (CalendarItem including correpondent participants and comments) for the given date. To be able to read CalenderItems the user keyword must be set as header x-meetup-keyword.")]
         [OpenApiResponseWithBody(System.Net.HttpStatusCode.OK, "application/json", typeof(IEnumerable<ExtendedCalendarItem>))]
         [OpenApiParameter("privatekeywords", Description = "Holds a list of private keywords, separated by ;")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req)
         {
-            _logger.LogInformation("C# HTTP trigger function GetExtendedCalendarItems processed a request.");
+            _logger.LogInformation("C# HTTP trigger function GetExtendedCalendarItemsForDate processed a request.");
             string tenant = req.Headers[Constants.HEADER_TENANT];
             if (String.IsNullOrWhiteSpace(tenant))
             {
@@ -53,7 +53,7 @@ namespace MeetUpPlanner.Functions
             string keyWord = req.Headers[Constants.HEADER_KEYWORD];
             if (String.IsNullOrEmpty(keyWord) || !serverSettings.IsUser(keyWord))
             {
-                _logger.LogWarning("GetExtendedCalendarItems called with wrong keyword.");
+                _logger.LogWarning("GetExtendedCalendarItemsForDate called with wrong keyword.");
                 return new BadRequestErrorMessageResult("Keyword is missing or wrong.");
             }
             string privateKeywordsString = req.Query["privatekeywords"];
@@ -62,18 +62,23 @@ namespace MeetUpPlanner.Functions
             {
                 privateKeywords = privateKeywordsString.Split(';');
             }
+            string requestedDateArg = req.Query["requesteddate"];
+            if (String.IsNullOrEmpty(requestedDateArg))
+            {
+                _logger.LogWarning("GetExtendedCalendarItemsForDate called without requesteddate.");
+                return new BadRequestErrorMessageResult("requesteddate is misssing..");
+            }
+            DateTime compareDate = DateTime.Parse(requestedDateArg);
 
             // Get a list of all CalendarItems and filter all applicable ones
-            DateTime compareDate = DateTime.Now.AddHours((-serverSettings.CalendarItemsPastWindowHours));
-
             IEnumerable<CalendarItem> rawListOfCalendarItems;
             if (null == tenant)
             {
-                rawListOfCalendarItems = await _cosmosRepository.GetItems(d => d.StartDate > compareDate && (d.Tenant ?? String.Empty) == String.Empty);
+                rawListOfCalendarItems = await _cosmosRepository.GetItems(d => d.StartDate > compareDate && d.StartDate < compareDate.AddHours(24.0) && (d.Tenant ?? String.Empty) == String.Empty);
             }
             else
             {
-                rawListOfCalendarItems = await _cosmosRepository.GetItems(d => d.StartDate > compareDate && d.Tenant.Equals(tenant));
+                rawListOfCalendarItems = await _cosmosRepository.GetItems(d => d.StartDate > compareDate && d.StartDate < compareDate.AddHours(24.0) && d.Tenant.Equals(tenant));
             }
             List<ExtendedCalendarItem> resultCalendarItems = new List<ExtendedCalendarItem>(10);
             foreach (CalendarItem item in rawListOfCalendarItems)

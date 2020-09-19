@@ -116,14 +116,41 @@
         <label for="linkTitle">Link-Bezeichnung</label>
         <InputText id="linkTitle" aria-describedby="linkTitleHelp" class="form-control" @bind-Value="meetup.LinkTitle" placeholder="Kurze Überschrift zum Link" title="Bezeichnung des Links zur weiterern Streckeninfo" />
         <small id="linkTitleHelp" class="form-text text-muted">
-            Optional: Kurze Bezeichnung zu dem Link oben, der ansonsten steht da "Weitere Info ...".
+            Optional: Kurze Bezeichnung zu dem Link oben, falls der Standardtext "Tour auf Komoot" oder "Weitere Info ..." nicht passt.
         </small>
     </div>
+    @if (KeywordCheck.IsAdmin)
+    {
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label for="publishDate">Veröffentlichung</label>
+                <InputDate id="publishDate" aria-describedby="publishDateHelp" class="form-control" @bind-Value="publishDate" title="Veröffentlichung" />
+                <small id="publishDateHelp" class="form-text text-muted">
+                    Wann soll der Termin veröffentlicht werden?
+                </small>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="publishTime">Uhrzeit</label>
+                <input type="time" class="form-control" @bind="@publishTime" title="Uhrzeit Veröffentlichung" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="form-check">
+                <InputCheckbox id="withoutHost" aria-describedby="crossHelp" class="form-check-input" @bind-Value="meetup.WithoutHost" />
+                <label for="withoutHost" class="form-checklabel">
+                    Ausfahrt ohne Guide eintragen?
+                </label>
+            </div>
+            <small id="crossHelp" class="form-text text-muted">
+                Für Termine ohne Guide, z.B. wiederkehrende Ausfahrten.
+            </small>
+        </div>
+    }
     <div class="form-group">
         <label for="size">Max. Gruppengröße</label>
-        <RadzenNumeric id="size" aria-describedby="sizeHelp" class="form-control" TValue="int" Min="2" Max="@AppStateStore.ClientSettings?.MaxGroupSize" @bind-Value="meetup.MaxRegistrationsCount" />
+        <RadzenNumeric id="size" aria-describedby="sizeHelp" class="form-control" TValue="int" Min="2" Max="@AppStateStore.ClientSettings?.GetMaxGroupSize(KeywordCheck.IsAdmin)" @bind-Value="meetup.MaxRegistrationsCount" />
         <small id="sizeHelp" class="form-text text-muted">
-            Hier kann die Größe der Gruppe entsprechend beschränkt werden. Maximale Gruppengröße ist momentan @(AppStateStore.ClientSettings?.MaxGroupSize).
+            Hier kann die Größe der Gruppe entsprechend beschränkt werden. Maximale Gruppengröße ist momentan @(AppStateStore.ClientSettings?.GetMaxGroupSize(KeywordCheck.IsAdmin)).
         </small>
     </div>
     <div class="form-group">
@@ -134,7 +161,7 @@
         </small>
     </div>
     <ValidationSummary />
-    <button type="submit" id="BtnSave" class="btn btn-primary">Termin speichern ...</button>
+    <button type="submit" id="BtnSave" disabled="@saveDisabled" class="btn btn-primary">Termin speichern ...</button>
     <button type="reset" id="BtnCancel" class="btn btn-secondary" @onclick="@(() => OnCancel())">Zurück ohne Speichern</button>
 </EditForm>
 
@@ -146,9 +173,12 @@
     string whenDateString = String.Empty;
     DateTime whenTime = DateTime.Now;
     DateTime whenDate = DateTime.Now;
+    DateTime publishTime = DateTime.Now.AddHours(-1.0);
+    DateTime publishDate = DateTime.Now;
     BlazoredTextEditor htmlDescription;
     bool onlyScopedMeetUps = false;
     private List<KeyValuePair<string, string>> scopedDates = new List<KeyValuePair<string, string>>();
+    private bool saveDisabled = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -191,6 +221,8 @@
             whenDate = meetup.StartDate;
             whenTime = meetup.StartDate;
             whenDateString = meetup.StartDate.ToString("yyyy-MM-dd");
+            publishDate = meetup.PublishDate.ToLocalTime();
+            publishTime = meetup.PublishDate.ToLocalTime();
         }
         else
         {
@@ -200,7 +232,7 @@
 
     private async Task OnSave()
     {
-        if (meetup.MaxRegistrationsCount > AppStateStore.ClientSettings.MaxGroupSize)
+        if (meetup.MaxRegistrationsCount > AppStateStore.ClientSettings.GetMaxGroupSize(KeywordCheck.IsAdmin))
         {
             notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Gruppengröße", Detail = "Max. Gruppengröße überschritten.", Duration = 4000 });
             return;
@@ -210,10 +242,19 @@
             whenDate = DateTime.Parse(whenDateString);
         }
         meetup.StartDate = new DateTime(whenDate.Year, whenDate.Month, whenDate.Day, whenTime.Hour, whenTime.Minute, whenTime.Second);
-        if (meetup.StartDate.CompareTo(DateTime.Now.AddHours(-3.0)) < 0)
+        if (meetup.StartDate.CompareTo(DateTime.Now.AddHours(-5.0)) < 0)
         {
             notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Startdatum", Detail = "Bitte Startdatum korrigieren.", Duration = 4000 });
             return;
+        }
+        if (saveDisabled)
+        {
+            return;
+        }
+        saveDisabled = true;
+        if (KeywordCheck.IsAdmin)
+        {
+            meetup.PublishDate = new DateTime(publishDate.Year, publishDate.Month, publishDate.Day, publishTime.Hour, publishTime.Minute, publishTime.Second).ToUniversalTime();
         }
         meetup.Summary = await htmlDescription.GetHTML();
         if (!String.IsNullOrWhiteSpace(meetup.PrivateKeyword))
@@ -243,7 +284,6 @@
         // Save calendarItem server
         await Http.PostAsJsonAsync<CalendarItem>($"Calendar/writecalendaritem", meetup);
         if (IsConnected) await SendMessage();
-
 
         NavigationManager.NavigateTo("/calendar");
     }

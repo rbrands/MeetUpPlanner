@@ -1,0 +1,167 @@
+﻿@page "/registerothers/{ItemId}"
+@inject HttpClient Http
+@inject AppState AppStateStore
+@using MeetUpPlanner.Shared
+@inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NotificationService notificationService
+@using Newtonsoft.Json
+
+<MeetUp CalendarItem="@meetup" HideParticipants="false" AdditionalText="Hier kannst du für andere Teilnehmer der Ausfahrt die An- oder Abmeldung übernehmen." />
+
+<EditForm OnValidSubmit="RegisterParticipant" Model="@_participant">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <h5>Kontaktdaten</h5>
+    <div class="form-row">
+        <div class="form-group col-md-12">
+            <small id="nameHelp" class="form-text text-muted">
+                Bitte Vor- und Nachname eingeben. Soll ein Teilnehmer wieder abgemeldet werden, müssen Vor- und Nachname genau wie bei der Anmeldung angegeben werden.
+            </small>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <InputText id="firstname" aria-describedby="nameHelp" class="form-control" @bind-Value="_participant.ParticipantFirstName" autocomplete="on" placeholder="Vorname" title="Vorname" />
+        </div>
+        <div class="form-group col-md-4">
+            <InputText id="lastName" area-describedby="nameHelp" class="form-control" @bind-Value="_participant.ParticipantLastName" autocomplete="on" placeholder="Nachname" title="Nachname" />
+        </div>
+    </div>
+    <div class="form-group" hidden="@(!AppStateStore.Tenant.ClubMembershipAllowed)">
+        <div class="form-check">
+            <InputCheckbox id="addressNotNeeded" @oninput="@(e => { _participant.ParticipantAdressInfo = ((bool)e.Value ? "Vereinsmitglied" : String.Empty); })" aria-describedby="addressNotNeededHelp" class="form-check-input" @bind-Value="_noAddressNeeded"></InputCheckbox>
+            <label for="addressNotNeeded" class="form-check-label">Vereinsmitglied?</label>
+        </div>
+        <small id="addressNotNeededHelp">Für Vereinsmitglieder werden keine weiteren Adressinfos benötgt, Vor- und Nachname reichen dann.</small>
+    </div>
+    <div class="form-group" hidden="@_noAddressNeeded">
+        <label for="Phone">Telefon/Mail</label>
+        <InputText id="Phone" aria-describedby="phoneHelp" class="form-control" @bind-Value="_participant.ParticipantAdressInfo" autocomplete="on" placeholder="Telefon-Nr. oder Mail-Adresse" title="Bitte Telefonnummer oder Mailadresse angeben." />
+        <small id="phoneHelp" class="form-text text-muted">
+            Für die Nachverfolgbarkeit hier bitte die Mail-Adresse oder Telefonnummer eingeben.
+        </small>
+    </div>
+    <div class="form-group">
+        <div class="form-check">
+            <InputCheckbox id="accept" class="form-check-input" @bind-Value="@_usageRightsAccepted" />
+            <label for="accept" class="form-checklabel">
+                Der/die Teilnehmer(in) ist damit einverstanden, dass die Kontaktdaten bis zu 4 Wochen gespeichert werden und abgekürzt in der Liste der Ausfahrten angezeigt werden.
+            </label>
+        </div>
+    </div>
+    <button type="submit" id="BtnSaveKeyword" class="btn btn-primary" disabled="@(_registerButtonDisabled || !_usageRightsAccepted)" title="An/Abmelden">An/Abmelden</button>
+    <button type="reset" id="BtnCancel" class="btn btn-secondary" @onclick="@(() => OnCancel())">Zurück ...</button>
+</EditForm>
+
+
+@code {
+    [Parameter]
+    public string ItemId { get; set; }
+    ExtendedCalendarItem meetup = new ExtendedCalendarItem();
+    Participant _participant = new Participant();
+    private Boolean _registerButtonDisabled = false;
+    private Boolean _noAddressNeeded;
+    private Boolean _usageRightsAccepted = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (null != AppStateStore && !String.IsNullOrEmpty(AppStateStore.KeyWord))
+        {
+            await ReadData();
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+    private async Task ReadData()
+    {
+        // Get list of calendar items
+        PrepareHttpClient();
+        // Get referenced calendar item
+        if (!String.IsNullOrEmpty(AppStateStore?.KeyWord))
+        {
+            meetup = await Http.GetFromJsonAsync<ExtendedCalendarItem>($"Calendar/extendedcalendaritem?itemId={ItemId}");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+    private void PrepareHttpClient()
+    {
+        if (null != AppStateStore.Tenant?.Name)
+        {
+            if (!Http.DefaultRequestHeaders.Contains("x-meetup-tenant"))
+            {
+                Http.DefaultRequestHeaders.Add("x-meetup-tenant", AppStateStore.Tenant.Name);
+            }
+        }
+        if (!Http.DefaultRequestHeaders.Contains("x-meetup-keyword"))
+        {
+            Http.DefaultRequestHeaders.Add("x-meetup-keyword", AppStateStore.KeyWord);
+        }
+    }
+    private async Task RegisterParticipant()
+    {
+        _participant.ParticipantFirstName = _participant.ParticipantFirstName.Trim();
+        _participant.ParticipantLastName = _participant.ParticipantLastName.Trim();
+        _participant.ParticipantAdressInfo = _participant.ParticipantAdressInfo.Trim();
+        _participant.CalendarItemId = ItemId;
+        if (CheckIfUserIsHost())
+        {
+            notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Warning, Summary = "Fehler", Detail = "Der Gastgeber kann nicht abgemeldet werden.", Duration = 4000 });
+            return;
+        }
+        _registerButtonDisabled = true;
+        BackendResult result;
+        Participant participant = meetup.FindParticipant(_participant.ParticipantFirstName, _participant.ParticipantLastName);
+        if (null == participant)
+        {
+            PrepareHttpClient();
+            HttpResponseMessage response = await Http.PostAsJsonAsync<Participant>($"Calendar/addparticipant", _participant);
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
+            if (result.Success)
+            {
+                notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Angemeldet", Detail = "Teilnehmer ist jetzt angemeldet.", Duration = 4000 });
+            }
+        }
+        else
+        {
+            PrepareHttpClient();
+            HttpResponseMessage response = await Http.PostAsJsonAsync<Participant>($"Calendar/removeparticipant", participant);
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
+            if (result.Success)
+            {
+                notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Abgemeldet", Detail = "Teilnehmer ist abgemeldet.", Duration = 4000 });
+            }
+        }
+        if (result.Success)
+        {
+            await ReadData();
+        }
+        else
+        {
+            notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Fehler", Detail = result.Message, Duration = 4000 });
+        }
+        _registerButtonDisabled = false;
+
+    }
+    protected void OnCancel()
+    {
+        NavigationManager.NavigateTo("/calendar");
+    }
+    protected bool CheckIfUserIsHost()
+    {
+        bool isHost = !meetup.WithoutHost && (meetup.HostFirstName.Equals(_participant.ParticipantFirstName) && meetup.HostLastName.Equals(_participant.ParticipantLastName));
+        return isHost;
+    }
+
+
+}
