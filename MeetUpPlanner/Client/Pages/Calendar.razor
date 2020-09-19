@@ -106,7 +106,7 @@
                         {
                             <button class="btn btn-sm btn-outline-secondary" title="Gast einladen" @onclick="@(() => Invite(item))"><span class="oi oi-external-link"></span></button>
                         }
-                        @if (KeywordCheck.IsAdmin)
+                        @if (CheckIfUserIsHost(item) || KeywordCheck.IsAdmin)
                         {
                             <button class="btn btn-sm btn-outline-secondary" title="Andere an/abmelden" @onclick="@(() => RegisterOthers(item))"><span class="oi oi-transfer"></span></button> 
                         }

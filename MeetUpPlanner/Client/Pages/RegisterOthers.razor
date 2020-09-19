@@ -7,7 +7,7 @@
 @inject NotificationService notificationService
 @using Newtonsoft.Json
 
-<MeetUp CalendarItem="@meetup" HideParticipants="false" AdditionalText="Hier können weitere Teilnehmer der Ausfahrt an- und abgemeldet werden. Auch nachdem die Ausfahrt schon beendet ist." />
+<MeetUp CalendarItem="@meetup" HideParticipants="false" AdditionalText="Hier kannst du für andere Teilnehmer der Ausfahrt die An- oder Abmeldung übernehmen." />
 
 <EditForm OnValidSubmit="RegisterParticipant" Model="@_participant">
     <DataAnnotationsValidator />
@@ -35,7 +35,6 @@
         </div>
         <small id="addressNotNeededHelp">Für Vereinsmitglieder werden keine weiteren Adressinfos benötgt, Vor- und Nachname reichen dann.</small>
     </div>
-
     <div class="form-group" hidden="@_noAddressNeeded">
         <label for="Phone">Telefon/Mail</label>
         <InputText id="Phone" aria-describedby="phoneHelp" class="form-control" @bind-Value="_participant.ParticipantAdressInfo" autocomplete="on" placeholder="Telefon-Nr. oder Mail-Adresse" title="Bitte Telefonnummer oder Mailadresse angeben." />
@@ -43,7 +42,15 @@
             Für die Nachverfolgbarkeit hier bitte die Mail-Adresse oder Telefonnummer eingeben.
         </small>
     </div>
-    <button type="submit" id="BtnSaveKeyword" class="btn btn-primary" disabled="@_registerButtonDisabled" title="An/Abmelden">An/Abmelden</button>
+    <div class="form-group">
+        <div class="form-check">
+            <InputCheckbox id="accept" class="form-check-input" @bind-Value="@_usageRightsAccepted" />
+            <label for="accept" class="form-checklabel">
+                Der/die Teilnehmer(in) ist damit einverstanden, dass die Kontaktdaten bis zu 4 Wochen gespeichert werden und abgekürzt in der Liste der Ausfahrten angezeigt werden.
+            </label>
+        </div>
+    </div>
+    <button type="submit" id="BtnSaveKeyword" class="btn btn-primary" disabled="@(_registerButtonDisabled || !_usageRightsAccepted)" title="An/Abmelden">An/Abmelden</button>
     <button type="reset" id="BtnCancel" class="btn btn-secondary" @onclick="@(() => OnCancel())">Zurück ...</button>
 </EditForm>
 
@@ -55,6 +62,7 @@
     Participant _participant = new Participant();
     private Boolean _registerButtonDisabled = false;
     private Boolean _noAddressNeeded;
+    private Boolean _usageRightsAccepted = false;
 
 
     protected override async Task OnInitializedAsync()
