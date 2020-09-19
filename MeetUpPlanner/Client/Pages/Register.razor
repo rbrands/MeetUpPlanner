@@ -158,7 +158,7 @@
         else
         {
             PrepareHttpClient();
-            HttpResponseMessage response = await Http.PostAsJsonAsync<Participant>($"Calendar/removeguest?", participant);
+            HttpResponseMessage response = await Http.PostAsJsonAsync<Participant>($"Calendar/removeguest", participant);
             string responseBody = await response.Content.ReadAsStringAsync();
 
             result = JsonConvert.DeserializeObject<BackendResult>(responseBody);

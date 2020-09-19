@@ -102,14 +102,18 @@
                         {
                             <button class="btn btn-sm btn-outline-secondary" title="Neuer Guide" @onclick="@(() => AssignNewHost(item))"><span class="oi oi-share-boxed"></span></button>
                         }
-                        @if (!CheckIfUserIsHost(item))
+                        @if (AppStateStore.ClientSettings.GuestsEnabled && !ShowHistory())
+                        {
+                            <button class="btn btn-sm btn-outline-secondary" title="Gast einladen" @onclick="@(() => Invite(item))"><span class="oi oi-external-link"></span></button>
+                        }
+                        @if (KeywordCheck.IsAdmin)
+                        {
+                            <button class="btn btn-sm btn-outline-secondary" title="Andere an/abmelden" @onclick="@(() => RegisterOthers(item))"><span class="oi oi-transfer"></span></button> 
+                        }
+                        @if (!CheckIfUserIsHost(item) && !ShowHistory())
                         {
                             <button class="btn btn-sm btn-outline-secondary" title="Anmelden" hidden="@CheckIfUserIsAlreadyRegistered(item)" @onclick="@(() => Checkin(item.Id))">Anmelden</button>
                             <button class="btn btn-sm btn-outline-secondary" title="Abmelden" hidden="@(!CheckIfUserIsAlreadyRegistered(item))" @onclick="@(() => Checkout(item))">Abmelden</button>
-                        }
-                        @if (AppStateStore.ClientSettings.GuestsEnabled)
-                        {
-                            <button class="btn btn-sm btn-outline-secondary" title="Gast einladen" @onclick="@(() => Invite(item))">Gast einladen</button>
                         }
                     </div>
                 </div>
@@ -336,6 +340,10 @@
     protected void Invite(ExtendedCalendarItem calendarItem)
     {
         NavigationManager.NavigateTo($"/Invite/{calendarItem.Id}");
+    }
+    protected void RegisterOthers(ExtendedCalendarItem calendarItem)
+    {
+        NavigationManager.NavigateTo($"/RegisterOthers/{calendarItem.Id}");
     }
     protected void DeleteCalendarItem(ExtendedCalendarItem calendarItem)
     {

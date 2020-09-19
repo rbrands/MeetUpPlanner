@@ -102,6 +102,7 @@
     }
     protected async Task RemoveComment(CalendarComment c)
     {
+        saveDisabled = true;
         PrepareHttpClient();
         HttpResponseMessage response = await Http.PostAsJsonAsync<CalendarComment>($"Calendar/removecomment", c);
         string responseBody = await response.Content.ReadAsStringAsync();
