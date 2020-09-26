@@ -40,6 +40,7 @@ namespace MeetUpPlanner.Functions
             builder.Services.AddSingleton(config);
             builder.Services.AddSingleton(new CosmosDBRepository<ClientSettings>(config, cosmosClient));
             builder.Services.AddSingleton(new CosmosDBRepository<CalendarItem>(config, cosmosClient));
+            builder.Services.AddSingleton(new CosmosDBRepository<InfoItem>(config, cosmosClient));
             builder.Services.AddSingleton(new CosmosDBRepository<Participant>(config, cosmosClient));
             builder.Services.AddSingleton(new CosmosDBRepository<CalendarComment>(config, cosmosClient));
             builder.Services.AddSingleton(new CosmosDBRepository<ExportLogItem>(config, cosmosClient));
