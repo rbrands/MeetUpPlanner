@@ -36,7 +36,7 @@ namespace MeetUpPlanner.Functions
         }
 
         [FunctionName("GetExtendedCalendarItems")]
-        [OpenApiOperation(Summary = "Gets the relevant ExtendedCalendarIitems",
+        [OpenApiOperation(Summary = "Gets the relevant ExtendedCalendarItems",
                           Description = "Reading current ExtendedCalendarItems (CalendarItem including correpondent participants and comments) starting in the future or the configured past (in hours). To be able to read CalenderItems the user keyword must be set as header x-meetup-keyword.")]
         [OpenApiResponseWithBody(System.Net.HttpStatusCode.OK, "application/json", typeof(IEnumerable<ExtendedCalendarItem>))]
         [OpenApiParameter("privatekeywords", Description = "Holds a list of private keywords, separated by ;")]

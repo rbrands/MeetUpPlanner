@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace MeetUpPlanner.Shared
 {
@@ -28,7 +26,7 @@ namespace MeetUpPlanner.Shared
 
         [JsonProperty(PropertyName = "summary", NullValueHandling = NullValueHandling.Ignore), Display(Name = "Zusammenfassung", Prompt = "Kurze Zusammenfassung des Termins"), MaxLength(5000, ErrorMessage = "Zusammenfassung zu lang.")]
         public string Summary { get; set; }
-        [JsonProperty(PropertyName = "maxRegistrationsCount", NullValueHandling = NullValueHandling.Ignore), Range(2.0, 50.0, ErrorMessage = "Gruppengröße nicht im gültigen Bereich."), Display(Name = "Maximale Anzahl Teilnehmer", Prompt = "Anzahl eingeben"), Required(ErrorMessage = "Max. Anzahl Teilnehmer eingeben")]
+        [JsonProperty(PropertyName = "maxRegistrationsCount", NullValueHandling = NullValueHandling.Ignore), Range(2.0, 150.0, ErrorMessage = "Gruppengröße nicht im gültigen Bereich."), Display(Name = "Maximale Anzahl Teilnehmer", Prompt = "Anzahl eingeben"), Required(ErrorMessage = "Max. Anzahl Teilnehmer eingeben")]
         public int MaxRegistrationsCount { get; set; } = 10;
         [JsonProperty(PropertyName = "privateKeyword", NullValueHandling = NullValueHandling.Ignore), MaxLength(50, ErrorMessage = "Privates Schlüsselwort zu lang.")]
         public string PrivateKeyword { get; set; }

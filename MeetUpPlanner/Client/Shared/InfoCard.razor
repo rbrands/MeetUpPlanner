@@ -1,0 +1,108 @@
+﻿@using MeetUpPlanner.Shared
+@inject DialogService dialogService
+@inject HttpClient Http
+@inject AppState AppStateStore
+@inject NavigationManager NavigationManager
+
+<div class="card">
+    <div class="card-header"><em>@InfoItem.HeaderTitle</em></div>
+    <div class="card-body">
+        @if (!String.IsNullOrEmpty(InfoItem.SubTitle))
+        {
+            <h6 class="text-muted card-subtitle mb-2">@InfoItem.SubTitle</h6>
+        }
+        @if (!String.IsNullOrEmpty(InfoItem.Title))
+        {
+            <h4 class="card-title">@InfoItem.Title</h4>
+        }
+        <p class="card-text">
+            @((MarkupString)InfoItem.InfoContent)
+            <hr />
+            <ul class="list-unstyled">
+                @foreach (CalendarComment c in InfoItem.CommentsList)
+                {
+                    <li><small><em>@c.AuthorDisplayName (@c.DisplayDate): </em>@c.Comment</small></li>
+                }
+            </ul>
+        </p>
+        @if (!String.IsNullOrEmpty(InfoItem.Link))
+        {
+            <a href="@InfoItem.Link" target="_blank" class="card-link">@InfoItem.LinkTitle</a>
+        }
+    </div>
+    <div class="card-footer">
+        <div class="btn-group">
+            @if (IsAdmin)
+            {
+                <button class="btn btn-sm btn-outline-secondary" title="Ändern" @onclick="@(() => EditInfoItem())"><span class="oi oi-pencil"></span></button>
+                <button class="btn btn-sm btn-outline-secondary" title="Löschen" @onclick="ConfirmDelete"><span class="oi oi-trash"></span></button>
+            }
+            @if (InfoItem.CommentsAllowed)
+            {
+                <button class="btn btn-sm btn-outline-secondary" title="Kommentieren" @onclick="@(() => ShowComment())"><span class="oi oi-comment-square"></span></button>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public ExtendedInfoItem InfoItem { get; set; } = new ExtendedInfoItem();
+    [Parameter]
+    public Boolean IsAdmin { get; set; } = false;
+    [Parameter]
+    public EventCallback OnChangeCallback { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+    }
+
+    protected void ConfirmDelete()
+    {
+        dialogService.OnClose += DeleteConfirmed;
+        dialogService.Confirm("Info wirklich löschen?", "Löschen", new ConfirmOptions() { OkButtonText = "Ja", CancelButtonText = "Nein" });
+    }
+    protected async void DeleteConfirmed(dynamic result)
+    {
+        dialogService.OnClose -= DeleteConfirmed;
+        bool? removeIt = result;
+        if (null != removeIt)
+        {
+            if ((bool)removeIt)
+            {
+                await DeleteInfoItem();
+            }
+        }
+    }
+    protected async Task DeleteInfoItem()
+    {
+        PrepareHttpClient();
+        await Http.PostAsJsonAsync<InfoItem>($"api/info/deleteinfoitem", InfoItem);
+        await OnChangeCallback.InvokeAsync(null);
+    }
+    protected void EditInfoItem()
+    {
+        NavigationManager.NavigateTo($"/EditInfo/{InfoItem.Id}");
+    }
+    protected void ShowComment()
+    {
+        NavigationManager.NavigateTo($"/InfoComment/{InfoItem.Id}");
+    }
+    private void PrepareHttpClient()
+    {
+        if (null != AppStateStore.Tenant?.Name)
+        {
+            if (!Http.DefaultRequestHeaders.Contains("x-meetup-tenant"))
+            {
+                Http.DefaultRequestHeaders.Add("x-meetup-tenant", AppStateStore.Tenant.Name);
+            }
+        }
+        if (!Http.DefaultRequestHeaders.Contains("x-meetup-keyword"))
+        {
+            Http.DefaultRequestHeaders.Add("x-meetup-keyword", AppStateStore.KeyWord);
+        }
+
+    }
+
+}

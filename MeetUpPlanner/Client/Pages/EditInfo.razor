@@ -1,0 +1,218 @@
+﻿@page "/editinfo"
+@page "/editinfo/{ItemId}"
+@inject HttpClient Http
+@inject AppState AppStateStore
+@inject KeywordCheck KeywordCheck
+@inject NavigationManager NavigationManager
+@inject NotificationService notificationService
+@using Microsoft.AspNetCore.SignalR.Client
+@using MeetUpPlanner.Shared
+@using Blazored.TextEditor
+
+<h1>Info</h1>
+<EditForm Model="@infoItem" OnValidSubmit="OnSave">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label for="orderId">Ordnungs ID</label>
+        <RadzenNumeric id="orderId" aria-describedby="orderIdHelp" class="form-control" TValue="int" Min="0" Max="1000" @bind-Value="infoItem.OrderId" />
+        <small id="orderIdHelp" class="form-text text-muted">
+            Über die Ordnungs ID wird die Reihenfolge der Anzeige der Info-Boxen gesteuert.
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="title">Kopfzeile</label>
+        <InputText id="header" aria-describedby="titleHelp" class="form-control" @bind-Value="infoItem.HeaderTitle" autocomplete="on" placeholder="Kopftitel der Info" title="Kopfzeile" />
+        <small id="headerHelp" class="form-text text-muted">
+            Header zur Infobox.
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="title">Titel</label>
+        <InputText id="title" aria-describedby="titleHelp" class="form-control" @bind-Value="infoItem.Title" autocomplete="on" placeholder="Titel der Info" title="Titel" />
+        <small id="titleHelp" class="form-text text-muted">
+            Haupttitel zur Infobox.
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="title">Untertitel</label>
+        <InputText id="subTitle" aria-describedby="subTitleHelp" class="form-control" @bind-Value="infoItem.SubTitle" autocomplete="on" placeholder="Untertitel der Info" title="Untertitel" />
+        <small id="subTitleHelp" class="form-text text-muted">
+            Untertitel zur Infobox.
+        </small>
+    </div>
+    <div class="form-group">
+        <label>Inhalt der Infobox</label>
+        <BlazoredTextEditor @ref="@htmlDescription" Placeholder="Hier steht der Inhalt der Infobox">
+            <ToolbarContent>
+                <span class="ql-formats">
+                    <button class="ql-bold"></button>
+                    <button class="ql-italic"></button>
+                    <button class="ql-underline"></button>
+                    <button class="ql-strike"></button>
+                </span>
+                <span class="ql-formats">
+                    <select class="ql-color"></select>
+                    <select class="ql-background"></select>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-list" value="ordered"></button>
+                    <button class="ql-list" value="bullet"></button>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-link"></button>
+                </span>
+            </ToolbarContent>
+            <EditorContent>
+                @if (null != infoItem.InfoContent)
+                {@if (infoItem.IsHtmlCode)
+                    {@infoItem.InfoContent}
+                else
+                {@((MarkupString)infoItem.InfoContent)}}
+            </EditorContent>
+        </BlazoredTextEditor>
+    </div>
+    <div class="form-group">
+        <div class="form-check">
+            <InputCheckbox id="isHtmlCode" aria-describedby="isHtmlCodeHelp" class="form-check-input" @bind-Value="infoItem.IsHtmlCode" />
+            <label for="isHtmlCode" class="form-checklabel">
+                Info-Box ist Html-Code?
+            </label>
+        </div>
+        <small id="isHtmlCodeHelp" class="form-text text-muted">
+            So kann auch Html-Code eingegeben werden..
+        </small>
+    </div>
+    <div class="form-group">
+        <div class="form-check">
+            <InputCheckbox id="commentsAllowed" aria-describedby="commentsAllowedHelp" class="form-check-input" @bind-Value="infoItem.CommentsAllowed" />
+            <label for="commentsAllowed" class="form-checklabel">
+                Sind Kommentare möglich?
+            </label>
+        </div>
+        <small id="commentsAllowedHelp" class="form-text text-muted">
+            Sollen Kommentare zulässig sein?
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="infoLifeTime">Lebensdauer der Info</label>
+        <RadzenNumeric id="infoLifeTime" aria-describedby="infoLifeTimeHelp" class="form-control" TValue="int" Min="0" Max="100" @bind-Value="infoItem.InfoLifeTimeInDays" />
+        <small id="infoLifeTimeHelp" class="form-text text-muted">
+            Hier kann eingestellt werden, nach wie vielen Tagen die Info automatisch gelöscht werden soll. 0 = kein automatisches Löschen.
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="commentsLifeTime">Lebensdauer der Kommentare</label>
+        <RadzenNumeric id="commentsLifeTime" aria-describedby="commentsLifeTimeHelp" class="form-control" TValue="int" Min="0" Max="100" @bind-Value="infoItem.CommentsLifeTimeInDays" />
+        <small id="commentsLifeTimeHelp" class="form-text text-muted">
+            Hier kann eingestellt werden, nach wie vielen Tagen die Kommentare automatisch gelöscht werden sollen. 0 = kein automatisches Löschen.
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="link">Link</label>
+        <InputText id="link" aria-describedby="linkHelp" class="form-control" @bind-Value="infoItem.Link" placeholder="URL" title="Link zu weiterer Infos" />
+        <small id="linkHelp" class="form-text text-muted">
+            Optional: Link zu weiteren Infos, z.B. Komoot, Strava usw.
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="linkTitle">Link-Bezeichnung</label>
+        <InputText id="linkTitle" aria-describedby="linkTitleHelp" class="form-control" @bind-Value="infoItem.LinkTitle" placeholder="Kurze Überschrift zum Link" title="Bezeichnung des Links zur weiterern Info" />
+        <small id="linkTitleHelp" class="form-text text-muted">
+            Optional: Kurze Bezeichnung zu dem Link oben, falls der Standardtext "Tour auf Komoot" oder "Weitere Info ..." nicht passt.
+        </small>
+    </div>
+    <ValidationSummary />
+    <button type="submit" id="BtnSave" disabled="@saveDisabled" class="btn btn-primary">Info speichern ...</button>
+    <button type="reset" id="BtnCancel" class="btn btn-secondary" @onclick="@(() => OnCancel())">Zurück ohne Speichern</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public string ItemId { get; set; }
+    InfoItem infoItem = new InfoItem();
+    BlazoredTextEditor htmlDescription;
+    private HubConnection hubConnection;
+    private bool saveDisabled = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (null != AppStateStore && !String.IsNullOrEmpty(AppStateStore.KeyWord) && null != AppStateStore.Tenant && KeywordCheck.IsAdmin)
+        {
+            hubConnection = new HubConnectionBuilder()
+                 .WithUrl(NavigationManager.ToAbsoluteUri("/broadcastHub"))
+                 .WithAutomaticReconnect()
+                 .Build();
+            await hubConnection.StartAsync();
+
+            if (!String.IsNullOrEmpty(ItemId))
+            {
+                PrepareHttpClient();
+                // Get referenced calendar item
+                infoItem = await Http.GetFromJsonAsync<InfoItem>($"api/info/infoitem?itemId={ItemId}");
+            }
+            else
+            {
+                infoItem.AuthorFirstName = AppStateStore.FirstName;
+                infoItem.AuthorLastName = AppStateStore.LastName;
+            }
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+
+    private void PrepareHttpClient()
+    {
+        if (null != AppStateStore.Tenant.Name)
+        {
+            if (!Http.DefaultRequestHeaders.Contains("x-meetup-tenant"))
+            {
+                Http.DefaultRequestHeaders.Add("x-meetup-tenant", AppStateStore.Tenant.Name);
+            }
+        }
+        if (!Http.DefaultRequestHeaders.Contains("x-meetup-keyword"))
+        {
+            Http.DefaultRequestHeaders.Add("x-meetup-keyword", AppStateStore.KeyWord);
+        }
+
+    }
+    private async Task OnSave()
+    {
+        if (saveDisabled)
+        {
+            return;
+        }
+        saveDisabled = true;
+        if (infoItem.IsHtmlCode)
+        {
+            infoItem.InfoContent = await htmlDescription.GetText();
+        }
+        else
+        {
+            infoItem.InfoContent = await htmlDescription.GetHTML();
+        }
+        PrepareHttpClient();
+        await Http.PostAsJsonAsync<InfoItem>($"api/info/writeinfoitem", infoItem);
+        if (IsConnected) await SendMessage();
+
+        NavigationManager.NavigateTo("/calendar");
+    }
+    protected void OnCancel()
+    {
+        NavigationManager.NavigateTo("/calendar");
+    }
+    Task SendMessage() => hubConnection.SendAsync("SendMessage");
+
+    public bool IsConnected => hubConnection.State == HubConnectionState.Connected;
+
+    public void Dispose()
+    {
+        if (null != hubConnection)
+        {
+            _ = hubConnection.DisposeAsync();
+        }
+    }
+
+
+}
