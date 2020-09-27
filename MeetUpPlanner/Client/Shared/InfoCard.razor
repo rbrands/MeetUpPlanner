@@ -17,6 +17,13 @@
         }
         <p class="card-text">
             @((MarkupString)InfoItem.InfoContent)
+            <hr />
+            <ul class="list-unstyled">
+                @foreach (CalendarComment c in InfoItem.CommentsList)
+                {
+                    <li><small><em>@c.AuthorDisplayName (@c.DisplayDate): </em>@c.Comment</small></li>
+                }
+            </ul>
         </p>
         @if (!String.IsNullOrEmpty(InfoItem.Link))
         {
@@ -29,6 +36,10 @@
             {
                 <button class="btn btn-sm btn-outline-secondary" title="Ändern" @onclick="@(() => EditInfoItem())"><span class="oi oi-pencil"></span></button>
                 <button class="btn btn-sm btn-outline-secondary" title="Löschen" @onclick="ConfirmDelete"><span class="oi oi-trash"></span></button>
+            }
+            @if (InfoItem.CommentsAllowed)
+            {
+                <button class="btn btn-sm btn-outline-secondary" title="Kommentieren" @onclick="@(() => ShowComment())"><span class="oi oi-comment-square"></span></button>
             }
         </div>
     </div>
@@ -73,6 +84,10 @@
     protected void EditInfoItem()
     {
         NavigationManager.NavigateTo($"/EditInfo/{InfoItem.Id}");
+    }
+    protected void ShowComment()
+    {
+        NavigationManager.NavigateTo($"/InfoComment/{InfoItem.Id}");
     }
     private void PrepareHttpClient()
     {

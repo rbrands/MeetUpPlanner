@@ -1,5 +1,4 @@
 ﻿@using MeetUpPlanner.Shared
-@using Blazored.TextEditor
 
 <EditForm Model="@comment" OnValidSubmit="SaveComment">
     <DataAnnotationsValidator />
@@ -22,8 +21,6 @@
     public EventCallback OnCancel { get; set; }
     CalendarComment comment = new CalendarComment() { AuthorFirstName = "NN", AuthorLastName = "NN" };
     private Boolean saveDisabled = false;
-    BlazoredTextEditor htmlComment;
-
 
 
     private async Task SaveComment()

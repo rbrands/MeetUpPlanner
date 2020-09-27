@@ -1,4 +1,4 @@
-﻿@page "/comment/{ItemId}"
+﻿@page "/infocomment/{ItemId}"
 @inject HttpClient Http
 @inject AppState AppStateStore
 @inject NavigationManager NavigationManager
@@ -7,22 +7,19 @@
 @using Newtonsoft.Json
 @using Microsoft.AspNetCore.SignalR.Client
 
-<MeetUp CalendarItem="@meetup" />
+<InfoSummary InfoItem="@infoItem" AdditionalText="@lifetimeHint" />
 <AddComment OnSaveComment="SaveComment" OnCancel="OnCancel"></AddComment>
 <hr />
-<CommentsList Comments="@meetup.CommentsList" OnRemoveComment="RemoveComment"></CommentsList>
-
-<p class="alert-info">
-    @logMessage
-</p>
+<CommentsList Comments="@infoItem.CommentsList" OnRemoveComment="RemoveComment"></CommentsList>
 
 
 @code {
     [Parameter]
     public string ItemId { get; set; }
-    ExtendedCalendarItem meetup = new ExtendedCalendarItem();
+    ExtendedInfoItem infoItem = new ExtendedInfoItem();
     string logMessage;
     private HubConnection hubConnection;
+    private string lifetimeHint = String.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -35,34 +32,42 @@
             await hubConnection.StartAsync();
 
             await ReadData();
+            if (infoItem.CommentsLifeTimeInDays > 0)
+            {
+                lifetimeHint = $"Die Kommentare für dieses Thema werden nach {infoItem.CommentsLifeTimeInDays} Tagen automatisch gelöscht.";
+            }
         }
         else
         {
             NavigationManager.NavigateTo("/");
         }
     }
+
     private async Task ReadData()
     {
         PrepareHttpClient();
-        // Get referenced calendar item
-        meetup = await Http.GetFromJsonAsync<ExtendedCalendarItem>($"Calendar/extendedcalendaritem?itemId={ItemId}");
+        // Get referenced info item
+        infoItem = await Http.GetFromJsonAsync<ExtendedInfoItem>($"api/info/extendedinfoitem?itemId={ItemId}");
     }
+
     private async Task SaveComment(CalendarComment comment)
     {
         string keyword = AppStateStore.KeyWord;
         // Save Comment to server
-        comment.CalendarItemId = meetup.Id;
+        comment.CalendarItemId = infoItem.Id;
         comment.AuthorFirstName = AppStateStore.FirstName;
         comment.AuthorLastName = AppStateStore.LastName;
         if (!String.IsNullOrEmpty(comment.Comment))
         {
             PrepareHttpClient();
-            await Http.PostAsJsonAsync<CalendarComment>($"Calendar/addcomment", comment);
+            await Http.PostAsJsonAsync<CalendarComment>($"api/info/addcomment", comment);
             if (IsConnected) await SendMessage();
         }
 
         NavigationManager.NavigateTo("/calendar");
     }
+
+
     protected void OnCancel()
     {
         NavigationManager.NavigateTo("/calendar");
@@ -110,5 +115,4 @@
         }
 
     }
-
 }

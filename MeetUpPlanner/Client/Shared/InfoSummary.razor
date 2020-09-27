@@ -1,0 +1,28 @@
+﻿@using MeetUpPlanner.Shared
+<div class="jumbotron">
+    @if (!String.IsNullOrEmpty(InfoItem.SubTitle))
+    { 
+        <h6 class="text-muted">@InfoItem.SubTitle</h6>
+    }
+    <h3>@InfoItem.DisplayTitle</h3>
+    @if (!String.IsNullOrEmpty(InfoItem.Link))
+    {
+        <a href="@InfoItem.Link" target="_blank">@InfoItem.DisplayLinkTitle</a>
+    }
+    <p>
+        @((MarkupString)InfoItem.InfoContent)
+    </p>
+    @if (!String.IsNullOrEmpty(AdditionalText))
+    {
+        <p>
+            @AdditionalText
+        </p>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public ExtendedInfoItem InfoItem { get; set; } = new ExtendedInfoItem();
+    [Parameter]
+    public String AdditionalText { get; set; } = null;
+}

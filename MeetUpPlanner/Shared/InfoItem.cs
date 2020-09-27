@@ -33,5 +33,65 @@ namespace MeetUpPlanner.Shared
         public string AuthorFirstName { get; set; }
         [JsonProperty(PropertyName = "authorLastName", NullValueHandling = NullValueHandling.Ignore), MaxLength(100), Required(ErrorMessage = "Autor bitte eingeben.")]
         public string AuthorLastName { get; set; }
+
+        [JsonIgnore]
+        public string AuthorDisplayName
+        {
+            get
+            {
+                StringBuilder sb = new StringBuilder();
+                if (!String.IsNullOrEmpty(AuthorFirstName))
+                {
+                    sb.Append(AuthorFirstName).Append(" ");
+                }
+                if (!String.IsNullOrEmpty(AuthorLastName))
+                {
+                    sb.Append(AuthorLastName[0].ToString()).Append(".");
+                }
+                return sb.ToString();
+            }
+        }
+
+        [JsonIgnore]
+        public string DisplayLinkTitle
+        {
+            get
+            {
+                string title = this.LinkTitle;
+                if (!String.IsNullOrEmpty(this.Link) && String.IsNullOrEmpty(this.LinkTitle))
+                {
+                    if (this.Link.Contains("komoot"))
+                    {
+                        title = "Tour auf Komoot";
+                    }
+                    else if (this.Link.Contains("strava"))
+                    {
+                        title = "Tour auf Strava";
+                    }
+                    else
+                    {
+                        title = "Weitere Info...";
+                    }
+                }
+                return title;
+            }
+        }
+        public string DisplayTitle
+        {
+            get
+            {
+                string title = this.Title;
+                if (String.IsNullOrEmpty(title))
+                {
+                    title = this.HeaderTitle;
+                }
+                if (String.IsNullOrEmpty(title))
+                {
+                    title = String.Empty;
+                }
+                return title;
+            }
+        }
+
     }
 }
