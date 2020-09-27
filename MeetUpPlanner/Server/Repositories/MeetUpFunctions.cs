@@ -178,6 +178,16 @@ namespace MeetUpPlanner.Server.Repositories
                           .GetJsonAsync<ExtendedCalendarItem>();
             return calendarItem;
         }
+        public async Task<ExtendedInfoItem> GetExtendedInfoItem(string tenant, string keyword, string itemId)
+        {
+
+            ExtendedInfoItem infoItem = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/GetExtendedInfoItem/{itemId}"
+                          .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
+                          .WithHeader(HEADER_KEYWORD, keyword)
+                          .WithHeader(HEADER_TENANT, tenant)
+                          .GetJsonAsync<ExtendedInfoItem>();
+            return infoItem;
+        }
         public async Task<BackendResult> AddParticipantToCalendarItem(string tenant, string keyword, Participant participant)
         {
             BackendResult result = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/AddParticipantToCalendarItem"
@@ -192,6 +202,18 @@ namespace MeetUpPlanner.Server.Repositories
         {
             BackendResult result;
             result = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/AddCommentToCalendarItem"
+                        .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
+                        .WithHeader(HEADER_KEYWORD, keyword)
+                        .WithHeader(HEADER_TENANT, tenant)
+                        .PostJsonAsync(comment)
+                        .ReceiveJson<BackendResult>();
+
+            return result;
+        }
+        public async Task<BackendResult> AddCommentToInfoItem(string tenant, string keyword, CalendarComment comment)
+        {
+            BackendResult result;
+            result = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/AddCommentToInfoItem"
                         .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
                         .WithHeader(HEADER_KEYWORD, keyword)
                         .WithHeader(HEADER_TENANT, tenant)

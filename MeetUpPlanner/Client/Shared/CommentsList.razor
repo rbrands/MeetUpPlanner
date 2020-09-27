@@ -1,0 +1,50 @@
+﻿@using MeetUpPlanner.Shared
+@inject DialogService dialogService
+
+@foreach (CalendarComment c in Comments)
+{
+    <blockquote>
+        <p class="mb-0">@c.Comment</p>
+        <footer class="blockquote-footer">
+            <cite title="Autor">@c.AuthorDisplayName</cite> @c.DisplayDate
+            <button class="btn btn-sm btn-outline-secondary" disabled="@saveDisabled" @onclick="@(() => ConfirmDelete(c))"><span class="oi oi-trash" title="Kommentar löschen"></span></button>
+        </footer>
+    </blockquote>
+}
+
+@code {
+    [Parameter]
+    public IEnumerable<CalendarComment> Comments { get; set; }
+    [Parameter]
+    public EventCallback<CalendarComment> OnRemoveComment { get; set; }
+    private Boolean saveDisabled = false;
+    CalendarComment commentToBeDeleted;
+
+    protected void ConfirmDelete(CalendarComment c)
+    {
+        commentToBeDeleted = c;
+        dialogService.OnClose += DeleteConfirmed;
+        dialogService.Confirm("Kommentar wirklich löschen?", "Kommentar", new ConfirmOptions() { OkButtonText = "Ja", CancelButtonText = "Nein" });
+    }
+
+    protected async void DeleteConfirmed(dynamic result)
+    {
+        dialogService.OnClose -= DeleteConfirmed;
+        bool? removeIt = result;
+        if (null != removeIt && null != commentToBeDeleted)
+        {
+            if ((bool)removeIt)
+            {
+                saveDisabled = true;
+                StateHasChanged();
+                await OnRemoveComment.InvokeAsync(commentToBeDeleted);
+            }
+        }
+        commentToBeDeleted = null;
+        saveDisabled = false;
+        StateHasChanged();
+    }
+
+
+
+}

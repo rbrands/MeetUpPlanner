@@ -47,5 +47,20 @@ namespace MeetUpPlanner.Server.Controllers
             BackendResult result = await _meetUpFunctions.DeleteInfoItem(tenant, keyword, infoItem);
             return Ok(result);
         }
+        [HttpGet("extendedinfoitem")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetExtendedInfoItem([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromQuery] string itemId)
+        {
+            ExtendedInfoItem infoItem = await _meetUpFunctions.GetExtendedInfoItem(tenant, keyword, itemId);
+            return Ok(infoItem);
+        }
+        [HttpPost("addcomment")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> AddComment([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] CalendarComment comment)
+        {
+            BackendResult result = await _meetUpFunctions.AddCommentToInfoItem(tenant, keyword, comment);
+            return Ok(result);
+        }
+
     }
 }

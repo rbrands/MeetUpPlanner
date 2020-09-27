@@ -2,36 +2,15 @@
 @inject HttpClient Http
 @inject AppState AppStateStore
 @inject NavigationManager NavigationManager
-@inject DialogService dialogService
 @using MeetUpPlanner.Shared
 @using Newtonsoft.Json
 @using Microsoft.AspNetCore.SignalR.Client
 
 <MeetUp CalendarItem="@meetup" />
-<EditForm Model="@comment" OnValidSubmit="SaveComment">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <div class="form-group">
-        <label for="comment">Neuer Kommentar:</label>
-        <InputTextArea id="comment" aria-describedby="commentHelp" class="form-control" @bind-Value="comment.Comment" placeholder="Kurzer Kommentar oder Frage zur Ausfahrt."></InputTextArea>
-        <small id="commentHelp" class="form-text text-muted">
-            Über die Kommentarfunktion kann die Ausfahrt weiter besprochen werden..
-        </small>
-    </div>
-    <button type="submit" id="BtnSave" disabled="@saveDisabled" class="btn btn-primary">Kommentar speichern ...</button>
-    <button type="reset" id="BtnCancel" class="btn btn-secondary" @onclick="@(() => OnCancel())">Zurück ...</button>
-</EditForm>
+<AddComment OnSaveComment="SaveComment" OnCancel="OnCancel"></AddComment>
 <hr />
-@foreach (CalendarComment c in meetup.CommentsList)
-{
-    <blockquote>
-        <p class="mb-0">@c.Comment</p>
-        <footer class="blockquote-footer">
-            <cite title="Autor">@c.AuthorDisplayName</cite> @c.DisplayDate
-            <button class="btn btn-sm btn-outline-secondary" disabled="@saveDisabled" @onclick="@(() => ConfirmDelete(c))"><span class="oi oi-trash" title="Kommentar löschen"></span></button>
-        </footer>
-    </blockquote>
-}
+<CommentsList Comments="@meetup.CommentsList" OnRemoveComment="RemoveComment"></CommentsList>
+
 <p class="alert-info">
     @logMessage
 </p>
@@ -41,11 +20,8 @@
     [Parameter]
     public string ItemId { get; set; }
     ExtendedCalendarItem meetup = new ExtendedCalendarItem();
-    CalendarComment comment = new CalendarComment();
     string logMessage;
-    CalendarComment commentToBeDeleted;
     private HubConnection hubConnection;
-    private Boolean saveDisabled = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -58,9 +34,6 @@
             await hubConnection.StartAsync();
 
             await ReadData();
-            comment.AuthorFirstName = AppStateStore.FirstName;
-            comment.AuthorLastName = AppStateStore.LastName;
-            dialogService.OnClose += DeleteConfirmed;
         }
         else
         {
@@ -73,9 +46,8 @@
         // Get referenced calendar item
         meetup = await Http.GetFromJsonAsync<ExtendedCalendarItem>($"Calendar/extendedcalendaritem?itemId={ItemId}");
     }
-    private async Task SaveComment()
+    private async Task SaveComment(CalendarComment comment)
     {
-        saveDisabled = true;
         string keyword = AppStateStore.KeyWord;
         // Save Comment to server
         comment.CalendarItemId = meetup.Id;
@@ -95,14 +67,8 @@
         NavigationManager.NavigateTo("/calendar");
     }
 
-    protected void ConfirmDelete(CalendarComment c)
-    {
-        commentToBeDeleted = c;
-        dialogService.Confirm("Kommentar wirklich löschen?", "Kommentar", new ConfirmOptions() { OkButtonText = "Ja", CancelButtonText = "Nein" });
-    }
     protected async Task RemoveComment(CalendarComment c)
     {
-        saveDisabled = true;
         PrepareHttpClient();
         HttpResponseMessage response = await Http.PostAsJsonAsync<CalendarComment>($"Calendar/removecomment", c);
         string responseBody = await response.Content.ReadAsStringAsync();
@@ -117,23 +83,8 @@
         {
             logMessage = result.Message;
         }
-        saveDisabled = false;
-        StateHasChanged();
     }
-    protected async void DeleteConfirmed(dynamic result)
-    {
-        bool? removeIt = result;
-        if (null != removeIt && null != commentToBeDeleted)
-        {
-            if ((bool)removeIt)
-            {
-                saveDisabled = true;
-                StateHasChanged();
-                await RemoveComment(commentToBeDeleted);
-            }
-        }
-        commentToBeDeleted = null;
-    }
+
     Task SendMessage() => hubConnection.SendAsync("SendMessage");
 
     public bool IsConnected => hubConnection.State == HubConnectionState.Connected;

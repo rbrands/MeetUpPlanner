@@ -1,0 +1,39 @@
+﻿@using MeetUpPlanner.Shared
+@using Blazored.TextEditor
+
+<EditForm Model="@comment" OnValidSubmit="SaveComment">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label for="comment">Neuer Kommentar:</label>
+        <InputTextArea id="comment" aria-describedby="commentHelp" class="form-control" @bind-Value="comment.Comment" placeholder="Kurzer Kommentar oder Frage."></InputTextArea>
+        <small id="commentHelp" class="form-text text-muted">
+            Über die Kommentarfunktion können wir uns weiter abstimmen.
+        </small>
+    </div>
+    <button type="submit" id="BtnSave" disabled="@saveDisabled" class="btn btn-primary">Kommentar speichern ...</button>
+    <button type="reset" id="BtnCancel" class="btn btn-secondary" @onclick="@(() => OnCancelBtn())">Zurück ...</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public EventCallback<CalendarComment> OnSaveComment { get; set; }
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+    CalendarComment comment = new CalendarComment() { AuthorFirstName = "NN", AuthorLastName = "NN" };
+    private Boolean saveDisabled = false;
+    BlazoredTextEditor htmlComment;
+
+
+
+    private async Task SaveComment()
+    {
+        saveDisabled = true;
+        StateHasChanged();
+        await OnSaveComment.InvokeAsync(comment);
+    }
+    protected async Task OnCancelBtn()
+    {
+        await OnCancel.InvokeAsync(null);
+    }
+}

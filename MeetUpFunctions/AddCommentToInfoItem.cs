@@ -13,32 +13,32 @@ using Aliencube.AzureFunctions.Extensions.OpenApi.Core.Attributes;
 
 namespace MeetUpPlanner.Functions
 {
-    public class AddCommentToCalendarItem
+    public class AddCommentToInfoItem
     {
         private readonly ILogger _logger;
         private ServerSettingsRepository _serverSettingsRepository;
         private CosmosDBRepository<CalendarComment> _cosmosRepository;
-        private CosmosDBRepository<CalendarItem> _calendarRepository;
-        public AddCommentToCalendarItem(ILogger<AddCommentToCalendarItem> logger,
+        private CosmosDBRepository<InfoItem> _infoRepository;
+        public AddCommentToInfoItem(ILogger<AddCommentToInfoItem> logger,
                                             ServerSettingsRepository serverSettingsRepository,
                                             CosmosDBRepository<CalendarComment> cosmosRepository,
-                                            CosmosDBRepository<CalendarItem> calendarRepository)
+                                            CosmosDBRepository<InfoItem> infoRepository)
         {
             _logger = logger;
             _serverSettingsRepository = serverSettingsRepository;
             _cosmosRepository = cosmosRepository;
-            _calendarRepository = calendarRepository;
+            _infoRepository = infoRepository;
         }
 
-        [FunctionName("AddCommentToCalendarItem")]
-        [OpenApiOperation(Summary = "Add a comment to the referenced CalendarItem.",
+        [FunctionName("AddCommentToInfoItem")]
+        [OpenApiOperation(Summary = "Add a comment to the referenced InfoItem.",
                           Description = "If the CalendarComment already exists (same id) it is overwritten.")]
         [OpenApiRequestBody("application/json", typeof(CalendarComment), Description = "New CalendarComment to be written.")]
         [OpenApiResponseWithBody(System.Net.HttpStatusCode.OK, "application/json", typeof(BackendResult), Description = "Status of operation.")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
         {
-            _logger.LogInformation($"C# HTTP trigger function AddCommentToCalendarItem processed a request.");
+            _logger.LogInformation($"C# HTTP trigger function AddCommentToInfoItem processed a request.");
             string tenant = req.Headers[Constants.HEADER_TENANT];
             if (String.IsNullOrWhiteSpace(tenant))
             {
@@ -57,21 +57,24 @@ namespace MeetUpPlanner.Functions
             {
                 return new OkObjectResult(new BackendResult(false, "Terminangabe fehlt."));
             }
-            CalendarItem calendarItem = await _calendarRepository.GetItem(comment.CalendarItemId);
-            if (null == calendarItem)
+            InfoItem infoItem = await _infoRepository.GetItem(comment.CalendarItemId);
+            if (null == infoItem)
             {
                 return new OkObjectResult(new BackendResult(false, "Angegebenen Termin nicht gefunden."));
             }
-            // Set TTL for comment the same as for CalendarItem
-            System.TimeSpan diffTime = calendarItem.StartDate.Subtract(DateTime.Now);
-            comment.TimeToLive = serverSettings.AutoDeleteAfterDays * 24 * 3600 + (int)diffTime.TotalSeconds;
-            // Checkindate to track bookings
+            if (!infoItem.CommentsAllowed)
+            {
+                return new OkObjectResult(new BackendResult(false, "Keine Kommentare hier erlaubt."));
+            }
+            if (infoItem.CommentsLifeTimeInDays > 0)
+            {
+                comment.TimeToLive = infoItem.CommentsLifeTimeInDays * 24 * 3600;
+            }
             comment.CommentDate = DateTime.Now;
             if (!String.IsNullOrWhiteSpace(tenant))
-            { 
+            {
                 comment.Tenant = tenant;
             }
-
             comment = await _cosmosRepository.UpsertItem(comment);
             BackendResult result = new BackendResult(true);
 
