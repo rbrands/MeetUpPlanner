@@ -30,7 +30,7 @@
         <label for="title">Titel</label>
         <InputText id="title" aria-describedby="titleHelp" class="form-control" @bind-Value="infoItem.Title" autocomplete="on" placeholder="Titel der Info" title="Titel" />
         <small id="titleHelp" class="form-text text-muted">
-            Hauttitel zur Infobox.
+            Haupttitel zur Infobox.
         </small>
     </div>
     <div class="form-group">
@@ -105,6 +105,20 @@
         <RadzenNumeric id="commentsLifeTime" aria-describedby="commentsLifeTimeHelp" class="form-control" TValue="int" Min="0" Max="100" @bind-Value="infoItem.CommentsLifeTimeInDays" />
         <small id="commentsLifeTimeHelp" class="form-text text-muted">
             Hier kann eingestellt werden, nach wie vielen Tagen die Kommentare automatisch gelöscht werden sollen. 0 = kein automatisches Löschen.
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="link">Link</label>
+        <InputText id="link" aria-describedby="linkHelp" class="form-control" @bind-Value="infoItem.Link" placeholder="URL" title="Link zu weiterer Infos" />
+        <small id="linkHelp" class="form-text text-muted">
+            Optional: Link zu weiteren Infos, z.B. Komoot, Strava usw.
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="linkTitle">Link-Bezeichnung</label>
+        <InputText id="linkTitle" aria-describedby="linkTitleHelp" class="form-control" @bind-Value="infoItem.LinkTitle" placeholder="Kurze Überschrift zum Link" title="Bezeichnung des Links zur weiterern Info" />
+        <small id="linkTitleHelp" class="form-text text-muted">
+            Optional: Kurze Bezeichnung zu dem Link oben, falls der Standardtext "Tour auf Komoot" oder "Weitere Info ..." nicht passt.
         </small>
     </div>
     <ValidationSummary />
