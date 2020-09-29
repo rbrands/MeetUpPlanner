@@ -51,7 +51,13 @@
         <div class="col-12 col-sm-6 col-lg-4 col-xl-3 mt-2">
             <div class="card">
                 <div class="card-header">
-                    <em>@item.GetStartDateAsString() - @item.Place</em>
+                    <em>
+                        @item.GetStartDateAsString() - @item.Place
+                        @if (!String.IsNullOrEmpty(item.DirectionsLink))
+                        {
+                            <a href="@item.DirectionsLink" class="btn btn-outline-success btn-sm" role="button" target="_blank"><span class="oi oi-map-marker"></span></a>
+                        }
+                    </em>
                     @if (!String.IsNullOrEmpty(item.PrivateKeyword))
                     {
                         <span class="badge badge-danger"><span class="oi oi-key" title="Private Ausfahrt"></span> @item.PrivateKeyword</span>
@@ -77,12 +83,16 @@
                         <hr />
                         <small>Dabei (@item.ParticipantCounter von @item.MaxRegistrationsCount): <b>@item.HostDisplayName</b>@item.ParticipantsDisplay</small>
                         <hr />
-                        <ul class="list-unstyled">
-                            @foreach (CalendarComment c in item.CommentsList)
-                            {
-                                <li><small><em>@c.AuthorDisplayName (@c.DisplayDate): </em>@c.Comment</small></li>
-                            }
-                        </ul>
+                        @if (item.CommentsList.Count() > 0)
+                        {
+                            <ul class="list-unstyled">
+                                @foreach (CalendarComment c in item.CommentsList)
+                                {
+                                    <li><small><em>@c.AuthorDisplayName (@c.DisplayDate): </em>@c.Comment</small></li>
+                                }
+                            </ul>
+                            <hr />
+                        }
                     </p>
                     @if (!String.IsNullOrEmpty(item.Link))
                     {

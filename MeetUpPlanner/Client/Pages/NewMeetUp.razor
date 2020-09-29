@@ -81,6 +81,13 @@
         </small>
     </div>
     <div class="form-group">
+        <label for="link">Link zum Startort</label>
+        <InputText id="directionsLink" aria-describedby="directionsLinkHelp" class="form-control" @bind-Value="meetup.DirectionsLink" placeholder="URL" title="Link zum Startort" />
+        <small id="directionsLinkHelp" class="form-text text-muted">
+            Optional: Link of Google Maps, Bing etc zum Startort.
+        </small>
+    </div>
+    <div class="form-group">
         <label for="level">Länge</label>
         <InputText id="level" aria-describedby="levelHelp" class="form-control" @bind-Value="meetup.LevelDescription" autocomplete="on" placeholder="km / Hm" />
         <small id="levelHelp" class="form-text text-muted">

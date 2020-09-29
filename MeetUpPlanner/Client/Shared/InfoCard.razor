@@ -17,13 +17,17 @@
         }
         <p class="card-text">
             @((MarkupString)InfoItem.InfoContent)
-            <hr />
-            <ul class="list-unstyled">
-                @foreach (CalendarComment c in InfoItem.CommentsList)
-                {
-                    <li><small><em>@c.AuthorDisplayName (@c.DisplayDate): </em>@c.Comment</small></li>
-                }
-            </ul>
+            <hr/>
+            @if (InfoItem.CommentsList.Count() > 0)
+            { 
+                <ul class="list-unstyled">
+                    @foreach (CalendarComment c in InfoItem.CommentsList)
+                    {
+                        <li><small><em>@c.AuthorDisplayName (@c.DisplayDate): </em>@c.Comment</small></li>
+                    }
+                </ul>
+            <hr/>
+            }
         </p>
         @if (!String.IsNullOrEmpty(InfoItem.Link))
         {
