@@ -55,13 +55,15 @@ namespace MeetUpPlanner.Shared
             get 
             {
                 StringBuilder sb = new StringBuilder(100);
+                int counter = WithoutHost ? 0 : 1;
                 foreach (Participant participant in this.ParticipantsList)
                 {
-                    if (!WithoutHost)
+                    if (counter > 0)
                     { 
                         sb.Append(", ");
                     }
                     sb.Append(participant.ParticipantDisplayName);
+                    ++counter;
                 }
                 return sb.ToString();
             }

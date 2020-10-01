@@ -31,13 +31,13 @@ namespace MeetUpPlanner.Functions
         }
 
         /// <summary>
-        /// Copies all CalendarItems marked as "weekly" from current day to next week. x-meetup-keyword must be set to admin keyword.
+        /// Copies all CalendarItems marked as "weekly" from current day to next week.
         /// </summary>
         /// <param name="req"></param>
         /// <returns></returns>
         [FunctionName("CopyWeeklysToNextWeek")]
         [OpenApiOperation(Summary = "Copies all CalendarItems marked as weekly to next week.",
-                          Description = "Copies all CalendarItems marked as weekly from current day to next week. x-meetup-keyword must be set to admin keyword.")]
+                          Description = "Copies all CalendarItems marked as weekly from current day to next week.")]
         [OpenApiResponseWithBody(System.Net.HttpStatusCode.OK, "application/json", typeof(BackendResult), Description = "Result of operation.")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
@@ -58,22 +58,9 @@ namespace MeetUpPlanner.Functions
                 serverSettings = await _serverSettingsRepository.GetServerSettings(tenant);
             }
 
-            string keyWord = req.Headers[Constants.HEADER_KEYWORD];
-            if (String.IsNullOrEmpty(keyWord) || !serverSettings.IsAdmin(keyWord))
-            {
-                return new BadRequestErrorMessageResult("Keyword is missing or wrong.");
-            }
             // Get a list of all CalendarItems and filter all applicable ones
-            IEnumerable<CalendarItem> rawListOfCalendarItems;
             DateTime compareDate = DateTime.Today;
-            if (null == tenant)
-            {
-                rawListOfCalendarItems = await _cosmosRepository.GetItems(d => d.StartDate > compareDate && d.StartDate < compareDate.AddHours(24.0) && (d.Tenant ?? String.Empty) == String.Empty && d.Weekly && !d.IsCopiedToNextWeek);
-            }
-            else
-            {
-                rawListOfCalendarItems = await _cosmosRepository.GetItems(d => d.StartDate > compareDate && d.StartDate < compareDate.AddHours(24.0) && d.Tenant.Equals(tenant) && d.Weekly && !d.IsCopiedToNextWeek);
-            }
+            IEnumerable<CalendarItem> rawListOfCalendarItems = await _cosmosRepository.GetItems(d => d.StartDate > compareDate && d.StartDate < compareDate.AddHours(24.0) && d.Weekly && !d.IsCopiedToNextWeek);
             int counter = 0;
             foreach (CalendarItem cal in rawListOfCalendarItems)
             {
