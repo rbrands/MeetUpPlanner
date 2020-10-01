@@ -152,6 +152,17 @@
                 Für Termine ohne Guide, z.B. wiederkehrende Ausfahrten.
             </small>
         </div>
+        <div class="form-group">
+            <div class="form-check">
+                <InputCheckbox id="weekly" aria-describedby="weeklyHelp" class="form-check-input" @bind-Value="meetup.Weekly" />
+                <label for="weekly" class="form-checklabel">
+                    Soll die Ausfahrt automatisch in der nächsten Woche wiederholt werden?
+                </label>
+            </div>
+            <small id="weeklyHelp" class="form-text text-muted">
+                Falls markiert wird die Ausfahrt immer in die nächste Woche kopiert. Über das Veröffentlichungsdatum wird gesteuert, wann die Ausfahrt für alle sichtbar wird.
+            </small>
+        </div>
     }
     <div class="form-group">
         <label for="size">Max. Gruppengröße</label>

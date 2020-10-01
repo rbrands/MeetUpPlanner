@@ -13,6 +13,10 @@ namespace MeetUpPlanner.Shared
         public DateTime StartDate { get; set; }
         [JsonProperty(PropertyName = "publishDate"), Display(Name = "Veröffentlichung")]
         public DateTime PublishDate { get; set; }
+        [JsonProperty(PropertyName = "weekly")]
+        public Boolean Weekly { get; set; }
+        [JsonProperty(PropertyName = "isCopiedToNextWeek")]
+        public Boolean IsCopiedToNextWeek { get; set; }
         [JsonProperty(PropertyName = "place"), Display(Name = "Ort", Prompt = "Wo findet die Veranstaltung statt bzw. wo ist der Start"), MaxLength(256), Required(ErrorMessage = "Bitte den Startort angeben.")]
         public string Place { get; set; }
 

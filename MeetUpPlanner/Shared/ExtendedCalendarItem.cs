@@ -28,6 +28,8 @@ namespace MeetUpPlanner.Shared
             this.Title = calendarItem.Title;
             this.StartDate = calendarItem.StartDate;
             this.PublishDate = calendarItem.PublishDate;
+            this.Weekly = calendarItem.Weekly;
+            this.IsCopiedToNextWeek = calendarItem.IsCopiedToNextWeek;
             this.Place = calendarItem.Place;
             this.DirectionsLink = calendarItem.DirectionsLink;
             this.HostFirstName = calendarItem.HostFirstName;
