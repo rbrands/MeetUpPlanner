@@ -42,21 +42,7 @@ namespace MeetUpPlanner.Functions
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
         {
-            _logger.LogInformation("C# HTTP trigger function WriteCalendarItem processed a request.");
-            string tenant = req.Headers[Constants.HEADER_TENANT];
-            if (String.IsNullOrWhiteSpace(tenant))
-            {
-                tenant = null;
-            }
-            ServerSettings serverSettings;
-            if (null == tenant)
-            {
-                serverSettings = await _serverSettingsRepository.GetServerSettings();
-            }
-            else
-            {
-                serverSettings = await _serverSettingsRepository.GetServerSettings(tenant);
-            }
+            _logger.LogInformation("C# HTTP trigger function CopyWeeklysToNextWeek processed a request.");
 
             // Get a list of all CalendarItems and filter all applicable ones
             DateTime compareDate = DateTime.Today;

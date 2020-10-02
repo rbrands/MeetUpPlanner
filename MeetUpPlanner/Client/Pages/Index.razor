@@ -8,6 +8,12 @@
 @inject NotificationService notificationService
 
 <MessageBoard Message="@AppStateStore.ClientSettings?.WelcomeMessage" ShowLogo="true" />
+<div class="alert alert-warning" role="alert" hidden="@_hideAlert">
+    <p>Die App ist momentan leider offline. Später bitte noch einmal versuchen.</p>
+    <p>
+    Fehlermeldung: @_alertMessage
+    </p>
+</div>
 <h2>Zugangsdaten</h2>
 
 <EditForm OnValidSubmit="CheckKeyword" Model="@AppStateStore">
@@ -76,7 +82,7 @@
         </div>
         <small id="saveSettingsHelp">Damit beim nächsten Mal der Name usw. nicht neu eingegeben werden muss, können diese Eingaben im Browser gespeichert werden.</small>
     </div>
-    <button type="submit" id="BtnSaveKeyword" class="btn btn-primary" disabled="@(!UsageRightsAccepted)">Los geht's ...</button>
+    <button type="submit" id="BtnSaveKeyword" class="btn btn-primary" disabled="@(!UsageRightsAccepted || !_hideAlert)">Los geht's ...</button>
     <div class="form-group">
         <div class="form-check">
             <InputCheckbox id="accept" class="form-check-input" @bind-Value="@UsageRightsAccepted" />
@@ -91,6 +97,8 @@
 
 @code {
     Boolean _usageRightsAccepted = false;
+    Boolean _hideAlert = true;
+    string _alertMessage = String.Empty;
     Boolean UsageRightsAccepted
     {
         get
@@ -127,7 +135,16 @@
 
         // Get client settings from server
         PrepareHttpClient();
-        AppStateStore.ClientSettings = await Http.GetFromJsonAsync<ClientSettings>("Util/clientsettings");
+        try
+        {
+            AppStateStore.ClientSettings = await Http.GetFromJsonAsync<ClientSettings>("Util/clientsettings");
+        }
+        catch(HttpRequestException ex)
+        {
+            _hideAlert = false;
+            _alertMessage = ex.Message;
+
+        }
 
         // Reset user status
         KeywordCheck.IsUser = false;

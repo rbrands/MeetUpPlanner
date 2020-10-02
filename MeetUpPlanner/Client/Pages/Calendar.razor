@@ -55,7 +55,7 @@
                         @item.GetStartDateAsString() - @item.Place
                         @if (!String.IsNullOrEmpty(item.DirectionsLink))
                         {
-                            <a href="@item.DirectionsLink" class="btn btn-outline-success btn-sm" role="button" target="_blank"><span class="oi oi-map-marker"></span></a>
+                            <a href="@item.DirectionsLink" class="btn btn-outline-success btn-sm" role="button" target="_blank" tite="Startort"><span class="oi oi-map-marker"></span></a>
                         }
                     </em>
                     @if (!String.IsNullOrEmpty(item.PrivateKeyword))
