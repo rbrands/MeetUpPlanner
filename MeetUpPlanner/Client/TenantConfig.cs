@@ -16,6 +16,7 @@ namespace MeetUpPlanner.Client
             //new TenantSettings("ausfahrten.scuderia-suedstadt.de", null,         true,                 false), // default is null (no special tenant)
             new TenantSettings("ausfahrten.robert-brands",           "demo",       false,                true),
             new TenantSettings("ausfahrten.dasimmerdabei",           "dsd",        true,                 true),
+            new TenantSettings("fbgiro.meetupplanner",               "fbgiro",     false,                true),
             new TenantSettings("localhost",                          "demo",       true,                 true)
         };
         /// <summary>

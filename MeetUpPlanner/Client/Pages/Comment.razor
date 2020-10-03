@@ -8,7 +8,7 @@
 @using Microsoft.AspNetCore.SignalR.Client
 
 <MeetUp CalendarItem="@meetup" />
-<AddComment OnSaveComment="SaveComment" OnCancel="OnCancel"></AddComment>
+<AddComment OnSaveComment="SaveComment" OnCancel="OnCancel" EnableLink="true"></AddComment>
 <hr />
 <CommentsList Comments="@meetup.CommentsList" OnRemoveComment="RemoveComment"></CommentsList>
 
@@ -54,7 +54,7 @@
         comment.CalendarItemId = meetup.Id;
         comment.AuthorFirstName = AppStateStore.FirstName;
         comment.AuthorLastName = AppStateStore.LastName;
-        if (!String.IsNullOrEmpty(comment.Comment))
+        if (!String.IsNullOrEmpty(comment.Comment) || !String.IsNullOrEmpty(comment.Link))
         {
             PrepareHttpClient();
             await Http.PostAsJsonAsync<CalendarComment>($"Calendar/addcomment", comment);
