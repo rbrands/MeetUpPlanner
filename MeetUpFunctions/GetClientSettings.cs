@@ -37,12 +37,13 @@ namespace MeetUpFunctions
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req)
         {
-            _logger.LogInformation("C# HTTP trigger function GetClientSettings processed a request.");
             string tenant = req.Headers[Constants.HEADER_TENANT];
             if (String.IsNullOrWhiteSpace(tenant))
             {
                 tenant = null;
             }
+            string tenantBadge = null == tenant ? "default" : tenant;
+            _logger.LogInformation($"GetClientSettings<{tenantBadge}>");
             string key = Constants.KEY_CLIENT_SETTINGS;
             if (null != tenant)
             {

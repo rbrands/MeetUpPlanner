@@ -13,8 +13,15 @@ namespace MeetUpPlanner.Shared
         public DateTime StartDate { get; set; }
         [JsonProperty(PropertyName = "publishDate"), Display(Name = "Veröffentlichung")]
         public DateTime PublishDate { get; set; }
+        [JsonProperty(PropertyName = "weekly")]
+        public Boolean Weekly { get; set; }
+        [JsonProperty(PropertyName = "isCopiedToNextWeek")]
+        public Boolean IsCopiedToNextWeek { get; set; }
         [JsonProperty(PropertyName = "place"), Display(Name = "Ort", Prompt = "Wo findet die Veranstaltung statt bzw. wo ist der Start"), MaxLength(256), Required(ErrorMessage = "Bitte den Startort angeben.")]
         public string Place { get; set; }
+
+        [JsonProperty(PropertyName = "DirectionsLink"), Display(Name = "Link zum Startpunkt", Prompt = "Link zum Startpunkt der Ausfahrt."), MaxLength(256), UIHint("url")]
+        public string DirectionsLink { get; set; }
         [JsonProperty(PropertyName = "hostFirstName", NullValueHandling = NullValueHandling.Ignore), MaxLength(100), Required(ErrorMessage = "Gastgeber bitte eingeben.")]
         public string HostFirstName { get; set; }
         [JsonProperty(PropertyName = "hostLastName", NullValueHandling = NullValueHandling.Ignore), MaxLength(100), Required(ErrorMessage = "Gastgeber bitte eingeben.")]
@@ -34,7 +41,7 @@ namespace MeetUpPlanner.Shared
         public string LevelDescription { get; set; }
         [JsonProperty(PropertyName = "tempo"), Required(ErrorMessage = "Bitte geplante Geschwindigkeit angeben."), MaxLength(35, ErrorMessage = "Tempo-Angabe zu lang.")]
         public string Tempo { get; set; }
-        [JsonProperty(PropertyName = "link", NullValueHandling = NullValueHandling.Ignore), MaxLength(120, ErrorMessage = "Link zu lang"), UIHint("url")]
+        [JsonProperty(PropertyName = "link", NullValueHandling = NullValueHandling.Ignore), MaxLength(256, ErrorMessage = "Link zu lang"), UIHint("url")]
         public string Link { get; set; }
         [JsonProperty(PropertyName = "linkTitle", NullValueHandling = NullValueHandling.Ignore), MaxLength(60, ErrorMessage = "Link-Bezeichnung zu lang.")]
         public string LinkTitle { get; set; }
