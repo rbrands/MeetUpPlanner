@@ -12,11 +12,11 @@ namespace MeetUpPlanner.Client
     {
         private static List<TenantSettings> _tenantList = new List<TenantSettings>
         {
-            //                              lookfor                  tenant ClubMemberShipAllowed AdminForHostingRequired GuestNameShown 
-            //new TenantSettings("ausfahrten.scuderia-suedstadt.de", null,         true,                 false,               false), // default is null (no special tenant)
-            new TenantSettings("ausfahrten.robert-brands",           "demo",       false,                false,               true),
-            new TenantSettings("ausfahrten.dasimmerdabei",           "dsd",       true,                 false,               true),
-            new TenantSettings("localhost",                          "demo",       true,                 false,               true)
+            //                              lookfor                  tenant ClubMemberShipAllowed GuestNameShown 
+            //new TenantSettings("ausfahrten.scuderia-suedstadt.de", null,         true,                 false), // default is null (no special tenant)
+            new TenantSettings("ausfahrten.robert-brands",           "demo",       false,                true),
+            new TenantSettings("ausfahrten.dasimmerdabei",           "dsd",        true,                 true),
+            new TenantSettings("localhost",                          "demo",       true,                 true)
         };
         /// <summary>
         /// For the given URL all configured tenants are checked.
@@ -43,21 +43,18 @@ namespace MeetUpPlanner.Client
         public string LookFor { get; set; } = null;
         public string Name { get; set; } = null;
         public bool ClubMembershipAllowed { get; set; }
-        public bool AdminForHostingRequired { get; set; }
         public bool GuestNameShown { get; set; }
 
         public TenantSettings()
         {
             ClubMembershipAllowed = true;
-            AdminForHostingRequired = false;
             GuestNameShown = false;
         }
-        public TenantSettings(string lookFor, string name, bool clubMembershipAllowed, bool adminForHostingRequired, bool guestNameShown)
+        public TenantSettings(string lookFor, string name, bool clubMembershipAllowed, bool guestNameShown)
         {
             LookFor = lookFor;
             Name = name;
             ClubMembershipAllowed = clubMembershipAllowed;
-            AdminForHostingRequired = adminForHostingRequired;
             GuestNameShown = guestNameShown;
         }
     }

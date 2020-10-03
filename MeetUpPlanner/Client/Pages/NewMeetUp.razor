@@ -200,7 +200,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (null != AppStateStore && !String.IsNullOrEmpty(AppStateStore.KeyWord) && null != AppStateStore.Tenant && !(AppStateStore.Tenant.AdminForHostingRequired && !KeywordCheck.IsAdmin))
+        if (null != AppStateStore && !String.IsNullOrEmpty(AppStateStore.KeyWord) && null != AppStateStore.Tenant && !(AppStateStore.ClientSettings.OnlyAdminsAsHost && !KeywordCheck.IsAdmin))
         {
             hubConnection = new HubConnectionBuilder()
                  .WithUrl(NavigationManager.ToAbsoluteUri("/broadcastHub"))

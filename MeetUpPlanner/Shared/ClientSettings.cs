@@ -23,12 +23,16 @@ namespace MeetUpPlanner.Shared
         public string WhiteboardMessage { get; set; }
         [JsonProperty(PropertyName = "newMeetupMessage", NullValueHandling = NullValueHandling.Ignore)]
         public string NewMeetupMessage { get; set; }
-        [JsonProperty(PropertyName ="maxGroupSize", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty(PropertyName ="maxGroupSize", NullValueHandling = NullValueHandling.Ignore), Range(2.0, 300, ErrorMessage = "Max. Gruppengröße bitte zwischen 2 und 300.")]
         public int MaxGroupSize { get; set; } = 10;
-        [JsonProperty(PropertyName = "maxGroupSizeForAdmins", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "maxGroupSizeForAdmins", NullValueHandling = NullValueHandling.Ignore), Range(2.0, 300, ErrorMessage = "Max. Gruppengröße für Admins bitte zwischen 2 und 300.")]
         public int MaxGroupSizeForAdmins { get; set; } = 10;
         public Boolean GuestsEnabled { get; set; } = false;
         public Boolean OnlyScopedMeetUpsAllowed { get; set; } = false;
+        public Boolean OnlyAdminsAsHost { get; set; } = false;
+        public Boolean AppLocked { get; set; } = false;
+        [JsonProperty(PropertyName = "lockedMessage", NullValueHandling = NullValueHandling.Ignore)]
+        public string LockedMessage { get; set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore), MaxLength(30, ErrorMessage = "Wochenkennzeichnung bitte kürzer als 30 Zeichen.")]
         public string MondayBadge { get; set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore), MaxLength(30, ErrorMessage = "Wochenkennzeichnung bitte kürzer als 30 Zeichen.")]

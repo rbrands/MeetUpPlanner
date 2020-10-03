@@ -9,10 +9,7 @@
 
 <MessageBoard Message="@AppStateStore.ClientSettings?.WelcomeMessage" ShowLogo="true" />
 <div class="alert alert-warning" role="alert" hidden="@_hideAlert">
-    <p>Die App ist momentan leider offline. Später bitte noch einmal versuchen.</p>
-    <p>
-    Fehlermeldung: @_alertMessage
-    </p>
+    @((MarkupString)_alertMessage)
 </div>
 <h2>Zugangsdaten</h2>
 
@@ -82,7 +79,7 @@
         </div>
         <small id="saveSettingsHelp">Damit beim nächsten Mal der Name usw. nicht neu eingegeben werden muss, können diese Eingaben im Browser gespeichert werden.</small>
     </div>
-    <button type="submit" id="BtnSaveKeyword" class="btn btn-primary" disabled="@(!UsageRightsAccepted || !_hideAlert)">Los geht's ...</button>
+    <button type="submit" id="BtnSaveKeyword" class="btn btn-primary" disabled="@(!UsageRightsAccepted || _disableStartButton)">Los geht's ...</button>
     <div class="form-group">
         <div class="form-check">
             <InputCheckbox id="accept" class="form-check-input" @bind-Value="@UsageRightsAccepted" />
@@ -99,6 +96,7 @@
     Boolean _usageRightsAccepted = false;
     Boolean _hideAlert = true;
     string _alertMessage = String.Empty;
+    Boolean _disableStartButton = false;
     Boolean UsageRightsAccepted
     {
         get
@@ -139,11 +137,20 @@
         {
             AppStateStore.ClientSettings = await Http.GetFromJsonAsync<ClientSettings>("Util/clientsettings");
         }
-        catch(HttpRequestException ex)
+        catch(Exception ex)
         {
             _hideAlert = false;
-            _alertMessage = ex.Message;
-
+            _disableStartButton = true;
+            _alertMessage = $"<p>Der MeetUpPlanner ist momentan offline, bitte später noch einmal versuchen.</p><p>Fehlermeldung: {ex.Message}</p>";
+        }
+        if (AppStateStore.ClientSettings.AppLocked)
+        {
+            _hideAlert = false;
+            _alertMessage = AppStateStore.ClientSettings.LockedMessage;
+            if (String.IsNullOrEmpty(_alertMessage))
+            {
+                _alertMessage = "<p>Der Zugang zum MeetUpPlanner ist zur Zeit gesperrt.";
+            }
         }
 
         // Reset user status
@@ -188,7 +195,14 @@
         }
         if (KeywordCheck.IsUser)
         {
-            NavigationManager.NavigateTo("calendar");
+            if (AppStateStore.ClientSettings.AppLocked && !KeywordCheck.IsAdmin)
+            {
+                notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Kein Zugang", Detail = "Der MeetUpPlanner ist zur Zeit gesperrt..", Duration = 4000 });
+            }
+            else
+            {
+                NavigationManager.NavigateTo("calendar");
+            }
         }
     }
     private void PrepareHttpClient()

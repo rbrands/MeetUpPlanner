@@ -193,7 +193,6 @@
             </ToolbarContent>
         </BlazoredTextEditor>
     </div>
-
     <div class="form-group">
         <div class="form-check">
             <InputCheckbox id="guestsEnabled" class="form-check-input" @bind-Value="AppStateStore.ClientSettings.GuestsEnabled" />
@@ -204,19 +203,56 @@
     </div>
     <div class="form-group">
         <div class="form-check">
+            <InputCheckbox id="onlyAdminsAsHost" class="form-check-input" @bind-Value="AppStateStore.ClientSettings.OnlyAdminsAsHost" />
+            <label for="onlyAdminsAsHost" class="form-checklabel">
+                Sollen nur Admins MeetUps anlegen können?
+            </label>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="form-check">
+            <InputCheckbox id="appLocked" class="form-check-input" @bind-Value="AppStateStore.ClientSettings.AppLocked" />
+            <label for="appLocked" class="form-checklabel">
+                Soll der Zugang zum MeetUpPlanner mit der Meldung unten gesperrt werden?
+            </label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="lockedMessage">Meldung falls MeetUpPlanner gesperrt</label>
+        <BlazoredTextEditor @ref="@htmlLockedMessage" Placeholder="Meldung als Hinweis an die Nutzer, falls der MeetUpPlanner gesperrt wird.">
+            <ToolbarContent>
+                <span class="ql-formats">
+                    <button class="ql-bold"></button>
+                    <button class="ql-italic"></button>
+                    <button class="ql-underline"></button>
+                </span>
+                <span class="ql-formats">
+                    <select class="ql-color"></select>
+                    <select class="ql-background"></select>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-list" value="ordered"></button>
+                    <button class="ql-list" value="bullet"></button>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-link"></button>
+                </span>
+            </ToolbarContent>
+        </BlazoredTextEditor>
+    </div>
+    <div class="form-group">
+        <div class="form-check">
             <InputCheckbox id="onlyScoped" class="form-check-input" @bind-Value="AppStateStore.ClientSettings.OnlyScopedMeetUpsAllowed" />
             <label for="onlyScoped" class="form-checklabel">
                 Nur MeetUps an den Tagen zulassen, die mit den "Badges" unten gekennzeichnet sind?
             </label>
         </div>
     </div>
-
     <div class="form-row">
         <div class="form-group col-md-12">
             <label for="mondayBadge">Die Wochentage können mit "Badges" gekennzeichnet werden.</label>
         </div>
     </div>
-
     <div class="form-row">
         <div class="form-group col">
             <InputText id="mondayBadge" placeholder="Montag" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.MondayBadge" title="Badge für Montag" />
@@ -301,6 +337,7 @@
     BlazoredTextEditor htmlNewMeetupMessage;
     BlazoredTextEditor htmlDisclaimer;
     BlazoredTextEditor htmlGuestDisclaimer;
+    BlazoredTextEditor htmlLockedMessage;
 
 
     protected override async Task OnInitializedAsync()
@@ -316,6 +353,7 @@
             await htmlNewMeetupMessage.LoadHTMLContent(AppStateStore.ClientSettings.NewMeetupMessage);
             await htmlDisclaimer.LoadHTMLContent(AppStateStore.ClientSettings.Disclaimer);
             await htmlGuestDisclaimer.LoadHTMLContent(AppStateStore.ClientSettings.GuestDisclaimer);
+            await htmlLockedMessage.LoadHTMLContent(AppStateStore.ClientSettings.LockedMessage);
         }
         else
         {
@@ -330,6 +368,7 @@
         AppStateStore.ClientSettings.NewMeetupMessage = StripEmptyHtml(await htmlNewMeetupMessage.GetHTML());
         AppStateStore.ClientSettings.Disclaimer = StripEmptyHtml(await htmlDisclaimer.GetHTML());
         AppStateStore.ClientSettings.GuestDisclaimer = StripEmptyHtml(await htmlGuestDisclaimer.GetHTML());
+        AppStateStore.ClientSettings.LockedMessage = StripEmptyHtml(await htmlLockedMessage.GetHTML());
 
         // Write client settings to server
         PrepareHttpClient();
