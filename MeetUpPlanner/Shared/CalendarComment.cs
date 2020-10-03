@@ -20,8 +20,12 @@ namespace MeetUpPlanner.Shared
         public string AuthorLastName { get; set; }
         [JsonProperty(PropertyName = "commentDate")]
         public DateTime CommentDate { get; set; }
-        [JsonProperty(PropertyName = "comment"), MaxLength(200, ErrorMessage = "Kommentar zu lang.")]
+        [JsonProperty(PropertyName = "comment"), MaxLength(250, ErrorMessage = "Kommentar zu lang.")]
         public string Comment { get; set; }
+        [JsonProperty(PropertyName = "link", NullValueHandling = NullValueHandling.Ignore), MaxLength(200, ErrorMessage = "Link zu lang.")]
+        public string Link { get; set; }
+        [JsonProperty(PropertyName = "linkTitle", NullValueHandling = NullValueHandling.Ignore), MaxLength(80, ErrorMessage = "Link-Titel zu lang.")]
+        public string LinkTitle { get; set; }
         [JsonIgnore]
         public string AuthorDisplayName
         {
@@ -32,11 +36,21 @@ namespace MeetUpPlanner.Shared
                 return AuthorFirstName + " " + AuthorLastName[0] + ".";
             }
         }
+        [JsonIgnore]
         public string DisplayDate
         {
             get
             {
                 return (null != CommentDate) ? CommentDate.ToString("dd.MM. HH:mm") : String.Empty;
+            }
+        }
+        [JsonIgnore]
+
+        public string DisplayLinkTitle
+        {
+            get
+            {
+                return String.IsNullOrEmpty(LinkTitle) ? "Link ..." : LinkTitle;
             }
         }
 

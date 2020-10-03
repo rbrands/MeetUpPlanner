@@ -10,6 +10,23 @@
             Über die Kommentarfunktion können wir uns weiter abstimmen.
         </small>
     </div>
+    @if (EnableLink)
+    { 
+        <div class="form-group">
+            <label for="link">Link</label>
+            <InputText id="link" aria-describedby="linkHelp" class="form-control" @bind-Value="comment.Link" placeholder="URL" title="Link zu weiteren Infos" />
+            <small id="linkHelp" class="form-text text-muted">
+                Optional: Link zu weiteren Infos, z.B. Fotos, Artikel usw..
+            </small>
+        </div>
+        <div class="form-group">
+            <label for="linkTitle">Link-Bezeichnung</label>
+            <InputText id="linkTitle" aria-describedby="linkTitleHelp" class="form-control" @bind-Value="comment.LinkTitle" placeholder="Kurze Überschrift zum Link" title="Bezeichnung des Links" />
+            <small id="linkTitleHelp" class="form-text text-muted">
+                Optional: Kurze Bezeichnung zu dem Link oben, falls der Standardtext nicht passt.
+            </small>
+        </div>
+    }
     <button type="submit" id="BtnSave" disabled="@saveDisabled" class="btn btn-primary">Kommentar speichern ...</button>
     <button type="reset" id="BtnCancel" class="btn btn-secondary" @onclick="@(() => OnCancelBtn())">Zurück ...</button>
 </EditForm>
@@ -19,6 +36,8 @@
     public EventCallback<CalendarComment> OnSaveComment { get; set; }
     [Parameter]
     public EventCallback OnCancel { get; set; }
+    [Parameter]
+    public Boolean EnableLink { get; set; } = false;
     CalendarComment comment = new CalendarComment() { AuthorFirstName = "NN", AuthorLastName = "NN" };
     private Boolean saveDisabled = false;
 

@@ -8,7 +8,7 @@
 @using Microsoft.AspNetCore.SignalR.Client
 
 <InfoSummary InfoItem="@infoItem" AdditionalText="@lifetimeHint" />
-<AddComment OnSaveComment="SaveComment" OnCancel="OnCancel"></AddComment>
+<AddComment OnSaveComment="SaveComment" OnCancel="OnCancel" EnableLink="true"></AddComment>
 <hr />
 <CommentsList Comments="@infoItem.CommentsList" OnRemoveComment="RemoveComment"></CommentsList>
 
