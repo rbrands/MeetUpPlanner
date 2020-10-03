@@ -57,7 +57,7 @@
         comment.CalendarItemId = infoItem.Id;
         comment.AuthorFirstName = AppStateStore.FirstName;
         comment.AuthorLastName = AppStateStore.LastName;
-        if (!String.IsNullOrEmpty(comment.Comment))
+        if (!String.IsNullOrEmpty(comment.Comment) || !String.IsNullOrEmpty(comment.Link))
         {
             PrepareHttpClient();
             await Http.PostAsJsonAsync<CalendarComment>($"api/info/addcomment", comment);

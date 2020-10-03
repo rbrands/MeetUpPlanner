@@ -4,7 +4,13 @@
 @foreach (CalendarComment c in Comments)
 {
     <blockquote>
-        <p class="mb-0">@c.Comment</p>
+        <p class="mb-0">
+            @c.Comment
+            @if (!String.IsNullOrEmpty(c.Link))
+            {
+                <text> </text><a href="@c.Link" target="_blank" title="@c.DisplayLinkTitle">@c.DisplayLinkTitle</a>
+            }
+        </p>
         <footer class="blockquote-footer">
             <cite title="Autor">@c.AuthorDisplayName</cite> @c.DisplayDate
             <button class="btn btn-sm btn-outline-secondary" disabled="@saveDisabled" @onclick="@(() => ConfirmDelete(c))"><span class="oi oi-trash" title="Kommentar löschen"></span></button>
