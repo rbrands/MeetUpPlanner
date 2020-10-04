@@ -1,5 +1,8 @@
 # Änderungshistorie zum MeetUpPlanner
 
+*Demnächst*
+- Es kann eine Mindestteilnehmerzahl angegeben werden. Diese wird dann als kleiner roter "Badge" bei der Teilnehmerliste angezeigt, solange die Mindestanzahl nicht erreicht ist. Ansonsten hat das keine Auswirkungen, es werden natürlich nicht automatisch Termine gelöscht, wenn die Anzahl nicht erreicht wird. Es handelt sich lediglich um einen visuellen "Anreiz".
+
 *4.10.2020*
 - Für Admin: Ein MeetUp kann als "wöchentlich" gekennzeichnet werden. Das MeetUp wird dann automatisch in der nächsten Woche wiederholt. Durch das "Veröffentlichungsdatum" kann gesteuert werden, wann das MeetUp für alle Nutzer sichtbar ist.
 - Durch ein neues Feld kann ein Kartenlink (z.B. Google Maps) zum Startort der Ausfahrt angegeben werden, der dann als kleines Icon neben der Beschreibung des Startorts angezeigt wird.
