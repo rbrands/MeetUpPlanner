@@ -81,7 +81,12 @@
                             <small><em>Veröffentlichung @item.GetPublishDateAsString()</em></small>
                         }
                         <hr />
-                        <small>Dabei (@item.ParticipantCounter von @item.MaxRegistrationsCount): <b>@item.HostDisplayName</b>@item.ParticipantsDisplay</small>
+                        <small>Dabei (@item.ParticipantCounter von @item.MaxRegistrationsCount)</small> 
+                            @if (item.ParticipantCounter < item.MinRegistrationsCount)
+                            {
+                                <span class="badge badge-danger" title="Mindestteilnehmerzahl">Min @item.MinRegistrationsCount</span>
+                            }
+                        <small>: <b>@item.HostDisplayName</b>@item.ParticipantsDisplay</small>
                         <hr />
                         @if (item.CommentsList.Count() > 0)
                         {
