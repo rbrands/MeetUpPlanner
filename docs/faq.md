@@ -25,4 +25,9 @@
   <dd>
     Ja, ich habe eine Demo-Version installiert, in der einfach Ausfahrten angelegt, gelöscht, verwaltet usw. werden können. Schick mir einfach eine Mail an <a href="mail@robert-brands.com">mail@robert-brands.com</a>.
   </dd>
+  
+  <dt>Wo wird der MeetUpPlanner bereits eingesetzt?</dt>
+  <dd>
+    Der MeetUpPlanner wird von zwei Radsportvereinen in Köln, um nicht zu sagen DEN beiden Radsportvereinen, eingesetzt: Ursprünglich wurde diese WebApp für die <a href="https://scuderia-suedstadt.de/">Scuderia Südstadt</a> entwickelt und ist seit Mitte August 2020 im Einsatz. Seit Anfang Oktober 2020 ist auch der <a href="https://dasimmerdabei.net/">RTC DSD</a> eingestiegen.
+  </dd>
 </dl>
