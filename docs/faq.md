@@ -6,9 +6,14 @@
     Im März 2020 gab es den bisher ersten Lockdown in Deutschland allgemein und insbesondere auch in NRW. Sportliche Aktivitäten in der Gruppe kamen damit quasi komplett zum Erliegen. Als Rennradfahrer ist man zwar sowieso viel alleine unterwegs - aber immer? Als dann ab Mai 2020 schrittweise Lockerungen eingeführt wurden, taten sich alle schwer, wieder gemeinsame Ausfahrten zu organisieren. Grundprinzip dafür war und ist die Beschränkung der Gruppengröße und die Nachverfolgbarkeit der Kontakte. Zunächst haben wir angefangen mit Online-Listen durch Excel-Online usw. Aber das ist ein bisschen umständlich, funktioniert nicht vernünftig auf Smartphones und erfordert auch manuellen Aufwand. Genau in dieser Situation habe ich begonnen, diese WebApp zu entwickeln.
   </dd>
   
+  <dt>Wer hat den MeetUpPlanner entwickelt?</dt>
+  <dd>
+    Ich habe diese WebApp als Privatperson und alleine entwickelt. Über mich: Schau dir einfach [robert-brands.com](<https://robert-brands.com>) an. Ich verfolge mit der App keinerlei kommerziellen Interesse. Es gibt keine Werbung und die im Betrieb gesammelten Daten werden ausschließlich für den beschriebenen Zweck verwendet, d.h. für die Organisierung von Ausfahrten und zur Sicherstellung der Nachverfolgbarkeit im Sinne der Corona-Verordnung(en)
+  </dd>
+  
   <dt>Kostet der MeetUpPlanner etwas?</dt>
   <dd>
-    Nein, ich stelle den MeetUpPlanner kostenlos zur Verfügung. Zum einen den Quellcode, der auf GitHub komplett und als Open Source verfügbar ist. Jeder kann ihn also verwenden und damit machen war er/sie will ... Außerdem betreibe ich natürlich eine Instanz und stelle sie zur Verfügung. Da gibt es natürlich irgendwann Kapazitätsgrenzen, ich kann da nicht beliebig viele Vereine aufnehmen ohne mehr Cloud-Ressourcen zu buchen, was dann wiederum mit Kosten verbunden wäre. 
+    Nein, ich stelle den MeetUpPlanner kostenlos zur Verfügung. Zum einen den Quellcode, der auf GitHub komplett und als Open Source verfügbar ist. Jeder kann ihn also verwenden und damit machen war er/sie will unter Beachtung der [MIT Lizenz](</LICENCE>)... Außerdem betreibe ich natürlich eine Instanz und stelle sie zur Verfügung. Da gibt es natürlich irgendwann Kapazitätsgrenzen, ich kann da nicht beliebig viele Vereine aufnehmen ohne mehr Cloud-Ressourcen zu buchen, was dann wiederum mit Kosten verbunden wäre. 
   </dd>
   
   <dt>Gibt es so etwas wie den MeetUpPlanner auch vom BDR?</dt>
