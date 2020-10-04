@@ -14,5 +14,6 @@ Verbesserungsvorschläge oder funktioniert etwas nicht? Am besten einfach e-mail
 # Weitere Informationen
 
 - [Neuigkeiten](<news>)
+- [FAQ](<faq>)
 
 
