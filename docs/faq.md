@@ -8,7 +8,7 @@
   
   <dt>Kostet der MeetUpPlanner etwas?</dt>
   <dd>
-    Nein, ich stelle den MeetUpPlanner kostenlos zur Verfügung. Zum einen den Quellcode auf GitHub der komplett Open Source ist. Jeder kann ihn also verwenden und damit machen war er/sie will ... Außerdem betreibe ich natürlich eine Instanz und stelle sie zur Verfügung. Da gibt es natürlich irgendwann Kapazitätsgrenzen, ich kann da nicht beliebig viele Vereine aufnehmen ohne mehr Cloud-Ressourcen zu buchen, was dann wiederum mit Kosten verbunden wäre. 
+    Nein, ich stelle den MeetUpPlanner kostenlos zur Verfügung. Zum einen den Quellcode, der auf GitHub komplett und als Open Source verfügbar ist. Jeder kann ihn also verwenden und damit machen war er/sie will ... Außerdem betreibe ich natürlich eine Instanz und stelle sie zur Verfügung. Da gibt es natürlich irgendwann Kapazitätsgrenzen, ich kann da nicht beliebig viele Vereine aufnehmen ohne mehr Cloud-Ressourcen zu buchen, was dann wiederum mit Kosten verbunden wäre. 
   </dd>
   
   <dt>Gibt es so etwas wie den MeetUpPlanner auch vom BDR?</dt>
