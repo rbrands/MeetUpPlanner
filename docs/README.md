@@ -11,3 +11,8 @@ Folgende Ziele habe ich mir für die App gesetzt:
 
 Verbesserungsvorschläge oder funktioniert etwas nicht? Am besten einfach e-mail an [mail@robert-brands.com](mailto:mail@robert-bands.com)
 
+# Weitere Informationen
+
+- [Neuigkeiten](<news>)
+
+
