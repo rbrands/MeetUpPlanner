@@ -8,7 +8,7 @@
   
   <dt>Wer hat den MeetUpPlanner entwickelt?</dt>
   <dd>
-    Ich habe diese WebApp als Privatperson und alleine entwickelt. Über mich: Schau dir einfach <a href="https://robert-brands.com">robert-brands.com<a> an. Ich verfolge mit der App keinerlei kommerziellen Interessen. Es gibt keine Werbung und die im Betrieb gesammelten Daten werden ausschließlich für den beschriebenen Zweck verwendet, d.h. für die Organisierung von Ausfahrten und zur Sicherstellung der Nachverfolgbarkeit im Sinne der Corona-Verordnung(en)
+    Ich habe diese WebApp als Privatperson und alleine entwickelt. Über mich: Schau dir einfach <a href="https://robert-brands.com">robert-brands.com</a> an. Ich verfolge mit der App keinerlei kommerziellen Interessen. Es gibt keine Werbung und die im Betrieb gesammelten Daten werden ausschließlich für den beschriebenen Zweck verwendet, d.h. für die Organisierung von Ausfahrten und zur Sicherstellung der Nachverfolgbarkeit im Sinne der Corona-Verordnung(en)
   </dd>
   
   <dt>Kostet der MeetUpPlanner etwas?</dt>
