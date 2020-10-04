@@ -8,12 +8,12 @@
   
   <dt>Wer hat den MeetUpPlanner entwickelt?</dt>
   <dd>
-    Ich habe diese WebApp als Privatperson und alleine entwickelt. Über mich: Schau dir einfach [robert-brands.com](https://robert-brands.com) an. Ich verfolge mit der App keinerlei kommerziellen Interesse. Es gibt keine Werbung und die im Betrieb gesammelten Daten werden ausschließlich für den beschriebenen Zweck verwendet, d.h. für die Organisierung von Ausfahrten und zur Sicherstellung der Nachverfolgbarkeit im Sinne der Corona-Verordnung(en)
+    Ich habe diese WebApp als Privatperson und alleine entwickelt. Über mich: Schau dir einfach <a href="https://robert-brands.com">robert-brands.com<a> an. Ich verfolge mit der App keinerlei kommerziellen Interesse. Es gibt keine Werbung und die im Betrieb gesammelten Daten werden ausschließlich für den beschriebenen Zweck verwendet, d.h. für die Organisierung von Ausfahrten und zur Sicherstellung der Nachverfolgbarkeit im Sinne der Corona-Verordnung(en)
   </dd>
   
   <dt>Kostet der MeetUpPlanner etwas?</dt>
   <dd>
-    Nein, ich stelle den MeetUpPlanner kostenlos zur Verfügung. Zum einen den Quellcode, der auf GitHub komplett und als Open Source verfügbar ist. Jeder kann ihn also verwenden und damit machen war er/sie will unter Beachtung der [MIT Lizenz](/LICENCE)... Außerdem betreibe ich natürlich eine Instanz und stelle sie zur Verfügung. Da gibt es natürlich irgendwann Kapazitätsgrenzen, ich kann da nicht beliebig viele Vereine aufnehmen ohne mehr Cloud-Ressourcen zu buchen, was dann wiederum mit Kosten verbunden wäre. 
+    Nein, ich stelle den MeetUpPlanner kostenlos zur Verfügung. Zum einen den Quellcode, der auf GitHub komplett und als Open Source verfügbar ist. Jeder kann ihn also verwenden und damit machen war er/sie will unter Beachtung der <a href="/LICENCE">MIT Lizenz</a>... Außerdem betreibe ich natürlich eine Instanz und stelle sie zur Verfügung. Da gibt es natürlich irgendwann Kapazitätsgrenzen, ich kann da nicht beliebig viele Vereine aufnehmen ohne mehr Cloud-Ressourcen zu buchen, was dann wiederum mit Kosten verbunden wäre. 
   </dd>
   
   <dt>Gibt es so etwas wie den MeetUpPlanner auch vom BDR?</dt>
@@ -23,6 +23,6 @@
   
   <dt>Kann ich den MeetUpPlanner irgendwo ausprobieren?</dt>
   <dd>
-    Ja, ich habe eine Demo-Version installiert, in der einfach Ausfahrten angelegt, gelöscht, verwaltet usw. werden können. Schick mir einfach eine Mail an [mail@robert-brands.com](mailto:mail@robert-brands.com).
+    Ja, ich habe eine Demo-Version installiert, in der einfach Ausfahrten angelegt, gelöscht, verwaltet usw. werden können. Schick mir einfach eine Mail an <a href="mail@robert-brands.com">mail@robert-brands.com</a>.
   </dd>
 </dl>
