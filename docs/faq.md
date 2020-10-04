@@ -15,4 +15,9 @@
   <dd>
     Gute Frage ... Meines Wissens gibt es von den Radsportverbänden keinerlei Hilfen in irgendeiner Form für die Vereine, d.h. es bleibt den Vereinen komplett selbst überlassen, ob und wie sie sich organisieren. Die Verbände sind aus meiner Sicht in der Corona-Krise komplett abgetaucht. Dabei wäre es eine gute Idee, so etwas wie den MeetUpPlanner für alle Vereine anzubieten. Und auch ein "Buchungssystem" für RTFs usw. könnte gut gebraucht werden - auch nächstes Jahr noch ...
   </dd>
+  
+  <dt>Kann ich den MeetUpPlanner irgendwo ausprobieren?</dt>
+  <dd>
+    Ja, ich habe eine Demo-Version installiert, in der einfach Ausfahrten angelegt, gelöscht, verwaltet usw. werden können. Schick mir einfach eine Mail an [mail@robert-brands.com](<mailto:mail@robert-brands.com>).
+  </dd>
 </dl>
