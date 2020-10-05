@@ -28,7 +28,7 @@
   
   <dt>Wo wird der MeetUpPlanner bereits eingesetzt?</dt>
   <dd>
-    Der MeetUpPlanner wird von zwei Radsportvereinen in Köln, um nicht zu sagen DEN beiden Radsportvereinen, eingesetzt: Ursprünglich wurde diese WebApp für die <a href="https://scuderia-suedstadt.de/">Scuderia Südstadt</a> entwickelt und ist seit Mitte August 2020 im Einsatz. Seit Anfang Oktober 2020 ist auch der <a href="https://dasimmerdabei.net/">RTC DSD</a> eingestiegen. Ebenfalls seit Oktober 2020 verwendet der Kölner <em>FB Giro</i> den MeetUpPlanner.
+    Der MeetUpPlanner wird von zwei Radsportvereinen in Köln, um nicht zu sagen DEN beiden Radsportvereinen, eingesetzt: Ursprünglich wurde diese WebApp für die <a href="https://scuderia-suedstadt.de/">Scuderia Südstadt</a> entwickelt und ist seit Mitte August 2020 im Einsatz. Seit Anfang Oktober 2020 ist auch der <a href="https://dasimmerdabei.net/">RTC DSD</a> eingestiegen. Ebenfalls seit Oktober 2020 verwendet der Kölner <em>FB Giro</em> den MeetUpPlanner.
   </dd>
   
   <dt>Was muss ich tun, um den MeetUpPlanner auch für meinen Verein oder Radgruppe einzusetzen?</dt>
