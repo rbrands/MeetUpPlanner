@@ -30,4 +30,10 @@
   <dd>
     Der MeetUpPlanner wird von zwei Radsportvereinen in Köln, um nicht zu sagen DEN beiden Radsportvereinen, eingesetzt: Ursprünglich wurde diese WebApp für die <a href="https://scuderia-suedstadt.de/">Scuderia Südstadt</a> entwickelt und ist seit Mitte August 2020 im Einsatz. Seit Anfang Oktober 2020 ist auch der <a href="https://dasimmerdabei.net/">RTC DSD</a> eingestiegen.
   </dd>
+  
+  <dt>Was muss ich tun, um den MeetUpPlanner auch für meinen Verein oder Radgruppe einzusetzen?</dt>
+  <dd>
+    Der MeetUpPlanner ist "mandantenfähig", d.h. eine Umgebung kann mehrere Vereine/Benutzergruppen "bedienen". Zwar wird die gleiche Datenbank usw. benutzt aber jede Gruppe sieht nur die eigenen Ausfahrten, auch die Einstellungen werden für jede Benutzergruppe getrennt. Die Trennung der Mandanten funktioniert über die URL, über die man den MeetUpPlanner aufruft. So führt z.B. club1.meetupplanner.de und club2.meetupplanner.de zu verschiedenen "Mandanten". Um einen weiteren Club einzurichten, muss ein eindeutiger Name wie gerade beschrieben eingerichtet werden. 
+  Allerdings nähere ich mich mit der von mir betriebenen Installation langsam an die Kapaziätsgrenze. Was natürlich unabhängig davon immer geht: Der MeetUpPlanner ist komplett als Open Source verfügbar und kann von jedem mit etwas Kenntnissen im Betrieb von Diensten auf der Microsoft Azure Cloud eingerichtet werden.
+  </dd>
 </dl>
