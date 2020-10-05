@@ -6,4 +6,4 @@ Für die Entwicklung von SPAs verwendet man üblicherweise etablierte Frameworks
 
 Auf der Serverseite wurde die Business-Logik "serverless" mit [Azure Functions](https://docs.microsoft.com/de-de/azure/azure-functions/) umgesetzt. Als Datenbank wird die No-SQL Datenbank [Cosmos DB](https://docs.microsoft.com/de-de/azure/cosmos-db/). Für weitere Einzelheiten siehe das GitHub Repository.
 
-Laufen tut die Serverseite der Anwendung in Microsoft's Azure Cloud.
+Und schließlich: Die Serverseite der Anwendung läuft in Microsoft's Azure Cloud.
