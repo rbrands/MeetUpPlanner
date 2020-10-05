@@ -1,6 +1,6 @@
 # Änderungshistorie zum MeetUpPlanner
 
-*Demnächst*
+*5.10.2020*
 - Es kann eine Mindestteilnehmerzahl angegeben werden. Diese wird dann als kleiner roter "Badge" bei der Teilnehmerliste angezeigt, solange die Mindestanzahl nicht erreicht ist. Ansonsten hat das keine Auswirkungen, es werden natürlich nicht automatisch Termine gelöscht, wenn die Anzahl nicht erreicht wird. Es handelt sich lediglich um einen visuellen "Anreiz".
 - Bug: Auf der Einladungsseite für Gäste fehlten die Angaben zum Startort.
 
