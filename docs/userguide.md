@@ -27,6 +27,11 @@ Beispiel: Wenn eine vereinsinterne Ausfahrt organisiert werden soll, könnte die
   <dd>
     Als Guide oder Admin kann man die An- und Abmeldung für eine Ausfahrt auch für andere Teilnehmer übernehmen, falls die gerade z.B. nicht ihr Smartphone zur Hand haben. Über das Icon <img src="https://raw.githubusercontent.com/iconic/open-iconic/master/svg/transfer.svg" height="14"/> gelangt man auf eine Anmeldeseite, in der man die Kontaktdaten zum Teinehmer eingeben kann.
   </dd>
+  
+  <dt>Neuer Guide</dt>
+  <dd>
+    Hat man eine Ausfahrt erstellt und ist damit glücklicher Guide, kann man sich nicht einfach abmelden. Wenn jetzt aber etwas dazwischen kommt und man nicht die ganze Ausfahrt löschen möchte, kann man sie über das Icon <img src="https://raw.githubusercontent.com/iconic/open-iconic/master/svg/share-boxed.svg" height="14"/> an einen Teilnehmer übertragen. Wahrscheinlich ist es eine gute Idee, vorher zu fragen, ob das ok ist...
+  </dd>
 </dl>
 
 ## Weitere Features für Admins
