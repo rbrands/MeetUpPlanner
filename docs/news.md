@@ -2,6 +2,7 @@
 
 *Demnächst*
 - Es kann eine Mindestteilnehmerzahl angegeben werden. Diese wird dann als kleiner roter "Badge" bei der Teilnehmerliste angezeigt, solange die Mindestanzahl nicht erreicht ist. Ansonsten hat das keine Auswirkungen, es werden natürlich nicht automatisch Termine gelöscht, wenn die Anzahl nicht erreicht wird. Es handelt sich lediglich um einen visuellen "Anreiz".
+- Bug: Auf der Einladungsseite für Gäste fehlten die Angaben zum Startort.
 
 *4.10.2020*
 - Für Admin: Ein MeetUp kann als "wöchentlich" gekennzeichnet werden. Das MeetUp wird dann automatisch in der nächsten Woche wiederholt. Durch das "Veröffentlichungsdatum" kann gesteuert werden, wann das MeetUp für alle Nutzer sichtbar ist.
