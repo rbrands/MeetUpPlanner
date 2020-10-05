@@ -15,6 +15,7 @@ Verbesserungsvorschläge oder funktioniert etwas nicht? Am besten einfach e-mail
 
 - [Neuigkeiten](<news>)
 - [FAQ](<faq>)
+- [Benutzerhinweise](<userguide>)
 - [Zur Technik](<technology>)
 
 
