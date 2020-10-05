@@ -172,6 +172,13 @@
         </small>
     </div>
     <div class="form-group">
+        <label for="size">Mindestteilnehmerzahl</label>
+        <RadzenNumeric id="minSize" aria-describedby="sizeHelp" class="form-control" TValue="int" Min="0" Max="@AppStateStore.ClientSettings?.GetMaxGroupSize(KeywordCheck.IsAdmin)" @bind-Value="meetup.MinRegistrationsCount" />
+        <small id="sizeHelp" class="form-text text-muted">
+            Optional: Mindestteilnehmerzahl der Gruppe angegeben werden. Dies wird entsprechend angezeigt, hat aber ansonsten keine Konsequenzen, d.h. es wird kein Termin automatisch gelöscht ...
+        </small>
+    </div>
+    <div class="form-group">
         <label for="privateKeyword">Private Ausfahrt?</label>
         <InputText id="privateKeyword" aria-describedby="privateKeywordHelp" class="form-control" @bind-Value="meetup.PrivateKeyword" autocomplete="on" placeholder="Schlüsselwort für private Ausfahrt" />
         <small id="privateKeywordHelp" class="form-text text-muted">
