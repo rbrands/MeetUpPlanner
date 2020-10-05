@@ -17,6 +17,11 @@ Beispiel: Wenn eine vereinsinterne Ausfahrt organisiert werden soll, könnte die
   <dd>
     Um den MeetUpPlanner zu nutzen, wird normalerweise ein "Schlüsselwort" benötigt, nicht nur um ggf. Ausfahrten anzulegen, sondern auch für die Anmeldung. Um jemanden spontan oder auch gezielt für nur eine Ausfahrt mit zu nehmen, gibt es die "Gastfunktion". Über das Icon <img src="https://raw.githubusercontent.com/iconic/open-iconic/master/svg/external-link.svg"/> gelangt man auf eine Einladungsseite. Diese enthält neben einen Link, den man per Mail/SMS oder Messenger verschicken kann auch einen QR-Code, den man dem Gast zeigen kann und der ebenfalls zum Gastseite führt. Auf dieser kann sich der Gast nur mit Vor-/Nachnamen und Kontaktinfo (Telefon oder E-Mail) für diese eine Ausfahrt an- und ggf. auch abmelden. 
   </dd>
+  
+  <dt>Termin kopieren</dt>
+  <dd>
+    Hat man einen Termin angelegt, wird auch der kleine Button <img src="https://raw.githubusercontent.com/iconic/open-iconic/master/svg/fork.svg"/> angezeigt, über den ein Termin in die nächste Woche kopiert werden kann. Die Idee ist hier, dass man Termine, die immer wieder angeboten werden, nicht komplett neu anlegen muss.
+  </dd>
 </dl>
 
 ## Weitere Features für Admins
