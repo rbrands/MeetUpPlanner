@@ -144,6 +144,11 @@
         Participant participant = meetup.FindParticipant(_guest.ParticipantFirstName, _guest.ParticipantLastName);
         if (null == participant)
         {
+            if (meetup.IsCanceled)
+            {
+                notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Warning, Summary = "Abgesagt", Detail = "Der Termin ist leider abgesagt.", Duration = 4000 });
+                return;
+            }
             PrepareHttpClient();
             HttpResponseMessage response = await Http.PostAsJsonAsync<Participant>($"Calendar/addguest", _guest);
             string responseBody = await response.Content.ReadAsStringAsync();

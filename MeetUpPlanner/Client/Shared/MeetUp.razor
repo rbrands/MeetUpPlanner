@@ -1,7 +1,13 @@
 ﻿@using MeetUpPlanner.Shared
 <div class="jumbotron">
     <h6 class="text-muted">@CalendarItem.LevelDescription - @CalendarItem.Tempo</h6>
-    <h3>@CalendarItem.GetStartDateAsString() - @CalendarItem.Title</h3>
+    <h3>
+        @CalendarItem.GetStartDateAsString() - @CalendarItem.Title
+        @if (CalendarItem.IsCanceled)
+        {
+            <span class="badge badge-danger" title="Abgesagt">Abgesagt!</span>
+        }
+    </h3>
     <h6>
         @CalendarItem.Place
         @if (!String.IsNullOrEmpty(CalendarItem.DirectionsLink))

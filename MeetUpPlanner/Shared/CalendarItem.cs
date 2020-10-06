@@ -49,7 +49,8 @@ namespace MeetUpPlanner.Shared
         public string LinkTitle { get; set; }
         [JsonProperty(PropertyName = "isCross")]
         public Boolean IsCross { get; set; } = false;
-
+        [JsonProperty(PropertyName = "isCanceled")]
+        public Boolean IsCanceled { get; set; } = false;
         /// <summary>
         /// Constructor with some suggestions about start-time: Schedule for the next day. On Saturdays and Sundays 
         /// StartTime is 10 am otherwise 18 pm
