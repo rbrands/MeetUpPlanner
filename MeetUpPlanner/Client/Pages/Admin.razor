@@ -47,6 +47,13 @@
         </small>
     </div>
     <div class="form-group">
+        <label for="nameDisplayLength">Anzahl Buchstaben Nachname</label>
+        <InputNumber id="nameDisplayLength" aria-describedby="nameDisplayLengthHelp" class="form-control" @bind-Value="AppStateStore.ClientSettings.NameDisplayLength" autocomplete="on" />
+        <small id="nameDisplayLengthHelp" class="form-text text-muted">
+            Anzahl Buchstaben, die vom Nachnamen angezeigt werden sollen. 0 für Anzeige des ganzen Namens.
+        </small>
+    </div>
+    <div class="form-group">
         <label for="welcomeMessage">Welcome Nachricht</label>
         <BlazoredTextEditor @ref="@htmlWelcomeMessage" Placeholder="Nachricht für Startseite">
             <ToolbarContent>

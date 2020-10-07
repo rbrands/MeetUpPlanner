@@ -24,13 +24,25 @@ namespace MeetUpPlanner.Shared
         public DateTime CheckInDate { get; set; }
         [JsonProperty(PropertyName = "isGuest")]
         public Boolean IsGuest { get; set; } = false;
-        [JsonIgnore]
-        public string ParticipantDisplayName
+        public string ParticipantDisplayName(int nameDisplayLength)
         {
-            get
+            StringBuilder sb = new StringBuilder();
+            if (IsGuest)
             {
-                return (IsGuest ? "Gast" : ParticipantFirstName + " " + ParticipantLastName[0] + ".");
+                sb.Append("Gast");
             }
+            else
+            { 
+                int length = nameDisplayLength > 0 ? Math.Min(nameDisplayLength, ParticipantLastName.Length) : ParticipantLastName.Length;
+                sb.Append(ParticipantFirstName).Append(" ");
+                sb.Append(ParticipantLastName.Substring(0, length));
+                if (length < ParticipantLastName.Length)
+                {
+                    sb.Append('.');
+                }
+            }
+
+            return sb.ToString();
         }
 
     }

@@ -10,7 +10,7 @@
 <InfoSummary InfoItem="@infoItem" AdditionalText="@lifetimeHint" />
 <AddComment OnSaveComment="SaveComment" OnCancel="OnCancel" EnableLink="true"></AddComment>
 <hr />
-<CommentsList Comments="@infoItem.CommentsList" OnRemoveComment="RemoveComment"></CommentsList>
+<CommentsList Comments="@infoItem.CommentsList" OnRemoveComment="RemoveComment" NameDisplayLength="@AppStateStore.ClientSettings.NameDisplayLength"></CommentsList>
 
 
 @code {

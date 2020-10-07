@@ -7,7 +7,7 @@
 @inject NotificationService notificationService
 @using Newtonsoft.Json
 
-<MeetUp CalendarItem="@meetup" HideParticipants="false" AdditionalText="Hier kannst du für andere Teilnehmer der Ausfahrt die An- oder Abmeldung übernehmen." />
+<MeetUp CalendarItem="@meetup" HideParticipants="false" NameDisplayLength="@AppStateStore.ClientSettings.NameDisplayLength" AdditionalText="Hier kannst du für andere Teilnehmer der Ausfahrt die An- oder Abmeldung übernehmen." />
 
 <EditForm OnValidSubmit="RegisterParticipant" Model="@_participant">
     <DataAnnotationsValidator />

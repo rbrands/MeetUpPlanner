@@ -9,7 +9,7 @@
 @using Microsoft.AspNetCore.SignalR.Client
 
 
-<MeetUp CalendarItem="@meetup" HideParticipants="true" AdditionalText="Für die Teilnahme an der Ausfahrt bitte die Kontaktdaten unten eingeben, um damit die Nachverfolgbarkeit zu gewährleisten. Falls du doch nicht dabei sein kannst, kannst du dich über diese Seite auch wieder abmelden." />
+<MeetUp CalendarItem="@meetup" HideParticipants="true" NameDisplayLength="@AppStateStore.ClientSettings.NameDisplayLength" AdditionalText="Für die Teilnahme an der Ausfahrt bitte die Kontaktdaten unten eingeben, um damit die Nachverfolgbarkeit zu gewährleisten. Falls du doch nicht dabei sein kannst, kannst du dich über diese Seite auch wieder abmelden." />
 
 <EditForm OnValidSubmit="RegisterGuest" Model="@_guest">
     <DataAnnotationsValidator />

@@ -69,25 +69,26 @@ namespace MeetUpPlanner.Shared
             }
             PublishDate = DateTime.Now;
         }
-        [JsonIgnore]
-        public string HostDisplayName
+        public string HostDisplayName(int nameDisplayLength)
         {
-            get
-            {
-                StringBuilder sb = new StringBuilder();
-                if (!WithoutHost)
+            StringBuilder sb = new StringBuilder();
+            if (!WithoutHost)
+            { 
+                if (!String.IsNullOrEmpty(HostFirstName))
                 { 
-                    if (!String.IsNullOrEmpty(HostFirstName))
-                    { 
-                        sb.Append(HostFirstName).Append(" ");
-                    }
-                    if (!String.IsNullOrEmpty(HostLastName))
+                    sb.Append(HostFirstName).Append(" ");
+                }
+                if (!String.IsNullOrEmpty(HostLastName))
+                {
+                    int length = nameDisplayLength > 0 ? Math.Min(nameDisplayLength, HostLastName.Length) : HostLastName.Length;
+                    sb.Append(HostLastName.Substring(0, length));
+                    if (length < HostLastName.Length)
                     {
-                        sb.Append(HostLastName[0].ToString()).Append(".");
+                        sb.Append('.');
                     }
                 }
-                return sb.ToString();
             }
+            return sb.ToString();
         }
         /// <summary>
         /// Returns a string ready to display in (German) UI.

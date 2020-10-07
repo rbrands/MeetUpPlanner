@@ -7,10 +7,10 @@
 @using Newtonsoft.Json
 @using Microsoft.AspNetCore.SignalR.Client
 
-<MeetUp CalendarItem="@meetup" />
+<MeetUp CalendarItem="@meetup" NameDisplayLength="@AppStateStore.ClientSettings.NameDisplayLength" />
 <AddComment OnSaveComment="SaveComment" OnCancel="OnCancel" EnableLink="true"></AddComment>
 <hr />
-<CommentsList Comments="@meetup.CommentsList" OnRemoveComment="RemoveComment"></CommentsList>
+<CommentsList Comments="@meetup.CommentsList" OnRemoveComment="RemoveComment" NameDisplayLength="@AppStateStore.ClientSettings.NameDisplayLength"></CommentsList>
 
 <p class="alert-info">
     @logMessage

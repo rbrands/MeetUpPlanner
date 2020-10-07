@@ -12,7 +12,7 @@
 <div>
     <div class="form-group">
         <label for="newhost">Neuer Guide</label>
-        <RadzenDropDown id="newhost" aria-describedby="newhostHelp" AllowClear="false" class="form-control" TValue="Participant" Placeholder="Neuen Guide auswählen ..." @bind-Value="selectedParticipant" Data="@meetup.ParticipantsList" TextProperty="ParticipantDisplayName" />
+        <RadzenDropDown id="newhost" aria-describedby="newhostHelp" AllowClear="false" class="form-control" TValue="KeyValuePair<string, Participant>" Placeholder="Neuen Guide auswählen ..." @bind-Value="selectedParticipant" Data="@namesList" TextProperty="Key" />
         <small id="newhostHelp" class="form-text text-muted">
             Wenn du als Organisator der Ausfahrt "abspringst", musst du einen neuen Organisator bestimmen. Oder die ganze Ausfahrt löschen.
         </small>
@@ -28,8 +28,9 @@
     [Parameter]
     public string ItemId { get; set; }
     ExtendedCalendarItem meetup = new ExtendedCalendarItem();
-    Participant selectedParticipant;
+    KeyValuePair<string, Participant> selectedParticipant;
     private HubConnection hubConnection;
+    List<KeyValuePair<string, Participant>> namesList = new List<KeyValuePair<string, Participant>>();
 
 
     protected override async Task OnInitializedAsync()
@@ -53,6 +54,11 @@
         PrepareHttpClient();
         // Get referenced calendar item
         meetup = await Http.GetFromJsonAsync<ExtendedCalendarItem>($"Calendar/extendedcalendaritem?itemId={ItemId}");
+        namesList.Clear();
+        foreach (Participant p in meetup.ParticipantsList)
+        {
+            namesList.Add(new KeyValuePair<string, Participant>(p.ParticipantDisplayName(AppStateStore.ClientSettings.NameDisplayLength), p));
+        }
     }
     protected void OnCancel()
     {
@@ -60,20 +66,20 @@
     }
     protected async Task OnReassign()
     {
-        if (null == selectedParticipant)
+        if (null == selectedParticipant.Value )
         {
             notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Warning, Summary = "Neuer Guide", Detail = "Bitte einen neuen Organisator auswählen.", Duration = 4000 });
             return;
         }
         PrepareHttpClient();
-        HttpResponseMessage response = await Http.PostAsJsonAsync<Participant>($"Calendar/assignnewhost", selectedParticipant);
+        HttpResponseMessage response = await Http.PostAsJsonAsync<Participant>($"Calendar/assignnewhost", selectedParticipant.Value);
         string responseBody = await response.Content.ReadAsStringAsync();
 
         BackendResult result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
         if (result.Success)
         {
             if (IsConnected) await SendMessage();
-            notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Info, Summary = "Neuer Guide", Detail = selectedParticipant.ParticipantDisplayName, Duration = 4000 });
+            notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Info, Summary = "Neuer Guide", Detail = selectedParticipant.Value.ParticipantDisplayName(AppStateStore.ClientSettings.NameDisplayLength), Duration = 4000 });
             NavigationManager.NavigateTo("/calendar");
         }
         else

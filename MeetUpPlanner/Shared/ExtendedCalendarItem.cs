@@ -51,24 +51,20 @@ namespace MeetUpPlanner.Shared
             this.WithoutHost = calendarItem.WithoutHost;
         }
 
-        [JsonIgnore]
-        public string ParticipantsDisplay
+        public string ParticipantsDisplay(int nameDisplayLength)
         {
-            get 
+            StringBuilder sb = new StringBuilder(100);
+            int counter = WithoutHost ? 0 : 1;
+            foreach (Participant participant in this.ParticipantsList)
             {
-                StringBuilder sb = new StringBuilder(100);
-                int counter = WithoutHost ? 0 : 1;
-                foreach (Participant participant in this.ParticipantsList)
-                {
-                    if (counter > 0)
-                    { 
-                        sb.Append(", ");
-                    }
-                    sb.Append(participant.ParticipantDisplayName);
-                    ++counter;
+                if (counter > 0)
+                { 
+                    sb.Append(", ");
                 }
-                return sb.ToString();
+                sb.Append(participant.ParticipantDisplayName(nameDisplayLength));
+                ++counter;
             }
+            return sb.ToString();
         }
         [JsonIgnore]
         public int ParticipantCounter

@@ -25,7 +25,7 @@
                     {
                         <li>
                             <small>
-                                <em>@c.AuthorDisplayName (@c.DisplayDate): </em>@c.Comment
+                                <em>@c.AuthorDisplayName(AppStateStore.ClientSettings.NameDisplayLength) (@c.DisplayDate): </em>@c.Comment
                                 @if (!String.IsNullOrEmpty(c.Link))
                                 {
                                     <text> </text><a title="@c.DisplayLinkTitle" target="_blank" href="@c.Link">@c.DisplayLinkTitle</a>

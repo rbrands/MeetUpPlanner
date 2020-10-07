@@ -30,7 +30,7 @@
             {
                 <span class="badge badge-danger" title="Mindestteilnehmerzahl">Min @CalendarItem.MinRegistrationsCount</span>
             }
-            <small>: <b>@CalendarItem.HostDisplayName</b>@CalendarItem.ParticipantsDisplay</small>
+            <small>: <b>@CalendarItem.HostDisplayName(NameDisplayLength)</b>@CalendarItem.ParticipantsDisplay(NameDisplayLength)</small>
         }
         else
         {
@@ -56,4 +56,6 @@
     public Boolean HideParticipants { get; set; } = false;
     [Parameter]
     public String AdditionalText { get; set; } = null;
+    [Parameter]
+    public int NameDisplayLength { get; set; } = 1;
 }

@@ -27,6 +27,8 @@ namespace MeetUpPlanner.Shared
         public int MaxGroupSize { get; set; } = 10;
         [JsonProperty(PropertyName = "maxGroupSizeForAdmins", NullValueHandling = NullValueHandling.Ignore), Range(2.0, 300, ErrorMessage = "Max. Gruppengröße für Admins bitte zwischen 2 und 300.")]
         public int MaxGroupSizeForAdmins { get; set; } = 10;
+        [JsonProperty(PropertyName = "nameDisplayLength"), Range(0.0, 10, ErrorMessage = "Länge des Anzeigenamens zwischen 0 und 10.")]
+        public int NameDisplayLength { get; set; } = 1;
         public Boolean GuestsEnabled { get; set; } = false;
         public Boolean OnlyScopedMeetUpsAllowed { get; set; } = false;
         public Boolean OnlyAdminsAsHost { get; set; } = false;
