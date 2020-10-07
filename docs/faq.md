@@ -36,7 +36,6 @@
     Der MeetUpPlanner ist "mandantenfähig", d.h. eine Umgebung kann mehrere Vereine/Benutzergruppen "bedienen". Zwar wird die gleiche Datenbank usw. benutzt aber jede Gruppe sieht nur die eigenen Ausfahrten, auch die Einstellungen werden für jede Benutzergruppe getrennt. Die Trennung der Mandanten funktioniert über die URL, über die man den MeetUpPlanner aufruft. So führt z.B. club1.meetupplanner.de und club2.meetupplanner.de zu verschiedenen "Mandanten". Um einen weiteren Club einzurichten, muss ein eindeutiger Name wie gerade beschrieben eingerichtet werden. 
   Allerdings nähere ich mich mit der von mir betriebenen Installation langsam an die Kapaziätsgrenze. Was natürlich unabhängig davon immer geht: Der MeetUpPlanner ist komplett als Open Source verfügbar und kann von jedem mit etwas Kenntnissen im Betrieb von Diensten auf der Microsoft Azure Cloud eingerichtet werden.
   </dd>
-</dl>
 
   <dt>Ich möchte meine eigene Version des MeetUpPlanners installieren. Was muss ich tun?</dt>
   <dd>
@@ -44,3 +43,5 @@
   
   Zur Installation siehe kurze Beschreibung in https://github.com/rbrands/MeetUpPlanner/wiki/Deployment
   </dd>
+
+</dl>
