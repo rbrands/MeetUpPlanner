@@ -1,6 +1,7 @@
 # Änderungshistorie zum MeetUpPlanner
 *Demnächst*
 - Ausfahrten können als "Abgesagt!" markiert werden. Im Titel wird dann ein entsprechender "Badge" zur Kennzeichnung angezeigt und die Anmeldung ist nicht mehr möglich. Abmeldung schon. Ausfahrten die als abgesagt gekennzeichnet werden, werden in der Kontaktliste nicht berücksichtigt.
+- Es kann jetzt konfiguriert werden, wie die Nachnamen der Teilnehmer angezeigt werden: Die Namen können vollständig angezeigt werden oder der Nachname kann (wie bisher) abgekürzt auf die konfigurierte Länge (bisher war das immer '1') angezeigt werden.
 
 *5.10.2020*
 - Es kann eine Mindestteilnehmerzahl angegeben werden. Diese wird dann als kleiner roter "Badge" bei der Teilnehmerliste angezeigt, solange die Mindestanzahl nicht erreicht ist. Ansonsten hat das keine Auswirkungen, es werden natürlich nicht automatisch Termine gelöscht, wenn die Anzahl nicht erreicht wird. Es handelt sich lediglich um einen visuellen "Anreiz".
