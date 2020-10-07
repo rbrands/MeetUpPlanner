@@ -37,3 +37,10 @@
   Allerdings nähere ich mich mit der von mir betriebenen Installation langsam an die Kapaziätsgrenze. Was natürlich unabhängig davon immer geht: Der MeetUpPlanner ist komplett als Open Source verfügbar und kann von jedem mit etwas Kenntnissen im Betrieb von Diensten auf der Microsoft Azure Cloud eingerichtet werden.
   </dd>
 </dl>
+
+  <dt>Ich möchte meine eigene Version des MeetUpPlanners installieren. Was muss ich tun?</dt>
+  <dd>
+    Alles was benötigt wird, ist in dem GitHub Repository vorhanden. Für eine eigene Version am besten das Repository "forken", Anpassungen zumindest an den Texten vornehmen, z.B. die "About"-Seite mit meiner Mail-Adresse usw. Um das ganze dann in Azure zu installieren, wird ein Azure App Service, eine Cosmos DB und eine Azure Functions App benötigt.
+  
+  Zur Installation siehe kurze Beschreibung in https://github.com/rbrands/MeetUpPlanner/wiki/Deployment
+  </dd>
