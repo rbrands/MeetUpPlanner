@@ -72,8 +72,16 @@
                     }
                 </div>
                 <div class="card-body">
-                    <h6 class="text-muted card-subtitle mb-2">@item.LevelDescription - @item.Tempo</h6>
-                    <h4 class="card-title">@item.Title</h4>
+                    <h6 class="text-muted card-subtitle mb-2">
+                        @item.LevelDescription - @item.Tempo
+                    </h6>
+                    <h4 class="card-title">
+                        @item.Title
+                        @if (item.IsCanceled)
+                        {
+                            <span class="badge badge-danger" title="Abgesagt">Abgesagt!</span>
+                        }
+                    </h4>
                     <p class="card-text">
                         @((MarkupString)item.Summary)
                         @if (KeywordCheck.IsAdmin && item.PublishDate.ToLocalTime().CompareTo(DateTime.Now) > 0)
@@ -86,7 +94,7 @@
                             {
                                 <span class="badge badge-danger" title="Mindestteilnehmerzahl">Min @item.MinRegistrationsCount</span>
                             }
-                        <small>: <b>@item.HostDisplayName</b>@item.ParticipantsDisplay</small>
+                        <small>: <b>@item.HostDisplayName(AppStateStore.ClientSettings.NameDisplayLength)</b>@item.ParticipantsDisplay(AppStateStore.ClientSettings.NameDisplayLength)</small>
                         <hr />
                         @if (item.CommentsList.Count() > 0)
                         {
@@ -95,7 +103,7 @@
                                 {
                                 <li>
                                     <small>
-                                        <em>@c.AuthorDisplayName (@c.DisplayDate): </em>@c.Comment
+                                        <em>@c.AuthorDisplayName(AppStateStore.ClientSettings.NameDisplayLength) (@c.DisplayDate): </em>@c.Comment
                                         @if (!String.IsNullOrEmpty(c.Link))
                                         {
                                             <text> </text><a title="@c.DisplayLinkTitle" target="_blank" href="@c.Link">@c.DisplayLinkTitle</a>
@@ -119,6 +127,7 @@
                             <button class="btn btn-sm btn-outline-secondary" title="Ändern" @onclick="@(() => EditCalendarItem(item.Id))"><span class="oi oi-pencil"></span></button>
                             <button class="btn btn-sm btn-outline-secondary" title="Kopieren" @onclick="@(() => ConfirmClone(item))"><span class="oi oi-fork"></span></button>
                             <button class="btn btn-sm btn-outline-secondary" title="Löschen" @onclick="@(() => DeleteCalendarItem(item))"><span class="oi oi-trash"></span></button>
+                            <button class="btn btn-sm btn-outline-secondary" title="Absagen" @onclick="@(() => CancelMeetUp(item))"><span class="oi oi-x"></span></button>
                         }
                         <button class="btn btn-sm btn-outline-secondary" title="Kommentieren" @onclick="@(() => ShowComment(item))"><span class="oi oi-comment-square"></span></button>
                         @if ((CheckIfUserIsHost(item) || KeywordCheck.IsAdmin) && item.ParticipantCounter > 1)
@@ -131,11 +140,11 @@
                         }
                         @if (CheckIfUserIsHost(item) || KeywordCheck.IsAdmin)
                         {
-                            <button class="btn btn-sm btn-outline-secondary" title="Andere an/abmelden" @onclick="@(() => RegisterOthers(item))"><span class="oi oi-transfer"></span></button> 
+                            <button class="btn btn-sm btn-outline-secondary" title="Andere an/abmelden" @onclick="@(() => RegisterOthers(item))"><span class="oi oi-transfer"></span></button>
                         }
                         @if (!CheckIfUserIsHost(item) && !ShowHistory())
                         {
-                            <button class="btn btn-sm btn-outline-secondary" title="Anmelden" hidden="@CheckIfUserIsAlreadyRegistered(item)" @onclick="@(() => Checkin(item.Id))">Anmelden</button>
+                            <button class="btn btn-sm btn-outline-secondary" title="Anmelden" hidden="@(CheckIfUserIsAlreadyRegistered(item) || item.IsCanceled)" @onclick="@(() => Checkin(item.Id))">Anmelden</button>
                             <button class="btn btn-sm btn-outline-secondary" title="Abmelden" hidden="@(!CheckIfUserIsAlreadyRegistered(item))" @onclick="@(() => Checkout(item))">Abmelden</button>
                         }
                     </div>
@@ -289,6 +298,15 @@
         if (IsConnected) await SendMessage();
         await ReadData();
     }
+    protected async Task CancelMeetUp(ExtendedCalendarItem calendarItem)
+    {
+        calendarItem.IsCanceled = !calendarItem.IsCanceled;
+        PrepareHttpClient();
+        // Save calendarItem server
+        await Http.PostAsJsonAsync<CalendarItem>($"Calendar/writecalendaritem", calendarItem);
+        if (IsConnected) await SendMessage();
+        //await ReadData();
+    }
 
     protected async Task Checkin(string itemId)
     {
@@ -316,7 +334,6 @@
             notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Angemeldet", Detail = "Du bist jetzt angemeldet. Falls du doch nicht dabei sein kannst, melde dich bitte wieder ab.", Duration = 4000 });
             // Read data again
             await ReadData();
-            StateHasChanged();
         }
         else
         {
@@ -337,7 +354,6 @@
         {
             if (IsConnected) await SendMessage();
             await ReadData();
-            StateHasChanged();
         }
         else
         {

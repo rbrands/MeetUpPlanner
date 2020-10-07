@@ -77,6 +77,7 @@ namespace MeetUpPlanner.Functions
             calendarItem.HostFirstName = participant.ParticipantFirstName;
             calendarItem.HostLastName = participant.ParticipantLastName;
             calendarItem.HostAdressInfo = participant.ParticipantAdressInfo;
+            calendarItem.WithoutHost = false;
             // Set TTL and write CalendarItem to database
             System.TimeSpan diffTime = calendarItem.StartDate.Subtract(DateTime.Now);
             calendarItem.TimeToLive = serverSettings.AutoDeleteAfterDays * 24 * 3600 + (int)diffTime.TotalSeconds;

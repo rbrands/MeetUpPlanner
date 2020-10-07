@@ -9,7 +9,7 @@
 @using Microsoft.AspNetCore.SignalR.Client
 
 
-<MeetUp CalendarItem="@meetup" HideParticipants="true" AdditionalText="Für die Teilnahme an der Ausfahrt bitte die Kontaktdaten unten eingeben, um damit die Nachverfolgbarkeit zu gewährleisten. Falls du doch nicht dabei sein kannst, kannst du dich über diese Seite auch wieder abmelden." />
+<MeetUp CalendarItem="@meetup" HideParticipants="true" NameDisplayLength="@AppStateStore.ClientSettings.NameDisplayLength" AdditionalText="Für die Teilnahme an der Ausfahrt bitte die Kontaktdaten unten eingeben, um damit die Nachverfolgbarkeit zu gewährleisten. Falls du doch nicht dabei sein kannst, kannst du dich über diese Seite auch wieder abmelden." />
 
 <EditForm OnValidSubmit="RegisterGuest" Model="@_guest">
     <DataAnnotationsValidator />
@@ -144,6 +144,11 @@
         Participant participant = meetup.FindParticipant(_guest.ParticipantFirstName, _guest.ParticipantLastName);
         if (null == participant)
         {
+            if (meetup.IsCanceled)
+            {
+                notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Warning, Summary = "Abgesagt", Detail = "Der Termin ist leider abgesagt.", Duration = 4000 });
+                return;
+            }
             PrepareHttpClient();
             HttpResponseMessage response = await Http.PostAsJsonAsync<Participant>($"Calendar/addguest", _guest);
             string responseBody = await response.Content.ReadAsStringAsync();

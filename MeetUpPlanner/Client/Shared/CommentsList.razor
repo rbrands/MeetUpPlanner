@@ -12,7 +12,7 @@
             }
         </p>
         <footer class="blockquote-footer">
-            <cite title="Autor">@c.AuthorDisplayName</cite> @c.DisplayDate
+            <cite title="Autor">@c.AuthorDisplayName(NameDisplayLength)</cite> @c.DisplayDate
             <button class="btn btn-sm btn-outline-secondary" disabled="@saveDisabled" @onclick="@(() => ConfirmDelete(c))"><span class="oi oi-trash" title="Kommentar löschen"></span></button>
         </footer>
     </blockquote>
@@ -23,6 +23,8 @@
     public IEnumerable<CalendarComment> Comments { get; set; }
     [Parameter]
     public EventCallback<CalendarComment> OnRemoveComment { get; set; }
+    [Parameter]
+    public int NameDisplayLength { get; set; } = 1;
     private Boolean saveDisabled = false;
     CalendarComment commentToBeDeleted;
 

@@ -75,11 +75,11 @@ namespace MeetUpPlanner.Functions
             IEnumerable<CalendarItem> rawListOfCalendarItems;
             if (null == tenant)
             { 
-                rawListOfCalendarItems = await _cosmosRepository.GetItems(d => (d.Tenant ?? String.Empty) == String.Empty);
+                rawListOfCalendarItems = await _cosmosRepository.GetItems(d => (d.Tenant ?? String.Empty) == String.Empty && !d.IsCanceled);
             }
             else
             {
-                rawListOfCalendarItems = await _cosmosRepository.GetItems(d => d.Tenant.Equals(tenant));
+                rawListOfCalendarItems = await _cosmosRepository.GetItems(d => d.Tenant.Equals(tenant) && !d.IsCanceled);
             }
             List<ExtendedCalendarItem> resultCalendarItems = new List<ExtendedCalendarItem>(50);
             // Filter the CalendarItems that are relevant
