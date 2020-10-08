@@ -92,6 +92,14 @@
         </small>
     </div>
     <div class="form-group">
+        <label for="helpLink">Link zur Online-Hilfe</label>
+        <InputText id="helpLink" aria-describedby="helpLinkHelp" class="form-control" @bind-Value="AppStateStore.ClientSettings.HelpLink" />
+        <small id="helpLinkHelp" class="form-text text-muted">
+            Hinweise zur Bedienung.
+        </small>
+    </div>
+
+    <div class="form-group">
         <label for="whiteboardMessage">Whiteboard Nachricht</label>
         <BlazoredTextEditor @ref="@htmlWhiteboardMessage" Placeholder="Nachricht für die Terminseite">
             <ToolbarContent>
