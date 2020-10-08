@@ -16,7 +16,9 @@ namespace MeetUpPlanner.Shared
         [JsonProperty(PropertyName = "furtherInfoTitle", NullValueHandling = NullValueHandling.Ignore)]
         public string FurtherInfoTitle { get; set; } = "Scuderia Südstadt";
         [JsonProperty(PropertyName = "logoLink", NullValueHandling = NullValueHandling.Ignore)]
-        public string LogoLink { get; set; } 
+        public string LogoLink { get; set; }
+        [JsonProperty(PropertyName = "helpLink", NullValueHandling = NullValueHandling.Ignore)]
+        public string HelpLink { get; set; } = "https://www.meetupplanner.de/userguide";
         [JsonProperty(PropertyName = "welcomeMessage", NullValueHandling = NullValueHandling.Ignore)]
         public string WelcomeMessage { get; set; }
         [JsonProperty(PropertyName = "whiteboardMessage", NullValueHandling = NullValueHandling.Ignore)]
