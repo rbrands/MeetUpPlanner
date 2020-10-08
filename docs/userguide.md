@@ -32,6 +32,12 @@ Beispiel: Wenn eine vereinsinterne Ausfahrt organisiert werden soll, könnte die
   <dd>
     Hat man eine Ausfahrt erstellt und ist damit glücklicher Guide, kann man sich nicht einfach abmelden. Wenn jetzt aber etwas dazwischen kommt und man nicht die ganze Ausfahrt löschen möchte, kann man sie über das Icon <img src="https://raw.githubusercontent.com/iconic/open-iconic/master/svg/share-boxed.svg" height="14"/> an einen Teilnehmer übertragen. Wahrscheinlich ist es eine gute Idee, vorher zu fragen, ob das ok ist...
   </dd>
+  
+  <dt>Ausfahrt absagen</dt>
+  <dd>
+    Manchmal muss man eine Ausfahrt auch absagen, wenn sich z.B. nicht genug Mitfahrer finden oder das Wetter einfach zu schlecht ist. Als Guider einer Ausfahrt oder als Admin kann man eine Ausfahrt zwar über den Button <img src="https://raw.githubusercontent.com/iconic/open-iconic/master/svg/trash.svg" height="14"/> löschen. Nach einer Rückfrage, ob man wirklich löschen will, wird die Ausfahrt komplett inkl. Anmeldungen und Kommentaren gelöscht. Es gibt dann keine Möglichkeit, die anderen entsprechend zu informieren. Der bessere Weg ist hier, eine Ausfahrt zunächst über <img src="https://raw.githubusercontent.com/iconic/open-iconic/master/svg/x.svg" height="14"/> als abgesagt zu markieren und vielleicht noch einen Kommentar einzufügen oder den Beschreibungstext zu ändern. Eine Anmeldung zur Ausfahrt ist dann nicht mehr möglich (Abmeldung schon). Jeder kann so vor der Ausfahrt so noch einmal nach schauen, ob die Ausfahrt auch stattfindet. Eine Ausfahrt, die als abgesagt markiert wurde, wird auch in der Liste zur Kontaktverfolgung nicht berücksichtigt.
+  </dd>
+  
 </dl>
 
 ## Weitere Features für Admins
