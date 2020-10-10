@@ -1,4 +1,8 @@
 # Änderungshistorie zum MeetUpPlanner
+*Demnächst*
+- Auf der Seite mit der Anzeige der Ausfahrten, gibt es jetzt einen Hilfe-Button, der standardmäßig auf https://www.meetupplanner.de/userguide verlinkt ist. Dieser Link kann in den Einstellungen geändert werden auf eine für den Club spezifische Seite.
+- Darstellung gefixed: Die Buttons auf der Kalendarseite sind jetzt gruppiert mit einem möglichen Zeilenumbruch.
+
 *7.10.2020*
 - Ausfahrten können als "Abgesagt!" markiert werden. Im Titel wird dann ein entsprechender "Badge" zur Kennzeichnung angezeigt und die Anmeldung ist nicht mehr möglich. Abmeldung schon. Ausfahrten die als abgesagt gekennzeichnet werden, werden in der Kontaktliste nicht berücksichtigt.
 - Es kann jetzt konfiguriert werden, wie die Nachnamen der Teilnehmer angezeigt werden: Die Namen können vollständig angezeigt werden oder der Nachname kann (wie bisher) abgekürzt auf die konfigurierte Länge (bisher war das immer '1') angezeigt werden.
