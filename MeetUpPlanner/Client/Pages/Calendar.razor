@@ -122,32 +122,36 @@
                     }
                 </div>
                 <div class="card-footer">
-                    <div class="btn-group">
-                        @if (CheckIfUserIsHost(item) || KeywordCheck.IsAdmin)
-                        {
-                            <button class="btn btn-sm btn-outline-secondary" title="Ändern" @onclick="@(() => EditCalendarItem(item.Id))"><span class="oi oi-pencil"></span></button>
-                            <button class="btn btn-sm btn-outline-secondary" title="Kopieren" @onclick="@(() => ConfirmClone(item))"><span class="oi oi-fork"></span></button>
-                            <button class="btn btn-sm btn-outline-secondary" title="Löschen" @onclick="@(() => DeleteCalendarItem(item))"><span class="oi oi-trash"></span></button>
-                            <button class="btn btn-sm btn-outline-secondary" title="Absagen" @onclick="@(() => CancelMeetUp(item))"><span class="oi oi-x"></span></button>
-                        }
-                        <button class="btn btn-sm btn-outline-secondary" title="Kommentieren" @onclick="@(() => ShowComment(item))"><span class="oi oi-comment-square"></span></button>
-                        @if ((CheckIfUserIsHost(item) || KeywordCheck.IsAdmin) && item.ParticipantCounter > 1)
-                        {
-                            <button class="btn btn-sm btn-outline-secondary" title="Neuer Guide" @onclick="@(() => AssignNewHost(item))"><span class="oi oi-share-boxed"></span></button>
-                        }
-                        @if (AppStateStore.ClientSettings.GuestsEnabled && !ShowHistory())
-                        {
-                            <button class="btn btn-sm btn-outline-secondary" title="Gast einladen" @onclick="@(() => Invite(item))"><span class="oi oi-external-link"></span></button>
-                        }
-                        @if (CheckIfUserIsHost(item) || KeywordCheck.IsAdmin)
-                        {
-                            <button class="btn btn-sm btn-outline-secondary" title="Andere an/abmelden" @onclick="@(() => RegisterOthers(item))"><span class="oi oi-transfer"></span></button>
-                        }
-                        @if (!CheckIfUserIsHost(item) && !ShowHistory())
-                        {
-                            <button class="btn btn-sm btn-outline-secondary" title="Anmelden" hidden="@(CheckIfUserIsAlreadyRegistered(item) || item.IsCanceled)" @onclick="@(() => Checkin(item.Id))">Anmelden</button>
-                            <button class="btn btn-sm btn-outline-secondary" title="Abmelden" hidden="@(!CheckIfUserIsAlreadyRegistered(item))" @onclick="@(() => Checkout(item))">Abmelden</button>
-                        }
+                    <div class="btn-toolbar" role="toolbar" aria-label="Aktionen zur Ausfahrt">
+                        <div class="btn-group mr-2" role="group" aria-label="Ändern">
+                            @if (CheckIfUserIsHost(item) || KeywordCheck.IsAdmin)
+                            {
+                                <button class="btn btn-sm btn-outline-secondary" title="Ändern" @onclick="@(() => EditCalendarItem(item.Id))"><span class="oi oi-pencil"></span></button>
+                                <button class="btn btn-sm btn-outline-secondary" title="Kopieren" @onclick="@(() => ConfirmClone(item))"><span class="oi oi-fork"></span></button>
+                                <button class="btn btn-sm btn-outline-secondary" title="Löschen" @onclick="@(() => DeleteCalendarItem(item))"><span class="oi oi-trash"></span></button>
+                                <button class="btn btn-sm btn-outline-secondary" title="Absagen" @onclick="@(() => CancelMeetUp(item))"><span class="oi oi-x"></span></button>
+                                @if (item.ParticipantCounter > 1)
+                                {
+                                    <button class="btn btn-sm btn-outline-secondary" title="Neuer Guide" @onclick="@(() => AssignNewHost(item))"><span class="oi oi-share-boxed"></span></button>
+                                }
+                            }
+                        </div>
+                        <div class="btn-group mr-2" role="group" aria-label="Teilnehmen">
+                            <button class="btn btn-sm btn-outline-secondary" title="Kommentieren" @onclick="@(() => ShowComment(item))"><span class="oi oi-comment-square"></span></button>
+                            @if (AppStateStore.ClientSettings.GuestsEnabled && !ShowHistory())
+                            {
+                                <button class="btn btn-sm btn-outline-secondary" title="Gast einladen" @onclick="@(() => Invite(item))"><span class="oi oi-external-link"></span></button>
+                            }
+                            @if (CheckIfUserIsHost(item) || KeywordCheck.IsAdmin)
+                            {
+                                <button class="btn btn-sm btn-outline-secondary" title="Andere an/abmelden" @onclick="@(() => RegisterOthers(item))"><span class="oi oi-transfer"></span></button>
+                            }
+                            @if (!CheckIfUserIsHost(item) && !ShowHistory())
+                            {
+                                <button class="btn btn-sm btn-outline-secondary" title="Anmelden" hidden="@(CheckIfUserIsAlreadyRegistered(item) || item.IsCanceled)" @onclick="@(() => Checkin(item.Id))">Anmelden</button>
+                                <button class="btn btn-sm btn-outline-secondary" title="Abmelden" hidden="@(!CheckIfUserIsAlreadyRegistered(item))" @onclick="@(() => Checkout(item))">Abmelden</button>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
