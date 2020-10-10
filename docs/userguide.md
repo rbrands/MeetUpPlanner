@@ -42,3 +42,19 @@ Beispiel: Wenn eine vereinsinterne Ausfahrt organisiert werden soll, könnte die
 </dl>
 
 ## Weitere Features für Admins
+
+<dl>
+  <dt>Begrüßungstexte konfigurieren</dt>
+  <dd>
+    Um Hinweise an die Nutzer zu geben, können in der Adminstration verschiedene Texte eingegeben und einfach geändert werden. Formatierung der Texte un das Einfügen von Links ist auch jeweils mögich. Folgende Texte können edititiert werden:
+    <ul>
+      <li>Welcome Nachricht: Text auf der Startseite inkl. optionalen Logo. Hier können direkt Hinweise darauf gegeben werden, wie der MeetUpPlanner genutzt werden sollte.</li>
+      <li>
+        Whiteboard Nachricht: Text der über der zentralen Seite mit den Ausfahrten steht. Auch hier können gut Hinweise auf die Regelungen um die Ausfahrten gegeben werden. Aber am besten kurz fassen, ansonsten müssen alle auf dem Handy immer erst nach unten scrollen, um die Ausfahrten zu sehen. Das kommt nicht so gut an ...
+      </li>
+      <li>
+        Nachricht für neue MeetUps: Dieser Text wird auf der Seite zur Anlage einer neuen Ausfahrt angezeigt. Also hier am besten ein kurzer Hinweis z.B. zur Gruppengröße oder andere Spielregeln.
+      </li>
+    </ul>
+  </dd>
+</dl>
