@@ -39,6 +39,11 @@ Beispiel: Wenn eine vereinsinterne Ausfahrt organisiert werden soll, könnte die
   Die Absage kann auch leicht wieder rückgängig gemacht werden - einfach noch einmal den Button <img src="https://raw.githubusercontent.com/iconic/open-iconic/master/svg/x.svg" height="14"/> drücken ...
   </dd>
   
+  <dt>Mindestteilnehmerzahl</dt>
+  <dd>
+    Man kann für eine Ausfahrt eine Mindestteilnehmeranzahl angeben. Diese wird dann als kleiner "Badge" bei der Teilnehmeranzahl angezeigt. Ansonsten hat das keine Auswirkungen, es wird also keine Ausfahrt automatisch abgesagt oder sogar gelöscht, wenn die Teilnehmeranzahl nicht erreicht wird. Es wird nur ein kleiner visueller "Anreiz" gesetzt.
+  </dd>
+  
 </dl>
 
 ## Weitere Features für Admins
