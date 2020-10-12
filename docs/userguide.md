@@ -51,7 +51,7 @@ Beispiel: Wenn eine vereinsinterne Ausfahrt organisiert werden soll, könnte die
 <dl>
   <dt>Begrüßungstexte konfigurieren</dt>
   <dd>
-    Um Hinweise an die Nutzer zu geben, können in der Adminstration verschiedene Texte eingegeben und einfach geändert werden. Formatierung der Texte un das Einfügen von Links ist auch jeweils mögich. Folgende Texte können edititiert werden:
+    Um Hinweise an die Nutzer zu geben, können in der Adminstration verschiedene Texte eingegeben und einfach geändert werden. Formatierung der Texte und das Einfügen von Links ist auch jeweils möglich. Folgende Texte können edititiert werden:
     <ul>
       <li>Welcome Nachricht: Text auf der Startseite inkl. optionalen Logo. Hier können direkt Hinweise darauf gegeben werden, wie der MeetUpPlanner genutzt werden sollte.</li>
       <li>
@@ -77,5 +77,11 @@ Beispiel: Wenn eine vereinsinterne Ausfahrt organisiert werden soll, könnte die
         Normalerweise haben Termine immer einen "Guide". Als Admin kann man aber auch einen Termin "ohne Guide" einrichten. Auch das ist gedacht vor allem für wöchentliche Termine, die unabhängig von einer Person stattfinden. 
       </li>
     </ul>
+  </dd>
+  
+  <dt>Einstellung "Sollen nur Admins MeetUps anlegen dürfen?"</dt>
+  <dd>
+    Diese Einstellung in der Administration regelt, wer MeetUps anlegen darf. Wird dies auf Admins eingeschränkt, können Nutzer, die nur das "normale" Schlüsselwort eingeben,
+    nur alle MeetUps sehen und sich an- und abmelden und auch kommentieren. Die Admins erstellen die MeetUps. Dies ist für Clubs gedacht, die nur einige Ausfahrten kontrolliert zu festen Termine anbieten wollen.
   </dd>
 </dl>
