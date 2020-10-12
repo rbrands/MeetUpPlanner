@@ -185,6 +185,13 @@
             Falls die Ausfahrt "privat" sein soll, hier ein Schlüsselwort festlegen und den potentiellen Mitfahrern separat mitteilen.
         </small>
     </div>
+    <div class="form-group">
+        <label for="guestScope">"Scope" für Gäste</label>
+        <InputText id="guestScope" aria-describedby="guestScopeHelp" class="form-control" @bind-Value="meetup.GuestScope" autocomplete="on" placeholder="Kürzel, das im Gäste-Link verwendet wird." />
+        <small id="guestScopeHelp" class="form-text text-muted">
+            Über den "Scope" können Ausfahrten für Gäste zusammen gefasst werden und sind dann über einen Link der Form ".../guests/scope" erreichbar.
+        </small>
+    </div>
     <ValidationSummary />
     <button type="submit" id="BtnSave" disabled="@saveDisabled" class="btn btn-primary">Termin speichern ...</button>
     <button type="reset" id="BtnCancel" class="btn btn-secondary" @onclick="@(() => OnCancel())">Zurück ohne Speichern</button>
