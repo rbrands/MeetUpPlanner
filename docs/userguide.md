@@ -57,4 +57,20 @@ Beispiel: Wenn eine vereinsinterne Ausfahrt organisiert werden soll, könnte die
       </li>
     </ul>
   </dd>
+  
+  <dt>Regelmäßige Termine</dt>
+  <dd>
+    Durch die Kombination von mehreren Features wird die Erstellung von regelmäßigen, wöchentlichen Terminen unterstützt.
+    <ul>
+      <li>
+        Es gibt eine entsprechende Checkbox für Termine, um sie als wöchentlich wiederkehrend zu kennzeichnen. Für jeden Tag werden dann zentral alle Termine geprüft und die als wiederkehrend gekennzeichneten werden in die Folgewoche kommentiert, natürlich ohne Anmeldungen und ohne Kommentare.
+      </li>
+      <li>
+        Es kann ein "Veröffentlichungsdatum" für Termine angegeben werden. Damit lääst sich steuern wann die Termine für alle sichtbar sind. Beispiel: Man richtet eine wöchentliche Dienstagsausfahrt ein und trägt als Veröffentlichungsdatum den Mittwoch ein. Dann sehen alle immer nur die aktuelle Ausfahrt und werden nicht von zu vielen Terminen irritiert ... 
+      </li>
+      <li>
+        Normalerweise haben Termine immer einen "Guide". Als Admin kann man aber auch einen Termin "ohne Guide" einrichten. Auch das ist gedacht vor allem für wöchentliche Termine, die unabhängig von einer Person stattfinden. 
+      </li>
+    </ul>
+  </dd>
 </dl>
