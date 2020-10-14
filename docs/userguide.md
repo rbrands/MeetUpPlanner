@@ -63,12 +63,17 @@ Beispiel: Wenn eine vereinsinterne Ausfahrt organisiert werden soll, könnte die
     </ul>
   </dd>
   
+  <dt>Zusätzliche Teilnehmer</dt>
+  <dd>
+    Admins können auf zwei Arten zusätzliche Teilnehmer anmelden bzw. einladen: Zum einen können Admins eine Ausfahrt "überbuchen", d.h. sie können andere Teilnehmer hinzufügen auch wenn die maximale Teilnehmeranzahl überschritten ist. Dahinter steckt die Idee, dass es im Sinne der Nachverfolgbarkeit besser ist, jemanden zu registrieren auch wenn die Ausfahrt eigentlich voll ist, als sie/ihn "stillschweigend" mitfahren zu lassen.
+  </dd>
+  
   <dt>Regelmäßige Termine</dt>
   <dd>
     Durch die Kombination von mehreren Features wird die Erstellung von regelmäßigen, wöchentlichen Terminen unterstützt.
     <ul>
       <li>
-        Es gibt eine entsprechende Checkbox für Termine, um sie als wöchentlich wiederkehrend zu kennzeichnen. Für jeden Tag werden dann zentral alle Termine geprüft und die als wiederkehrend gekennzeichneten werden in die Folgewoche kopiert, natürlich ohne Anmeldungen und ohne Kommentare.
+        Es gibt eine entsprechende Checkbox für Termine, um sie als wöchentlich wiederkehrend zu kennzeichnen. Für jeden Tag werden dann zentral alle Termine geprüft und die als wiederkehrend gekennzeichneten werden in die Folgewoche kopiert, natürlich ohne Anmeldungen und ohne Kommentare. Außerdem können Admins für Ausfahrten die max. Teilnehmeranzahl bis zu einem separat konfigurierten Max.-Wert hochsetzen. Dies ist gedacht für ggf. besondere Vereinsausfahrten oder ähnliches.
       </li>
       <li>
         Es kann ein "Veröffentlichungsdatum" für Termine angegeben werden. Damit lässt sich steuern, wann die Termine für alle sichtbar sind. Beispiel: Man richtet eine wöchentliche Dienstagsausfahrt ein und trägt als Veröffentlichungsdatum den Mittwoch ein. Dann sehen alle immer nur die aktuelle Ausfahrt und werden nicht von zu vielen Terminen irritiert ... 
