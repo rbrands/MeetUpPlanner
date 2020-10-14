@@ -89,4 +89,9 @@ Beispiel: Wenn eine vereinsinterne Ausfahrt organisiert werden soll, könnte die
     Diese Einstellung in der Administration regelt, wer MeetUps anlegen darf. Wird dies auf Admins eingeschränkt, können Nutzer, die nur das "normale" Schlüsselwort eingeben,
     nur alle MeetUps sehen und sich an- und abmelden und auch kommentieren. Die Admins erstellen die MeetUps. Dies ist für Clubs gedacht, die nur einige Ausfahrten kontrolliert zu festen Termine anbieten wollen.
   </dd>
+  
+  <dt>Infoboxen</dt>
+  <dd>
+    Admins können sog. "Infoboxen" anlegen, die ähnlich wie Termine angezeigt werden können. So können zusätzliche Infos zur Bedienung, Wetteraussichten usw. angezeigt werden. Es lässt sich einstellen, ob Kommentare zugelassen sind und wie lange diese gespeichert werden sollen. Auf diese Weite kann ein "Schwarzes Brett" umgesetzt werden, über das die Nutzer sich austauschen können.
+  </dd>
 </dl>
