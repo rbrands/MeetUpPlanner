@@ -1,0 +1,258 @@
+﻿@using MeetUpPlanner.Shared
+@inject DialogService dialogService
+@inject HttpClient Http
+@inject AppState AppStateStore
+@inject NavigationManager NavigationManager
+@inject DialogService dialogService
+
+
+<div class="card">
+    <div class="card-header">
+        <em>
+            @CalendarItem.GetStartDateAsString() - @CalendarItem.Place
+            @if (!String.IsNullOrEmpty(CalendarItem.DirectionsLink))
+            {
+                <a href="@CalendarItem.DirectionsLink" class="btn btn-outline-success btn-sm" role="button" target="_blank" tite="Startort"><span class="oi oi-map-marker"></span></a>
+            }
+        </em>
+        @if (!String.IsNullOrEmpty(CalendarItem.PrivateKeyword))
+        {
+            <span class="badge badge-danger"><span class="oi oi-key" title="Private Ausfahrt"></span> @CalendarItem.PrivateKeyword</span>
+        }
+        <span class="badge badge-warning" hidden="@(!CalendarItem.IsCross)">Cross</span>
+        @{
+            string badge = GetCalendarBadge(CalendarItem);
+            if (!String.IsNullOrEmpty(badge))
+            {
+                <span class="badge badge-info">@badge</span>
+            }
+        }
+    </div>
+    <div class="card-body">
+        <h6 class="text-muted card-subtitle mb-2">
+            @CalendarItem.LevelDescription - @CalendarItem.Tempo
+        </h6>
+        <h4 class="card-title">
+            @CalendarItem.Title
+            @if (CalendarItem.IsCanceled)
+            {
+                <span class="badge badge-danger" title="Abgesagt">Abgesagt!</span>
+            }
+        </h4>
+        <p class="card-text">
+            @((MarkupString)CalendarItem.Summary)
+            @if (IsAdmin && CalendarItem.PublishDate.ToLocalTime().CompareTo(DateTime.Now) > 0)
+            {
+                <small><em>Veröffentlichung @CalendarItem.GetPublishDateAsString()</em></small>
+            }
+            @if (!IsGuest && !String.IsNullOrEmpty(CalendarItem.GuestScope))
+            {
+                <div>
+                    <small><em>Gäste-Link <a href="/guests/@CalendarItem.GuestScope" target="_blank">/guests/@CalendarItem.GuestScope</a></em></small>
+                </div>
+            }
+            <hr />
+            @if (!IsGuest)
+            {
+                <small>Dabei (@CalendarItem.ParticipantCounter von @CalendarItem.MaxRegistrationsCount)</small>
+                @if (CalendarItem.ParticipantCounter < CalendarItem.MinRegistrationsCount)
+                {
+                    <span class="badge badge-danger" title="Mindestteilnehmerzahl">Min @CalendarItem.MinRegistrationsCount</span>
+                }
+                <small>: <b>@CalendarItem.HostDisplayName(AppStateStore.ClientSettings.NameDisplayLength)</b>@CalendarItem.ParticipantsDisplay(AppStateStore.ClientSettings.NameDisplayLength)</small>
+            }
+            else
+            {
+                <small>@(CalendarItem.MaxRegistrationsCount - CalendarItem.ParticipantCounter) von @CalendarItem.MaxRegistrationsCount Plätzen noch frei.</small>
+                @if (CalendarItem.ParticipantCounter < CalendarItem.MinRegistrationsCount)
+                {
+                    <span class="badge badge-danger" title="Mindestteilnehmerzahl">Min @CalendarItem.MinRegistrationsCount</span>
+                }
+            }
+            <hr />
+            @if (!IsGuest)
+            {
+                @if (CalendarItem.CommentsList.Count() > 0)
+                {
+                    <ul class="list-unstyled">
+                        @foreach (CalendarComment c in CalendarItem.CommentsList)
+                        {
+                            <li>
+                                <small>
+                                    <em>@c.AuthorDisplayName(AppStateStore.ClientSettings.NameDisplayLength) (@c.DisplayDate): </em>@c.Comment
+                                    @if (!String.IsNullOrEmpty(c.Link))
+                                    {
+                                        <text> </text><a title="@c.DisplayLinkTitle" target="_blank" href="@c.Link">@c.DisplayLinkTitle</a>
+                                    }
+                                </small>
+                            </li>
+                        }
+                    </ul>
+                    <hr />
+                }
+            }
+        </p>
+    </div>
+    <div class="card-footer">
+        <div class="btn-toolbar" role="toolbar" aria-label="Aktionen zur Ausfahrt">
+            <div class="btn-group mr-2" role="group" aria-label="Ändern">
+                @if (CheckIfUserIsHost(CalendarItem) || IsAdmin)
+                {
+                    <button class="btn btn-sm btn-outline-secondary" title="Ändern" @onclick="@(() => EditCalendarItem(CalendarItem.Id))"><span class="oi oi-pencil"></span></button>
+                    <button class="btn btn-sm btn-outline-secondary" title="Kopieren" @onclick="@(() => ConfirmClone(CalendarItem))"><span class="oi oi-fork"></span></button>
+                    <button class="btn btn-sm btn-outline-secondary" title="Löschen" @onclick="@(() => DeleteCalendarItem(CalendarItem))"><span class="oi oi-trash"></span></button>
+                    <button class="btn btn-sm btn-outline-secondary" title="Absagen" @onclick="OnCancelCallback"><span class="oi oi-x"></span></button>
+                    @if (CalendarItem.ParticipantCounter > 1)
+                    {
+                        <button class="btn btn-sm btn-outline-secondary" title="Neuer Guide" @onclick="@(() => AssignNewHost(CalendarItem))"><span class="oi oi-share-boxed"></span></button>
+                    }
+                }
+            </div>
+            <div class="btn-group mr-2" role="group" aria-label="Teilnehmen">
+                @if (!IsGuest)
+                { 
+                    <button class="btn btn-sm btn-outline-secondary" title="Kommentieren" @onclick="@(() => ShowComment(CalendarItem))"><span class="oi oi-comment-square"></span></button>
+                }
+                @if (AppStateStore.ClientSettings.GuestsEnabled && !ShowHistory && !IsGuest)
+                {
+                    <button class="btn btn-sm btn-outline-secondary" title="Gast einladen" @onclick="@(() => Invite(CalendarItem))"><span class="oi oi-external-link"></span></button>
+                }
+                @if (CheckIfUserIsHost(CalendarItem) || IsAdmin)
+                {
+                    <button class="btn btn-sm btn-outline-secondary" title="Andere an/abmelden" @onclick="@(() => RegisterOthers(CalendarItem))"><span class="oi oi-transfer"></span></button>
+                }
+                @if (!CheckIfUserIsHost(CalendarItem) && !ShowHistory)
+                {
+                    <button class="btn btn-sm btn-outline-secondary" title="Anmelden" hidden="@(CheckIfUserIsAlreadyRegistered(CalendarItem) || CalendarItem.IsCanceled)" @onclick="OnCheckinCallback">Anmelden</button>
+                    <button class="btn btn-sm btn-outline-secondary" title="Abmelden" hidden="@(!CheckIfUserIsAlreadyRegistered(CalendarItem))" @onclick="OnCheckoutCallback">Abmelden</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public String FirstName { get; set; }
+    [Parameter]
+    public String LastName { get; set; }
+    [Parameter]
+    public ExtendedCalendarItem CalendarItem { get; set; } = new ExtendedCalendarItem();
+    [Parameter]
+    public Boolean IsAdmin { get; set; } = false;
+    [Parameter]
+    public Boolean IsGuest { get; set; } = false;
+    [Parameter]
+    public Boolean ShowHistory { get; set; } = false;
+    [Parameter]
+    public EventCallback OnChangeCallback { get; set; }
+    [Parameter]
+    public EventCallback OnCancelCallback { get; set; }
+    [Parameter]
+    public EventCallback OnCloneCallback { get; set; }
+    [Parameter]
+    public EventCallback OnCheckinCallback { get; set; }
+    [Parameter]
+    public EventCallback OnCheckoutCallback { get; set; }
+
+    private ExtendedCalendarItem calendarItemToBeCloned = null;
+
+
+    protected bool CheckIfUserIsAlreadyRegistered(ExtendedCalendarItem calendarItem)
+    {
+        bool alreadyRegistered = calendarItem.FindParticipant(FirstName, LastName) != null;
+        return alreadyRegistered;
+    }
+    protected bool CheckIfUserIsHost(ExtendedCalendarItem calendarItem)
+    {
+        bool isHost = !calendarItem.WithoutHost && (calendarItem.HostFirstName.Equals(FirstName) && calendarItem.HostLastName.Equals(LastName));
+        return isHost;
+    }
+
+    protected void EditCalendarItem(string itemId)
+    {
+        NavigationManager.NavigateTo($"/NewMeetUp/{itemId}");
+    }
+
+    protected void ConfirmClone(ExtendedCalendarItem c)
+    {
+        calendarItemToBeCloned = c;
+        dialogService.Confirm("Termin für nächste Woche kopieren?", "Termin kopieren", new ConfirmOptions() { OkButtonText = "Ja", CancelButtonText = "Nein" });
+    }
+
+    protected async void CloneConfirmed(dynamic result)
+    {
+        bool? removeIt = result;
+        if (null != removeIt && null != calendarItemToBeCloned)
+        {
+            if ((bool)removeIt)
+            {
+                await CloneCalendarItem(calendarItemToBeCloned);
+            }
+        }
+        calendarItemToBeCloned = null;
+    }
+
+
+    protected async Task CloneCalendarItem(ExtendedCalendarItem calendarItem)
+    {
+        await OnCloneCallback.InvokeAsync(null);
+    }
+
+    protected void ShowComment(ExtendedCalendarItem calendarItem)
+    {
+        NavigationManager.NavigateTo($"/Comment/{calendarItem.Id}");
+    }
+    protected void Invite(ExtendedCalendarItem calendarItem)
+    {
+        NavigationManager.NavigateTo($"/Invite/{calendarItem.Id}");
+    }
+    protected void RegisterOthers(ExtendedCalendarItem calendarItem)
+    {
+        NavigationManager.NavigateTo($"/RegisterOthers/{calendarItem.Id}");
+    }
+    protected void DeleteCalendarItem(ExtendedCalendarItem calendarItem)
+    {
+        NavigationManager.NavigateTo($"/ConfirmDelete/{calendarItem.Id}");
+    }
+    protected void AssignNewHost(ExtendedCalendarItem calendarItem)
+    {
+        NavigationManager.NavigateTo($"/AssignNewHost/{calendarItem.Id}");
+    }
+
+
+    private string GetCalendarBadge(ExtendedCalendarItem calendarItem)
+    {
+        string badge = null;
+        DayOfWeek weekday = calendarItem.StartDate.DayOfWeek;
+        switch (weekday)
+        {
+            case DayOfWeek.Monday:
+                badge = AppStateStore.ClientSettings.MondayBadge;
+                break;
+            case DayOfWeek.Tuesday:
+                badge = AppStateStore.ClientSettings.TuesdayBadge;
+                break;
+            case DayOfWeek.Wednesday:
+                badge = AppStateStore.ClientSettings.WednesdayBadge;
+                break;
+            case DayOfWeek.Thursday:
+                badge = AppStateStore.ClientSettings.ThursdayBadge;
+                break;
+            case DayOfWeek.Friday:
+                badge = AppStateStore.ClientSettings.FridayBadge;
+                break;
+            case DayOfWeek.Saturday:
+                badge = AppStateStore.ClientSettings.SaturdayBadge;
+                break;
+            case DayOfWeek.Sunday:
+                badge = AppStateStore.ClientSettings.SundayBadge;
+                break;
+        }
+
+
+        return badge;
+    }
+
+
+}

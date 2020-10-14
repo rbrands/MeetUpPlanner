@@ -52,7 +52,7 @@ namespace MeetUpPlanner.Shared
         [JsonProperty(PropertyName = "isCanceled")]
         public Boolean IsCanceled { get; set; } = false;
         [JsonProperty(PropertyName = "guestScope", NullValueHandling = NullValueHandling.Ignore), MaxLength(20, ErrorMessage = "Gast-Scope zu lang.")]
-        [RegularExpression("[a-z0-9-_]*", ErrorMessage = "Bitte nur Kleinbuchstaben und Zahlen für Gast-Scope.")] 
+        [RegularExpression("[a-zA-Z0-9-_]*", ErrorMessage = "Bitte nur Buchstaben und Zahlen für Gast-Scope.")] 
         public string GuestScope { get; set; }
         /// <summary>
         /// Constructor with some suggestions about start-time: Schedule for the next day. On Saturdays and Sundays 

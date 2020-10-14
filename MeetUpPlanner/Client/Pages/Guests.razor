@@ -1,4 +1,4 @@
-﻿@page "/register/{ItemId}"
+﻿@page "/guests/{Scope}"
 @inject HttpClient Http
 @inject AppState AppStateStore
 @using MeetUpPlanner.Shared
@@ -8,11 +8,22 @@
 @implements IDisposable
 @using Newtonsoft.Json
 @using Microsoft.AspNetCore.SignalR.Client
+<h1>Ausfahrten - @Scope</h1>
 
+<div class="row">
+    @foreach (ExtendedCalendarItem item in calendarItems)
+    {
+        <div class="col-12 col-sm-6 col-lg-4 col-xl-3 mt-2">
+            <MeetUpCard FirstName="@_permAppState.FirstName" LastName="@_permAppState.LastName" 
+                        CalendarItem="@item" IsGuest="true" 
+                        OnCheckinCallback="@(e => RegisterGuest(item))"
+                        OnCheckoutCallback="@(e => RegisterGuest(item))">
+            </MeetUpCard>
+        </div>
+    }
+</div>
 
-<MeetUp CalendarItem="@meetup" HideParticipants="true" NameDisplayLength="@AppStateStore.ClientSettings.NameDisplayLength" AdditionalText="Für die Teilnahme an der Ausfahrt bitte die Kontaktdaten unten eingeben, um damit die Nachverfolgbarkeit zu gewährleisten. Falls du doch nicht dabei sein kannst, kannst du dich über diese Seite auch wieder abmelden." />
-
-<EditForm OnValidSubmit="RegisterGuest" Model="@_guest">
+<EditForm Model="@_guest">
     <DataAnnotationsValidator />
     <ValidationSummary />
     <h5>Kontaktdaten</h5>
@@ -53,19 +64,18 @@
             </label>
         </div>
     </div>
-    <button type="submit" id="BtnSaveKeyword" class="btn btn-primary" title="An/Abmelden" disabled="@(!UsageRightsAccepted)">@_buttonTitle</button>
 </EditForm>
 
 
 @code {
     [Parameter]
-    public string ItemId { get; set; }
-    ExtendedCalendarItem meetup = new ExtendedCalendarItem();
-    Boolean _usageRightsAccepted = false;
+    public string Scope { get; set; }
     Participant _guest = new Participant();
     const string PERM_STORAGE = "permGuestState";
-    string _buttonTitle = "An/Abmelden";
+    PermAppState _permAppState = new PermAppState();
+    Boolean _usageRightsAccepted = false;
     private HubConnection hubConnection;
+    private IList<ExtendedCalendarItem> calendarItems = new List<ExtendedCalendarItem>();
 
 
     Boolean UsageRightsAccepted
@@ -80,19 +90,17 @@
         }
     }
 
-
-
     protected override async Task OnInitializedAsync()
     {
         AppStateStore.ClientSettings = new ClientSettings();
         if (await LocalStorage.ContainKeyAsync(PERM_STORAGE))
         {
             // Read the user data if available from browser storage
-            PermAppState permAppState = await LocalStorage.GetItemAsync<PermAppState>(PERM_STORAGE);
+            _permAppState = await LocalStorage.GetItemAsync<PermAppState>(PERM_STORAGE);
             // Copy the settings needed to application state
-            _guest.ParticipantFirstName = permAppState.FirstName;
-            _guest.ParticipantLastName = permAppState.LastName;
-            _guest.ParticipantAdressInfo = permAppState.PhoneMail;
+            _guest.ParticipantFirstName = _permAppState.FirstName;
+            _guest.ParticipantLastName = _permAppState.LastName;
+            _guest.ParticipantAdressInfo = _permAppState.PhoneMail;
         }
         // Get client settings from server
         AppStateStore.Tenant = TenantConfig.GetTenant(NavigationManager.BaseUri);
@@ -107,21 +115,24 @@
 
         AppStateStore.NotifyStateChanged();
     }
-    private async Task ReadData()
+
+
+    protected async Task ReadData()
     {
-        // Get referenced calendar item
-        meetup = await Http.GetFromJsonAsync<ExtendedCalendarItem>($"Calendar/extendedcalendaritemforguest?itemId={ItemId}");
-        if (meetup.StartDate.CompareTo(DateTime.Now.AddHours(-13)) < 0)
-        {
-            // MeetUp too old ==> navigate to start page
-            NavigationManager.NavigateTo("/");
-        }
-        if (!String.IsNullOrEmpty(_guest.ParticipantLastName))
-        {
-            _buttonTitle = (null != meetup.FindParticipant(_guest.ParticipantFirstName, _guest.ParticipantLastName)) ? "Abmelden" : "Anmelden";
-        }
+        // Get list of calendar items
+        PrepareHttpClient();
+        calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"calendar/scopedcalendaritems?scope={Scope}");
+        StateHasChanged();
     }
-    private async Task RegisterGuest()
+    private void CallReadData()
+    {
+        Task.Run(async () =>
+        {
+            await ReadData();
+        });
+    }
+
+    private async Task RegisterGuest(ExtendedCalendarItem calendarItem)
     {
         _guest.ParticipantFirstName = _guest.ParticipantFirstName.Trim();
         _guest.ParticipantLastName = _guest.ParticipantLastName.Trim();
@@ -129,23 +140,23 @@
         if (AppStateStore.SaveSettings)
         {
             // Copy from app state to permanent storage
-            PermAppState permAppState = new PermAppState();
-            permAppState.FirstName = _guest.ParticipantFirstName;
-            permAppState.LastName = _guest.ParticipantLastName;
-            permAppState.PhoneMail = _guest.ParticipantAdressInfo;
-            await LocalStorage.SetItemAsync<PermAppState>(PERM_STORAGE, permAppState);
+            _permAppState = new PermAppState();
+            _permAppState.FirstName = _guest.ParticipantFirstName;
+            _permAppState.LastName = _guest.ParticipantLastName;
+            _permAppState.PhoneMail = _guest.ParticipantAdressInfo;
+            await LocalStorage.SetItemAsync<PermAppState>(PERM_STORAGE, _permAppState);
         }
         else
         {
             await LocalStorage.RemoveItemAsync(PERM_STORAGE);
         }
         _guest.IsGuest = !AppStateStore.Tenant.GuestNameShown;
-        _guest.CalendarItemId = ItemId;
+        _guest.CalendarItemId = calendarItem.Id;
         BackendResult result;
-        Participant participant = meetup.FindParticipant(_guest.ParticipantFirstName, _guest.ParticipantLastName);
+        Participant participant = calendarItem.FindParticipant(_guest.ParticipantFirstName, _guest.ParticipantLastName);
         if (null == participant)
         {
-            if (meetup.IsCanceled)
+            if (calendarItem.IsCanceled)
             {
                 notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Warning, Summary = "Abgesagt", Detail = "Der Termin ist leider abgesagt.", Duration = 4000 });
                 return;
@@ -184,6 +195,8 @@
         }
 
     }
+
+
     private void PrepareHttpClient()
     {
         if (null != AppStateStore.Tenant)

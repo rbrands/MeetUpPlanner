@@ -48,6 +48,13 @@ namespace MeetUpPlanner.Server.Controllers
             IEnumerable<ExtendedCalendarItem> calendarItems = await _meetUpFunctions.GetExtendedCalendarItemsForDate(tenant, keyword, privatekeywords, requesteddate);
             return Ok(calendarItems);
         }
+        [HttpGet("scopedcalendaritems")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetScopedCalendarItems([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromQuery] string scope)
+        {
+            IEnumerable<ExtendedCalendarItem> calendarItems = await _meetUpFunctions.GetScopedCalendarItems(tenant, scope);
+            return Ok(calendarItems);
+        }
         [HttpGet("calendaritem")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetCalendarItem([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromQuery] string itemId)
