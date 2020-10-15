@@ -1,5 +1,6 @@
 # Änderungshistorie zum MeetUpPlanner
 *Demnächst*
+- Das "WTT"-Feature: Für Gäste gab es bisher nur die Möglichkeit für genau eine Ausfahrt einen Link zu teilen. Jetzt gibt es eine weitere Möglichkeit: Für Ausfahrten kann optional ein "Scope" wie z.B. "WTT" angegeben werden. Über den Link ../guests/WTT können dann für Gäste alle Ausfahrten angezeigt werden, die so gekennzeichnet wurde. Dieser Link kann dann den potentiellen Mitfahrern z.B. über einen Strava-Club bereit gestellt werden, ohne immer einen neuen Link generieren zu müssen.
 - Auf der Seite mit der Anzeige der Ausfahrten, gibt es jetzt einen Hilfe-Button, der standardmäßig auf https://www.meetupplanner.de/userguide verlinkt ist. Dieser Link kann in den Einstellungen geändert werden auf eine für den Club spezifische Seite.
 - Darstellung gefixed: Die Buttons auf der Kalendarseite sind jetzt gruppiert mit einem möglichen Zeilenumbruch.
 
