@@ -8,26 +8,9 @@
 @implements IDisposable
 @using Newtonsoft.Json
 @using Microsoft.AspNetCore.SignalR.Client
-<h1>Ausfahrten - @Scope</h1>
-
-<div class="row">
-    @foreach (ExtendedCalendarItem item in calendarItems)
-    {
-        <div class="col-12 col-sm-6 col-lg-4 col-xl-3 mt-2">
-            <MeetUpCard FirstName="@_permAppState.FirstName" LastName="@_permAppState.LastName"
-                        CalendarItem="@item"
-                        IsGuest="true"
-                        EnableCheckInCheckOut="true"
-                        IsSubmitRegisterButton="true"
-                        OnCheckinCallback="@(e => RegisterGuest(item))"
-                        OnCheckoutCallback="@(e => RegisterGuest(item))">
-            </MeetUpCard>
-        </div>
-    }
-</div>
-
-<h5>Kontaktdaten</h5>
-<EditForm Model="@_guest">
+<h1>Gäste Willkommen - @Scope</h1>
+<h4>Kontaktdaten</h4>
+<EditForm EditContext="@_editContext">
     <DataAnnotationsValidator />
     <ValidationSummary />
     <div class="form-row">
@@ -39,15 +22,15 @@
     </div>
     <div class="form-row">
         <div class="form-group col-md-4">
-            <InputText id="firstname" aria-describedby="nameHelp" class="form-control" @bind-Value="_guest.ParticipantFirstName" autocomplete="on" placeholder="Vorname" title="Vorname" />
+            <InputText id="firstname" aria-describedby="nameHelp" class="form-control" @bind-Value="@_guest.ParticipantFirstName" autocomplete="on" placeholder="Vorname" title="Vorname" />
         </div>
         <div class="form-group col-md-4">
-            <InputText id="lastName" area-describedby="nameHelp" class="form-control" @bind-Value="_guest.ParticipantLastName" autocomplete="on" placeholder="Nachname" title="Nachname" />
+            <InputText id="lastName" area-describedby="nameHelp" class="form-control" @bind-Value="@_guest.ParticipantLastName" autocomplete="on" placeholder="Nachname" title="Nachname" />
         </div>
     </div>
     <div class="form-group">
         <label for="Phone">Telefon/Mail</label>
-        <InputText id="Phone" aria-describedby="phoneHelp" class="form-control" @bind-Value="_guest.ParticipantAdressInfo" autocomplete="on" placeholder="Telefon-Nr. oder Mail-Adresse" title="Bitte Telefonnummer oder Mailadresse angeben." />
+        <InputText id="Phone" aria-describedby="phoneHelp" class="form-control" @bind-Value="@_guest.ParticipantAdressInfo" autocomplete="on" placeholder="Telefon-Nr. oder Mail-Adresse" title="Bitte Telefonnummer oder Mailadresse angeben." />
         <small id="phoneHelp" class="form-text text-muted">
             Für die Nachverfolgbarkeit hier bitte deine Mail-Adresse oder Telefonnummer eingeben. Diese Info wird nicht in der allgemeinen Teilnehmerliste zu Ausfahrten angezeigt.
         </small>
@@ -69,6 +52,24 @@
     </div>
 </EditForm>
 
+<h4>Aktuelle Ausfahrten</h4>
+<div class="row">
+    @foreach (ExtendedCalendarItem item in calendarItems)
+    {
+        <div class="col-12 col-sm-12 col-lg-6 col-xl-4 mt-2">
+            <MeetUpCard FirstName="@_permAppState.FirstName" LastName="@_permAppState.LastName"
+                        CalendarItem="@item"
+                        IsGuest="true"
+                        EnableCheckInCheckOut="true"
+                        OnCheckinCallback="@(e => RegisterGuest(item))"
+                        OnCheckoutCallback="@(e => RegisterGuest(item))">
+            </MeetUpCard>
+        </div>
+    }
+</div>
+<div class="alert alert-info" role="alert" hidden="@(!_noMeetUps)">
+    @_noMeetUpsMessage
+</div>
 
 @code {
     [Parameter]
@@ -79,6 +80,9 @@
     Boolean _usageRightsAccepted = false;
     private HubConnection hubConnection;
     private IList<ExtendedCalendarItem> calendarItems = new List<ExtendedCalendarItem>();
+    private EditContext _editContext;
+    private Boolean _noMeetUps = false;
+    private string _noMeetUpsMessage;
 
     Boolean UsageRightsAccepted
     {
@@ -116,6 +120,13 @@
         await hubConnection.StartAsync();
         AppStateStore.NotifyStateChanged();
     }
+    protected override void OnInitialized()
+    {
+        _editContext = new EditContext(_guest);
+        _noMeetUpsMessage = $"Aktuell werden keine Ausfahrten {Scope} angeboten. Aber das kann sich natürlich ändern, also später noch einmal probieren.";
+
+    }
+
 
 
     protected async Task ReadData()
@@ -123,6 +134,7 @@
         // Get list of calendar items
         PrepareHttpClient();
         calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"calendar/scopedcalendaritems?scope={Scope}");
+        _noMeetUps = calendarItems.Count() == 0;
         StateHasChanged();
     }
     private void CallReadData()
@@ -135,10 +147,7 @@
 
     private async Task RegisterGuest(ExtendedCalendarItem calendarItem)
     {
-        _guest.ParticipantFirstName = _guest.ParticipantFirstName.Trim();
-        _guest.ParticipantLastName = _guest.ParticipantLastName.Trim();
-        _guest.ParticipantAdressInfo = _guest.ParticipantAdressInfo.Trim();
-        if (String.IsNullOrEmpty(_guest.ParticipantFirstName) || String.IsNullOrEmpty(_guest.ParticipantLastName) || String.IsNullOrEmpty(_guest.ParticipantAdressInfo))
+        if (!_editContext.Validate())
         {
             return;
         }
@@ -147,6 +156,9 @@
             notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Warning, Summary = "Enverständnis erklären", Detail = "Bitte unten das Einverständnis zur Speicherung der Kontaktdaten ankreuzen..", Duration = 4000 });
             return;
         }
+        _guest.ParticipantFirstName = _guest.ParticipantFirstName.Trim();
+        _guest.ParticipantLastName = _guest.ParticipantLastName.Trim();
+        _guest.ParticipantAdressInfo = _guest.ParticipantAdressInfo.Trim();
         if (AppStateStore.SaveSettings)
         {
             // Copy from app state to permanent storage

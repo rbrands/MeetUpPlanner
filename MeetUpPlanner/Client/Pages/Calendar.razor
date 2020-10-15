@@ -299,6 +299,7 @@
     {
         calendarItem.Id = null; // to create a new one
         calendarItem.StartDate = calendarItem.StartDate.AddDays(7.0);
+        calendarItem.IsCanceled = false;
         if (KeywordCheck.IsAdmin)
         {
             calendarItem.PublishDate = calendarItem.PublishDate.AddDays(7.0);
