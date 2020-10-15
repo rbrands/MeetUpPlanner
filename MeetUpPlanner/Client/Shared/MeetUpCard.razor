@@ -123,7 +123,7 @@
                 }
                 @if (!CheckIfUserIsHost(CalendarItem) && !ShowHistory)
                 {
-                    <button class="btn btn-sm btn-outline-secondary" title="Anmelden" hidden="@(CheckIfUserIsAlreadyRegistered(CalendarItem) || CalendarItem.IsCanceled)" @onclick="OnCheckinCallback">Anmelden</button>
+                    <button type="@_buttonType" class="btn btn-sm btn-outline-secondary" title="Anmelden" hidden="@(CheckIfUserIsAlreadyRegistered(CalendarItem) || CalendarItem.IsCanceled)" @onclick="OnCheckinCallback">Anmelden</button>
                     <button class="btn btn-sm btn-outline-secondary" title="Abmelden" hidden="@(!CheckIfUserIsAlreadyRegistered(CalendarItem))" @onclick="OnCheckoutCallback">Abmelden</button>
                 }
             </div>
@@ -145,6 +145,10 @@
     [Parameter]
     public Boolean ShowHistory { get; set; } = false;
     [Parameter]
+    public Boolean EnableCheckInCheckOut { get; set; } = false;
+    [Parameter]
+    public Boolean IsSubmitRegisterButton { get; set; } = false;
+    [Parameter]
     public EventCallback OnChangeCallback { get; set; }
     [Parameter]
     public EventCallback OnCancelCallback { get; set; }
@@ -156,7 +160,12 @@
     public EventCallback OnCheckoutCallback { get; set; }
 
     private ExtendedCalendarItem calendarItemToBeCloned = null;
+    private string _buttonType = "button";
 
+    protected override void OnInitialized()
+    {
+        _buttonType = IsSubmitRegisterButton ? "submit" : "button";
+    }
 
     protected bool CheckIfUserIsAlreadyRegistered(ExtendedCalendarItem calendarItem)
     {

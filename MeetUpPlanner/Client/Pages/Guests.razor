@@ -14,8 +14,11 @@
     @foreach (ExtendedCalendarItem item in calendarItems)
     {
         <div class="col-12 col-sm-6 col-lg-4 col-xl-3 mt-2">
-            <MeetUpCard FirstName="@_permAppState.FirstName" LastName="@_permAppState.LastName" 
-                        CalendarItem="@item" IsGuest="true" 
+            <MeetUpCard FirstName="@_permAppState.FirstName" LastName="@_permAppState.LastName"
+                        CalendarItem="@item"
+                        IsGuest="true"
+                        EnableCheckInCheckOut="true"
+                        IsSubmitRegisterButton="true"
                         OnCheckinCallback="@(e => RegisterGuest(item))"
                         OnCheckoutCallback="@(e => RegisterGuest(item))">
             </MeetUpCard>
@@ -23,10 +26,10 @@
     }
 </div>
 
+<h5>Kontaktdaten</h5>
 <EditForm Model="@_guest">
     <DataAnnotationsValidator />
     <ValidationSummary />
-    <h5>Kontaktdaten</h5>
     <div class="form-row">
         <div class="form-group col-md-12">
             <small id="nameHelp" class="form-text text-muted">
@@ -51,7 +54,7 @@
     </div>
     <div class="form-group">
         <div class="form-check">
-            <InputCheckbox id="SaveSettings" aria-describedby="saveSettingsHelp" class="form-check-input" @bind-Value="AppStateStore.SaveSettings"></InputCheckbox>
+            <InputCheckbox id="SaveSettings" aria-describedby="saveSettingsHelp" class="form-check-input" @bind-Value="@AppStateStore.SaveSettings"></InputCheckbox>
             <label for="SaveSettings" class="form-check-label">Einstellungen im Browser merken?</label>
         </div>
         <small id="saveSettingsHelp">Damit beim nächsten Mal der Name usw. nicht neu eingegeben werden muss, können diese Eingaben im Browser gespeichert werden.</small>
@@ -70,13 +73,12 @@
 @code {
     [Parameter]
     public string Scope { get; set; }
-    Participant _guest = new Participant();
+    Participant _guest { get; set; } = new Participant();
     const string PERM_STORAGE = "permGuestState";
     PermAppState _permAppState = new PermAppState();
     Boolean _usageRightsAccepted = false;
     private HubConnection hubConnection;
     private IList<ExtendedCalendarItem> calendarItems = new List<ExtendedCalendarItem>();
-
 
     Boolean UsageRightsAccepted
     {
@@ -112,7 +114,6 @@
              .WithAutomaticReconnect()
              .Build();
         await hubConnection.StartAsync();
-
         AppStateStore.NotifyStateChanged();
     }
 
@@ -137,6 +138,15 @@
         _guest.ParticipantFirstName = _guest.ParticipantFirstName.Trim();
         _guest.ParticipantLastName = _guest.ParticipantLastName.Trim();
         _guest.ParticipantAdressInfo = _guest.ParticipantAdressInfo.Trim();
+        if (String.IsNullOrEmpty(_guest.ParticipantFirstName) || String.IsNullOrEmpty(_guest.ParticipantLastName) || String.IsNullOrEmpty(_guest.ParticipantAdressInfo))
+        {
+            return;
+        }
+        if (!_usageRightsAccepted)
+        {
+            notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Warning, Summary = "Enverständnis erklären", Detail = "Bitte unten das Einverständnis zur Speicherung der Kontaktdaten ankreuzen..", Duration = 4000 });
+            return;
+        }
         if (AppStateStore.SaveSettings)
         {
             // Copy from app state to permanent storage
