@@ -49,6 +49,7 @@ namespace MeetUpPlanner.Shared
             this.IsCanceled = calendarItem.IsCanceled;
             this.Tenant = calendarItem.Tenant;
             this.WithoutHost = calendarItem.WithoutHost;
+            this.GuestScope = calendarItem.GuestScope;
         }
 
         public string ParticipantsDisplay(int nameDisplayLength)

@@ -57,6 +57,7 @@ namespace MeetUpPlanner.Functions
                 // Create new item in next week
                 cal.Id = null;
                 cal.IsCopiedToNextWeek = false;
+                cal.IsCanceled = false;
                 cal.StartDate = cal.StartDate.AddDays(7.0);
                 cal.PublishDate = cal.PublishDate.AddDays(7.0);
                 await _cosmosRepository.UpsertItem(cal);

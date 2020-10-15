@@ -89,12 +89,18 @@
                         {
                             <small><em>Veröffentlichung @item.GetPublishDateAsString()</em></small>
                         }
+                        @if (!String.IsNullOrEmpty(item.GuestScope))
+                        {
+                            <div>
+                                <small><em>Gäste-Link <a href="/guests/@item.GuestScope" target="_blank">/guests/@item.GuestScope</a></em></small>
+                            </div>
+                        }
                         <hr />
-                        <small>Dabei (@item.ParticipantCounter von @item.MaxRegistrationsCount)</small> 
-                            @if (item.ParticipantCounter < item.MinRegistrationsCount)
-                            {
-                                <span class="badge badge-danger" title="Mindestteilnehmerzahl">Min @item.MinRegistrationsCount</span>
-                            }
+                        <small>Dabei (@item.ParticipantCounter von @item.MaxRegistrationsCount)</small>
+                        @if (item.ParticipantCounter < item.MinRegistrationsCount)
+                        {
+                            <span class="badge badge-danger" title="Mindestteilnehmerzahl">Min @item.MinRegistrationsCount</span>
+                        }
                         <small>: <b>@item.HostDisplayName(AppStateStore.ClientSettings.NameDisplayLength)</b>@item.ParticipantsDisplay(AppStateStore.ClientSettings.NameDisplayLength)</small>
                         <hr />
                         @if (item.CommentsList.Count() > 0)
@@ -102,15 +108,15 @@
                             <ul class="list-unstyled">
                                 @foreach (CalendarComment c in item.CommentsList)
                                 {
-                                <li>
-                                    <small>
-                                        <em>@c.AuthorDisplayName(AppStateStore.ClientSettings.NameDisplayLength) (@c.DisplayDate): </em>@c.Comment
-                                        @if (!String.IsNullOrEmpty(c.Link))
-                                        {
-                                            <text> </text><a title="@c.DisplayLinkTitle" target="_blank" href="@c.Link">@c.DisplayLinkTitle</a>
-                                        }
-                                    </small>
-                                </li>
+                                    <li>
+                                        <small>
+                                            <em>@c.AuthorDisplayName(AppStateStore.ClientSettings.NameDisplayLength) (@c.DisplayDate): </em>@c.Comment
+                                            @if (!String.IsNullOrEmpty(c.Link))
+                                            {
+                                                <text> </text><a title="@c.DisplayLinkTitle" target="_blank" href="@c.Link">@c.DisplayLinkTitle</a>
+                                            }
+                                        </small>
+                                    </li>
                                 }
                             </ul>
                             <hr />
@@ -122,32 +128,36 @@
                     }
                 </div>
                 <div class="card-footer">
-                    <div class="btn-group">
-                        @if (CheckIfUserIsHost(item) || KeywordCheck.IsAdmin)
-                        {
-                            <button class="btn btn-sm btn-outline-secondary" title="Ändern" @onclick="@(() => EditCalendarItem(item.Id))"><span class="oi oi-pencil"></span></button>
-                            <button class="btn btn-sm btn-outline-secondary" title="Kopieren" @onclick="@(() => ConfirmClone(item))"><span class="oi oi-fork"></span></button>
-                            <button class="btn btn-sm btn-outline-secondary" title="Löschen" @onclick="@(() => DeleteCalendarItem(item))"><span class="oi oi-trash"></span></button>
-                            <button class="btn btn-sm btn-outline-secondary" title="Absagen" @onclick="@(() => CancelMeetUp(item))"><span class="oi oi-x"></span></button>
-                        }
-                        <button class="btn btn-sm btn-outline-secondary" title="Kommentieren" @onclick="@(() => ShowComment(item))"><span class="oi oi-comment-square"></span></button>
-                        @if ((CheckIfUserIsHost(item) || KeywordCheck.IsAdmin) && item.ParticipantCounter > 1)
-                        {
-                            <button class="btn btn-sm btn-outline-secondary" title="Neuer Guide" @onclick="@(() => AssignNewHost(item))"><span class="oi oi-share-boxed"></span></button>
-                        }
-                        @if (AppStateStore.ClientSettings.GuestsEnabled && !ShowHistory())
-                        {
-                            <button class="btn btn-sm btn-outline-secondary" title="Gast einladen" @onclick="@(() => Invite(item))"><span class="oi oi-external-link"></span></button>
-                        }
-                        @if (CheckIfUserIsHost(item) || KeywordCheck.IsAdmin)
-                        {
-                            <button class="btn btn-sm btn-outline-secondary" title="Andere an/abmelden" @onclick="@(() => RegisterOthers(item))"><span class="oi oi-transfer"></span></button>
-                        }
-                        @if (!CheckIfUserIsHost(item) && !ShowHistory())
-                        {
-                            <button class="btn btn-sm btn-outline-secondary" title="Anmelden" hidden="@(CheckIfUserIsAlreadyRegistered(item) || item.IsCanceled)" @onclick="@(() => Checkin(item.Id))">Anmelden</button>
-                            <button class="btn btn-sm btn-outline-secondary" title="Abmelden" hidden="@(!CheckIfUserIsAlreadyRegistered(item))" @onclick="@(() => Checkout(item))">Abmelden</button>
-                        }
+                    <div class="btn-toolbar" role="toolbar" aria-label="Aktionen zur Ausfahrt">
+                        <div class="btn-group mr-2" role="group" aria-label="Ändern">
+                            @if (CheckIfUserIsHost(item) || KeywordCheck.IsAdmin)
+                            {
+                                <button class="btn btn-sm btn-outline-secondary" title="Ändern" @onclick="@(() => EditCalendarItem(item.Id))"><span class="oi oi-pencil"></span></button>
+                                <button class="btn btn-sm btn-outline-secondary" title="Kopieren" @onclick="@(() => ConfirmClone(item))"><span class="oi oi-fork"></span></button>
+                                <button class="btn btn-sm btn-outline-secondary" title="Löschen" @onclick="@(() => DeleteCalendarItem(item))"><span class="oi oi-trash"></span></button>
+                                <button class="btn btn-sm btn-outline-secondary" title="Absagen" @onclick="@(() => CancelMeetUp(item))"><span class="oi oi-x"></span></button>
+                                @if (item.ParticipantCounter > 1)
+                                {
+                                    <button class="btn btn-sm btn-outline-secondary" title="Neuer Guide" @onclick="@(() => AssignNewHost(item))"><span class="oi oi-share-boxed"></span></button>
+                                }
+                            }
+                        </div>
+                        <div class="btn-group mr-2" role="group" aria-label="Teilnehmen">
+                            <button class="btn btn-sm btn-outline-secondary" title="Kommentieren" @onclick="@(() => ShowComment(item))"><span class="oi oi-comment-square"></span></button>
+                            @if (AppStateStore.ClientSettings.GuestsEnabled && !ShowHistory())
+                            {
+                                <button class="btn btn-sm btn-outline-secondary" title="Gast einladen" @onclick="@(() => Invite(item))"><span class="oi oi-external-link"></span></button>
+                            }
+                            @if (CheckIfUserIsHost(item) || KeywordCheck.IsAdmin)
+                            {
+                                <button class="btn btn-sm btn-outline-secondary" title="Andere an/abmelden" @onclick="@(() => RegisterOthers(item))"><span class="oi oi-transfer"></span></button>
+                            }
+                            @if (!CheckIfUserIsHost(item) && !ShowHistory())
+                            {
+                                <button class="btn btn-sm btn-outline-secondary" title="Anmelden" hidden="@(CheckIfUserIsAlreadyRegistered(item) || item.IsCanceled)" @onclick="@(() => Checkin(item.Id))">Anmelden</button>
+                                <button class="btn btn-sm btn-outline-secondary" title="Abmelden" hidden="@(!CheckIfUserIsAlreadyRegistered(item))" @onclick="@(() => Checkout(item))">Abmelden</button>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
@@ -289,6 +299,7 @@
     {
         calendarItem.Id = null; // to create a new one
         calendarItem.StartDate = calendarItem.StartDate.AddDays(7.0);
+        calendarItem.IsCanceled = false;
         if (KeywordCheck.IsAdmin)
         {
             calendarItem.PublishDate = calendarItem.PublishDate.AddDays(7.0);

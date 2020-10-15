@@ -1,4 +1,4 @@
-﻿@page "/register/{ItemId}"
+﻿@page "/guests/{Scope}"
 @inject HttpClient Http
 @inject AppState AppStateStore
 @using MeetUpPlanner.Shared
@@ -8,14 +8,11 @@
 @implements IDisposable
 @using Newtonsoft.Json
 @using Microsoft.AspNetCore.SignalR.Client
-
-
-<MeetUp CalendarItem="@meetup" HideParticipants="true" NameDisplayLength="@AppStateStore.ClientSettings.NameDisplayLength" AdditionalText="Für die Teilnahme an der Ausfahrt bitte die Kontaktdaten unten eingeben, um damit die Nachverfolgbarkeit zu gewährleisten. Falls du doch nicht dabei sein kannst, kannst du dich über diese Seite auch wieder abmelden." />
-
-<EditForm OnValidSubmit="RegisterGuest" Model="@_guest">
+<h1>Gäste Willkommen - @Scope</h1>
+<h4>Kontaktdaten</h4>
+<EditForm EditContext="@_editContext">
     <DataAnnotationsValidator />
     <ValidationSummary />
-    <h5>Kontaktdaten</h5>
     <div class="form-row">
         <div class="form-group col-md-12">
             <small id="nameHelp" class="form-text text-muted">
@@ -25,22 +22,22 @@
     </div>
     <div class="form-row">
         <div class="form-group col-md-4">
-            <InputText id="firstname" aria-describedby="nameHelp" class="form-control" @bind-Value="_guest.ParticipantFirstName" autocomplete="on" placeholder="Vorname" title="Vorname" />
+            <InputText id="firstname" aria-describedby="nameHelp" class="form-control" @bind-Value="@_guest.ParticipantFirstName" autocomplete="on" placeholder="Vorname" title="Vorname" />
         </div>
         <div class="form-group col-md-4">
-            <InputText id="lastName" area-describedby="nameHelp" class="form-control" @bind-Value="_guest.ParticipantLastName" autocomplete="on" placeholder="Nachname" title="Nachname" />
+            <InputText id="lastName" area-describedby="nameHelp" class="form-control" @bind-Value="@_guest.ParticipantLastName" autocomplete="on" placeholder="Nachname" title="Nachname" />
         </div>
     </div>
     <div class="form-group">
         <label for="Phone">Telefon/Mail</label>
-        <InputText id="Phone" aria-describedby="phoneHelp" class="form-control" @bind-Value="_guest.ParticipantAdressInfo" autocomplete="on" placeholder="Telefon-Nr. oder Mail-Adresse" title="Bitte Telefonnummer oder Mailadresse angeben." />
+        <InputText id="Phone" aria-describedby="phoneHelp" class="form-control" @bind-Value="@_guest.ParticipantAdressInfo" autocomplete="on" placeholder="Telefon-Nr. oder Mail-Adresse" title="Bitte Telefonnummer oder Mailadresse angeben." />
         <small id="phoneHelp" class="form-text text-muted">
             Für die Nachverfolgbarkeit hier bitte deine Mail-Adresse oder Telefonnummer eingeben. Diese Info wird nicht in der allgemeinen Teilnehmerliste zu Ausfahrten angezeigt.
         </small>
     </div>
     <div class="form-group">
         <div class="form-check">
-            <InputCheckbox id="SaveSettings" aria-describedby="saveSettingsHelp" class="form-check-input" @bind-Value="AppStateStore.SaveSettings"></InputCheckbox>
+            <InputCheckbox id="SaveSettings" aria-describedby="saveSettingsHelp" class="form-check-input" @bind-Value="@AppStateStore.SaveSettings"></InputCheckbox>
             <label for="SaveSettings" class="form-check-label">Einstellungen im Browser merken?</label>
         </div>
         <small id="saveSettingsHelp">Damit beim nächsten Mal der Name usw. nicht neu eingegeben werden muss, können diese Eingaben im Browser gespeichert werden.</small>
@@ -53,20 +50,39 @@
             </label>
         </div>
     </div>
-    <button type="submit" id="BtnSaveKeyword" class="btn btn-primary" title="An/Abmelden" disabled="@(!UsageRightsAccepted)">@_buttonTitle</button>
 </EditForm>
 
+<h4>Aktuelle Ausfahrten</h4>
+<div class="row">
+    @foreach (ExtendedCalendarItem item in calendarItems)
+    {
+        <div class="col-12 col-sm-12 col-lg-6 col-xl-4 mt-2">
+            <MeetUpCard FirstName="@_permAppState.FirstName" LastName="@_permAppState.LastName"
+                        CalendarItem="@item"
+                        IsGuest="true"
+                        EnableCheckInCheckOut="true"
+                        OnCheckinCallback="@(e => RegisterGuest(item))"
+                        OnCheckoutCallback="@(e => RegisterGuest(item))">
+            </MeetUpCard>
+        </div>
+    }
+</div>
+<div class="alert alert-info" role="alert" hidden="@(!_noMeetUps)">
+    @_noMeetUpsMessage
+</div>
 
 @code {
     [Parameter]
-    public string ItemId { get; set; }
-    ExtendedCalendarItem meetup = new ExtendedCalendarItem();
-    Boolean _usageRightsAccepted = false;
-    Participant _guest = new Participant();
+    public string Scope { get; set; }
+    Participant _guest { get; set; } = new Participant();
     const string PERM_STORAGE = "permGuestState";
-    string _buttonTitle = "An/Abmelden";
+    PermAppState _permAppState = new PermAppState();
+    Boolean _usageRightsAccepted = false;
     private HubConnection hubConnection;
-
+    private IList<ExtendedCalendarItem> calendarItems = new List<ExtendedCalendarItem>();
+    private EditContext _editContext;
+    private Boolean _noMeetUps = false;
+    private string _noMeetUpsMessage;
 
     Boolean UsageRightsAccepted
     {
@@ -80,19 +96,17 @@
         }
     }
 
-
-
     protected override async Task OnInitializedAsync()
     {
         AppStateStore.ClientSettings = new ClientSettings();
         if (await LocalStorage.ContainKeyAsync(PERM_STORAGE))
         {
             // Read the user data if available from browser storage
-            PermAppState permAppState = await LocalStorage.GetItemAsync<PermAppState>(PERM_STORAGE);
+            _permAppState = await LocalStorage.GetItemAsync<PermAppState>(PERM_STORAGE);
             // Copy the settings needed to application state
-            _guest.ParticipantFirstName = permAppState.FirstName;
-            _guest.ParticipantLastName = permAppState.LastName;
-            _guest.ParticipantAdressInfo = permAppState.PhoneMail;
+            _guest.ParticipantFirstName = _permAppState.FirstName;
+            _guest.ParticipantLastName = _permAppState.LastName;
+            _guest.ParticipantAdressInfo = _permAppState.PhoneMail;
         }
         // Get client settings from server
         AppStateStore.Tenant = TenantConfig.GetTenant(NavigationManager.BaseUri);
@@ -104,48 +118,67 @@
              .WithAutomaticReconnect()
              .Build();
         await hubConnection.StartAsync();
-
         AppStateStore.NotifyStateChanged();
     }
-    private async Task ReadData()
+    protected override void OnInitialized()
     {
-        // Get referenced calendar item
-        meetup = await Http.GetFromJsonAsync<ExtendedCalendarItem>($"Calendar/extendedcalendaritemforguest?itemId={ItemId}");
-        if (meetup.StartDate.CompareTo(DateTime.Now.AddHours(-13)) < 0)
-        {
-            // MeetUp too old ==> navigate to start page
-            NavigationManager.NavigateTo("/");
-        }
-        if (!String.IsNullOrEmpty(_guest.ParticipantLastName))
-        {
-            _buttonTitle = (null != meetup.FindParticipant(_guest.ParticipantFirstName, _guest.ParticipantLastName)) ? "Abmelden" : "Anmelden";
-        }
+        _editContext = new EditContext(_guest);
+        _noMeetUpsMessage = $"Aktuell werden keine Ausfahrten {Scope} angeboten. Aber das kann sich natürlich ändern, also später noch einmal probieren.";
+
     }
-    private async Task RegisterGuest()
+
+
+
+    protected async Task ReadData()
     {
+        // Get list of calendar items
+        PrepareHttpClient();
+        calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"calendar/scopedcalendaritems?scope={Scope}");
+        _noMeetUps = calendarItems.Count() == 0;
+        StateHasChanged();
+    }
+    private void CallReadData()
+    {
+        Task.Run(async () =>
+        {
+            await ReadData();
+        });
+    }
+
+    private async Task RegisterGuest(ExtendedCalendarItem calendarItem)
+    {
+        if (!_editContext.Validate())
+        {
+            return;
+        }
+        if (!_usageRightsAccepted)
+        {
+            notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Warning, Summary = "Enverständnis erklären", Detail = "Bitte unten das Einverständnis zur Speicherung der Kontaktdaten ankreuzen..", Duration = 4000 });
+            return;
+        }
         _guest.ParticipantFirstName = _guest.ParticipantFirstName.Trim();
         _guest.ParticipantLastName = _guest.ParticipantLastName.Trim();
         _guest.ParticipantAdressInfo = _guest.ParticipantAdressInfo.Trim();
         if (AppStateStore.SaveSettings)
         {
             // Copy from app state to permanent storage
-            PermAppState permAppState = new PermAppState();
-            permAppState.FirstName = _guest.ParticipantFirstName;
-            permAppState.LastName = _guest.ParticipantLastName;
-            permAppState.PhoneMail = _guest.ParticipantAdressInfo;
-            await LocalStorage.SetItemAsync<PermAppState>(PERM_STORAGE, permAppState);
+            _permAppState = new PermAppState();
+            _permAppState.FirstName = _guest.ParticipantFirstName;
+            _permAppState.LastName = _guest.ParticipantLastName;
+            _permAppState.PhoneMail = _guest.ParticipantAdressInfo;
+            await LocalStorage.SetItemAsync<PermAppState>(PERM_STORAGE, _permAppState);
         }
         else
         {
             await LocalStorage.RemoveItemAsync(PERM_STORAGE);
         }
         _guest.IsGuest = !AppStateStore.Tenant.GuestNameShown;
-        _guest.CalendarItemId = ItemId;
+        _guest.CalendarItemId = calendarItem.Id;
         BackendResult result;
-        Participant participant = meetup.FindParticipant(_guest.ParticipantFirstName, _guest.ParticipantLastName);
+        Participant participant = calendarItem.FindParticipant(_guest.ParticipantFirstName, _guest.ParticipantLastName);
         if (null == participant)
         {
-            if (meetup.IsCanceled)
+            if (calendarItem.IsCanceled)
             {
                 notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Warning, Summary = "Abgesagt", Detail = "Der Termin ist leider abgesagt.", Duration = 4000 });
                 return;
@@ -184,6 +217,8 @@
         }
 
     }
+
+
     private void PrepareHttpClient()
     {
         if (null != AppStateStore.Tenant)
