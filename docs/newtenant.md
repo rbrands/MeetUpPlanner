@@ -1,3 +1,4 @@
+[https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Ersteinrichtung für eine Radgruppe
 
 Um den MeetUpPlanner für eine Radgruppe erstmalig einzurichten, sind die folgenden Schritte notwendig:
