@@ -1,3 +1,4 @@
+[https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Häufige Fragen und Antworten
 
 <dl>
@@ -42,6 +43,11 @@
     Alles was benötigt wird, ist in dem GitHub Repository vorhanden. Für eine eigene Version am besten das Repository "forken", Anpassungen zumindest an den Texten vornehmen, z.B. die "About"-Seite mit meiner Mail-Adresse usw. Um das ganze dann in Azure zu installieren, wird ein Azure App Service, eine Cosmos DB und eine Azure Functions App benötigt.
   
   Zur Installation siehe kurze Beschreibung in https://github.com/rbrands/MeetUpPlanner/wiki/Deployment
+  </dd>
+  
+  <dt>Gibt es den MeetUpPlanner auch in anderen Sprachen?</dt>
+  <dd>
+    Nein, zur Zeit ist der MeetUpPlanner nur in Deutsch.
   </dd>
 
 </dl>
