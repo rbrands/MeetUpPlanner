@@ -14,10 +14,10 @@ Um den MeetUpPlanner für eine Radgruppe erstmalig einzurichten, sind die folgen
   - Max. Gruppengröße
   - Max. Gruppengröße für Admins
   - Anzahl der Buchstaben in der Anzeige der Nachnamen oder 0 falls die Nachnamen komplett angezeigt werden sollen.
+  - Einladen von Gästen möglich? Wenn angekreuzt, können externe Gäste (also ohne Schlüsselwort) über die entsprechenden Links eingeladen werden.
+  - Sollen nur Admins MeetUps anlegen können? Wenn angekreuzt können nur Admins Ausfahrten anlegen, alle anderen können nur teilnehmen.
   - Optional: Welcome Nachricht: Dies ist die Nachricht, die die Benutzer auf der Startseite sehen. 
   - Optional: Link zu einem Logo, wird auch auf der Startseite angezeigt.
   - Optional: Whiteboard-Nachricht wird auf der Kalendar-Seite angezeigt. Hier könnten ggf. noch Hinweise zu den "Spielregeln" stehen. Aber besser hier kurz fassen, weil ansonsten alle immer erst einmal runter scrollen müssen bis endlich die Ausfahrten erscheinen ..
-  - Einladen von Gästen möglich? Wenn angekreuzt, können externe Gäste (also ohne Schlüsselwort) über die entsprechenden Links eingeladen werden.
-  - Sollen nur Admins MeetUps anlegen können? Wenn angekreuzt können nur Admins Ausfahrten anlegen, alle anderen können nur teilnehmen.
-  
+   
   
