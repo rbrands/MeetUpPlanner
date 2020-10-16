@@ -47,7 +47,6 @@ Beispiel: Wenn eine vereinsinterne Ausfahrt organisiert werden soll, könnte die
   </dd>
 </dl>
 
-
 ## Weitere Features für Admins
 <dl>
   <dt>Begrüßungstexte konfigurieren</dt>
