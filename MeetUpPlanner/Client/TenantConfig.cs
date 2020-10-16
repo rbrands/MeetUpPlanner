@@ -18,8 +18,9 @@ namespace MeetUpPlanner.Client
             new TenantSettings("demo.meetupplanner",                 "demo",       false,                true),
             new TenantSettings("ausfahrten.dasimmerdabei",           "dsd",        true,                 true),
             new TenantSettings("fbgiro.meetupplanner",               "fbgiro",     false,                true),
+            new TenantSettings("ausfahrten.flannelspandex",          "fs",         false,                true),
             new TenantSettings("meetup-planner-dev.azurewebsites.net","demo",      false,                true),
-            new TenantSettings("localhost",                          "demo",       true,                 true)
+            new TenantSettings("localhost",                          "fs",         false,                true)
         };
         /// <summary>
         /// For the given URL all configured tenants are checked.
