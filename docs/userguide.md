@@ -97,4 +97,14 @@ Beispiel: Wenn eine vereinsinterne Ausfahrt organisiert werden soll, könnte die
   <dd>
     Admins können sog. "Infoboxen" anlegen, die ähnlich wie Termine angezeigt werden können. So können zusätzliche Infos zur Bedienung, Wetteraussichten usw. angezeigt werden. Es lässt sich einstellen, ob Kommentare zugelassen sind und wie lange diese gespeichert werden sollen. Auf diese Weite kann ein "Schwarzes Brett" umgesetzt werden, über das die Nutzer sich austauschen können.
   </dd>
+  
+  <dt>"Badges" für Wochentage</dt>
+  <dd>
+    In der Administration können für die Wochentage sog. "Badges" konfiguriert werden, um Ausfahrten an diesen Tagen besonders zu kennzeichnen. Beispiel: "ScuDi" für den Scuderia Dienstag und "ScuSo" für den Sonntag. Außerdem ist es möglich, die Anlage von neuen Ausfahrten auf diese Tage zu beschränken.
+  </dd>
+  
+  <dt>Zugang sperren</dt>
+  <dd>
+    Der Zugang zum MeetUpPlanner kann gesperrt werden und eine Meldung dazu kann auch konfiguriert werden. Dies kann z.B. nötig sein, wenn die Corona-Schutzverordnung keine gemeinsamen Ausfahrten zulassen sollte.
+  </dd>
 </dl>
