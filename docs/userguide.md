@@ -1,4 +1,4 @@
-https://www.meetupplanner.de
+[https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Benutzerhinweise
 
 Es ist sicherlich kein Benutzerhandbuch notwendig, der MeetUpPlanner sollte selbsterklärend sein: Ausfahrt anlegen, ändern, löschen, teilnehmen, kommentieren. Hoffentlich alles naheliegend wie es funktioniert.
