@@ -204,7 +204,7 @@
     [Parameter]
     public string ItemId { get; set; }
     private HubConnection hubConnection;
-    CalendarItem meetup = new CalendarItem();
+    ExtendedCalendarItem meetup = new ExtendedCalendarItem();
     string whenDateString = String.Empty;
     DateTime whenTime = DateTime.Now;
     DateTime whenDate = DateTime.Now;
@@ -214,6 +214,7 @@
     bool onlyScopedMeetUps = false;
     private List<KeyValuePair<string, string>> scopedDates = new List<KeyValuePair<string, string>>();
     private bool saveDisabled = false;
+    private bool withoutHost = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -231,7 +232,8 @@
             {
                 PrepareHttpClient();
                 // Get referenced calendar item
-                meetup = await Http.GetFromJsonAsync<CalendarItem>($"Calendar/calendaritem?itemId={ItemId}");
+                meetup = await Http.GetFromJsonAsync<ExtendedCalendarItem>($"Calendar/extendedcalendaritem?itemId={ItemId}");
+                withoutHost = meetup.WithoutHost;
             }
             else
             {
@@ -258,6 +260,7 @@
             whenDateString = meetup.StartDate.ToString("yyyy-MM-dd");
             publishDate = meetup.PublishDate.ToLocalTime();
             publishTime = meetup.PublishDate.ToLocalTime();
+            withoutHost = meetup.WithoutHost;
         }
         else
         {
@@ -315,9 +318,36 @@
                 }
             }
         }
+        Participant participantToBeRemoved = null;
+        Participant participantToBeAdded = null;
+        // Check if host-status has been changed
+        if (withoutHost && !meetup.WithoutHost)
+        {
+            // MeetUp was changed to have a host ==> assign current user as host
+            meetup.HostFirstName = AppStateStore.FirstName;
+            meetup.HostLastName = AppStateStore.LastName;
+            meetup.HostAdressInfo = AppStateStore.PhoneMail;
+            // Check if current user (and new host) is already registered and remove him
+            participantToBeRemoved = meetup.FindParticipant(meetup.HostFirstName, meetup.HostLastName);
+        }
+        else if (!withoutHost && meetup.WithoutHost)
+        {
+            // MeetUp was changed to have no host ==> add current host as participant
+            participantToBeAdded = new Participant(meetup.HostFirstName, meetup.HostLastName, meetup.HostAdressInfo);
+            participantToBeAdded.CalendarItemId = meetup.Id;
+        }
         PrepareHttpClient();
         // Save calendarItem server
         await Http.PostAsJsonAsync<CalendarItem>($"Calendar/writecalendaritem", meetup);
+        if (null != participantToBeRemoved)
+        {
+            await Http.PostAsJsonAsync<Participant>($"Calendar/removeparticipant", participantToBeRemoved);
+        }
+        if (null != participantToBeAdded)
+        {
+            await Http.PostAsJsonAsync<Participant>($"Calendar/addparticipant", participantToBeAdded);
+        }
+
         if (IsConnected) await SendMessage();
 
         NavigationManager.NavigateTo("/calendar");
