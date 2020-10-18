@@ -1,6 +1,6 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
-*Demnächst*
+*18.10.2020*
 - Beim Wechsel MeetUps von "mit Guide" zu "ohne Guide" und umgekehrt gab es einige Fehler und Unklarheiten. Jetzt ist es folgendermaßen umgesetzt: Wird eine Ausfahrt, die bereits einen Guide hat, zu "ohne Guide" umgewandelt, wird der bisherige Guide als Teilnehmer hinzugefügt. Er/sie muss sich dann in einem extra Schritt abmelden, wenn das nicht gewünscht wird. Wird eine Ausfahrt "ohne Guide" umgewandelt in eine "mit Guide" wird der aktuelle Benutzer (der ja Admin ist) als Guide eingetragen und ggf. als Teilnehmer gelöscht, falls vorher schon eingetragen. Falls ein anderer Guide gewünscht wird, muss im nächsten Schritt ein neuer Guide zugewiesen werden.
 Außerdem wird in der Kontaktliste jetzt nicht mehr fälschlicherweise der ursprüngliche Guide mit aufgeführt, wenn die Ausfahrt in "ohne Guide" geändert wird.
 - Wird ein Meeting abgesagt, wird kurz eine Meldung angezeigt, dass man durch erneutes Drücken des Buttons die Absage auch wieder rückgängig machen kann.
