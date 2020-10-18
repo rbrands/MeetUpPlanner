@@ -49,7 +49,7 @@
 <div class="row">
     @foreach (ExtendedCalendarItem item in calendarItems)
     {
-        <div class="col-12 col-sm-6 col-lg-4 col-xl-3 mt-2">
+        <div class="col-12 col-sm-6 col-lg-4 col-xl-4 mt-2">
             <div class="card">
                 <div class="card-header">
                     <em>
@@ -165,7 +165,7 @@
     }
     @foreach (ExtendedInfoItem infoItem in infoItems)
     {
-        <div class="col-12 col-sm-6 col-lg-4 col-xl-3 mt-2">
+        <div class="col-12 col-sm-6 col-lg-4 col-xl-4 mt-2">
             <InfoCard InfoItem="@infoItem" IsAdmin="@KeywordCheck.IsAdmin" OnChangeCallback="@(e => ReadData())"></InfoCard>
         </div>
     }
@@ -317,6 +317,10 @@
         // Save calendarItem server
         await Http.PostAsJsonAsync<CalendarItem>($"Calendar/writecalendaritem", calendarItem);
         if (IsConnected) await SendMessage();
+        if (calendarItem.IsCanceled)
+        {
+            notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Abgesagt", Detail = "Um die Absage rückgänig zu machen, einfach noch einmal den Button drücken.", Duration = 4000 });
+        }
         //await ReadData();
     }
 

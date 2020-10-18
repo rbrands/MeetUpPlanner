@@ -113,7 +113,10 @@ namespace MeetUpPlanner.Functions
             int calendarIndex = 0;
             foreach (ExtendedCalendarItem calendarItem in orderedList)
             {
-                report.CompanionList.AddCompanion(calendarItem.HostFirstName, calendarItem.HostLastName, calendarItem.HostAdressInfo, calendarSize, calendarIndex);
+                if (!calendarItem.WithoutHost)
+                {
+                    report.CompanionList.AddCompanion(calendarItem.HostFirstName, calendarItem.HostLastName, calendarItem.HostAdressInfo, calendarSize, calendarIndex);
+                }
                 foreach (Participant p in calendarItem.ParticipantsList)
                 {
                     report.CompanionList.AddCompanion(p.ParticipantFirstName, p.ParticipantLastName, p.ParticipantAdressInfo, calendarSize, calendarIndex);
