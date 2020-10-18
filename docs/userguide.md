@@ -87,6 +87,12 @@ Hier sollen die etwas versteckteren Features beschrieben werden.
     nur alle MeetUps sehen und sich an- und abmelden und auch kommentieren. Die Admins erstellen die MeetUps. Dies ist für Clubs gedacht, die nur einige Ausfahrten kontrolliert zu festen Termine anbieten wollen.
   </dd>
   
+  <dt>Wechsel von Ausfahrten "mit Guide" zu Ausfahrten "ohne Guide"</dt>
+  <dd>
+    Ausfahrten können von Admins auch "ohne Guide" angelegt werden, z.B. für regelmäßige Termine, für die kein Guide benötigt wird. Falls eine Ausfahrt geändert wird von "ohne Guide" zu "mit Guide" wird der aktuelle Nutzer (also ein Admin) als neuer Guide eingetragen. In einem weiteren Schritt kann die Ausfahrt ggf. dann einem anderen Teilnehmer zugewiesen werden.
+    Wird eine Ausfahrt von "mit Guide" zu "ohne Guide" geändert, wird der aktuelle Guide als "einfacher" Teilnehmer hinzugefügt.
+  </dd>
+  
   <dt>Infoboxen</dt>
   <dd>
     Admins können sog. "Infoboxen" anlegen, die ähnlich wie Termine angezeigt werden können. So können zusätzliche Infos zur Bedienung, Wetteraussichten usw. angezeigt werden. Es lässt sich einstellen, ob Kommentare zugelassen sind und wie lange diese gespeichert werden sollen. Auf diese Weite kann ein "Schwarzes Brett" umgesetzt werden, über das die Nutzer sich austauschen können.
