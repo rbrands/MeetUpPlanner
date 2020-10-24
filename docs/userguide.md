@@ -11,7 +11,7 @@ Hier sollen die etwas versteckteren Features beschrieben werden.
   <dd>
     Den MeetUpPlanner kann man auch als App und zwar als PWA (<a href="https://de.wikipedia.org/wiki/Progressive_Web_App" target="_blank">"Progressive Web App"</a>) installieren. Damit verkürzt sich die Startzeit und die App bleibt länger aktiv, um Updates zu den Ausfahrten direkt anzeigen zu können. Dies ist auch die Voraussetzung dazu, dass im nächsten Release auch Push-Benachrichtungen möglich werden, d.h. man kann sich benachrichtigen lassen, wenn z.B. Ausfahrten abgesagt werden, kommentiert werden usw.
     
-    Die Installation ist ganz einfach: Auf Android, auf dem PC im Edge und Chrome-Browser wie üblich den MeetUpPlanner aufrufen. Oben rechts in der Addresszeile ist ein kleine +, über das man die Installation startet. Unter iOS im Safari-Browser geht man auf "Teilen" und dann "Zum Home-Bildschirm". Der MeetUpPlanner wird dann mit Logo auf dem Home-Bildschirm oder im Start-Menü (PC) angezeigt und kann von da auch einfach wieder deinstalliert werden.
+Die Installation ist ganz einfach: Auf Android, auf dem PC im Edge und Chrome-Browser wie üblich den MeetUpPlanner aufrufen. Oben rechts in der Addresszeile ist ein kleine +, über das man die Installation startet. Unter iOS im Safari-Browser geht man auf "Teilen" und dann "Zum Home-Bildschirm". Der MeetUpPlanner wird dann mit Logo auf dem Home-Bildschirm oder im Start-Menü (PC) angezeigt und kann von da auch einfach wieder deinstalliert werden.
   </dd>
 
 <dt>"Private" Ausfahrten</dt>
