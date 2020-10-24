@@ -1,5 +1,9 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
+*Demnächst*
+- Der MeetUpPlanner ist jetzt eine PWA (["Progressive Web Application"](https://de.wikipedia.org/wiki/Progressive_Web_App)). Eine PWA lässt sich vom Browser aus wie eine App installieren. Vorteil: Die App ist schneller aktiv und bleibt auch länger aktiv. Aber vor allem ist dies die Voraussetzung für das nächste Feature, das implementiert wird: Push-Benachrichtungen, für Absagen von Ausfahrten, Kommentaren usw.
+- Explizite Fehlermeldung wenn keine Netzverbindung da ist.
+
 *18.10.2020*
 - Beim Wechsel von MeetUps von "mit Guide" zu "ohne Guide" und umgekehrt gab es einige Fehler und Unklarheiten. Jetzt ist es folgendermaßen umgesetzt: Wird eine Ausfahrt, die bereits einen Guide hat, zu "ohne Guide" umgewandelt, wird der bisherige Guide als Teilnehmer hinzugefügt. Er/sie muss sich dann in einem extra Schritt abmelden, wenn das nicht gewünscht wird. Wird eine Ausfahrt "ohne Guide" umgewandelt in eine "mit Guide" wird der aktuelle Benutzer (der ja Admin ist) als Guide eingetragen und ggf. als Teilnehmer gelöscht, falls vorher schon eingetragen. Falls ein anderer Guide gewünscht wird, muss im nächsten Schritt ein neuer Guide zugewiesen werden.
 Außerdem wird in der Kontaktliste jetzt nicht mehr fälschlicherweise der ursprüngliche Guide mit aufgeführt, wenn die Ausfahrt in "ohne Guide" geändert wird.
