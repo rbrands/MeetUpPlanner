@@ -1,7 +1,7 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
 *24.10.2020*
-- Der MeetUpPlanner ist jetzt eine PWA (["Progressive Web Application"](https://de.wikipedia.org/wiki/Progressive_Web_App)). Eine PWA lässt sich vom Browser aus wie eine App installieren. Vorteil: Die App ist schneller aktiv und bleibt auch länger aktiv. Hinweiser zur Installation im Userguide. Aber vor allem ist dies die Voraussetzung für das nächste Feature, das implementiert wird: Push-Benachrichtungen, für Absagen von Ausfahrten, Kommentaren usw.
+- Der MeetUpPlanner ist jetzt eine PWA (["Progressive Web Application"](https://de.wikipedia.org/wiki/Progressive_Web_App)). Eine PWA lässt sich vom Browser aus wie eine App installieren. Vorteil: Die App ist schneller aktiv und bleibt auch länger aktiv. Hinweise zur Installation im Userguide. Aber vor allem ist dies die Voraussetzung für das nächste Feature, das implementiert wird: Push-Benachrichtungen, für Absagen von Ausfahrten, Kommentaren usw.
 - Explizite Fehlermeldung wenn keine Netzverbindung da ist.
 
 *18.10.2020*
