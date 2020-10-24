@@ -16,17 +16,17 @@
 <MessageBoard Message="@AppStateStore.ClientSettings?.WhiteboardMessage" ShowLogo="false" />
 <h1>Ausfahrten</h1>
 <p>
-    <a class="btn btn-primary" href="/newmeetup" title="Neue Ausfahrt" hidden="@(AppStateStore.ClientSettings.OnlyAdminsAsHost && !KeywordCheck.IsAdmin)">Neue Ausfahrt erstellen</a>
+    <a class="btn btn-primary" href="/newmeetup" title="Neue Ausfahrt" hidden="@(_onlyAdminsAsHost && !KeywordCheck.IsAdmin)">Neue Ausfahrt erstellen</a>
     <button class="btn btn-primary" title="Reload" @onclick="@(() => Reload())"><span class="oi oi-reload"></span></button>
     @if (KeywordCheck.IsAdmin)
     {
-    <button class="btn btn-primary" @onclick="@(() => BackwardSelectedDate())" title="Vorheriger Tag"><span class="oi oi-media-step-backward"></span></button>
-    @if (ShowHistory())
+        <button class="btn btn-primary" @onclick="@(() => BackwardSelectedDate())" title="Vorheriger Tag"><span class="oi oi-media-step-backward"></span></button>
+        @if (ShowHistory())
         {
-    <button class="btn btn-primary" @onclick="@(() => ForwardSelectedDate())" title="Nächster Tag"><span class="oi oi-media-step-forward"></span></button>
+            <button class="btn btn-primary" @onclick="@(() => ForwardSelectedDate())" title="Nächster Tag"><span class="oi oi-media-step-forward"></span></button>
         }
     }
-    <a class="btn btn-primary" title="Hilfe" href="@AppStateStore.ClientSettings.HelpLink" target="_blank"><span class="oi oi-question-mark"></span></a>
+    <a class="btn btn-primary" title="Hilfe" href="@AppStateStore.ClientSettings?.HelpLink" target="_blank"><span class="oi oi-question-mark"></span></a>
 </p>
 <div class="row">
     <div class="col">
@@ -180,11 +180,13 @@
     private HubConnection hubConnection;
     private ExtendedCalendarItem calendarItemToBeCloned = null;
     private DateTime selectedDate = DateTime.Today;
+    private Boolean _onlyAdminsAsHost = false;
 
     protected override async Task OnInitializedAsync()
     {
         if (null != AppStateStore && !String.IsNullOrEmpty(AppStateStore.KeyWord))
         {
+            _onlyAdminsAsHost = AppStateStore.ClientSettings.OnlyAdminsAsHost;
             hubConnection = new HubConnectionBuilder()
                 .WithUrl(NavigationManager.ToAbsoluteUri("/broadcastHub"))
                 .Build();
@@ -234,16 +236,29 @@
         string privateKeywords = AppStateStore.PrivateKeyWord1 + ";" + AppStateStore.PrivateKeyWord2 + ";" + AppStateStore.PrivateKeyWord3; ;
         // Get list of calendar items
         PrepareHttpClient();
-        if (!ShowHistory())
+        try
         {
-            calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"calendar/extendedcalendaritems?privatekeywords={privateKeywords}");
+            if (!ShowHistory())
+            {
+                calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"calendar/extendedcalendaritems?privatekeywords={privateKeywords}");
+            }
+            else
+            {
+                string dateArg = selectedDate.ToString("yyyy-MM-dd");
+                calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"calendar/extendedcalendaritemsfordate?privatekeywords={privateKeywords}&requesteddate={dateArg}");
+            }
+            infoItems = await Http.GetFromJsonAsync<IList<ExtendedInfoItem>>($"api/info/extendedinfoitems");
         }
-        else
+        catch (Exception ex)
         {
-            string dateArg = selectedDate.ToString("yyyy-MM-dd");
-            calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"calendar/extendedcalendaritemsfordate?privatekeywords={privateKeywords}&requesteddate={dateArg}");
+            notificationService.Notify(new NotificationMessage()
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Offline",
+                Detail = $"Momentan gibt es keine Netzverbindung oder die Anwendung offline. Fehlermeldung: {ex.Message}",
+                Duration = 4000
+            });
         }
-        infoItems = await Http.GetFromJsonAsync<IList<ExtendedInfoItem>>($"api/info/extendedinfoitems");
         StateHasChanged();
     }
     protected async Task Reload()
