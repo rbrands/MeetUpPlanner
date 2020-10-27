@@ -224,9 +224,9 @@
             //Timer2.OnElapsed += NavigateAwayHandler;
 
             await ReadData();
+            dialogService.OnClose += CloneConfirmed;
 
             await RequestNotificationSubscriptionAsync();
-            dialogService.OnClose += CloneConfirmed;
         }
         else
         {
@@ -520,8 +520,13 @@
 
     async Task RequestNotificationSubscriptionAsync()
     {
+        if (AppStateStore.NotificationSubscriptionRequested)
+        {
+            return;
+        }
         try
         {
+            AppStateStore.NotificationSubscriptionRequested = true;
             var subscription = await JSRuntime.InvokeAsync<NotificationSubscription>("blazorPushNotifications.requestSubscription");
             // todo await OrdersClient.SubscribeToNotifications(subscription);
             if (null != subscription)
