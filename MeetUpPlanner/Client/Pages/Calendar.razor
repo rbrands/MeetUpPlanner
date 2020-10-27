@@ -8,6 +8,7 @@
 @inject DialogService dialogService
 @inject BlazorTimer Timer
 @inject BlazorTimer Timer2
+@inject IJSRuntime JSRuntime
 @implements IDisposable
 @using Newtonsoft.Json
 @using System.IO
@@ -208,7 +209,8 @@
                 try
                 {
                     await hubConnection.StartAsync();
-                } catch (Exception)
+                }
+                catch (Exception)
                 {
                 }
             };
@@ -222,8 +224,9 @@
             //Timer2.OnElapsed += NavigateAwayHandler;
 
             await ReadData();
-            dialogService.OnClose += CloneConfirmed;
 
+            await RequestNotificationSubscriptionAsync();
+            dialogService.OnClose += CloneConfirmed;
         }
         else
         {
@@ -438,7 +441,8 @@
             try
             {
                 _ = hubConnection.DisposeAsync();
-            } catch (Exception)
+            }
+            catch (Exception)
             {
 
             }
@@ -514,4 +518,27 @@
         await ReadData();
     }
 
+    async Task RequestNotificationSubscriptionAsync()
+    {
+        try
+        {
+            var subscription = await JSRuntime.InvokeAsync<NotificationSubscription>("blazorPushNotifications.requestSubscription");
+            // todo await OrdersClient.SubscribeToNotifications(subscription);
+            if (null != subscription)
+            {
+                notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Subscription!", Detail = subscription.Url, Duration = 4000 });
+            }
+            else
+            {
+                notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Warning, Summary = "Subscription!", Detail = "Keine Benachrichtigung", Duration = 4000 });
+            }
+        }
+        catch (Exception ex)
+        {
+            notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Fehler", Detail = ex.Message, Duration = 4000 });
+        }
+    }
+
 }
+
+

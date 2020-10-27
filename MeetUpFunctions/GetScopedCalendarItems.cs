@@ -57,7 +57,7 @@ namespace MeetUpPlanner.Functions
                 _logger.LogWarning($"GetScopedCalendarItems <{tenantBadge}> called without scope.");
                 return new BadRequestErrorMessageResult("scope is misssing..");
             }
-            _logger.LogInformation($"GetScopedCalendarItems<{tenantBadge}>(scope={scope}");
+            _logger.LogInformation($"GetScopedCalendarItems<{tenantBadge}>(scope={scope})");
 
             // Get a list of all CalendarItems and filter all applicable ones
             DateTime compareDate = DateTime.Now.AddHours((-serverSettings.CalendarItemsPastWindowHours));
