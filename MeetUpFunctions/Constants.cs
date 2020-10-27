@@ -26,6 +26,8 @@ namespace MeetUpPlanner.Functions
 
         public const int LOG_TTL = 30 * 24 * 3600; // 30 days TTL for Log items
 
+        public const int SUBSCRIPTION_TTL = 7 * 24 * 3600; // 7 days TTL for notification subscriptions
+
         public const string INVITE_GUEST_KEY_CONFIG = "InviteGuestKey";
     }
 }

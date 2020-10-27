@@ -93,6 +93,16 @@ namespace MeetUpPlanner.Server.Repositories
 
             return new OkResult();
         }
+        public async Task<IActionResult> WriteNotificationSubscription(string tenant, string keyword, NotificationSubscription subscription)
+        {
+            await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/WriteNotificationSubscription"
+                            .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
+                            .WithHeader(HEADER_KEYWORD, keyword)
+                            .WithHeader(HEADER_TENANT, tenant)
+                            .PostJsonAsync(subscription);
+
+            return new OkResult();
+        }
         public async Task<IActionResult> WriteInfoItem(string tenant, string keyword, InfoItem infoItem)
         {
             await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/WriteInfoItem"

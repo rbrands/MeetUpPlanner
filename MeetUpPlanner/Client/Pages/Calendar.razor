@@ -531,6 +531,11 @@
             // todo await OrdersClient.SubscribeToNotifications(subscription);
             if (null != subscription)
             {
+                subscription.UserFirstName = AppStateStore.FirstName;
+                subscription.UserLastName = AppStateStore.LastName;
+                subscription.PlannerUrl = Http.BaseAddress.ToString();
+                PrepareHttpClient();
+                await Http.PostAsJsonAsync<NotificationSubscription>($"util/writenotificationsubscription", subscription);
                 notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Subscription!", Detail = subscription.Url, Duration = 4000 });
             }
             else

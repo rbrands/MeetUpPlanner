@@ -83,6 +83,13 @@ namespace MeetUpPlanner.Server.Controllers
             await _meetUpFunctions.WriteClientSettings(tenant, adminKeyword, clientSettings);
             return Ok();
         }
+        [HttpPost("writenotificationsubscription")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> WriteNotificationSubscription([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] NotificationSubscription subscription)
+        {
+            await _meetUpFunctions.WriteNotificationSubscription(tenant, keyword, subscription);
+            return Ok();
+        }
         [HttpGet("qrcode")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public String GetQrCode([FromQuery] string link)

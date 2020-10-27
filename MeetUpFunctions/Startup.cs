@@ -37,6 +37,7 @@ namespace MeetUpPlanner.Functions
                            .Build();
 
             CosmosClient cosmosClient = new CosmosClient(config["COSMOS_DB_CONNECTION_STRING"]);
+            CosmosDBRepository<NotificationSubscription> notificationSubscriptionRepository = new CosmosDBRepository<NotificationSubscription>(config, cosmosClient);
             builder.Services.AddSingleton(config);
             builder.Services.AddSingleton(new CosmosDBRepository<ClientSettings>(config, cosmosClient));
             builder.Services.AddSingleton(new CosmosDBRepository<CalendarItem>(config, cosmosClient));
@@ -45,6 +46,7 @@ namespace MeetUpPlanner.Functions
             builder.Services.AddSingleton(new CosmosDBRepository<CalendarComment>(config, cosmosClient));
             builder.Services.AddSingleton(new CosmosDBRepository<ExportLogItem>(config, cosmosClient));
             builder.Services.AddSingleton(new ServerSettingsRepository(config, cosmosClient));
+            builder.Services.AddSingleton(new NotificationSubscriptionRepository(config, notificationSubscriptionRepository));
         }
     }
 }
