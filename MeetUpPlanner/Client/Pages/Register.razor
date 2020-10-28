@@ -98,6 +98,12 @@
         AppStateStore.Tenant = TenantConfig.GetTenant(NavigationManager.BaseUri);
         PrepareHttpClient();
         AppStateStore.ClientSettings = await Http.GetFromJsonAsync<ClientSettings>("Util/clientsettings");
+        if (AppStateStore.ClientSettings.AppLocked)
+        {
+            // Application locked ==> navigate to start page
+            NavigationManager.NavigateTo("/");
+            return;
+        }
         await ReadData();
         hubConnection = new HubConnectionBuilder()
              .WithUrl(NavigationManager.ToAbsoluteUri("/broadcastHub"))
@@ -201,7 +207,10 @@
 
     public void Dispose()
     {
-        _ = hubConnection.DisposeAsync();
+        if (null != hubConnection)
+        {
+            _ = hubConnection.DisposeAsync();
+        }
     }
 
 }
