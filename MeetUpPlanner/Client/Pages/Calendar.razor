@@ -528,7 +528,6 @@
         {
             AppStateStore.NotificationSubscriptionRequested = true;
             var subscription = await JSRuntime.InvokeAsync<NotificationSubscription>("blazorPushNotifications.requestSubscription");
-            // todo await OrdersClient.SubscribeToNotifications(subscription);
             if (null != subscription)
             {
                 subscription.UserFirstName = AppStateStore.FirstName;
@@ -538,9 +537,10 @@
                 await Http.PostAsJsonAsync<NotificationSubscription>($"util/writenotificationsubscription", subscription);
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Fehler", Detail = ex.Message, Duration = 4000 });
+            // no push messages supported
+            // notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Fehler", Detail = ex.Message, Duration = 4000 });
         }
     }
 
