@@ -536,11 +536,6 @@
                 subscription.PlannerUrl = Http.BaseAddress.ToString();
                 PrepareHttpClient();
                 await Http.PostAsJsonAsync<NotificationSubscription>($"util/writenotificationsubscription", subscription);
-                notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Subscription!", Detail = subscription.Url, Duration = 4000 });
-            }
-            else
-            {
-                notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Warning, Summary = "Subscription!", Detail = "Keine Benachrichtigung", Duration = 4000 });
             }
         }
         catch (Exception ex)

@@ -19,12 +19,20 @@ namespace MeetUpPlanner.Functions
         private readonly ILogger _logger;
         private ServerSettingsRepository _serverSettingsRepository;
         private CosmosDBRepository<CalendarItem> _cosmosRepository;
+        private CosmosDBRepository<Participant> _participantRepository;
+        private NotificationSubscriptionRepository _subscriptionRepository;
 
-        public WriteCalendarItem(ILogger<WriteCalendarItem> logger, ServerSettingsRepository serverSettingsRepository, CosmosDBRepository<CalendarItem> cosmosRepository)
+        public WriteCalendarItem(ILogger<WriteCalendarItem> logger, 
+                                 ServerSettingsRepository serverSettingsRepository,
+                                 NotificationSubscriptionRepository subscriptionRepository,
+                                 CosmosDBRepository<Participant> participantRepository,
+                                 CosmosDBRepository<CalendarItem> cosmosRepository)
         {
             _logger = logger;
             _serverSettingsRepository = serverSettingsRepository;
             _cosmosRepository = cosmosRepository;
+            _participantRepository = participantRepository;
+            _subscriptionRepository = subscriptionRepository;
         }
 
         /// <summary>
@@ -69,7 +77,48 @@ namespace MeetUpPlanner.Functions
             {
                 calendarItem.Tenant = tenant;
             }
+            CalendarItem oldCalendarItem = null;
+            if (!String.IsNullOrEmpty(calendarItem.Id))
+            {
+                oldCalendarItem = await _cosmosRepository.GetItem(calendarItem.Id);
+            }
             calendarItem = await _cosmosRepository.UpsertItem(calendarItem);
+            if (null != oldCalendarItem)
+            {
+                string message = null;
+                // Compare versions and generate message
+                if (oldCalendarItem.IsCanceled != calendarItem.IsCanceled)
+                {
+                    if (calendarItem.IsCanceled)
+                    {
+                        message = "Abgesagt!";
+                    }
+                    else
+                    {
+                        message = "Absage rückgängig gemacht!";
+                    }
+                } else if (!oldCalendarItem.StartDate.Equals(calendarItem.StartDate))
+                {
+                    message = "Neue Startzeit!";
+                }
+                else if (!oldCalendarItem.Title.Equals(calendarItem.Title))
+                {
+                    message = "Titel geändert;";
+                } else if (!oldCalendarItem.Place.Equals(calendarItem.Place))
+                {
+                    message = "Startort geändert!";
+                } else if (!oldCalendarItem.Summary.Equals(calendarItem.Summary))
+                {
+                    message = "Neue Infos!";
+                }
+                if (null != message)
+                {
+                    ExtendedCalendarItem extendedCalendarItem = new ExtendedCalendarItem(calendarItem);
+                    // Read all participants for this calendar item
+                    extendedCalendarItem.ParticipantsList = await _participantRepository.GetItems(p => p.CalendarItemId.Equals(extendedCalendarItem.Id));
+                    await _subscriptionRepository.NotifyParticipants(extendedCalendarItem, extendedCalendarItem.HostFirstName, extendedCalendarItem.HostLastName, message);
+                }
+            }
 
             return new OkObjectResult(calendarItem);
         }

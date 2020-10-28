@@ -19,15 +19,22 @@ namespace MeetUpPlanner.Functions
         private ServerSettingsRepository _serverSettingsRepository;
         private CosmosDBRepository<CalendarComment> _cosmosRepository;
         private CosmosDBRepository<CalendarItem> _calendarRepository;
+        private CosmosDBRepository<Participant> _participantRepository;
+        private NotificationSubscriptionRepository _subscriptionRepository;
+
         public AddCommentToCalendarItem(ILogger<AddCommentToCalendarItem> logger,
                                             ServerSettingsRepository serverSettingsRepository,
                                             CosmosDBRepository<CalendarComment> cosmosRepository,
+                                            CosmosDBRepository<Participant> participantRepository,
+                                            NotificationSubscriptionRepository subscriptionRepository,
                                             CosmosDBRepository<CalendarItem> calendarRepository)
         {
             _logger = logger;
             _serverSettingsRepository = serverSettingsRepository;
             _cosmosRepository = cosmosRepository;
             _calendarRepository = calendarRepository;
+            _participantRepository = participantRepository;
+            _subscriptionRepository = subscriptionRepository;
         }
 
         [FunctionName("AddCommentToCalendarItem")]
@@ -62,6 +69,9 @@ namespace MeetUpPlanner.Functions
             {
                 return new OkObjectResult(new BackendResult(false, "Angegebenen Termin nicht gefunden."));
             }
+            ExtendedCalendarItem extendedCalendarItem = new ExtendedCalendarItem(calendarItem);
+            // Read all participants for this calendar item
+            extendedCalendarItem.ParticipantsList = await _participantRepository.GetItems(p => p.CalendarItemId.Equals(extendedCalendarItem.Id));
             // Set TTL for comment the same as for CalendarItem
             System.TimeSpan diffTime = calendarItem.StartDate.Subtract(DateTime.Now);
             comment.TimeToLive = serverSettings.AutoDeleteAfterDays * 24 * 3600 + (int)diffTime.TotalSeconds;
@@ -73,6 +83,12 @@ namespace MeetUpPlanner.Functions
             }
 
             comment = await _cosmosRepository.UpsertItem(comment);
+
+            if (!String.IsNullOrEmpty(comment.Comment))
+            { 
+                await _subscriptionRepository.NotifyParticipants(extendedCalendarItem, comment.AuthorFirstName, comment.AuthorLastName, comment.Comment);
+            }
+
             BackendResult result = new BackendResult(true);
 
             return new OkObjectResult(result);
