@@ -8,6 +8,23 @@ self.addEventListener('install', event => {
 });
 self.addEventListener('activate', event => event.waitUntil(onActivate(event)));
 self.addEventListener('fetch', event => event.respondWith(onFetch(event)));
+self.addEventListener('push', event => {
+    const payload = event.data.json();
+    event.waitUntil(
+        self.registration.showNotification('MeetUpPlanner', {
+            body: payload.message,
+            icon: 'icon-512.png',
+            vibrate: [100, 50, 100],
+            data: { url: payload.url }
+        })
+    );
+});
+
+self.addEventListener('notificationclick', event => {
+    event.notification.close();
+    event.waitUntil(clients.openWindow(event.notification.data.url));
+});
+
 
 const cacheNamePrefix = 'offline-cache-';
 const cacheName = `${cacheNamePrefix}${self.assetsManifest.version}`;

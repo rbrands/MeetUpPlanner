@@ -68,7 +68,7 @@
     }
 </div>
 <div class="alert alert-info" role="alert" hidden="@(!_noMeetUps)">
-    @_noMeetUpsMessage
+    @((MarkupString)_noMeetUpsMessage)
 </div>
 
 @code {
@@ -112,18 +112,29 @@
         AppStateStore.Tenant = TenantConfig.GetTenant(NavigationManager.BaseUri);
         PrepareHttpClient();
         AppStateStore.ClientSettings = await Http.GetFromJsonAsync<ClientSettings>("Util/clientsettings");
-        await ReadData();
+        if (AppStateStore.ClientSettings.AppLocked)
+        {
+            _noMeetUps = true;
+            if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.LockedMessage))
+            {
+                _noMeetUpsMessage = AppStateStore.ClientSettings.LockedMessage;
+            }
+        }
+        else
+        {
+            await ReadData();
+        }
         hubConnection = new HubConnectionBuilder()
-             .WithUrl(NavigationManager.ToAbsoluteUri("/broadcastHub"))
-             .WithAutomaticReconnect()
-             .Build();
+         .WithUrl(NavigationManager.ToAbsoluteUri("/broadcastHub"))
+         .WithAutomaticReconnect()
+         .Build();
         await hubConnection.StartAsync();
         AppStateStore.NotifyStateChanged();
     }
     protected override void OnInitialized()
     {
         _editContext = new EditContext(_guest);
-        _noMeetUpsMessage = $"Aktuell werden keine Ausfahrten {Scope} angeboten. Aber das kann sich natürlich ändern, also später noch einmal probieren.";
+        _noMeetUpsMessage = $"<p>Aktuell werden keine Ausfahrten {Scope} angeboten. Aber das kann sich natürlich ändern, also später noch einmal probieren.</p>";
 
     }
 

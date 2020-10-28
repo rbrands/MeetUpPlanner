@@ -8,6 +8,7 @@
 @inject DialogService dialogService
 @inject BlazorTimer Timer
 @inject BlazorTimer Timer2
+@inject IJSRuntime JSRuntime
 @implements IDisposable
 @using Newtonsoft.Json
 @using System.IO
@@ -208,7 +209,8 @@
                 try
                 {
                     await hubConnection.StartAsync();
-                } catch (Exception)
+                }
+                catch (Exception)
                 {
                 }
             };
@@ -224,6 +226,7 @@
             await ReadData();
             dialogService.OnClose += CloneConfirmed;
 
+            await RequestNotificationSubscriptionAsync();
         }
         else
         {
@@ -438,7 +441,8 @@
             try
             {
                 _ = hubConnection.DisposeAsync();
-            } catch (Exception)
+            }
+            catch (Exception)
             {
 
             }
@@ -514,4 +518,32 @@
         await ReadData();
     }
 
+    async Task RequestNotificationSubscriptionAsync()
+    {
+        if (AppStateStore.NotificationSubscriptionRequested)
+        {
+            return;
+        }
+        try
+        {
+            AppStateStore.NotificationSubscriptionRequested = true;
+            var subscription = await JSRuntime.InvokeAsync<NotificationSubscription>("blazorPushNotifications.requestSubscription");
+            // todo await OrdersClient.SubscribeToNotifications(subscription);
+            if (null != subscription)
+            {
+                subscription.UserFirstName = AppStateStore.FirstName;
+                subscription.UserLastName = AppStateStore.LastName;
+                subscription.PlannerUrl = Http.BaseAddress.ToString();
+                PrepareHttpClient();
+                await Http.PostAsJsonAsync<NotificationSubscription>($"util/writenotificationsubscription", subscription);
+            }
+        }
+        catch (Exception ex)
+        {
+            notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Fehler", Detail = ex.Message, Duration = 4000 });
+        }
+    }
+
 }
+
+

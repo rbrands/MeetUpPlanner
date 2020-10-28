@@ -164,9 +164,17 @@
         // Keyword check at server side
         AppStateStore.KeyWord = AppStateStore.KeyWord.Trim();
         PrepareHttpClient();
-        KeywordCheck keywordCheck = await Http.GetFromJsonAsync<KeywordCheck>($"Util/checkkeyword");
-        KeywordCheck.IsAdmin = keywordCheck.IsAdmin;
-        KeywordCheck.IsUser = keywordCheck.IsUser;
+        try
+        {
+            KeywordCheck keywordCheck = await Http.GetFromJsonAsync<KeywordCheck>($"Util/checkkeyword");
+            KeywordCheck.IsAdmin = keywordCheck.IsAdmin;
+            KeywordCheck.IsUser = keywordCheck.IsUser;
+        } catch (Exception ex)
+        {
+            _hideAlert = false;
+            _disableStartButton = true;
+            _alertMessage = $"<p>Der MeetUpPlanner ist momentan offline, bitte später noch einmal versuchen.</p><p>Fehlermeldung: {ex.Message}</p>";
+        }
         AppStateStore.NotifyStateChanged();
         if (!KeywordCheck.IsUser && !KeywordCheck.IsAdmin)
         {
