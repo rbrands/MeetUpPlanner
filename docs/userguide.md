@@ -13,7 +13,7 @@ Hier sollen die etwas versteckteren Features beschrieben werden.
    
 Die Installation ist ganz einfach: Auf Android, auf dem PC im Edge und Chrome-Browser wie üblich den MeetUpPlanner aufrufen. Oben rechts in der Addresszeile ist ein kleines +, über das man die Installation startet. Unter iOS im Safari-Browser geht man auf "Teilen" und dann "Zum Home-Bildschirm". Der MeetUpPlanner wird dann mit Logo auf dem Home-Bildschirm oder im Start-Menü (PC) angezeigt und kann von da auch einfach wieder deinstalliert werden.
 
-Außerdem ist es möglich, sich auf Android, PC (kurzum Chrome-basierte Browser, leider noch kein iOS/Safar) über Änderungen an Ausfahrten (Absage, Terminänderungen usw.) und über neue Kommentare benachrichtigen zu lassen. Beim Aufruf der Kalendarseite gibt es eine entsprechende Popup-Abfrage oder je nach Einsellung in der Adresszeile ein kleines "Glöckchen", über das man die Benachrichtungen zulassen oder eben auch ablehnen kann.
+Außerdem ist es möglich, sich auf Android, PC (kurzum Chrome-basierte Browser, leider noch kein iOS/Safari) über Änderungen an Ausfahrten (Absage, Terminänderungen usw.) und über neue Kommentare benachrichtigen zu lassen. Beim Aufruf der Kalendarseite gibt es eine entsprechende Popup-Abfrage oder je nach Einsellung in der Adresszeile ein kleines "Glöckchen", über das man die Benachrichtungen zulassen oder eben auch ablehnen kann.
 </dd>
 
 <dt>"Private" Ausfahrten</dt>
