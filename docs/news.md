@@ -1,5 +1,9 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
+*28.10.2020*
+- Push-Benachrichtigung: Man kann sich jetzt für Ausfahrten, an denen man teilnimmt, über Änderungen und Kommentare benachrichtigen lassen. iOS (also iPhone usw.) unterstützt diese "Web Pushnachrichten" noch nicht, da muss also darauf verzichtet werden
+- Wird der MeetUpPlanner gesperrt (über die Einstellungen in "Administration") konnte auf die Gäste-Seiten weiterhin zugegriffen werden. Diese "Lücke" ist jetzt gestopft, d.h. auch diese Seiten sind gesperrt.
+
 *24.10.2020*
 - Der MeetUpPlanner ist jetzt eine PWA (["Progressive Web Application"](https://de.wikipedia.org/wiki/Progressive_Web_App)). Eine PWA lässt sich vom Browser aus wie eine App installieren. Vorteil: Die App ist schneller aktiv und bleibt auch länger aktiv. Hinweise zur Installation im Userguide. Aber vor allem ist dies die Voraussetzung für das nächste Feature, das implementiert wird: Push-Benachrichtungen, für Absagen von Ausfahrten, Kommentaren usw.
 - Explizite Fehlermeldung wenn keine Netzverbindung da ist.
