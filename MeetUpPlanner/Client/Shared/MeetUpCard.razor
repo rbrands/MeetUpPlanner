@@ -15,7 +15,7 @@
                 <a href="@CalendarItem.DirectionsLink" class="btn btn-outline-success btn-sm" role="button" target="_blank" tite="Startort"><span class="oi oi-map-marker"></span></a>
             }
         </em>
-        @if (!String.IsNullOrEmpty(CalendarItem.PrivateKeyword))
+        @if (!String.IsNullOrEmpty(CalendarItem.PrivateKeyword) && !IsGuest)
         {
             <span class="badge badge-danger"><span class="oi oi-key" title="Private Ausfahrt"></span> @CalendarItem.PrivateKeyword</span>
         }
