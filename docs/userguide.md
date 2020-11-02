@@ -23,13 +23,21 @@ Außerdem ist es möglich, sich auf Android, PC (kurzum Chrome-basierte Browser,
 
 <dt>"Private" Ausfahrten</dt>
   <dd>
-    Normalerweise sind alle Termine, die angelegt werden, für alle sichtbar, die sich mit dem normalen Benutzer-Schlüsselwort oder dem Admin-Schlüsselwort anmelden. Wird aber ein Termin angelegt oder ein existierender geändert, gibt es weiter unten über das Eingabefeld "Private Ausfahrt?" die Möglichkeit, für den Termin ein Schlüsselwort zu vereinbaren. Ein so gekennzeichneter Termin wird anderen Benutzern nur dann angezeigt, wenn sie eben dieses Schlüsselwort in einem der drei Felder "Optionale Schlüsselwörter für private Ausfahrten" auf der Startseite eingeben.      
+    <p>
+      Normalerweise sind alle Termine, die angelegt werden, für alle sichtbar, die sich mit dem normalen Benutzer-Schlüsselwort oder dem Admin-Schlüsselwort anmelden. Wird aber ein Termin angelegt oder ein existierender geändert, gibt es weiter unten über das Eingabefeld "Private Ausfahrt?" die Möglichkeit, für den Termin ein Schlüsselwort zu vereinbaren. Ein so gekennzeichneter Termin wird anderen Benutzern nur dann angezeigt, wenn sie eben dieses Schlüsselwort in einem der drei Felder "Optionale Schlüsselwörter für private Ausfahrten" auf der Startseite eingeben.
+  </p>
+  <p>
     Beispiel: Wenn eine vereinsinterne Ausfahrt organisiert werden soll, könnte diese mit dem Schlüsselwort "MeinClub" versehen werden. Dieses Schlüsselwort wird den Vereinsmitgliedern per Mail/SMS mit geteilt. Die geben "MeinClub" im Feld "Optionale Schlüsselwörter" ein und sehen so - und nur sie - die besagte Ausfahrt. Dies kann also genutzt werden, um den Kreis der potentiellen Teilnehmer einzuschränken und trotzdem die Nachverfolgbarkeit zu gewährleisten.
+  </p>
   </dd>
   <dt>Gäste einladen</dt>
   <dd>
-    Um den MeetUpPlanner zu nutzen, wird normalerweise ein "Schlüsselwort" benötigt, nicht nur um ggf. Ausfahrten anzulegen, sondern auch für die Anmeldung. Um jemanden spontan oder auch gezielt für nur eine Ausfahrt mit zu nehmen, gibt es die "Gastfunktion". Über das Icon <img src="https://raw.githubusercontent.com/iconic/open-iconic/master/svg/external-link.svg" height="14" /> gelangt man auf eine Einladungsseite. Diese enthält neben einen Link, der per Mail/SMS oder Messenger verschickt werden kann auch einen QR-Code, der ebenfalls zur Gastseite führt. Auf dieser kann sich der Gast nur mit Vor-/Nachnamen und Kontaktinfo (Telefon oder E-Mail) für diese eine Ausfahrt an- und ggf. auch abmelden. 
+    <p>
+      Um den MeetUpPlanner zu nutzen, wird normalerweise ein "Schlüsselwort" benötigt, nicht nur um ggf. Ausfahrten anzulegen, sondern auch für die Anmeldung. Um jemanden spontan oder auch gezielt für nur eine Ausfahrt mit zu nehmen, gibt es die "Gastfunktion". Über das Icon <img src="https://raw.githubusercontent.com/iconic/open-iconic/master/svg/external-link.svg" height="14" /> gelangt man auf eine Einladungsseite. Diese enthält neben einen Link, der per Mail/SMS oder Messenger verschickt werden kann auch einen QR-Code, der ebenfalls zur Gastseite führt. Auf dieser kann sich der Gast nur mit Vor-/Nachnamen und Kontaktinfo (Telefon oder E-Mail) für diese eine Ausfahrt an- und ggf. auch abmelden. 
+  </p>
+  <p>
     Sollen Gäste zu einer Gruppe von Ausfahrten (Beispiel "WTT") eingeladen werden, gibt es es eine weitere Möglichkeit: Für eine Ausfahrt kann ein "Scope" für Gäste angegeben werden. Die so gekennzeichneten Ausfahrten sind dann unter dem Link /guests/scope erreichbar. Die Gäste können sich dort anmelden und auch wieder abmelden, sie sehen allerdings keine Namen und auch keine Kommentare.
+  </p>
   </dd>  
   
   <dt>Termin kopieren</dt>
@@ -49,8 +57,12 @@ Außerdem ist es möglich, sich auf Android, PC (kurzum Chrome-basierte Browser,
   
   <dt>Ausfahrt absagen</dt>
   <dd>
-    Manchmal muss man eine Ausfahrt auch absagen, wenn sich z.B. nicht genug Mitfahrer finden oder das Wetter einfach zu schlecht ist. Als Guide einer Ausfahrt oder als Admin kann man eine Ausfahrt zwar über den Button <img src="https://raw.githubusercontent.com/iconic/open-iconic/master/svg/trash.svg" height="14"/> löschen. Nach einer Rückfrage, ob man wirklich löschen will, wird die Ausfahrt komplett inkl. Anmeldungen und Kommentaren gelöscht. Es gibt dann keine Möglichkeit, die anderen entsprechend zu informieren. Der bessere Weg ist hier, eine Ausfahrt zunächst über <img src="https://raw.githubusercontent.com/iconic/open-iconic/master/svg/x.svg" height="14"/> als abgesagt zu markieren und vielleicht noch einen Kommentar einzufügen oder den Beschreibungstext zu ändern. Eine Anmeldung zur Ausfahrt ist dann nicht mehr möglich (Abmeldung schon). Jeder kann und sollte so vor der Ausfahrt noch einmal nach schauen, ob die Ausfahrt auch stattfindet. Eine Ausfahrt, die als abgesagt markiert wurde, wird auch in der Liste zur Kontaktverfolgung nicht berücksichtigt. 
+    <p>
+      Manchmal muss man eine Ausfahrt auch absagen, wenn sich z.B. nicht genug Mitfahrer finden oder das Wetter einfach zu schlecht ist. Als Guide einer Ausfahrt oder als Admin kann man eine Ausfahrt zwar über den Button <img src="https://raw.githubusercontent.com/iconic/open-iconic/master/svg/trash.svg" height="14"/> löschen. Nach einer Rückfrage, ob man wirklich löschen will, wird die Ausfahrt komplett inkl. Anmeldungen und Kommentaren gelöscht. Es gibt dann keine Möglichkeit, die anderen entsprechend zu informieren. Der bessere Weg ist hier, eine Ausfahrt zunächst über <img src="https://raw.githubusercontent.com/iconic/open-iconic/master/svg/x.svg" height="14"/> als abgesagt zu markieren und vielleicht noch einen Kommentar einzufügen oder den Beschreibungstext zu ändern. Eine Anmeldung zur Ausfahrt ist dann nicht mehr möglich (Abmeldung schon). Jeder kann und sollte so vor der Ausfahrt noch einmal nach schauen, ob die Ausfahrt auch stattfindet. Eine Ausfahrt, die als abgesagt markiert wurde, wird auch in der Liste zur Kontaktverfolgung nicht berücksichtigt. 
+  </p>
+  <p>
     Die Absage kann auch leicht wieder rückgängig gemacht werden - einfach noch einmal den Button <img src="https://raw.githubusercontent.com/iconic/open-iconic/master/svg/x.svg" height="14"/> drücken ...
+  </p>
   </dd>
   <dt>Mindestteilnehmerzahl</dt>
   <dd>
@@ -103,8 +115,12 @@ Außerdem ist es möglich, sich auf Android, PC (kurzum Chrome-basierte Browser,
   
   <dt>Wechsel von Ausfahrten "mit Guide" zu Ausfahrten "ohne Guide"</dt>
   <dd>
+  <p>
     Ausfahrten können von Admins auch "ohne Guide" angelegt werden, z.B. für regelmäßige Termine, für die kein Guide benötigt wird. Falls eine Ausfahrt geändert wird von "ohne Guide" zu "mit Guide" wird der aktuelle Nutzer (also ein Admin) als neuer Guide eingetragen. In einem weiteren Schritt kann die Ausfahrt ggf. dann einem anderen Teilnehmer zugewiesen werden.
+  </p>
+  <p>
     Wird eine Ausfahrt von "mit Guide" zu "ohne Guide" geändert, wird der aktuelle Guide als "einfacher" Teilnehmer hinzugefügt.
+  </p>
   </dd>
   
   <dt>Infoboxen</dt>
