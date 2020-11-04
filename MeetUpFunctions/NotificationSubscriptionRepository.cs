@@ -75,9 +75,10 @@ namespace MeetUpPlanner.Functions
                             var pushSubscription = new PushSubscription(subscription.Url, subscription.P256dh, subscription.Auth);
                             var payload = JsonSerializer.Serialize(new
                             {
-                                message = $"{calendarItem.Title}: {message}",
+                                title = calendarItem.Title,
+                                message,
                                 url = subscription.PlannerUrl,
-                            });
+                            }); ;
                             _logger.LogInformation($"NotifiyParticpants.SendNotificationAsync({pushSubscription.Endpoint})");
                             await webPushClient.SendNotificationAsync(pushSubscription, payload, vapidDetails);
                         }
