@@ -99,7 +99,7 @@ namespace MeetUpPlanner.Server.Repositories
                             .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
                             .WithHeader(HEADER_KEYWORD, keyword)
                             .WithHeader(HEADER_TENANT, tenant)
-                            .PostJsonAsync(subscription);
+                            .PostJsonAsync(subscription );
 
             return new OkResult();
         }

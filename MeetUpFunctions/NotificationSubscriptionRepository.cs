@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 using WebPush;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using System.Security.Policy;
+using System.Text.Encodings.Web;
+using System.Runtime.CompilerServices;
 
 namespace MeetUpPlanner.Functions
 {
@@ -28,14 +31,22 @@ namespace MeetUpPlanner.Functions
 
         public async Task<NotificationSubscription> WriteNotificationSubscription(NotificationSubscription subscription)
         {
-            subscription.LogicalKey = subscription.Url;
-            if (!String.IsNullOrWhiteSpace(subscription.Tenant))
+
+            // Check if there is already a subscription
+            NotificationSubscription storedSubscription = (await _cosmosDbRepository.GetItems(s => s.Url.Equals(subscription.Url))).FirstOrDefault();
+            if (null != storedSubscription)
             {
-                subscription.LogicalKey += "-" + subscription.Tenant;
+                subscription.Id = storedSubscription.Id;
             }
             subscription.TimeToLive = Constants.SUBSCRIPTION_TTL;
 
             return await _cosmosDbRepository.UpsertItem(subscription);
+        }
+
+        public async Task<IEnumerable<NotificationSubscription>> GetAllNotificationSubscriptions()
+        {
+            IEnumerable<NotificationSubscription> subscriptions = await _cosmosDbRepository.GetItems();
+            return subscriptions;
         }
 
         public async Task NotifyParticipants(ExtendedCalendarItem calendarItem, string firstName, string lastName, string message)
