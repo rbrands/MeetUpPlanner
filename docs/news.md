@@ -1,5 +1,10 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
+*Demnächst*
+- "Private Schlüsselwörter" wurden bei Anzeige für Termine angezeigt. Diese werden jetzt hier ausgeblendet.
+- Bei Push-Nachrichten wird jetzt der Titel einer Ausfahrt als Überschrift verwendet.
+- Interne Änderung: Die Konfiguration der Mandanten erfolgt jetzt nicht mehr über eine Tabelle im Programm-Code sondern in der Datenbank. Dafür gibt es ein eigenes Tool unter https://admin.meetupplanner.de 
+
 *28.10.2020*
 - Push-Benachrichtigung: Man kann sich jetzt für Ausfahrten, an denen man teilnimmt, über Änderungen und Kommentare benachrichtigen lassen. iOS (also iPhone usw.) unterstützt diese "Web Pushnachrichten" noch nicht, da muss also darauf verzichtet werden
 - Wird der MeetUpPlanner gesperrt (über die Einstellungen in "Administration") konnte auf die Gäste-Seiten weiterhin zugegriffen werden. Diese "Lücke" ist jetzt gestopft, d.h. auch diese Seiten sind gesperrt.
