@@ -72,12 +72,12 @@
 </div>
 
 @code {
-    [Parameter]
-    public string Scope { get; set; }
-    Participant _guest { get; set; } = new Participant();
-    const string PERM_STORAGE = "permGuestState";
-    PermAppState _permAppState = new PermAppState();
-    Boolean _usageRightsAccepted = false;
+        [Parameter]
+        public string Scope { get; set; }
+        Participant _guest { get; set; } = new Participant();
+        const string PERM_STORAGE = "permGuestState";
+        PermAppState _permAppState = new PermAppState();
+        Boolean _usageRightsAccepted = false;
     private HubConnection hubConnection;
     private IList<ExtendedCalendarItem> calendarItems = new List<ExtendedCalendarItem>();
     private EditContext _editContext;
@@ -98,7 +98,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        AppStateStore.ClientSettings = new ClientSettings();
         if (await LocalStorage.ContainKeyAsync(PERM_STORAGE))
         {
             // Read the user data if available from browser storage
@@ -109,15 +108,26 @@
             _guest.ParticipantAdressInfo = _permAppState.PhoneMail;
         }
         // Get client settings from server
-        AppStateStore.Tenant = TenantConfig.GetTenant(NavigationManager.BaseUri);
         PrepareHttpClient();
-        AppStateStore.ClientSettings = await Http.GetFromJsonAsync<ClientSettings>("Util/clientsettings");
-        if (AppStateStore.ClientSettings.AppLocked)
+        TenantClientSettings tenantClientSettings = await Http.GetFromJsonAsync<TenantClientSettings>("Util/tenantclientsettings");
+        AppStateStore.Tenant = tenantClientSettings.Tenant;
+        AppStateStore.ClientSettings = tenantClientSettings.Client;
+        if (AppStateStore.Tenant.IsLocked || AppStateStore.ClientSettings.AppLocked)
         {
             _noMeetUps = true;
-            if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.LockedMessage))
+            if (AppStateStore.Tenant.IsLocked)
             {
-                _noMeetUpsMessage = AppStateStore.ClientSettings.LockedMessage;
+                if (!String.IsNullOrEmpty(AppStateStore.Tenant.LockMessage))
+                {
+                    _noMeetUpsMessage = AppStateStore.Tenant.LockMessage;
+                }
+            }
+            else
+            {
+                if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.LockedMessage))
+                {
+                    _noMeetUpsMessage = AppStateStore.ClientSettings.LockedMessage;
+                }
             }
         }
         else
@@ -236,8 +246,12 @@
         {
             if (!Http.DefaultRequestHeaders.Contains("x-meetup-tenant"))
             {
-                Http.DefaultRequestHeaders.Add("x-meetup-tenant", AppStateStore.Tenant.Name);
+                Http.DefaultRequestHeaders.Add("x-meetup-tenant", AppStateStore.Tenant.PrimaryUrl);
             }
+        }
+        if (!Http.DefaultRequestHeaders.Contains("x-meetup-tenant-url"))
+        {
+            Http.DefaultRequestHeaders.Add("x-meetup-tenant-url", NavigationManager.BaseUri);
         }
     }
 

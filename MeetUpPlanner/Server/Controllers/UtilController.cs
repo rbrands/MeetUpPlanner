@@ -45,6 +45,14 @@ namespace MeetUpPlanner.Server.Controllers
             return functionsVersion;
         }
 
+        [HttpGet("tenantclientsettings")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetTenantClientSettings([FromHeader(Name = "x-meetup-tenant-url")] string tenantUrl)
+        {
+            TenantClientSettings tenantClientSettings = await _meetUpFunctions.GetTenantClientSettings(tenantUrl);
+            return Ok(tenantClientSettings);
+        }
+
         [HttpGet("clientsettings")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetClientSettings([FromHeader(Name = "x-meetup-tenant")] string tenant)

@@ -100,6 +100,29 @@ namespace MeetUpPlanner.Functions
             }
             return results;
         }
+        /// <summary>
+        ///  Gets the first item matching the given condition, null if not found.
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public async Task<T> GetFirstItemOrDefault(Expression<Func<T, bool>> predicate)
+        {
+            Container container = _cosmosClient.GetDatabase(_cosmosDbDatabase).GetContainer(_cosmosDbContainer);
+            PartitionKey partitionKey = new PartitionKey(typeof(T).Name);
+
+            FeedIterator<T> itemIterator = container.GetItemLinqQueryable<T>(true, null, new QueryRequestOptions { MaxItemCount = 1, PartitionKey = partitionKey })
+                                             .Where(d => d.Type == typeof(T).Name)
+                                             .Where<T>(predicate)
+                                             .ToFeedIterator<T>();
+            List<T> results = new List<T>();
+            while (itemIterator.HasMoreResults)
+            {
+                results.AddRange(await itemIterator.ReadNextAsync());
+            }
+            T firstItem = results.FirstOrDefault();
+            return firstItem;
+        }
+
         public async Task<IEnumerable<T>> GetItems()
         {
             Container container = _cosmosClient.GetDatabase(_cosmosDbDatabase).GetContainer(_cosmosDbContainer);

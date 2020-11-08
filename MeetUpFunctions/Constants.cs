@@ -8,7 +8,8 @@ namespace MeetUpPlanner.Functions
     {
         public const string HEADER_KEYWORD = "x-meetup-keyword";
         public const string HEADER_TENANT = "x-meetup-tenant";
-        
+        public const string HEADER_TENANT_URL = "x-meetup-tenant-url";
+
         public const string KEY_SERVER_SETTINGS = "serversettings";
         public const string KEY_CLIENT_SETTINGS = "clientsettings";
         

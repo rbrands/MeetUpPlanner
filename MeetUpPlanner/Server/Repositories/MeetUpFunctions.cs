@@ -17,6 +17,7 @@ namespace MeetUpPlanner.Server.Repositories
         public const string HEADER_KEYWORD = "x-meetup-keyword";
         public const string HEADER_FUNCTIONS_KEY = "x-functions-key";
         public const string HEADER_TENANT = "x-meetup-tenant";
+        public const string HEADER_TENANT_URL = "x-meetup-tenant-url";
 
         public MeetUpFunctions(MeetUpFunctionsConfig functionsConfig)
         {
@@ -33,6 +34,15 @@ namespace MeetUpPlanner.Server.Repositories
                             .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
                             .GetStringAsync();
             return version;
+        }
+        public async Task<TenantClientSettings> GetTenantClientSettings(string tenantUrl)
+        {
+            TenantClientSettings tenantClientSettings;
+            tenantClientSettings = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/GetTenantClientSettings"
+                            .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
+                            .WithHeader(HEADER_TENANT_URL, tenantUrl)
+                            .GetJsonAsync<TenantClientSettings>();
+            return tenantClientSettings;
         }
         public async Task<ClientSettings> GetClientSettings(string tenant)
         {
