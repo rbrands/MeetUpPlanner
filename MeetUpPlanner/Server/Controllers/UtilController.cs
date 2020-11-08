@@ -20,7 +20,7 @@ namespace MeetUpPlanner.Server.Controllers
     {
         private readonly MeetUpFunctions _meetUpFunctions;
         private readonly ILogger<UtilController> logger;
-        const string serverVersion = "2020-09-27";
+        const string serverVersion = "2020-11-08";
         string functionsVersion = "tbd";
 
         public UtilController(ILogger<UtilController> logger, MeetUpFunctions meetUpFunctions)
@@ -43,6 +43,14 @@ namespace MeetUpPlanner.Server.Controllers
             functionsVersion = await _meetUpFunctions.GetVersion();
             
             return functionsVersion;
+        }
+
+        [HttpGet("tenantclientsettings")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetTenantClientSettings([FromHeader(Name = "x-meetup-tenant-url")] string tenantUrl)
+        {
+            TenantClientSettings tenantClientSettings = await _meetUpFunctions.GetTenantClientSettings(tenantUrl);
+            return Ok(tenantClientSettings);
         }
 
         [HttpGet("clientsettings")]

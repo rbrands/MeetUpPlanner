@@ -51,11 +51,11 @@
 
     private void PrepareHttpClient()
     {
-        if (null != AppStateStore.Tenant?.Name)
+        if (null != AppStateStore.Tenant?.TenantKey)
         {
             if (!Http.DefaultRequestHeaders.Contains("x-meetup-tenant"))
             {
-                Http.DefaultRequestHeaders.Add("x-meetup-tenant", AppStateStore.Tenant.Name);
+                Http.DefaultRequestHeaders.Add("x-meetup-tenant", AppStateStore.Tenant.TenantKey);
             }
         }
         if (!Http.DefaultRequestHeaders.Contains("x-meetup-keyword"))

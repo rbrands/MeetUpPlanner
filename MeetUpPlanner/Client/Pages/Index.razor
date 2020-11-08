@@ -58,7 +58,7 @@
             <InputText id="lastName" area-describedby="nameHelp" class="form-control" @bind-Value="AppStateStore.LastName" autocomplete="on" placeholder="Nachname" title="Nachname" />
         </div>
     </div>
-    <div class="form-group" hidden="@(!AppStateStore.Tenant.ClubMembershipAllowed)">
+    <div class="form-group" hidden="@(!AppStateStore.Tenant.ClubMemberShipAllowed)">
         <div class="form-check">
             <InputCheckbox id="addressNotNeeded" @oninput="@(e => { AppStateStore.PhoneMail = ((bool)e.Value ? "Vereinsmitglied" : String.Empty); })" aria-describedby="addressNotNeededHelp" class="form-check-input" @bind-Value="AppStateStore.NoAddressNeeded"></InputCheckbox>
             <label for="addressNotNeeded" class="form-check-label">Vereinsmitglied?</label>
@@ -111,9 +111,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        AppStateStore.Tenant = TenantConfig.GetTenant(NavigationManager.BaseUri);
-        AppStateStore.ClientSettings = new ClientSettings();
-
         if (await localStorage.ContainKeyAsync("permAppState"))
         {
             // Read the user data if available from browser storage
@@ -135,7 +132,9 @@
         PrepareHttpClient();
         try
         {
-            AppStateStore.ClientSettings = await Http.GetFromJsonAsync<ClientSettings>("Util/clientsettings");
+            TenantClientSettings tenantClientSettings = await Http.GetFromJsonAsync<TenantClientSettings>("Util/tenantclientsettings");
+            AppStateStore.Tenant = tenantClientSettings.Tenant;
+            AppStateStore.ClientSettings = tenantClientSettings.Client;
         }
         catch(Exception ex)
         {
@@ -143,10 +142,14 @@
             _disableStartButton = true;
             _alertMessage = $"<p>Der MeetUpPlanner ist momentan offline, bitte später noch einmal versuchen.</p><p>Fehlermeldung: {ex.Message}</p>";
         }
-        if (AppStateStore.ClientSettings.AppLocked)
+        if (AppStateStore.Tenant.IsLocked || AppStateStore.ClientSettings.AppLocked)
         {
             _hideAlert = false;
-            _alertMessage = AppStateStore.ClientSettings.LockedMessage;
+            _alertMessage = AppStateStore.Tenant.LockMessage;
+            if (AppStateStore.ClientSettings.AppLocked)
+            {
+                _alertMessage = AppStateStore.ClientSettings.LockedMessage;
+            }
             if (String.IsNullOrEmpty(_alertMessage))
             {
                 _alertMessage = "<p>Der Zugang zum MeetUpPlanner ist zur Zeit gesperrt.";
@@ -203,9 +206,9 @@
         }
         if (KeywordCheck.IsUser)
         {
-            if (AppStateStore.ClientSettings.AppLocked && !KeywordCheck.IsAdmin)
+            if (AppStateStore.Tenant.IsLocked || (AppStateStore.ClientSettings.AppLocked && !KeywordCheck.IsAdmin))
             {
-                notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Kein Zugang", Detail = "Der MeetUpPlanner ist zur Zeit gesperrt..", Duration = 4000 });
+                notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Kein Zugang", Detail = "Der MeetUpPlanner ist zur Zeit gesperrt.", Duration = 4000 });
             }
             else
             {
@@ -215,12 +218,16 @@
     }
     private void PrepareHttpClient()
     {
-        if (null != AppStateStore.Tenant?.Name)
+        if (null != AppStateStore.Tenant?.TenantKey)
         {
             if (!Http.DefaultRequestHeaders.Contains("x-meetup-tenant"))
             {
-                Http.DefaultRequestHeaders.Add("x-meetup-tenant", AppStateStore.Tenant.Name);
+                Http.DefaultRequestHeaders.Add("x-meetup-tenant", AppStateStore.Tenant.TenantKey);
             }
+        }
+        if (!Http.DefaultRequestHeaders.Contains("x-meetup-tenant-url"))
+        {
+            Http.DefaultRequestHeaders.Add("x-meetup-tenant-url", NavigationManager.BaseUri);
         }
         Http.DefaultRequestHeaders.Remove("x-meetup-keyword");
         Http.DefaultRequestHeaders.Add("x-meetup-keyword", AppStateStore.KeyWord);

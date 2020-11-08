@@ -17,7 +17,7 @@ namespace MeetUpPlanner.Client
         public event Action OnChange;
         public ClientSettings ClientSettings
         {
-            get { return _clientSettings;  }
+            get { return _clientSettings; }
             set
             {
                 _clientSettings = value;
@@ -49,6 +49,11 @@ namespace MeetUpPlanner.Client
         public bool NotificationSubscriptionRequested { get; set; } = false;
 
         public void NotifyStateChanged() => OnChange?.Invoke();
+
+        public AppState()
+        {
+            _clientSettings = new ClientSettings();
+        }
 
     }
 }
