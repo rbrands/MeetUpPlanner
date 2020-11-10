@@ -71,21 +71,8 @@ Außerdem ist es möglich, sich auf Android, PC (kurzum Chrome-basierte Browser,
 </dl>
 
 ## Weitere Features für Admins
+Mit dem sog. "Admin-Schlüsselwort" stehen einem weitere Funktionen zur Verfügung:  
 <dl>
-  <dt>Begrüßungstexte konfigurieren</dt>
-  <dd>
-    Um Hinweise an die Nutzer zu geben, können in der Adminstration verschiedene Texte eingegeben und einfach geändert werden. Formatierung der Texte und das Einfügen von Links ist auch jeweils möglich. Folgende Texte können edititiert werden:
-    <ul>
-      <li>Welcome Nachricht: Text auf der Startseite inkl. optionalen Logo. Hier können direkt Hinweise darauf gegeben werden, wie der MeetUpPlanner genutzt werden sollte.</li>
-      <li>
-        Whiteboard Nachricht: Text der über der zentralen Seite mit den Ausfahrten steht. Auch hier können gut Hinweise auf die Regelungen um die Ausfahrten gegeben werden. Aber am besten kurz fassen, ansonsten müssen alle auf dem Handy immer erst nach unten scrollen, um die Ausfahrten zu sehen. Das kommt nicht so gut an ...
-      </li>
-      <li>
-        Nachricht für neue MeetUps: Dieser Text wird auf der Seite zur Anlage einer neuen Ausfahrt angezeigt. Also hier am besten ein kurzer Hinweis z.B. zur Gruppengröße oder andere Spielregeln.
-      </li>
-    </ul>
-  </dd>
-  
   <dt>Zusätzliche Teilnehmer</dt>
   <dd>
     Admins können auf zwei Arten zusätzliche Teilnehmer anmelden bzw. einladen: Zum einen können Admins eine Ausfahrt "überbuchen", d.h. sie können andere Teilnehmer hinzufügen auch wenn die maximale Teilnehmeranzahl überschritten ist. Dahinter steckt die Idee, dass es im Sinne der Nachverfolgbarkeit besser ist, jemanden zu registrieren auch wenn die Ausfahrt eigentlich voll ist, als sie/ihn "stillschweigend" mitfahren zu lassen.
@@ -106,13 +93,7 @@ Außerdem ist es möglich, sich auf Android, PC (kurzum Chrome-basierte Browser,
       </li>
     </ul>
   </dd>
-  
-  <dt>Einstellung "Sollen nur Admins MeetUps anlegen dürfen?"</dt>
-  <dd>
-    Diese Einstellung in der Administration regelt, wer MeetUps anlegen darf. Wird dies auf Admins eingeschränkt, können Nutzer, die nur das "normale" Schlüsselwort eingeben,
-    nur alle MeetUps sehen und sich an- und abmelden und auch kommentieren. Die Admins erstellen die MeetUps. Dies ist für Clubs gedacht, die nur einige Ausfahrten kontrolliert zu festen Termine anbieten wollen.
-  </dd>
-  
+   
   <dt>Wechsel von Ausfahrten "mit Guide" zu Ausfahrten "ohne Guide"</dt>
   <dd>
   <p>
@@ -127,14 +108,41 @@ Außerdem ist es möglich, sich auf Android, PC (kurzum Chrome-basierte Browser,
   <dd>
     Admins können sog. "Infoboxen" anlegen, die ähnlich wie Termine angezeigt werden können. So können zusätzliche Infos zur Bedienung, Wetteraussichten usw. angezeigt werden. Es lässt sich einstellen, ob Kommentare zugelassen sind und wie lange diese gespeichert werden sollen. Auf diese Weite kann ein "Schwarzes Brett" umgesetzt werden, über das die Nutzer sich austauschen können.
   </dd>
-  
-  <dt>"Badges" für Wochentage</dt>
+</dl>
+
+## Admin-Tool
+Die eigentliche Administration des MeetUpPlanners erfolgt über das Administrationstool https://admin.meetupplanner.de. Die Administrations-Funktionen wurden aus Sicherheitsgründen ausgelagert. Das Admin-Tool kann nur nach Authentifizierung und der Zuweisung entsprechender Rechte genutzt werden. Zur Authentifizierung werden die Dienste von Microsoft, Google, Facebook, Twitter oder GitHub unterstützt. Das heißt, man meldet sich mit seinem Account bei einem dieser Dienste an. Um Administrator zu werden, muss man zunächst mitteilen, mit welchem Account von den eben genannten Diensten man zugreifen möchte, damit ein entsprechender Einladungslink erstellt werden kann.
+
+Im Admin-Tool stehen die folgenden Funktionen (u.a.) zur Verfügung:
+<dl>
+  <dt>Begrüßungstexte konfigurieren</dt>
+  <dd>
+    Um Hinweise an die Nutzer zu geben, können in der Adminstration verschiedene Texte eingegeben und einfach geändert werden. Formatierung der Texte und das Einfügen von Links ist auch jeweils möglich. Folgende Texte können edititiert werden:
+    <ul>
+      <li>Welcome Nachricht: Text auf der Startseite inkl. optionalen Logo. Hier können direkt Hinweise darauf gegeben werden, wie der MeetUpPlanner genutzt werden sollte.</li>
+      <li>
+        Whiteboard Nachricht: Text der über der zentralen Seite mit den Ausfahrten steht. Auch hier können gut Hinweise auf die Regelungen um die Ausfahrten gegeben werden. Aber am besten kurz fassen, ansonsten müssen alle auf dem Handy immer erst nach unten scrollen, um die Ausfahrten zu sehen. Das kommt nicht so gut an ...
+      </li>
+      <li>
+        Nachricht für neue MeetUps: Dieser Text wird auf der Seite zur Anlage einer neuen Ausfahrt angezeigt. Also hier am besten ein kurzer Hinweis z.B. zur Gruppengröße oder andere Spielregeln.
+      </li>
+    </ul>
+  </dd>
+
+  <dt>Einstellung "Sollen nur Admins MeetUps anlegen dürfen?"</dt>
+  <dd>
+    Diese Einstellung in der Administration regelt, wer MeetUps anlegen darf. Wird dies auf Admins eingeschränkt, können Nutzer, die nur das "normale" Schlüsselwort eingeben,
+    nur alle MeetUps sehen und sich an- und abmelden und auch kommentieren. Die Admins erstellen die MeetUps. Dies ist für Clubs gedacht, die nur einige Ausfahrten kontrolliert zu festen Termine anbieten wollen.
+  </dd>
+
+<dt>"Badges" für Wochentage</dt>
   <dd>
     In der Administration können für die Wochentage sog. "Badges" konfiguriert werden, um Ausfahrten an diesen Tagen besonders zu kennzeichnen. Beispiel: "ScuDi" für den Scuderia Dienstag und "ScuSo" für den Sonntag. Außerdem ist es möglich, die Anlage von neuen Ausfahrten auf diese Tage zu beschränken.
   </dd>
-  
-  <dt>Zugang sperren</dt>
+
+<dt>Zugang sperren</dt>
   <dd>
     Der Zugang zum MeetUpPlanner kann gesperrt werden und eine Meldung dazu kann auch konfiguriert werden. Dies kann z.B. nötig sein, wenn die Corona-Schutzverordnung keine gemeinsamen Ausfahrten zulassen sollte.
   </dd>
 </dl>
+
