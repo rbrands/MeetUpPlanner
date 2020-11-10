@@ -24,7 +24,7 @@ namespace MeetUpPlanner.Functions
         private CosmosDBRepository<Participant> _participantRepository;
         private CosmosDBRepository<ExportLogItem> _logRepository;
 
-        public ExportTrackingReport(ILogger<GetExtendedCalendarItems> logger, 
+        public ExportTrackingReport(ILogger<ExportTrackingReport> logger, 
                                     ServerSettingsRepository serverSettingsRepository,
                                     CosmosDBRepository<CalendarItem> cosmosRepository,
                                     CosmosDBRepository<Participant> participantRepository,
