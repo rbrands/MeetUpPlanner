@@ -208,6 +208,8 @@
         {
             if (AppStateStore.Tenant.IsLocked || (AppStateStore.ClientSettings.AppLocked && !KeywordCheck.IsAdmin))
             {
+                KeywordCheck.IsUser = false;
+                AppStateStore.NotifyStateChanged();
                 notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Kein Zugang", Detail = "Der MeetUpPlanner ist zur Zeit gesperrt.", Duration = 4000 });
             }
             else
