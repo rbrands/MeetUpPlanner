@@ -5,345 +5,359 @@
 @using MeetUpPlanner.Shared
 @using Blazored.TextEditor
 
-<h2>Administration</h2>
+@if (localAdministrationDisabled)
+{
+    <div class="jumbotron">
+        <h2>Administration</h2>
+        <p>
+            Die Administration erfolgt nicht mehr direkt im MeetUpPlanner, sondern aus Sicherheitsgründen über das separate Admin-Tool <a href="https://admin.meetupplanner.de" title="Admin" target="_blank">https://admin.meetupplanner.de</a>
+            Für das Admin-Tool erfolgt eine separate Registrierung und Berechtigung.
+        </p>
+    </div>
+}
+else
+{
+    <h2>Administration</h2>
 
-<h4>Client Einstellungen</h4>
-<EditForm OnValidSubmit="SaveClientSettings" Model="@AppStateStore.ClientSettings">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <div class="form-group">
-        <label for="title">Titel</label>
-        <InputText id="title" aria-describedby="titleHelp" class="form-control" @bind-Value="AppStateStore.ClientSettings.Title" autocomplete="on" placeholder="Überschrift zum MeetUp-Planner" title="Überschrift." />
-        <small id="titleHelp" class="form-text text-muted">
-            Wird als Titel der Anwendung angezeigt statt dem neutralen "MeetUp-Planner".
-        </small>
-    </div>
-    <div class="form-group">
-        <label for="link">Link</label>
-        <InputText id="link" aria-describedby="linkHelp" class="form-control" @bind-Value="AppStateStore.ClientSettings.FurtherInfoLink" autocomplete="on" placeholder="Url zu externer Web-Seite" title="Überschrift." />
-        <small id="linkHelp" class="form-text text-muted">
-            Hier kann der Link zu einer externen Web-Seite angegeben werden.
-        </small>
-    </div>
-    <div class="form-group">
-        <label for="linkTitle">Titel des Links</label>
-        <InputText id="linkTitle" aria-describedby="linkTitleHelp" class="form-control" @bind-Value="AppStateStore.ClientSettings.FurtherInfoTitle" autocomplete="on" placeholder="Titel zum externen Link" title="Titel zum externen Link." />
-        <small id="linkTitleHelp" class="form-text text-muted">
-            Hier die "Beschriftung" des externen Links angeben.
-        </small>
-    </div>
-    <div class="form-group">
-        <label for="maxGroup">Max. Gruppengröße</label>
-        <InputNumber id="maxGroup" aria-describedby="maxGroupHelp" class="form-control" @bind-Value="AppStateStore.ClientSettings.MaxGroupSize" autocomplete="on" />
-        <small id="maxGroupHelp" class="form-text text-muted">
-            Festlegung der maximalen Gruppengröße.
-        </small>
-    </div>
-    <div class="form-group">
-        <label for="maxGroupForAdmins">Max. Gruppengröße für Administratoren</label>
-        <InputNumber id="maxGroupForAdmins" aria-describedby="maxGroupForAdminsHelp" class="form-control" @bind-Value="AppStateStore.ClientSettings.MaxGroupSizeForAdmins" autocomplete="on" />
-        <small id="maxGroupForAdminsHelp" class="form-text text-muted">
-            Festlegung der maximalen Gruppengröße für Administratoren, die größere Gruppen erlauben dürfen.
-        </small>
-    </div>
-    <div class="form-group">
-        <label for="nameDisplayLength">Anzahl Buchstaben Nachname</label>
-        <InputNumber id="nameDisplayLength" aria-describedby="nameDisplayLengthHelp" class="form-control" @bind-Value="AppStateStore.ClientSettings.NameDisplayLength" autocomplete="on" />
-        <small id="nameDisplayLengthHelp" class="form-text text-muted">
-            Anzahl Buchstaben, die vom Nachnamen angezeigt werden sollen. 0 für Anzeige des ganzen Namens.
-        </small>
-    </div>
-    <div class="form-group">
-        <label for="welcomeMessage">Welcome Nachricht</label>
-        <BlazoredTextEditor @ref="@htmlWelcomeMessage" Placeholder="Nachricht für Startseite">
-            <ToolbarContent>
-                <select class="ql-header">
-                    <option selected=""></option>
-                    <option value="1"></option>
-                    <option value="2"></option>
-                    <option value="3"></option>
-                    <option value="4"></option>
-                    <option value="5"></option>
-                </select>
-                <span class="ql-formats">
-                    <button class="ql-bold"></button>
-                    <button class="ql-italic"></button>
-                    <button class="ql-underline"></button>
-                </span>
-                <span class="ql-formats">
-                    <select class="ql-color"></select>
-                    <select class="ql-background"></select>
-                </span>
-                <span class="ql-formats">
-                    <button class="ql-list" value="ordered"></button>
-                    <button class="ql-list" value="bullet"></button>
-                </span>
-                <span class="ql-formats">
-                    <button class="ql-link"></button>
-                </span>
-            </ToolbarContent>
-        </BlazoredTextEditor>
-    </div>
-    <div class="form-group">
-        <label for="logoLink">Link zu einem Logo-Bild</label>
-        <InputText id="logoLink" aria-describedby="logoLinkHelp" class="form-control" @bind-Value="AppStateStore.ClientSettings.LogoLink" />
-        <small id="logoLinkHelp" class="form-text text-muted">
-            Hier kann der Link zu einem Logo angegeben werden.
-        </small>
-    </div>
-    <div class="form-group">
-        <label for="helpLink">Link zur Online-Hilfe</label>
-        <InputText id="helpLink" aria-describedby="helpLinkHelp" class="form-control" @bind-Value="AppStateStore.ClientSettings.HelpLink" />
-        <small id="helpLinkHelp" class="form-text text-muted">
-            Hinweise zur Bedienung.
-        </small>
-    </div>
+    <h4>Client Einstellungen</h4>
+    <EditForm OnValidSubmit="SaveClientSettings" Model="@AppStateStore.ClientSettings">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-group">
+            <label for="title">Titel</label>
+            <InputText id="title" aria-describedby="titleHelp" class="form-control" @bind-Value="AppStateStore.ClientSettings.Title" autocomplete="on" placeholder="Überschrift zum MeetUp-Planner" title="Überschrift." />
+            <small id="titleHelp" class="form-text text-muted">
+                Wird als Titel der Anwendung angezeigt statt dem neutralen "MeetUp-Planner".
+            </small>
+        </div>
+        <div class="form-group">
+            <label for="link">Link</label>
+            <InputText id="link" aria-describedby="linkHelp" class="form-control" @bind-Value="AppStateStore.ClientSettings.FurtherInfoLink" autocomplete="on" placeholder="Url zu externer Web-Seite" title="Überschrift." />
+            <small id="linkHelp" class="form-text text-muted">
+                Hier kann der Link zu einer externen Web-Seite angegeben werden.
+            </small>
+        </div>
+        <div class="form-group">
+            <label for="linkTitle">Titel des Links</label>
+            <InputText id="linkTitle" aria-describedby="linkTitleHelp" class="form-control" @bind-Value="AppStateStore.ClientSettings.FurtherInfoTitle" autocomplete="on" placeholder="Titel zum externen Link" title="Titel zum externen Link." />
+            <small id="linkTitleHelp" class="form-text text-muted">
+                Hier die "Beschriftung" des externen Links angeben.
+            </small>
+        </div>
+        <div class="form-group">
+            <label for="maxGroup">Max. Gruppengröße</label>
+            <InputNumber id="maxGroup" aria-describedby="maxGroupHelp" class="form-control" @bind-Value="AppStateStore.ClientSettings.MaxGroupSize" autocomplete="on" />
+            <small id="maxGroupHelp" class="form-text text-muted">
+                Festlegung der maximalen Gruppengröße.
+            </small>
+        </div>
+        <div class="form-group">
+            <label for="maxGroupForAdmins">Max. Gruppengröße für Administratoren</label>
+            <InputNumber id="maxGroupForAdmins" aria-describedby="maxGroupForAdminsHelp" class="form-control" @bind-Value="AppStateStore.ClientSettings.MaxGroupSizeForAdmins" autocomplete="on" />
+            <small id="maxGroupForAdminsHelp" class="form-text text-muted">
+                Festlegung der maximalen Gruppengröße für Administratoren, die größere Gruppen erlauben dürfen.
+            </small>
+        </div>
+        <div class="form-group">
+            <label for="nameDisplayLength">Anzahl Buchstaben Nachname</label>
+            <InputNumber id="nameDisplayLength" aria-describedby="nameDisplayLengthHelp" class="form-control" @bind-Value="AppStateStore.ClientSettings.NameDisplayLength" autocomplete="on" />
+            <small id="nameDisplayLengthHelp" class="form-text text-muted">
+                Anzahl Buchstaben, die vom Nachnamen angezeigt werden sollen. 0 für Anzeige des ganzen Namens.
+            </small>
+        </div>
+        <div class="form-group">
+            <label for="welcomeMessage">Welcome Nachricht</label>
+            <BlazoredTextEditor @ref="@htmlWelcomeMessage" Placeholder="Nachricht für Startseite">
+                <ToolbarContent>
+                    <select class="ql-header">
+                        <option selected=""></option>
+                        <option value="1"></option>
+                        <option value="2"></option>
+                        <option value="3"></option>
+                        <option value="4"></option>
+                        <option value="5"></option>
+                    </select>
+                    <span class="ql-formats">
+                        <button class="ql-bold"></button>
+                        <button class="ql-italic"></button>
+                        <button class="ql-underline"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <select class="ql-color"></select>
+                        <select class="ql-background"></select>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-list" value="ordered"></button>
+                        <button class="ql-list" value="bullet"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-link"></button>
+                    </span>
+                </ToolbarContent>
+            </BlazoredTextEditor>
+        </div>
+        <div class="form-group">
+            <label for="logoLink">Link zu einem Logo-Bild</label>
+            <InputText id="logoLink" aria-describedby="logoLinkHelp" class="form-control" @bind-Value="AppStateStore.ClientSettings.LogoLink" />
+            <small id="logoLinkHelp" class="form-text text-muted">
+                Hier kann der Link zu einem Logo angegeben werden.
+            </small>
+        </div>
+        <div class="form-group">
+            <label for="helpLink">Link zur Online-Hilfe</label>
+            <InputText id="helpLink" aria-describedby="helpLinkHelp" class="form-control" @bind-Value="AppStateStore.ClientSettings.HelpLink" />
+            <small id="helpLinkHelp" class="form-text text-muted">
+                Hinweise zur Bedienung.
+            </small>
+        </div>
 
-    <div class="form-group">
-        <label for="whiteboardMessage">Whiteboard Nachricht</label>
-        <BlazoredTextEditor @ref="@htmlWhiteboardMessage" Placeholder="Nachricht für die Terminseite">
-            <ToolbarContent>
-                <select class="ql-header">
-                    <option selected=""></option>
-                    <option value="1"></option>
-                    <option value="2"></option>
-                    <option value="3"></option>
-                    <option value="4"></option>
-                    <option value="5"></option>
-                </select>
-                <span class="ql-formats">
-                    <button class="ql-bold"></button>
-                    <button class="ql-italic"></button>
-                    <button class="ql-underline"></button>
-                    <button class="ql-strike"></button>
-                </span>
-                <span class="ql-formats">
-                    <select class="ql-color"></select>
-                    <select class="ql-background"></select>
-                </span>
-                <span class="ql-formats">
-                    <button class="ql-list" value="ordered"></button>
-                    <button class="ql-list" value="bullet"></button>
-                </span>
-                <span class="ql-formats">
-                    <button class="ql-link"></button>
-                </span>
-            </ToolbarContent>
-        </BlazoredTextEditor>
-    </div>
-    <div class="form-group">
-        <label for="newMeetUpMessage">Nachricht für neue MeetUps</label>
-        <BlazoredTextEditor @ref="@htmlNewMeetupMessage" Placeholder="Nachricht für neue Termine">
-            <ToolbarContent>
-                <select class="ql-header">
-                    <option selected=""></option>
-                    <option value="1"></option>
-                    <option value="2"></option>
-                    <option value="3"></option>
-                    <option value="4"></option>
-                    <option value="5"></option>
-                </select>
-                <span class="ql-formats">
-                    <button class="ql-bold"></button>
-                    <button class="ql-italic"></button>
-                    <button class="ql-underline"></button>
-                </span>
-                <span class="ql-formats">
-                    <select class="ql-color"></select>
-                    <select class="ql-background"></select>
-                </span>
-                <span class="ql-formats">
-                    <button class="ql-list" value="ordered"></button>
-                    <button class="ql-list" value="bullet"></button>
-                </span>
-                <span class="ql-formats">
-                    <button class="ql-link"></button>
-                </span>
-            </ToolbarContent>
-        </BlazoredTextEditor>
-    </div>
-    <div class="form-group">
-        <label for="disclaimerMessage">Disclaimer für Teilnehmer</label>
-        <BlazoredTextEditor @ref="@htmlDisclaimer" Placeholder="Disclaimer">
-            <ToolbarContent>
-                <span class="ql-formats">
-                    <button class="ql-bold"></button>
-                    <button class="ql-italic"></button>
-                    <button class="ql-underline"></button>
-                </span>
-                <span class="ql-formats">
-                    <select class="ql-color"></select>
-                    <select class="ql-background"></select>
-                </span>
-                <span class="ql-formats">
-                    <button class="ql-list" value="ordered"></button>
-                    <button class="ql-list" value="bullet"></button>
-                </span>
-                <span class="ql-formats">
-                    <button class="ql-link"></button>
-                </span>
-            </ToolbarContent>
-        </BlazoredTextEditor>
-    </div>
-    <div class="form-group">
-        <label for="guestDisclaimerMessage">Disclaimer für Gast-Teilnehmer</label>
-        <BlazoredTextEditor @ref="@htmlGuestDisclaimer" Placeholder="Disclaimer für Gäste">
-            <ToolbarContent>
-                <span class="ql-formats">
-                    <button class="ql-bold"></button>
-                    <button class="ql-italic"></button>
-                    <button class="ql-underline"></button>
-                </span>
-                <span class="ql-formats">
-                    <select class="ql-color"></select>
-                    <select class="ql-background"></select>
-                </span>
-                <span class="ql-formats">
-                    <button class="ql-list" value="ordered"></button>
-                    <button class="ql-list" value="bullet"></button>
-                </span>
-                <span class="ql-formats">
-                    <button class="ql-link"></button>
-                </span>
-            </ToolbarContent>
-        </BlazoredTextEditor>
-    </div>
-    <div class="form-group">
-        <div class="form-check">
-            <InputCheckbox id="guestsEnabled" class="form-check-input" @bind-Value="AppStateStore.ClientSettings.GuestsEnabled" />
-            <label for="guestsEnabled" class="form-checklabel">
-                Einladen von Gästen möglich?
-            </label>
+        <div class="form-group">
+            <label for="whiteboardMessage">Whiteboard Nachricht</label>
+            <BlazoredTextEditor @ref="@htmlWhiteboardMessage" Placeholder="Nachricht für die Terminseite">
+                <ToolbarContent>
+                    <select class="ql-header">
+                        <option selected=""></option>
+                        <option value="1"></option>
+                        <option value="2"></option>
+                        <option value="3"></option>
+                        <option value="4"></option>
+                        <option value="5"></option>
+                    </select>
+                    <span class="ql-formats">
+                        <button class="ql-bold"></button>
+                        <button class="ql-italic"></button>
+                        <button class="ql-underline"></button>
+                        <button class="ql-strike"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <select class="ql-color"></select>
+                        <select class="ql-background"></select>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-list" value="ordered"></button>
+                        <button class="ql-list" value="bullet"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-link"></button>
+                    </span>
+                </ToolbarContent>
+            </BlazoredTextEditor>
         </div>
-    </div>
-    <div class="form-group">
-        <div class="form-check">
-            <InputCheckbox id="onlyAdminsAsHost" class="form-check-input" @bind-Value="AppStateStore.ClientSettings.OnlyAdminsAsHost" />
-            <label for="onlyAdminsAsHost" class="form-checklabel">
-                Sollen nur Admins MeetUps anlegen können?
-            </label>
+        <div class="form-group">
+            <label for="newMeetUpMessage">Nachricht für neue MeetUps</label>
+            <BlazoredTextEditor @ref="@htmlNewMeetupMessage" Placeholder="Nachricht für neue Termine">
+                <ToolbarContent>
+                    <select class="ql-header">
+                        <option selected=""></option>
+                        <option value="1"></option>
+                        <option value="2"></option>
+                        <option value="3"></option>
+                        <option value="4"></option>
+                        <option value="5"></option>
+                    </select>
+                    <span class="ql-formats">
+                        <button class="ql-bold"></button>
+                        <button class="ql-italic"></button>
+                        <button class="ql-underline"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <select class="ql-color"></select>
+                        <select class="ql-background"></select>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-list" value="ordered"></button>
+                        <button class="ql-list" value="bullet"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-link"></button>
+                    </span>
+                </ToolbarContent>
+            </BlazoredTextEditor>
         </div>
-    </div>
-    <div class="form-group">
-        <div class="form-check">
-            <InputCheckbox id="appLocked" class="form-check-input" @bind-Value="AppStateStore.ClientSettings.AppLocked" />
-            <label for="appLocked" class="form-checklabel">
-                Soll der Zugang zum MeetUpPlanner mit der Meldung unten gesperrt werden?
-            </label>
+        <div class="form-group">
+            <label for="disclaimerMessage">Disclaimer für Teilnehmer</label>
+            <BlazoredTextEditor @ref="@htmlDisclaimer" Placeholder="Disclaimer">
+                <ToolbarContent>
+                    <span class="ql-formats">
+                        <button class="ql-bold"></button>
+                        <button class="ql-italic"></button>
+                        <button class="ql-underline"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <select class="ql-color"></select>
+                        <select class="ql-background"></select>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-list" value="ordered"></button>
+                        <button class="ql-list" value="bullet"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-link"></button>
+                    </span>
+                </ToolbarContent>
+            </BlazoredTextEditor>
         </div>
-    </div>
-    <div class="form-group">
-        <label for="lockedMessage">Meldung falls MeetUpPlanner gesperrt</label>
-        <BlazoredTextEditor @ref="@htmlLockedMessage" Placeholder="Meldung als Hinweis an die Nutzer, falls der MeetUpPlanner gesperrt wird.">
-            <ToolbarContent>
-                <span class="ql-formats">
-                    <button class="ql-bold"></button>
-                    <button class="ql-italic"></button>
-                    <button class="ql-underline"></button>
-                </span>
-                <span class="ql-formats">
-                    <select class="ql-color"></select>
-                    <select class="ql-background"></select>
-                </span>
-                <span class="ql-formats">
-                    <button class="ql-list" value="ordered"></button>
-                    <button class="ql-list" value="bullet"></button>
-                </span>
-                <span class="ql-formats">
-                    <button class="ql-link"></button>
-                </span>
-            </ToolbarContent>
-        </BlazoredTextEditor>
-    </div>
-    <div class="form-group">
-        <div class="form-check">
-            <InputCheckbox id="onlyScoped" class="form-check-input" @bind-Value="AppStateStore.ClientSettings.OnlyScopedMeetUpsAllowed" />
-            <label for="onlyScoped" class="form-checklabel">
-                Nur MeetUps an den Tagen zulassen, die mit den "Badges" unten gekennzeichnet sind?
-            </label>
+        <div class="form-group">
+            <label for="guestDisclaimerMessage">Disclaimer für Gast-Teilnehmer</label>
+            <BlazoredTextEditor @ref="@htmlGuestDisclaimer" Placeholder="Disclaimer für Gäste">
+                <ToolbarContent>
+                    <span class="ql-formats">
+                        <button class="ql-bold"></button>
+                        <button class="ql-italic"></button>
+                        <button class="ql-underline"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <select class="ql-color"></select>
+                        <select class="ql-background"></select>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-list" value="ordered"></button>
+                        <button class="ql-list" value="bullet"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-link"></button>
+                    </span>
+                </ToolbarContent>
+            </BlazoredTextEditor>
         </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col-md-12">
-            <label for="mondayBadge">Die Wochentage können mit "Badges" gekennzeichnet werden.</label>
+        <div class="form-group">
+            <div class="form-check">
+                <InputCheckbox id="guestsEnabled" class="form-check-input" @bind-Value="AppStateStore.ClientSettings.GuestsEnabled" />
+                <label for="guestsEnabled" class="form-checklabel">
+                    Einladen von Gästen möglich?
+                </label>
+            </div>
         </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col">
-            <InputText id="mondayBadge" placeholder="Montag" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.MondayBadge" title="Badge für Montag" />
+        <div class="form-group">
+            <div class="form-check">
+                <InputCheckbox id="onlyAdminsAsHost" class="form-check-input" @bind-Value="AppStateStore.ClientSettings.OnlyAdminsAsHost" />
+                <label for="onlyAdminsAsHost" class="form-checklabel">
+                    Sollen nur Admins MeetUps anlegen können?
+                </label>
+            </div>
         </div>
-        <div class="form-group col">
-            <InputText id="tuesdayBadge" placeholder="Dienstag" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.TuesdayBadge" title="Badge für Dienstag" />
+        <div class="form-group">
+            <div class="form-check">
+                <InputCheckbox id="appLocked" class="form-check-input" @bind-Value="AppStateStore.ClientSettings.AppLocked" />
+                <label for="appLocked" class="form-checklabel">
+                    Soll der Zugang zum MeetUpPlanner mit der Meldung unten gesperrt werden?
+                </label>
+            </div>
         </div>
-        <div class="form-group col">
-            <InputText id="wednsesdayBadge" placeholder="Mittwoch" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.WednesdayBadge" title="Badge für Mittwoch" />
+        <div class="form-group">
+            <label for="lockedMessage">Meldung falls MeetUpPlanner gesperrt</label>
+            <BlazoredTextEditor @ref="@htmlLockedMessage" Placeholder="Meldung als Hinweis an die Nutzer, falls der MeetUpPlanner gesperrt wird.">
+                <ToolbarContent>
+                    <span class="ql-formats">
+                        <button class="ql-bold"></button>
+                        <button class="ql-italic"></button>
+                        <button class="ql-underline"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <select class="ql-color"></select>
+                        <select class="ql-background"></select>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-list" value="ordered"></button>
+                        <button class="ql-list" value="bullet"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-link"></button>
+                    </span>
+                </ToolbarContent>
+            </BlazoredTextEditor>
         </div>
-        <div class="form-group col">
-            <InputText id="thursdayBadge" placeholder="Donnerstag" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.ThursdayBadge" title="Badge für Donnerstag" />
+        <div class="form-group">
+            <div class="form-check">
+                <InputCheckbox id="onlyScoped" class="form-check-input" @bind-Value="AppStateStore.ClientSettings.OnlyScopedMeetUpsAllowed" />
+                <label for="onlyScoped" class="form-checklabel">
+                    Nur MeetUps an den Tagen zulassen, die mit den "Badges" unten gekennzeichnet sind?
+                </label>
+            </div>
         </div>
-        <div class="form-group col">
-            <InputText id="fridayBadge" placeholder="Freitag" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.FridayBadge" title="Badge für Freitag" />
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <label for="mondayBadge">Die Wochentage können mit "Badges" gekennzeichnet werden.</label>
+            </div>
         </div>
-        <div class="form-group col">
-            <InputText id="saturdayBadge" placeholder="Samstag" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.SaturdayBadge" title="Badge für Samstag" />
+        <div class="form-row">
+            <div class="form-group col">
+                <InputText id="mondayBadge" placeholder="Montag" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.MondayBadge" title="Badge für Montag" />
+            </div>
+            <div class="form-group col">
+                <InputText id="tuesdayBadge" placeholder="Dienstag" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.TuesdayBadge" title="Badge für Dienstag" />
+            </div>
+            <div class="form-group col">
+                <InputText id="wednsesdayBadge" placeholder="Mittwoch" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.WednesdayBadge" title="Badge für Mittwoch" />
+            </div>
+            <div class="form-group col">
+                <InputText id="thursdayBadge" placeholder="Donnerstag" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.ThursdayBadge" title="Badge für Donnerstag" />
+            </div>
+            <div class="form-group col">
+                <InputText id="fridayBadge" placeholder="Freitag" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.FridayBadge" title="Badge für Freitag" />
+            </div>
+            <div class="form-group col">
+                <InputText id="saturdayBadge" placeholder="Samstag" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.SaturdayBadge" title="Badge für Samstag" />
+            </div>
+            <div class="form-group col">
+                <InputText id="sundayBadge" placeholder="Sonntag" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.SundayBadge" title="Badge für Sonntag" />
+            </div>
         </div>
-        <div class="form-group col">
-            <InputText id="sundayBadge" placeholder="Sonntag" class="form-control form-control-sm" @bind-Value="AppStateStore.ClientSettings.SundayBadge" title="Badge für Sonntag" />
-        </div>
-    </div>
 
-    <button type="submit" id="BtnSaveSettings" class="btn btn-primary">Einstellungen speichern ...</button>
-</EditForm>
-<br />
-<div class="alert-info">
-    <p>
-        @logMessage
-    </p>
-</div>
-<hr />
-<h4>Server Einstellungen</h4>
-<EditForm OnValidSubmit="SaveServerSettings" Model="@serverSettings">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <div class="form-group">
-        <label for="userKeyword">Schlüsselwort</label>
-        <InputText id="userKeyword" aria-describedby="userKeywordHelp" class="form-control" @bind-Value="serverSettings.UserKeyword" autocomplete="on" placeholder="Schlüsselwort für den allgemeinen Zugang" title="Schlüsselwort" />
-        <small id="userKeywordHelp" class="form-text text-muted">
-            Schlüsselwort für den Zugang zu den Terminen.
-        </small>
+        <button type="submit" id="BtnSaveSettings" class="btn btn-primary">Einstellungen speichern ...</button>
+    </EditForm>
+    <br />
+    <div class="alert-info">
+        <p>
+            @logMessage
+        </p>
     </div>
-    <div class="form-group">
-        <label for="adminKeyword">Admin Schlüsselwort</label>
-        <InputText id="adminKeyword" aria-describedby="adminKeywordHelp" class="form-control" @bind-Value="serverSettings.AdminKeyword" autocomplete="on" placeholder="Schlüsselwort für Admins" title="Admin Schlüsselwort" />
-        <small id="adminKeywordHelp" class="form-text text-muted">
-            Das Schlüsselwort für Administratoren des MeetUp-Planners.
-        </small>
-    </div>
-    <div class="form-group">
-        <label for="autoDelete">Anzahl Tage</label>
-        <InputNumber id="autoDelete" aria-describedby="autoDeleteHelp" class="form-control" @bind-Value="serverSettings.AutoDeleteAfterDays" autocomplete="on" placeholder="Speicherungsdauer in Tagen für Termine" title="Speicherdauer" />
-        <small id="autoDeleteHelp" class="form-text text-muted">
-            Anzahl Tage, die die Termine gespeichert werden sollen. Danach werden sie automatisch gelöscht.
-        </small>
-    </div>
-    <div class="form-group">
-        <label for="displayWindow">Anzeigefenster für Termine in der Vergangenheit</label>
-        <InputNumber id="displayWindow" aria-describedby="displayWindowHelp" class="form-control" @bind-Value="serverSettings.CalendarItemsPastWindowHours" autocomplete="on" />
-        <small id="maxGroupHelp" class="form-text text-muted">
-            Anzeige von Terminen mit Startzeit die hier festgelegte Anzahl Stunden in der Vergangenheit.
-        </small>
-    </div>
+    <hr />
+    <h4>Server Einstellungen</h4>
+    <EditForm OnValidSubmit="SaveServerSettings" Model="@serverSettings">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-group">
+            <label for="userKeyword">Schlüsselwort</label>
+            <InputText id="userKeyword" aria-describedby="userKeywordHelp" class="form-control" @bind-Value="serverSettings.UserKeyword" autocomplete="on" placeholder="Schlüsselwort für den allgemeinen Zugang" title="Schlüsselwort" />
+            <small id="userKeywordHelp" class="form-text text-muted">
+                Schlüsselwort für den Zugang zu den Terminen.
+            </small>
+        </div>
+        <div class="form-group">
+            <label for="adminKeyword">Admin Schlüsselwort</label>
+            <InputText id="adminKeyword" aria-describedby="adminKeywordHelp" class="form-control" @bind-Value="serverSettings.AdminKeyword" autocomplete="on" placeholder="Schlüsselwort für Admins" title="Admin Schlüsselwort" />
+            <small id="adminKeywordHelp" class="form-text text-muted">
+                Das Schlüsselwort für Administratoren des MeetUp-Planners.
+            </small>
+        </div>
+        <div class="form-group">
+            <label for="autoDelete">Anzahl Tage</label>
+            <InputNumber id="autoDelete" aria-describedby="autoDeleteHelp" class="form-control" @bind-Value="serverSettings.AutoDeleteAfterDays" autocomplete="on" placeholder="Speicherungsdauer in Tagen für Termine" title="Speicherdauer" />
+            <small id="autoDeleteHelp" class="form-text text-muted">
+                Anzahl Tage, die die Termine gespeichert werden sollen. Danach werden sie automatisch gelöscht.
+            </small>
+        </div>
+        <div class="form-group">
+            <label for="displayWindow">Anzeigefenster für Termine in der Vergangenheit</label>
+            <InputNumber id="displayWindow" aria-describedby="displayWindowHelp" class="form-control" @bind-Value="serverSettings.CalendarItemsPastWindowHours" autocomplete="on" />
+            <small id="maxGroupHelp" class="form-text text-muted">
+                Anzeige von Terminen mit Startzeit die hier festgelegte Anzahl Stunden in der Vergangenheit.
+            </small>
+        </div>
 
-    <button type="submit" id="BtnSaveServerSettings" class="btn btn-primary">Einstellungen speichern ...</button>
-</EditForm>
-<br />
-<div class="alert-info">
-    <p>
-        @serverLogMessage
-    </p>
-</div>
+        <button type="submit" id="BtnSaveServerSettings" class="btn btn-primary">Einstellungen speichern ...</button>
+    </EditForm>
+    <br />
+    <div class="alert-info">
+        <p>
+            @serverLogMessage
+        </p>
+    </div>
+}
 
 @code {
+    private bool localAdministrationDisabled = false;
     private string logMessage;
     private string serverLogMessage;
     private ServerSettings serverSettings = new ServerSettings();
@@ -359,16 +373,20 @@
     {
         if (!String.IsNullOrEmpty(AppStateStore?.KeyWord))
         {
-            string keyword = AppStateStore.KeyWord;
-            // Get server settings from server
-            PrepareHttpClient();
-            serverSettings = await Http.GetFromJsonAsync<ServerSettings>($"Util/serversettings");
-            await htmlWelcomeMessage.LoadHTMLContent(AppStateStore.ClientSettings.WelcomeMessage);
-            await htmlWhiteboardMessage.LoadHTMLContent(AppStateStore.ClientSettings.WhiteboardMessage);
-            await htmlNewMeetupMessage.LoadHTMLContent(AppStateStore.ClientSettings.NewMeetupMessage);
-            await htmlDisclaimer.LoadHTMLContent(AppStateStore.ClientSettings.Disclaimer);
-            await htmlGuestDisclaimer.LoadHTMLContent(AppStateStore.ClientSettings.GuestDisclaimer);
-            await htmlLockedMessage.LoadHTMLContent(AppStateStore.ClientSettings.LockedMessage);
+            localAdministrationDisabled = AppStateStore.Tenant.LocalAdministrationDisabled;
+            if (!localAdministrationDisabled)
+            {
+                string keyword = AppStateStore.KeyWord;
+                // Get server settings from server
+                PrepareHttpClient();
+                serverSettings = await Http.GetFromJsonAsync<ServerSettings>($"Util/serversettings");
+                await htmlWelcomeMessage.LoadHTMLContent(AppStateStore.ClientSettings.WelcomeMessage);
+                await htmlWhiteboardMessage.LoadHTMLContent(AppStateStore.ClientSettings.WhiteboardMessage);
+                await htmlNewMeetupMessage.LoadHTMLContent(AppStateStore.ClientSettings.NewMeetupMessage);
+                await htmlDisclaimer.LoadHTMLContent(AppStateStore.ClientSettings.Disclaimer);
+                await htmlGuestDisclaimer.LoadHTMLContent(AppStateStore.ClientSettings.GuestDisclaimer);
+                await htmlLockedMessage.LoadHTMLContent(AppStateStore.ClientSettings.LockedMessage);
+            }
         }
         else
         {

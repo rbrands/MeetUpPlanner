@@ -18,9 +18,12 @@ namespace MeetUpPlanner.Functions
     {
         private readonly ILogger _logger;
         private ServerSettingsRepository _serverSettingsRepository;
-        public WriteServerSettings(ILogger<WriteServerSettings> logger, ServerSettingsRepository serverSettingsRepository)
+        private CosmosDBRepository<TenantSettings> _tenantRepository;
+
+        public WriteServerSettings(ILogger<WriteServerSettings> logger, ServerSettingsRepository serverSettingsRepository, CosmosDBRepository<TenantSettings> tenantRepository)
         {
             _logger = logger;
+            _tenantRepository = tenantRepository;
             _serverSettingsRepository = serverSettingsRepository;
         }
 
@@ -37,25 +40,30 @@ namespace MeetUpPlanner.Functions
         [OpenApiRequestBody("application/json", typeof(ServerSettings), Description = "New ServerSettings to be written.")]
         [OpenApiResponseWithBody(System.Net.HttpStatusCode.OK, "application/json", typeof(ServerSettings), Description = "New ServerSettings as written to database.")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
-            ILogger log)
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
         {
-            log.LogInformation("C# HTTP trigger function WriteServerSettings processed a request.");
+            _logger.LogInformation("WriteServerSettings");
 
             string tenant = req.Headers[Constants.HEADER_TENANT];
             if (String.IsNullOrWhiteSpace(tenant))
             {
                 tenant = null;
             }
-            ServerSettings serverSettings;
+            TenantSettings tenantSettings;
             if (null == tenant)
             {
-                serverSettings = await _serverSettingsRepository.GetServerSettings();
+                tenantSettings = await _tenantRepository.GetFirstItemOrDefault(t => t.TenantKey == null);
             }
             else
             {
-                serverSettings = await _serverSettingsRepository.GetServerSettings(tenant);
+                tenantSettings = await _tenantRepository.GetFirstItemOrDefault(t => t.TenantKey.Equals(tenant));
             }
+            if (tenantSettings.LocalAdministrationDisabled)
+            {
+                return new BadRequestErrorMessageResult("Administration in MeetUpPlanner is disabled.");
+            }
+
+            ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings(tenant);
 
             string keyWord = req.Headers[Constants.HEADER_KEYWORD];
             if (String.IsNullOrEmpty(keyWord) || !serverSettings.AdminKeyword.Equals(keyWord))

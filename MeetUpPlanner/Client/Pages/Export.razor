@@ -11,11 +11,11 @@
 <div class="jumbotron">
 <h1>Kontaktliste</h1>
 <p>
-    Wenn der Fall eingetreten ist, dass jemand positiv auf Covid-19 getestet wurde, braucht er/sie seine Kontakte der letzten Wochen. Dazu bitte den Export per e-mail anfordern oder sofern 
-    das Admin-Schlüsselwort bekannt ist, hier direkt ausführen.
+    Wenn der Fall eingetreten ist, dass jemand positiv auf Covid-19 getestet wurde, braucht er/sie seine Kontakte der letzten Wochen. Dazu bitte den Export per e-mail anfordern oder über 
+    Admin-Tool direkt ausführen.
 </p>
 </div>
-<div hidden="@(!KeywordCheck.IsAdmin)">
+<div hidden="@(!KeywordCheck.IsAdmin || localAdministrationDisabled)">
     <h4>Export</h4>
     <EditForm Model="@trackingRequest" OnValidSubmit="StartExport">
         <DataAnnotationsValidator />
@@ -71,11 +71,14 @@
     [Inject] public IBlazorDownloadFileService BlazorDownloadFileService { get; set; }
     protected IEnumerable<ExportLogItem> log = new List<ExportLogItem>();
     TrackingReportRequest trackingRequest = new TrackingReportRequest();
+    private bool localAdministrationDisabled = false;
+
 
     protected override async Task OnInitializedAsync()
     {
         if (null != AppStateStore && !String.IsNullOrEmpty(AppStateStore.KeyWord))
         {
+            localAdministrationDisabled = AppStateStore.Tenant.LocalAdministrationDisabled;
             // Get list of log items
             await ReadData();
             trackingRequest.RequestorFirstName = AppStateStore.FirstName;

@@ -18,11 +18,13 @@ namespace MeetUpPlanner.Functions
         private readonly ILogger _logger;
         private readonly IConfiguration _config;
         private ServerSettingsRepository _cosmosRepository;
+        private CosmosDBRepository<TenantSettings> _tenantRepository;
 
-        public GetServerSettings(ILogger<GetServerSettings> logger, IConfiguration config, ServerSettingsRepository cosmosRepository)
+        public GetServerSettings(ILogger<GetServerSettings> logger, IConfiguration config, ServerSettingsRepository cosmosRepository, CosmosDBRepository<TenantSettings> tenantRepository)
         {
             _logger = logger;
             _config = config;
+            _tenantRepository = tenantRepository;
             _cosmosRepository = cosmosRepository;
         }
         /// <summary>
@@ -36,24 +38,28 @@ namespace MeetUpPlanner.Functions
                           Description = "Reading the ServerSettings is only needed for editing for administrators. To be able to read ServerSettings the admin keyword must be set as header x-meetup-keyword.")]
         [OpenApiResponseWithBody(System.Net.HttpStatusCode.OK, "application/json", typeof(ServerSettings))]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
-            ILogger log)
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req)
         {
-            log.LogInformation("C# HTTP trigger function GetServerSettings processed a request.");
+            _logger.LogInformation("GetServerSettings");
             string tenant = req.Headers[Constants.HEADER_TENANT];
             if (String.IsNullOrWhiteSpace(tenant))
             {
                 tenant = null;
             }
-            ServerSettings serverSettings;
+            TenantSettings tenantSettings;
             if (null == tenant)
-            { 
-                serverSettings = await _cosmosRepository.GetServerSettings();
+            {
+                tenantSettings = await _tenantRepository.GetFirstItemOrDefault(t => t.TenantKey == null);
             }
             else
             {
-                serverSettings = await _cosmosRepository.GetServerSettings(tenant);
+                tenantSettings = await _tenantRepository.GetFirstItemOrDefault(t => t.TenantKey.Equals(tenant));
             }
+            if (tenantSettings.LocalAdministrationDisabled)
+            {
+                return new BadRequestErrorMessageResult("Administration in MeetUpPlanner is disabled.");
+            }
+            ServerSettings serverSettings = await _cosmosRepository.GetServerSettings(tenant);
             string keyWord = req.Headers[Constants.HEADER_KEYWORD];
             if (String.IsNullOrEmpty(keyWord) || !serverSettings.AdminKeyword.Equals(keyWord))
             {
