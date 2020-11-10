@@ -1,6 +1,6 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
-*Demnächst*
+*10.11.2020*
 - "Private Schlüsselwörter" wurden bei Anzeige der Termine für Gäste angezeigt. Diese werden jetzt hier ausgeblendet.
 - Bei Push-Nachrichten wird jetzt der Titel einer Ausfahrt als Überschrift verwendet.
 - Interne Änderung: Die Konfiguration der Mandanten erfolgt jetzt nicht mehr über eine Tabelle im Programm-Code sondern in der Datenbank. Dafür gibt es ein eigenes Tool unter https://admin.meetupplanner.de
