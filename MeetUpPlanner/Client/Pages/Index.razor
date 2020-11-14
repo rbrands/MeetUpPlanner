@@ -209,6 +209,11 @@
             if (AppStateStore.Tenant.IsLocked || (AppStateStore.ClientSettings.AppLocked && !KeywordCheck.IsAdmin))
             {
                 KeywordCheck.IsUser = false;
+                if (AppStateStore.Tenant.IsLocked)
+                {
+                    // If locked on tenant level disabe admin access, too
+                    KeywordCheck.IsAdmin = false;
+                }
                 AppStateStore.NotifyStateChanged();
                 notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Kein Zugang", Detail = "Der MeetUpPlanner ist zur Zeit gesperrt.", Duration = 4000 });
             }
