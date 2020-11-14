@@ -7,7 +7,10 @@ on:
   push:
     branches:
       - master
-
+defaults:
+  run:
+    working-directory: MeetUpPlanner/Server
+    
 jobs:
   build-and-deploy:
     runs-on: windows-latest
@@ -24,7 +27,7 @@ jobs:
       run: dotnet build --configuration Release
 
     - name: dotnet publish
-      run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+      run: dotnet publish -c Release -o /myapp
 
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
@@ -32,4 +35,4 @@ jobs:
         app-name: 'meetup-planner(dev)'
         slot-name: 'dev'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_0fb7a56b5b13467f88fa3b2b71770716 }}
-        package: ${{env.DOTNET_ROOT}}/myapp 
+        package: /myapp 
