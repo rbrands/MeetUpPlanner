@@ -8,6 +8,10 @@ on:
     branches:
       - master
 
+defaults:
+  run:
+    working-directory: MeetUpPlanner/Server
+
 jobs:
   build-and-deploy:
     runs-on: windows-latest
