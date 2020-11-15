@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy ASP.Net Core app to Azure Web App - meetup-planner(dev)
+name: Server-master to slot dev
 
 on:
   push:
@@ -32,7 +32,7 @@ jobs:
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
       with:
-        app-name: 'meetup-planner(dev)'
+        app-name: 'meetup-planner__dev'
         slot-name: 'dev'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_0fb7a56b5b13467f88fa3b2b71770716 }}
         package: /myapp 
