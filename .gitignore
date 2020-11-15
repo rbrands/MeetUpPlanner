@@ -338,3 +338,4 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+/MeetUpPlanner/Server/Properties/ServiceDependencies/meetup-planner-dev - Web Deploy1/profile.arm.json
