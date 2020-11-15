@@ -32,7 +32,7 @@ jobs:
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
       with:
-        app-name: 'meetup-planner__dev'
+        app-name: 'meetup-planner'
         slot-name: 'dev'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_0fb7a56b5b13467f88fa3b2b71770716 }}
         package: /myapp 
