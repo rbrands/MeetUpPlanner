@@ -45,6 +45,11 @@
   Zur Installation siehe kurze Beschreibung in https://github.com/rbrands/MeetUpPlanner/wiki/Deployment
   </dd>
   
+  <dt>Wieso ist die Administration in eine separate App gewandert?</dt>  
+    <dd>
+      Die "Anmeldung" beim MeetUpPlanner lediglich durch ein "Schlüsselwort" ist nur ein schwacher Schutz gegen unberechtigte Nutzung und ersetzt keine übliche Authentifizierung mit Benutzernamen, Kennwort und ggf. weitere Anmeldefaktoren. Für die Organisation von Ausfahrten und vor allem für die Anmeldung reicht das einfach Verfahren über die "Schlüsselwörter". Aber für die Administration und vor allem für den Zugriff auf Personendaten - nämlich beim Export von Kontaktlisten durch Administratoren - ist stärkere Schutz notwendig. Deswegen wurden diese Funktionen ausgelagert in die Admin-WebApp. 
+    </dd>
+  
   <dt>Gibt es den MeetUpPlanner auch in anderen Sprachen?</dt>
   <dd>
     Nein, zur Zeit ist der MeetUpPlanner nur in Deutsch.
