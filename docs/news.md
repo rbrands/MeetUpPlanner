@@ -1,6 +1,6 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
-*Demnächst*
+*12.12.2020*
 - Umstellung auf .NET 5. Siehe dazu [https://devblogs.microsoft.com/dotnet/announcing-net-5-0/](https://devblogs.microsoft.com/dotnet/announcing-net-5-0/). Hier wichtig sind die Performanceverbesserungen, aber vor allem neue Feature wie die FileInput-Komponente, die demnächst benötigt wird ([https://devblogs.microsoft.com/aspnet/asp-net-core-updates-in-net-5-release-candidate-1/](https://devblogs.microsoft.com/aspnet/asp-net-core-updates-in-net-5-release-candidate-1/))
 
 *10.11.2020*
