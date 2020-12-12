@@ -2,12 +2,15 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AzureFunctionsVersion>v3</AzureFunctionsVersion>
+    <UserSecretsId>43fef60c-ead0-476a-956f-0c7a3c479b26</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Aliencube.AzureFunctions.Extensions.OpenApi.Core" Version="3.1.1" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.7.0" />
     <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.15.1-preview" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="3.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.1.2" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.11" />
     <PackageReference Include="WebPush" Version="1.0.11" />
   </ItemGroup>
