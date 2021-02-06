@@ -12,6 +12,8 @@ namespace MeetUpPlanner.Shared
         public string TenantName { get; set; }
         [MaxLength(80, ErrorMessage = "Tenant-Key bitte kürzer als 80 Zeichen.")]
         public string TenantKey { get; set; }
+        [MaxLength(80, ErrorMessage = "Track-Key bitte kürzer als 80 Zeichen.")]
+        public string TrackKey { get; set; }
         [Required(ErrorMessage = "Bitte Admin-Rolle angeben"), MaxLength(80, ErrorMessage = "Admin-Rolle bitte kürzer als 80 Zeichen.")]
         [RegularExpression("[a-zA-Z0-9-_]*", ErrorMessage = "Bitte nur Buchstaben und Zahlen für Admin-Rolle.")]
         public string AdminRole { get; set; }

@@ -166,7 +166,7 @@
     }
     <div class="form-group">
         <label for="size">Max. Gruppengröße</label>
-        <RadzenNumeric id="size" aria-describedby="sizeHelp" class="form-control" TValue="int" Min="2" Max="@AppStateStore.ClientSettings?.GetMaxGroupSize(KeywordCheck.IsAdmin)" @bind-Value="meetup.MaxRegistrationsCount" />
+        <RadzenNumeric id="size" aria-describedby="sizeHelp" class="form-control" TValue="int" Min="0" Max="@AppStateStore.ClientSettings?.GetMaxGroupSize(KeywordCheck.IsAdmin)" @bind-Value="meetup.MaxRegistrationsCount" />
         <small id="sizeHelp" class="form-text text-muted">
             Hier kann die Größe der Gruppe entsprechend beschränkt werden. Maximale Gruppengröße ist momentan @(AppStateStore.ClientSettings?.GetMaxGroupSize(KeywordCheck.IsAdmin)).
         </small>

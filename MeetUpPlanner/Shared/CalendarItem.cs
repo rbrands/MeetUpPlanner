@@ -33,7 +33,7 @@ namespace MeetUpPlanner.Shared
 
         [JsonProperty(PropertyName = "summary", NullValueHandling = NullValueHandling.Ignore), Display(Name = "Zusammenfassung", Prompt = "Kurze Zusammenfassung des Termins"), MaxLength(5000, ErrorMessage = "Zusammenfassung zu lang.")]
         public string Summary { get; set; }
-        [JsonProperty(PropertyName = "maxRegistrationsCount", NullValueHandling = NullValueHandling.Ignore), Range(2.0, 150.0, ErrorMessage = "Gruppengröße nicht im gültigen Bereich."), Display(Name = "Maximale Anzahl Teilnehmer", Prompt = "Anzahl eingeben"), Required(ErrorMessage = "Max. Anzahl Teilnehmer eingeben")]
+        [JsonProperty(PropertyName = "maxRegistrationsCount", NullValueHandling = NullValueHandling.Ignore), Range(0.0, 150.0, ErrorMessage = "Gruppengröße nicht im gültigen Bereich."), Display(Name = "Maximale Anzahl Teilnehmer", Prompt = "Anzahl eingeben"), Required(ErrorMessage = "Max. Anzahl Teilnehmer eingeben")]
         public int MaxRegistrationsCount { get; set; } = 10;
         [JsonProperty(PropertyName = "minRegistrationsCount", NullValueHandling = NullValueHandling.Ignore), Range(0.0, 150.0, ErrorMessage = "Mindestteilnehmerzahl nicht im gültigen Bereich."), Display(Name = "Minimale Anzahl Teilnehmer", Prompt = "Anzahl eingeben")]
         public int MinRegistrationsCount { get; set; } = 0;
