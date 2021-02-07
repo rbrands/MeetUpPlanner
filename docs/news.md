@@ -1,5 +1,8 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
+*7.2.2021*
+- Für MeetUps kann jetzt angegeben werden, dass kein (oder 1) Teilnehmer möglich ist. Das ist für die Scuderia Winkerunde gedacht, bei der die Fahrer zwar die gleiche Strecke fahren, aber nicht zusammen.
+
 *12.12.2020*
 - Umstellung auf .NET 5. Siehe dazu [https://devblogs.microsoft.com/dotnet/announcing-net-5-0/](https://devblogs.microsoft.com/dotnet/announcing-net-5-0/). Hier wichtig sind die Performanceverbesserungen, aber vor allem neue Feature wie die FileInput-Komponente, die demnächst benötigt wird ([https://devblogs.microsoft.com/aspnet/asp-net-core-updates-in-net-5-release-candidate-1/](https://devblogs.microsoft.com/aspnet/asp-net-core-updates-in-net-5-release-candidate-1/))
 
