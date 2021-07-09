@@ -91,6 +91,10 @@
                     <hr />
                 }
             }
+            @if (!String.IsNullOrEmpty(CalendarItem.Link))
+            {
+                <a href="@CalendarItem.Link" target="_blank" class="card-link">@CalendarItem.DisplayLinkTitle</a>
+            }
         </p>
     </div>
     <div class="card-footer">
