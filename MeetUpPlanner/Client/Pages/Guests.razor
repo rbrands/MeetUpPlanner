@@ -72,12 +72,12 @@
 </div>
 
 @code {
-        [Parameter]
-        public string Scope { get; set; }
-        Participant _guest { get; set; } = new Participant();
-        const string PERM_STORAGE = "permGuestState";
-        PermAppState _permAppState = new PermAppState();
-        Boolean _usageRightsAccepted = false;
+    [Parameter]
+    public string Scope { get; set; }
+    Participant _guest { get; set; } = new Participant();
+    const string PERM_STORAGE = "permGuestState";
+    PermAppState _permAppState = new PermAppState();
+    Boolean _usageRightsAccepted = false;
     private HubConnection hubConnection;
     private IList<ExtendedCalendarItem> calendarItems = new List<ExtendedCalendarItem>();
     private EditContext _editContext;
@@ -242,11 +242,11 @@
 
     private void PrepareHttpClient()
     {
-        if (null != AppStateStore.Tenant)
+        if (null != AppStateStore.Tenant && null != AppStateStore.Tenant.TenantKey)
         {
             if (!Http.DefaultRequestHeaders.Contains("x-meetup-tenant"))
             {
-                Http.DefaultRequestHeaders.Add("x-meetup-tenant", AppStateStore.Tenant.PrimaryUrl);
+                Http.DefaultRequestHeaders.Add("x-meetup-tenant", AppStateStore.Tenant.TenantKey);
             }
         }
         if (!Http.DefaultRequestHeaders.Contains("x-meetup-tenant-url"))
