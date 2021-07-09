@@ -1,5 +1,9 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
+*9.7.2021*
+- Der Gästelink funktionierte nicht für alle Umgebungen, d.h. die MeetUps wurden nicht angezeigt.
+- Auf der Gästeseite fehlte der Link zur Strecke.
+
 *7.2.2021*
 - Für MeetUps kann jetzt angegeben werden, dass kein (oder 1) Teilnehmer möglich ist. Das ist für die Scuderia Winkerunde gedacht, bei der die Fahrer zwar die gleiche Strecke fahren, aber nicht zusammen.
 
