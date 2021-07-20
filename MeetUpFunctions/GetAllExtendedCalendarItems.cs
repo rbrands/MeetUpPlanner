@@ -63,7 +63,7 @@ namespace MeetUpPlanner.Functions
                 // Read all participants for this calendar item
                 extendedItem.ParticipantsList = await _participantRepository.GetItems(p => p.CalendarItemId.Equals(extendedItem.Id));
                 // Read all comments
-                extendedItem.CommentsList = await _commentRepository.GetItems(c => c.CalendarItemId.Equals(extendedItem.Id));
+                extendedItem.CommentsList = (await _commentRepository.GetItems(c => c.CalendarItemId.Equals(extendedItem.Id))).OrderByDescending(c => c.CommentDate);
             }
             IEnumerable<ExtendedCalendarItem> orderedList = resultCalendarItems.OrderBy(d => d.StartDate);
             return new OkObjectResult(orderedList);

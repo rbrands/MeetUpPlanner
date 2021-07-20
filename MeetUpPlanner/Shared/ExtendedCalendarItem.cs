@@ -13,6 +13,8 @@ namespace MeetUpPlanner.Shared
         public IEnumerable<Participant> ParticipantsList { get; set; } = new List<Participant>();
         [JsonProperty(PropertyName = "commentsList")]
         public IEnumerable<CalendarComment> CommentsList { get; set; } = new List<CalendarComment>();
+        [JsonIgnore]
+        public bool HideOlderCommments { get; set; } = true;
 
         public ExtendedCalendarItem()
         {
@@ -66,6 +68,43 @@ namespace MeetUpPlanner.Shared
                 ++counter;
             }
             return sb.ToString();
+        }
+        public IEnumerable<CalendarComment> GetMostRecentComments(int count)
+        {
+            List<CalendarComment> comments = new List<CalendarComment>(count);
+            int i = 0;
+            foreach (CalendarComment c in this.CommentsList)
+            {
+                comments.Add(c);
+                ++i;
+                if (i >= count) break;
+            }
+            return comments;
+        }
+        public IEnumerable<CalendarComment> GetOlderComments(int count)
+        {
+            List<CalendarComment> comments = new List<CalendarComment>(count);
+            int i = 0;
+            foreach (CalendarComment c in this.CommentsList)
+            {
+                ++i;
+                if (i <= count) continue;
+                comments.Add(c);
+            }
+            return comments;
+        }
+        [JsonIgnore]
+        public int CommentsCounter
+        {
+            get
+            {
+                int counter = 0;
+                foreach (CalendarComment c in this.CommentsList)
+                {
+                    ++counter;
+                }
+                return counter;
+            }
         }
         [JsonIgnore]
         public int ParticipantCounter

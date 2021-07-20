@@ -61,7 +61,7 @@ namespace MeetUpPlanner.Functions
             }
             ExtendedInfoItem extendedItem = new ExtendedInfoItem(rawInfoItem);
             // Read all comments
-            extendedItem.CommentsList = await _commentRepository.GetItems(c => c.CalendarItemId.Equals(extendedItem.Id));
+            extendedItem.CommentsList = (await _commentRepository.GetItems(c => c.CalendarItemId.Equals(extendedItem.Id))).OrderByDescending(c => c.CommentDate);
             return new OkObjectResult(extendedItem);
         }
     }
