@@ -68,7 +68,7 @@ namespace MeetUpPlanner.Functions
                 ExtendedInfoItem extendedItem = new ExtendedInfoItem(item);
                 resultInfoItems.Add(extendedItem);
                 // Read all comments
-                extendedItem.CommentsList = await _commentRepository.GetItems(c => c.CalendarItemId.Equals(extendedItem.Id));
+                extendedItem.CommentsList = (await _commentRepository.GetItems(c => c.CalendarItemId.Equals(extendedItem.Id))).OrderByDescending(c => c.CommentDate);
             }
             IEnumerable<ExtendedInfoItem> orderedList = resultInfoItems.OrderBy(d => d.OrderId);
             return new OkObjectResult(orderedList);

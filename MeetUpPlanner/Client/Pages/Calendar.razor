@@ -107,17 +107,38 @@
                         @if (item.CommentsList.Count() > 0)
                         {
                             <ul class="list-unstyled">
-                                @foreach (CalendarComment c in item.CommentsList)
+                                @foreach (CalendarComment c in item.GetMostRecentComments(commentsToDisplay))
                                 {
                                     <li>
                                         <small>
                                             <em>@c.AuthorDisplayName(AppStateStore.ClientSettings.NameDisplayLength) (@c.DisplayDate): </em>@c.Comment
                                             @if (!String.IsNullOrEmpty(c.Link))
                                             {
-                                                <text> </text><a title="@c.DisplayLinkTitle" target="_blank" href="@c.Link">@c.DisplayLinkTitle</a>
+                                                <text>&nbsp;</text><a title="@c.DisplayLinkTitle" target="_blank" href="@c.Link">@c.DisplayLinkTitle</a>
                                             }
                                         </small>
                                     </li>
+                                }
+                                @if(!item.HideOlderCommments)
+                                { 
+                                    @foreach (CalendarComment c in item.GetOlderComments(commentsToDisplay))
+                                    {
+                                        <li>
+                                            <small>
+                                                <em>@c.AuthorDisplayName(AppStateStore.ClientSettings.NameDisplayLength) (@c.DisplayDate): </em>@c.Comment
+                                                @if (!String.IsNullOrEmpty(c.Link))
+                                                {
+                                                    <text>&nbsp;</text><a title="@c.DisplayLinkTitle" target="_blank" href="@c.Link">@c.DisplayLinkTitle</a>
+                                                }
+                                            </small>
+                                        </li>
+                                    }
+                                } else if (item.CommentsCounter > commentsToDisplay)
+                                {
+                                    <li>
+                                        <button class="btn btn-link text-left" type="button" @onclick="e => item.HideOlderCommments = false"><small><em>mehr ...</em></small></button>
+                                    </li>
+
                                 }
                             </ul>
                             <hr />
@@ -178,6 +199,7 @@
     private IList<ExtendedInfoItem> infoItems = new List<ExtendedInfoItem>();
     const double refreshInterval = 30000;
     const double navigateAwayInterval = 10 * 60 * 1000;
+    const int commentsToDisplay = 5;
     private HubConnection hubConnection;
     private ExtendedCalendarItem calendarItemToBeCloned = null;
     private DateTime selectedDate = DateTime.Today;

@@ -28,7 +28,7 @@
                                 <em>@c.AuthorDisplayName(AppStateStore.ClientSettings.NameDisplayLength) (@c.DisplayDate): </em>@c.Comment
                                 @if (!String.IsNullOrEmpty(c.Link))
                                 {
-                                    <text> </text><a title="@c.DisplayLinkTitle" target="_blank" href="@c.Link">@c.DisplayLinkTitle</a>
+                                    <text>&nbsp;</text><a title="@c.DisplayLinkTitle" target="_blank" href="@c.Link">@c.DisplayLinkTitle</a>
                                 }
                             </small>
                         </li>
@@ -64,6 +64,8 @@
     public Boolean IsAdmin { get; set; } = false;
     [Parameter]
     public EventCallback OnChangeCallback { get; set; }
+    const int commentsToDisplay = 2;
+
 
 
     protected override void OnInitialized()
