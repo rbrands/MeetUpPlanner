@@ -1,5 +1,7 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
+*demnächst*
+- Bei der Anzeige der Kommentare zu einem Termin, werden jetzt die neuesten Kommentare zuerst angezeigt. Außerdem werden nur die letzten 4 Kommentare, die älteren kann man durch einen Link "mehr ..." anzeigen.
 *9.7.2021*
 - Der Gästelink funktionierte nicht für alle Umgebungen, d.h. die MeetUps wurden nicht angezeigt.
 - Auf der Gästeseite fehlte der Link zur Strecke.
