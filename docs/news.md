@@ -1,6 +1,6 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
-*demnächst*
+*20.7.2021*
 - Bei der Anzeige der Kommentare zu einem Termin, werden jetzt die neuesten Kommentare zuerst angezeigt. Außerdem werden nur die letzten 4 Kommentare, die älteren kann man durch einen Link "mehr ..." anzeigen.
 
 *9.7.2021*
