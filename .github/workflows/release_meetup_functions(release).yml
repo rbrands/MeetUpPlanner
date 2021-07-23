@@ -27,6 +27,7 @@ jobs:
       shell: pwsh
       run: |
         pushd './MeetUpFunctions'
+        dotnet nuget add source --username rbrands --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name githubMSiccDev "https://nuget.pkg.github.com/MSiccDev/index.json"
         dotnet build --configuration Release --output ./output
         popd
     - name: 'Run Azure Functions Action'
