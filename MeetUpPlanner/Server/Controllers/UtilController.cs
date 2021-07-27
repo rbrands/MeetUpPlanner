@@ -20,7 +20,7 @@ namespace MeetUpPlanner.Server.Controllers
     {
         private readonly MeetUpFunctions _meetUpFunctions;
         private readonly ILogger<UtilController> logger;
-        const string serverVersion = "2021-07-09";
+        const string serverVersion = "2021-07-27";
         string functionsVersion = "tbd";
 
         public UtilController(ILogger<UtilController> logger, MeetUpFunctions meetUpFunctions)
@@ -65,6 +65,10 @@ namespace MeetUpPlanner.Server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> CheckKeyword([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword)
         {
+            if (String.IsNullOrEmpty(keyword))
+            {
+                keyword = _meetUpFunctions.InviteGuestKey;
+            }
             KeywordCheck keywordCheck = await _meetUpFunctions.CheckKeyword(tenant, keyword);
 
             return Ok(keywordCheck);
@@ -136,5 +140,13 @@ namespace MeetUpPlanner.Server.Controllers
             }
             return File(byteImage, "image/png");
         }
+        [HttpPost("getlinkpreview")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetLinkPreview([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] LinkPreview linkPreview)
+        {
+            LinkPreview result = await _meetUpFunctions.GetLinkPreview(tenant, keyword, linkPreview);
+            return Ok(result);
+        }
+
     }
 }

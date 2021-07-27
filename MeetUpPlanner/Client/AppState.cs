@@ -26,7 +26,6 @@ namespace MeetUpPlanner.Client
         }
         public TenantSettings Tenant { get; set; } = new TenantSettings();
         [MaxLength(50, ErrorMessage = "Schlüsselwort zu lang.")]
-        [Required(ErrorMessage = "Schlüsselwort fehlt.")]
         public string KeyWord { get; set; }
         [MaxLength(50, ErrorMessage = "Privates Schlüsselwort zu lang.")]
         public string PrivateKeyWord1 { get; set; }

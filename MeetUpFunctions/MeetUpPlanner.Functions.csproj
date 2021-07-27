@@ -12,9 +12,9 @@
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="3.0.11" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.1.11" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.13" />
-    <PackageReference Include="MSiccDev.Libs.LinkTools.Core" Version="1.0.21261-pre.1" />
-    <PackageReference Include="MSiccDev.Libs.LinkTools.Data" Version="1.0.21261-pre.1" />
-    <PackageReference Include="MSiccDev.Libs.LinkTools.LinkPreview" Version="1.0.21261-pre.1" />
+    <PackageReference Include="MSiccDev.Libs.LinkTools.Core" Version="1.0.21261.1" />
+    <PackageReference Include="MSiccDev.Libs.LinkTools.Data" Version="1.0.21261.1" />
+    <PackageReference Include="MSiccDev.Libs.LinkTools.LinkPreview" Version="1.0.21262.1" />
     <PackageReference Include="WebPush" Version="1.0.12" />
   </ItemGroup>
   <ItemGroup>

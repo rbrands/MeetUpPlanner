@@ -10,6 +10,10 @@ namespace MeetUpPlanner.Shared
     public class KeywordCheck
     {
         /// <summary>
+        /// Exploring and joining MeetUps without keyword
+        /// </summary>
+        public bool IsParticipant { get; set; }
+        /// <summary>
         /// Is true if the given keyword matches against the public or admin keyword
         /// </summary>
         public bool IsUser { get; set; }

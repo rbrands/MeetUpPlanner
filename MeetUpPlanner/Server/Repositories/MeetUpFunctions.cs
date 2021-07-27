@@ -321,6 +321,15 @@ namespace MeetUpPlanner.Server.Repositories
                             .GetJsonAsync<IEnumerable<ExportLogItem>>();
             return result;
         }
+        public async Task<LinkPreview> GetLinkPreview(string tenant, string keyword, LinkPreview linkPreview)
+        {
+            return await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/GetLinkPreview"
+                            .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
+                            .WithHeader(HEADER_KEYWORD, keyword)
+                            .WithHeader(HEADER_TENANT, tenant)
+                            .PostJsonAsync(linkPreview)
+                            .ReceiveJson<LinkPreview>();
+        }
 
     }
 

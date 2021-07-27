@@ -1,6 +1,7 @@
 ﻿@page "/invite/{ItemId}"
 @inject HttpClient Http
 @inject AppState AppStateStore
+@inject KeywordCheck KeywordCheck
 @using CurrieTechnologies.Razor.Clipboard
 @using MeetUpPlanner.Shared
 @inject ClipboardService clipboard
@@ -33,7 +34,7 @@
     {
         _checkinUrl = $"{Http.BaseAddress}register/{ItemId}";
         _imageUrl = $"Util/qrcodeimage?link={_checkinUrl}";
-        if (!String.IsNullOrEmpty(AppStateStore?.KeyWord))
+        if (null != AppStateStore && KeywordCheck.IsParticipant)
         {
             await ReadData();
         }

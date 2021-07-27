@@ -5,6 +5,7 @@
 @inject KeywordCheck KeywordCheck
 @inject NavigationManager NavigationManager
 @inject NotificationService notificationService
+@using Newtonsoft.Json
 @using Microsoft.AspNetCore.SignalR.Client
 @using MeetUpPlanner.Shared
 @using Blazored.TextEditor
@@ -112,13 +113,27 @@
             Die Ausfahrt wird in der Liste gut sichtbar als "Cross" markiert.
         </small>
     </div>
-    <div class="form-group">
-        <label for="link">Link</label>
-        <InputText id="link" aria-describedby="linkHelp" class="form-control" @bind-Value="meetup.Link" placeholder="URL" title="Link zu weiterer Streckeninfo" />
-        <small id="linkHelp" class="form-text text-muted">
-            Optional: Link zu weiteren Strecken-Infos, z.B. Komoot, Strava usw.
-        </small>
+    <div class="form-row">
+        <div class="form-group col-md-10">
+            <InputText id="link" aria-describedby="linkHelp" class="form-control" @bind-Value="meetup.Link" placeholder="Link zu weiterer Streckeninfo" title="Link zu weiterer Streckeninfo" />
+            <small id="linkHelp" class="form-text text-muted">
+                Optional: Link zu weiteren Strecken-Infos, z.B. Komoot, Strava usw.
+            </small>
+        </div>
+        <div class="form-group col-md-2">
+            <div class="form-check">
+                <button id="btnLinkPreviewEnabled" class="btn btn-primary" type="button"  @onclick ="@(() => ToggleLinkPreview())">Preview An/Aus</button>
+            </div>
+        </div>
     </div>
+    @if (LinkPreviewEnabled)
+    {
+        <div class="form-row">
+            <div class="form-group col-12 col-sm-6 col-lg-4 col-xl-4 mt-2">
+                <img src="@meetup.LinkImage" class="img-fluid" />
+            </div>
+        </div>
+    }
     <div class="form-group">
         <label for="linkTitle">Link-Bezeichnung</label>
         <InputText id="linkTitle" aria-describedby="linkTitleHelp" class="form-control" @bind-Value="meetup.LinkTitle" placeholder="Kurze Überschrift zum Link" title="Bezeichnung des Links zur weiterern Streckeninfo" />
@@ -144,7 +159,7 @@
         <div class="form-group">
             <div class="form-check">
                 <InputCheckbox id="withoutHost" aria-describedby="crossHelp" class="form-check-input" @bind-Value="meetup.WithoutHost" />
-                <label for="withoutHost" class="form-checklabel">
+                <label for="withoutHost" class="form-check-label">
                     Ausfahrt ohne Guide eintragen?
                 </label>
             </div>
@@ -155,7 +170,7 @@
         <div class="form-group">
             <div class="form-check">
                 <InputCheckbox id="weekly" aria-describedby="weeklyHelp" class="form-check-input" @bind-Value="meetup.Weekly" />
-                <label for="weekly" class="form-checklabel">
+                <label for="weekly" class="form-check-label">
                     Soll die Ausfahrt automatisch in der nächsten Woche wiederholt werden?
                 </label>
             </div>
@@ -186,7 +201,7 @@
         </small>
     </div>
     @if (AppStateStore.ClientSettings.GuestsEnabled)
-    { 
+    {
         <div class="form-group">
             <label for="guestScope">"Scope" für Gäste</label>
             <InputText id="guestScope" aria-describedby="guestScopeHelp" class="form-control" @bind-Value="meetup.GuestScope" autocomplete="on" placeholder="Kürzel, das im Gäste-Link verwendet wird." />
@@ -215,6 +230,39 @@
     private List<KeyValuePair<string, string>> scopedDates = new List<KeyValuePair<string, string>>();
     private bool saveDisabled = false;
     private bool withoutHost = false;
+    private bool _linkPreviewEnabled = false;
+    Boolean LinkPreviewEnabled
+    {
+        get
+        {
+            return _linkPreviewEnabled;
+        }
+        set
+        {
+            _linkPreviewEnabled = value;
+        }
+    }
+
+    protected async Task ToggleLinkPreview()
+    {
+        meetup.LinkImage = null;
+        LinkPreviewEnabled = !LinkPreviewEnabled;
+        this.StateHasChanged();
+        if (LinkPreviewEnabled)
+        {
+            LinkPreview linkPreview = new LinkPreview();
+            linkPreview.Url = new Uri(meetup.Link);
+            HttpResponseMessage response = await Http.PostAsJsonAsync<LinkPreview>($"Util/getlinkpreview", linkPreview);
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            linkPreview = JsonConvert.DeserializeObject<LinkPreview>(responseBody);
+            if (linkPreview.Success)
+            {
+                meetup.LinkImage = linkPreview.ImageUrl.ToString();
+                meetup.LinkTitle = linkPreview.Title;
+            }
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -315,6 +363,7 @@
                 else
                 {
                     AppStateStore.PrivateKeyWord3 = meetup.PrivateKeyword;
+
                 }
             }
         }

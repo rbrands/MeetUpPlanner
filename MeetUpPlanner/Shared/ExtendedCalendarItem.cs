@@ -44,6 +44,7 @@ namespace MeetUpPlanner.Shared
             this.LevelDescription = calendarItem.LevelDescription;
             this.Tempo = calendarItem.Tempo;
             this.Link = calendarItem.Link;
+            this.LinkImage = calendarItem.LinkImage;
             this.LinkTitle = calendarItem.LinkTitle;
             this.ParticipantsList = new List<Participant>();
             this.CommentsList = new List<CalendarComment>();

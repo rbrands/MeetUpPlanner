@@ -17,10 +17,10 @@
     <DataAnnotationsValidator />
     <ValidationSummary />
     <div class="form-group">
-        <label for="keyword">Schlüsselwort für die öffentlichen Ausfahrten</label>
-        <InputText id="keyword" aria-describedby="keywordHelp" class="form-control" @bind-Value="AppStateStore.KeyWord" autocomplete="on" placeholder="Schlüsselwort für den Zugriff" title="Schlüsselwort zum allgemeinen Zugriff auf die Ausfahrten." />
+        <label for="keyword">@_keywordLabel</label>
+        <InputText id="keyword" aria-describedby="keywordHelp" class="form-control" @bind-Value="AppStateStore.KeyWord" autocomplete="on" placeholder="Schlüsselwort" title="Schlüsselwort zum allgemeinen Zugriff auf die Ausfahrten." />
         <small id="keywordHelp" class="form-text text-muted">
-            Für den Zugriff auf die Termine ist ein "Schlüsselwort" notwendig, das separat kommuniziert wurde.
+            Für den Zugriff auf die Termine ist je nach Konfiguration ein "Schlüsselwort" für die Teilnahme oder nur für die Neuanlage notwendig. Das Schlüsselwort wird separat kommuniziert.
         </small>
     </div>
     <div class="form-row">
@@ -97,6 +97,8 @@
     Boolean _hideAlert = true;
     string _alertMessage = String.Empty;
     Boolean _disableStartButton = false;
+    string _keywordLabel = "Schlüsselwort für die öffentlichen Ausfahrten";
+    string _publicJoinLabel = "Schlüsselwort für das Anlegen von neuen Ausfahrten";
     Boolean UsageRightsAccepted
     {
         get
@@ -135,6 +137,10 @@
             TenantClientSettings tenantClientSettings = await Http.GetFromJsonAsync<TenantClientSettings>("Util/tenantclientsettings");
             AppStateStore.Tenant = tenantClientSettings.Tenant;
             AppStateStore.ClientSettings = tenantClientSettings.Client;
+            if (tenantClientSettings.Client.PublicMeetUpJoiningEnabled)
+            {
+                _keywordLabel = _publicJoinLabel;
+            }
         }
         catch(Exception ex)
         {
@@ -159,6 +165,7 @@
         // Reset user status
         KeywordCheck.IsUser = false;
         KeywordCheck.IsAdmin = false;
+        KeywordCheck.IsParticipant = false;
         AppStateStore.NotifyStateChanged();
     }
 
@@ -172,6 +179,10 @@
             KeywordCheck keywordCheck = await Http.GetFromJsonAsync<KeywordCheck>($"Util/checkkeyword");
             KeywordCheck.IsAdmin = keywordCheck.IsAdmin;
             KeywordCheck.IsUser = keywordCheck.IsUser;
+            if (AppStateStore.ClientSettings.PublicMeetUpJoiningEnabled)
+            {
+                KeywordCheck.IsParticipant = keywordCheck.IsParticipant;
+            }
         } catch (Exception ex)
         {
             _hideAlert = false;
@@ -179,9 +190,9 @@
             _alertMessage = $"<p>Der MeetUpPlanner ist momentan offline, bitte später noch einmal versuchen.</p><p>Fehlermeldung: {ex.Message}</p>";
         }
         AppStateStore.NotifyStateChanged();
-        if (!KeywordCheck.IsUser && !KeywordCheck.IsAdmin)
+        if (!KeywordCheck.IsParticipant)
         {
-            notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Schlüsselwort", Detail = "Das eingegebene Schlüsselwort ist leider falsch.", Duration = 4000 });
+            notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Schlüsselwort", Detail = "Bitte das richtige Schlüsselwort engeben.", Duration = 4000 });
         }
         AppStateStore.FirstName = AppStateStore.FirstName.Trim();
         AppStateStore.LastName = AppStateStore.LastName.Trim();
@@ -204,7 +215,7 @@
         {
             await localStorage.RemoveItemAsync("permAppState");
         }
-        if (KeywordCheck.IsUser)
+        if (KeywordCheck.IsParticipant)
         {
             if (AppStateStore.Tenant.IsLocked || (AppStateStore.ClientSettings.AppLocked && !KeywordCheck.IsAdmin))
             {

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +31,10 @@ namespace MeetUpPlanner.Server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetExtendedInfoItems([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword)
         {
+            if (String.IsNullOrEmpty(keyword))
+            {
+                keyword = _meetUpFunctions.InviteGuestKey;
+            }
             IEnumerable<ExtendedInfoItem> infoItems = await _meetUpFunctions.GetExtendedInfoItems(tenant, keyword);
             return Ok(infoItems);
         }
@@ -51,6 +56,10 @@ namespace MeetUpPlanner.Server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetExtendedInfoItem([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromQuery] string itemId)
         {
+            if (String.IsNullOrEmpty(keyword))
+            {
+                keyword = _meetUpFunctions.InviteGuestKey;
+            }
             ExtendedInfoItem infoItem = await _meetUpFunctions.GetExtendedInfoItem(tenant, keyword, itemId);
             return Ok(infoItem);
         }
@@ -58,6 +67,10 @@ namespace MeetUpPlanner.Server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> AddComment([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] CalendarComment comment)
         {
+            if (String.IsNullOrEmpty(keyword))
+            {
+                keyword = _meetUpFunctions.InviteGuestKey;
+            }
             BackendResult result = await _meetUpFunctions.AddCommentToInfoItem(tenant, keyword, comment);
             return Ok(result);
         }

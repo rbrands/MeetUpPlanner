@@ -32,6 +32,7 @@ namespace MeetUpPlanner.Shared
         [JsonProperty(PropertyName = "nameDisplayLength"), Range(0.0, 10, ErrorMessage = "Länge des Anzeigenamens zwischen 0 und 10.")]
         public int NameDisplayLength { get; set; } = 1;
         public Boolean GuestsEnabled { get; set; } = false;
+        public Boolean PublicMeetUpJoiningEnabled { get; set; } = false;
         public Boolean OnlyScopedMeetUpsAllowed { get; set; } = false;
         public Boolean OnlyAdminsAsHost { get; set; } = false;
         public Boolean AppLocked { get; set; } = false;

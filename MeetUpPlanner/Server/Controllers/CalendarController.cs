@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MeetUpPlanner.Server.Repositories;
 using MeetUpPlanner.Shared;
+using System;
 
 namespace MeetUpPlanner.Server.Controllers
 {
@@ -38,6 +39,10 @@ namespace MeetUpPlanner.Server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetExtendedCalendarItems([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromQuery] string privatekeywords)
         {
+            if (String.IsNullOrEmpty(keyword))
+            {
+                keyword = _meetUpFunctions.InviteGuestKey;
+            }
             IEnumerable<ExtendedCalendarItem> calendarItems = await _meetUpFunctions.GetExtendedCalendarItems(tenant, keyword, privatekeywords);
             return Ok(calendarItems);
         }
@@ -66,6 +71,10 @@ namespace MeetUpPlanner.Server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetExtendedCalendarItem([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromQuery] string itemId)
         {
+            if (String.IsNullOrEmpty(keyword))
+            {
+                keyword = _meetUpFunctions.InviteGuestKey;
+            }
             ExtendedCalendarItem calendarItem = await _meetUpFunctions.GetExtendedCalendarItem(tenant, keyword, itemId);
             return Ok(calendarItem);
         }
@@ -80,6 +89,10 @@ namespace MeetUpPlanner.Server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> AddParticipant([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] Participant participant)
         {
+            if (String.IsNullOrEmpty(keyword))
+            {
+                keyword = _meetUpFunctions.InviteGuestKey;
+            }
             BackendResult result = await _meetUpFunctions.AddParticipantToCalendarItem(tenant, keyword, participant);
             return Ok(result);
         }
@@ -94,6 +107,10 @@ namespace MeetUpPlanner.Server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> RemoveParticipant([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] Participant participant)
         {
+            if (String.IsNullOrEmpty(keyword))
+            {
+                keyword = _meetUpFunctions.InviteGuestKey;
+            }
             BackendResult result = await _meetUpFunctions.RemoveParticipantFromCalendarItem(tenant, keyword, participant);
             return Ok(result);
         }
@@ -115,6 +132,10 @@ namespace MeetUpPlanner.Server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> AddComment([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] CalendarComment comment)
         {
+            if (String.IsNullOrEmpty(keyword))
+            {
+                keyword = _meetUpFunctions.InviteGuestKey;
+            }
             BackendResult result = await _meetUpFunctions.AddCommentToCalendarItem(tenant, keyword, comment);
             return Ok(result);
         }
@@ -122,6 +143,10 @@ namespace MeetUpPlanner.Server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> RemoveComment([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] CalendarComment comment)
         {
+            if (String.IsNullOrEmpty(keyword))
+            {
+                keyword = _meetUpFunctions.InviteGuestKey;
+            }
             BackendResult result = await _meetUpFunctions.RemoveCommentFromCalendarItem(tenant, keyword, comment);
             return Ok(result);
         }
