@@ -1,6 +1,7 @@
 ﻿@page "/comment/{ItemId}"
 @inject HttpClient Http
 @inject AppState AppStateStore
+@inject KeywordCheck KeywordCheck
 @inject NavigationManager NavigationManager
 @implements IDisposable
 @using MeetUpPlanner.Shared
@@ -26,7 +27,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (!String.IsNullOrEmpty(AppStateStore?.KeyWord))
+        if (null != AppStateStore && KeywordCheck.IsParticipant)
         {
             hubConnection = new HubConnectionBuilder()
                  .WithUrl(NavigationManager.ToAbsoluteUri("/broadcastHub"))
@@ -92,7 +93,17 @@
 
     public void Dispose()
     {
-        _ = hubConnection.DisposeAsync();
+        if (null != hubConnection)
+        {
+            try
+            {
+                _ = hubConnection.DisposeAsync();
+            }
+            catch (Exception)
+            {
+
+            }
+        }
     }
 
     private void PrepareHttpClient()

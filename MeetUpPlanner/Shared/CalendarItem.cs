@@ -47,6 +47,8 @@ namespace MeetUpPlanner.Shared
         public string Link { get; set; }
         [JsonProperty(PropertyName = "linkTitle", NullValueHandling = NullValueHandling.Ignore), MaxLength(60, ErrorMessage = "Link-Bezeichnung zu lang.")]
         public string LinkTitle { get; set; }
+        [JsonProperty(PropertyName = "linkImage", NullValueHandling = NullValueHandling.Ignore)]
+        public string LinkImage { get; set; }
         [JsonProperty(PropertyName = "isCross")]
         public Boolean IsCross { get; set; } = false;
         [JsonProperty(PropertyName = "isCanceled")]

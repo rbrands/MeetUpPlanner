@@ -48,7 +48,7 @@ namespace MeetUpPlanner.Functions
             }
             ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings(tenant);
             string keyWord = req.Headers[Constants.HEADER_KEYWORD];
-            if (String.IsNullOrEmpty(keyWord) || !(serverSettings.IsUser(keyWord)))
+            if (String.IsNullOrEmpty(keyWord) || !(serverSettings.IsUser(keyWord) || _serverSettingsRepository.IsInvitedGuest(keyWord)))
             {
                 _logger.LogWarning("GetExtendedInfoItem called with wrong keyword.");
                 return new BadRequestErrorMessageResult("Keyword is missing or wrong.");

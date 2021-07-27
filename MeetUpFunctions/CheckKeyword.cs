@@ -59,8 +59,14 @@ namespace MeetUpPlanner.Functions
             KeywordCheck keywordCheck = new KeywordCheck();
             if (!String.IsNullOrEmpty(keyword))
             {
+                keywordCheck.IsParticipant = _serverSettingsRepository.IsInvitedGuest(keyword);
                 keywordCheck.IsUser = keyword.Equals(serverSettings.UserKeyword);
                 keywordCheck.IsAdmin = keyword.Equals(serverSettings.AdminKeyword);
+            }
+            if (keywordCheck.IsUser || keywordCheck.IsAdmin)
+            {
+                // Users and Admins are also participants
+                keywordCheck.IsParticipant = true;
             }
             if (keywordCheck.IsAdmin)
             {

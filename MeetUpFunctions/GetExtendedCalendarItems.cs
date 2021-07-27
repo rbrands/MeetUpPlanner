@@ -52,7 +52,7 @@ namespace MeetUpPlanner.Functions
             _logger.LogInformation($"GetExtendedCalendarItems for tenant <{tenantBadge}>");
             ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings(tenant);
             string keyWord = req.Headers[Constants.HEADER_KEYWORD];
-            if (String.IsNullOrEmpty(keyWord) || !serverSettings.IsUser(keyWord))
+            if (String.IsNullOrEmpty(keyWord) || !(serverSettings.IsUser(keyWord) || _serverSettingsRepository.IsInvitedGuest(keyWord)))
             {
                 _logger.LogWarning($"GetExtendedCalendarItems<{tenantBadge}> called with wrong keyword.");
                 return new BadRequestErrorMessageResult("Keyword is missing or wrong.");
