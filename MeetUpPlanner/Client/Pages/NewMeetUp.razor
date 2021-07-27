@@ -5,6 +5,7 @@
 @inject KeywordCheck KeywordCheck
 @inject NavigationManager NavigationManager
 @inject NotificationService notificationService
+@using Newtonsoft.Json
 @using Microsoft.AspNetCore.SignalR.Client
 @using MeetUpPlanner.Shared
 @using Blazored.TextEditor
@@ -55,9 +56,9 @@
             {
                 <InputSelect @bind-Value="whenDateString" class="form-control">
                     @foreach (KeyValuePair<string, string> c in GetScopedDays())
-                    {
+                        {
                         <option value="@c.Key">@c.Value</option>
-                    }
+                        }
                 </InputSelect>
             }
             else
@@ -121,13 +122,18 @@
         </div>
         <div class="form-group col-md-2">
             <div class="form-check">
-                <InputCheckbox id="linkPreviewEnabled" class="form-check-input" @bind-Value="@LinkPreviewEnabled" />
-                <label for="linkPreviewEnabled" class="form-check-label">
-                    Vorschau?
-                </label>
+                <button id="btnLinkPreviewEnabled" class="btn btn-primary" type="button"  @onclick ="@(() => ToggleLinkPreview())">Preview An/Aus</button>
             </div>
         </div>
     </div>
+    @if (LinkPreviewEnabled)
+    {
+        <div class="form-row">
+            <div class="form-group col-12 col-sm-6 col-lg-4 col-xl-4 mt-2">
+                <img src="@meetup.LinkImage" class="img-fluid" />
+            </div>
+        </div>
+    }
     <div class="form-group">
         <label for="linkTitle">Link-Bezeichnung</label>
         <InputText id="linkTitle" aria-describedby="linkTitleHelp" class="form-control" @bind-Value="meetup.LinkTitle" placeholder="Kurze Überschrift zum Link" title="Bezeichnung des Links zur weiterern Streckeninfo" />
@@ -173,40 +179,40 @@
             </small>
         </div>
     }
+    <div class="form-group">
+        <label for="size">Max. Gruppengröße</label>
+        <RadzenNumeric id="size" aria-describedby="sizeHelp" class="form-control" TValue="int" Min="0" Max="@AppStateStore.ClientSettings?.GetMaxGroupSize(KeywordCheck.IsAdmin)" @bind-Value="meetup.MaxRegistrationsCount" />
+        <small id="sizeHelp" class="form-text text-muted">
+            Hier kann die Größe der Gruppe entsprechend beschränkt werden. Maximale Gruppengröße ist momentan @(AppStateStore.ClientSettings?.GetMaxGroupSize(KeywordCheck.IsAdmin)).
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="size">Mindestteilnehmerzahl</label>
+        <RadzenNumeric id="minSize" aria-describedby="sizeHelp" class="form-control" TValue="int" Min="0" Max="@AppStateStore.ClientSettings?.GetMaxGroupSize(KeywordCheck.IsAdmin)" @bind-Value="meetup.MinRegistrationsCount" />
+        <small id="sizeHelp" class="form-text text-muted">
+            Optional: Gewünschte Mindestteilnehmerzahl der Gruppe. Dies wird entsprechend angezeigt, hat aber ansonsten keine Konsequenzen, d.h. es wird kein Termin automatisch abgesagt oder gelöscht ...
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="privateKeyword">Private Ausfahrt?</label>
+        <InputText id="privateKeyword" aria-describedby="privateKeywordHelp" class="form-control" @bind-Value="meetup.PrivateKeyword" autocomplete="on" placeholder="Schlüsselwort für private Ausfahrt" />
+        <small id="privateKeywordHelp" class="form-text text-muted">
+            Falls die Ausfahrt "privat" sein soll, hier ein Schlüsselwort festlegen und den potentiellen Mitfahrern separat mitteilen.
+        </small>
+    </div>
+    @if (AppStateStore.ClientSettings.GuestsEnabled)
+    {
         <div class="form-group">
-            <label for="size">Max. Gruppengröße</label>
-            <RadzenNumeric id="size" aria-describedby="sizeHelp" class="form-control" TValue="int" Min="0" Max="@AppStateStore.ClientSettings?.GetMaxGroupSize(KeywordCheck.IsAdmin)" @bind-Value="meetup.MaxRegistrationsCount" />
-            <small id="sizeHelp" class="form-text text-muted">
-                Hier kann die Größe der Gruppe entsprechend beschränkt werden. Maximale Gruppengröße ist momentan @(AppStateStore.ClientSettings?.GetMaxGroupSize(KeywordCheck.IsAdmin)).
+            <label for="guestScope">"Scope" für Gäste</label>
+            <InputText id="guestScope" aria-describedby="guestScopeHelp" class="form-control" @bind-Value="meetup.GuestScope" autocomplete="on" placeholder="Kürzel, das im Gäste-Link verwendet wird." />
+            <small id="guestScopeHelp" class="form-text text-muted">
+                Über den "Scope" können Ausfahrten für Gäste zusammen gefasst werden und sind dann über einen Link der Form ".../guests/scope" erreichbar.
             </small>
         </div>
-        <div class="form-group">
-            <label for="size">Mindestteilnehmerzahl</label>
-            <RadzenNumeric id="minSize" aria-describedby="sizeHelp" class="form-control" TValue="int" Min="0" Max="@AppStateStore.ClientSettings?.GetMaxGroupSize(KeywordCheck.IsAdmin)" @bind-Value="meetup.MinRegistrationsCount" />
-            <small id="sizeHelp" class="form-text text-muted">
-                Optional: Gewünschte Mindestteilnehmerzahl der Gruppe. Dies wird entsprechend angezeigt, hat aber ansonsten keine Konsequenzen, d.h. es wird kein Termin automatisch abgesagt oder gelöscht ...
-            </small>
-        </div>
-        <div class="form-group">
-            <label for="privateKeyword">Private Ausfahrt?</label>
-            <InputText id="privateKeyword" aria-describedby="privateKeywordHelp" class="form-control" @bind-Value="meetup.PrivateKeyword" autocomplete="on" placeholder="Schlüsselwort für private Ausfahrt" />
-            <small id="privateKeywordHelp" class="form-text text-muted">
-                Falls die Ausfahrt "privat" sein soll, hier ein Schlüsselwort festlegen und den potentiellen Mitfahrern separat mitteilen.
-            </small>
-        </div>
-        @if (AppStateStore.ClientSettings.GuestsEnabled)
-        {
-            <div class="form-group">
-                <label for="guestScope">"Scope" für Gäste</label>
-                <InputText id="guestScope" aria-describedby="guestScopeHelp" class="form-control" @bind-Value="meetup.GuestScope" autocomplete="on" placeholder="Kürzel, das im Gäste-Link verwendet wird." />
-                <small id="guestScopeHelp" class="form-text text-muted">
-                    Über den "Scope" können Ausfahrten für Gäste zusammen gefasst werden und sind dann über einen Link der Form ".../guests/scope" erreichbar.
-                </small>
-            </div>
-        }
-        <ValidationSummary />
-        <button type="submit" id="BtnSave" disabled="@saveDisabled" class="btn btn-primary">Termin speichern ...</button>
-        <button type="reset" id="BtnCancel" class="btn btn-secondary" @onclick="@(() => OnCancel())">Zurück ohne Speichern</button>
+    }
+    <ValidationSummary />
+    <button type="submit" id="BtnSave" disabled="@saveDisabled" class="btn btn-primary">Termin speichern ...</button>
+    <button type="reset" id="BtnCancel" class="btn btn-secondary" @onclick="@(() => OnCancel())">Zurück ohne Speichern</button>
 </EditForm>
 
 @code {
@@ -225,15 +231,36 @@
     private bool saveDisabled = false;
     private bool withoutHost = false;
     private bool _linkPreviewEnabled = false;
-    Boolean LinkPreviewEnabled 
+    Boolean LinkPreviewEnabled
     {
-        get 
+        get
         {
             return _linkPreviewEnabled;
         }
         set
         {
             _linkPreviewEnabled = value;
+        }
+    }
+
+    protected async Task ToggleLinkPreview()
+    {
+        meetup.LinkImage = null;
+        LinkPreviewEnabled = !LinkPreviewEnabled;
+        this.StateHasChanged();
+        if (LinkPreviewEnabled)
+        {
+            LinkPreview linkPreview = new LinkPreview();
+            linkPreview.Url = new Uri(meetup.Link);
+            HttpResponseMessage response = await Http.PostAsJsonAsync<LinkPreview>($"Util/getlinkpreview", linkPreview);
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            linkPreview = JsonConvert.DeserializeObject<LinkPreview>(responseBody);
+            if (linkPreview.Success)
+            {
+                meetup.LinkImage = linkPreview.ImageUrl.ToString();
+                meetup.LinkTitle = linkPreview.Title;
+            }
         }
     }
 
@@ -336,6 +363,7 @@
                 else
                 {
                     AppStateStore.PrivateKeyWord3 = meetup.PrivateKeyword;
+
                 }
             }
         }
