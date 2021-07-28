@@ -75,7 +75,9 @@
                 </div>
                 @if (!String.IsNullOrEmpty(item.LinkImage))
                 {
-                    <img class="card-img-top" src="@item.LinkImage" alt="@item.LinkTitle">
+                    <a href="@item.Link" target="_blank">
+                        <img class="card-img-top" src="@item.LinkImage" alt="@item.LinkTitle">
+                    </a>
                 }
                 <div class="card-body">
                     <h6 class="text-muted card-subtitle mb-2">
