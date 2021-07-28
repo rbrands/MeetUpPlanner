@@ -172,14 +172,25 @@
     private async Task CheckKeyword()
     {
         // Keyword check at server side
-        AppStateStore.KeyWord = AppStateStore.KeyWord.Trim();
+        if (null != AppStateStore.KeyWord)
+        {
+            AppStateStore.KeyWord = AppStateStore.KeyWord.Trim();
+        }
         PrepareHttpClient();
         try
         {
             KeywordCheck keywordCheck = await Http.GetFromJsonAsync<KeywordCheck>($"Util/checkkeyword");
             KeywordCheck.IsAdmin = keywordCheck.IsAdmin;
             KeywordCheck.IsUser = keywordCheck.IsUser;
-            KeywordCheck.IsParticipant = keywordCheck.IsParticipant;
+            if (AppStateStore.ClientSettings.PublicMeetUpJoiningEnabled)
+            {
+                KeywordCheck.IsParticipant = keywordCheck.IsParticipant;
+            }
+            else
+            {
+                // If no public joining is enabled the user must have a valid keyword
+                KeywordCheck.IsParticipant = keywordCheck.IsUser;
+            }
         } catch (Exception ex)
         {
             _hideAlert = false;
