@@ -248,7 +248,7 @@
         meetup.LinkImage = null;
         LinkPreviewEnabled = !LinkPreviewEnabled;
         this.StateHasChanged();
-        if (LinkPreviewEnabled)
+        if (LinkPreviewEnabled && !String.IsNullOrEmpty(meetup.Link))
         {
             LinkPreview linkPreview = new LinkPreview();
             linkPreview.Url = new Uri(meetup.Link);
@@ -282,6 +282,7 @@
                 // Get referenced calendar item
                 meetup = await Http.GetFromJsonAsync<ExtendedCalendarItem>($"Calendar/extendedcalendaritem?itemId={ItemId}");
                 withoutHost = meetup.WithoutHost;
+                LinkPreviewEnabled = !String.IsNullOrEmpty(meetup.LinkImage);
             }
             else
             {
