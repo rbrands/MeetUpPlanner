@@ -179,10 +179,7 @@
             KeywordCheck keywordCheck = await Http.GetFromJsonAsync<KeywordCheck>($"Util/checkkeyword");
             KeywordCheck.IsAdmin = keywordCheck.IsAdmin;
             KeywordCheck.IsUser = keywordCheck.IsUser;
-            if (AppStateStore.ClientSettings.PublicMeetUpJoiningEnabled)
-            {
-                KeywordCheck.IsParticipant = keywordCheck.IsParticipant;
-            }
+            KeywordCheck.IsParticipant = keywordCheck.IsParticipant;
         } catch (Exception ex)
         {
             _hideAlert = false;
