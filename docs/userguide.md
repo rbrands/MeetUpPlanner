@@ -7,6 +7,10 @@ Hier sollen die etwas versteckteren Features beschrieben werden.
 
 ## Features für alle Benutzer
 <dl>
+  <dt id="linkpreview">Preview An/Aus</dt>
+  <dd>
+    <p>Wenn man eine Ausfahrt erstellt und dabei einen Link zur Strecke hinzufügt - z.B. Komoot - kann man jetzt über den Button "Preview An/Aus" eine Preview für den Link abrufen. Dies funktioniert ähnlich wie bei Facebook, Twitter & Co: Die Webseite wird abgerufen und Informationen wie Titel, Beschreibung und Bild ausgelesen. Das Bild wird dann in der Ausfahrt oben dargestellt. Bei Komoot ist das z.B. typischerweise eine Kartenübersicht. Aber nicht immer: Hat man in der Komoot-Strecke ein oder mehrere "Highlights" aufgenomnmnen und sind diese mit Fotos angereichert, so wird als Bild für den Link das erste Foto und nicht die Karte verwendet. Da hilft nur auf Highlights in der Planung zu verzichten (so mache ich es sowieso) oder später hinzuzufügen.</p>
+  </dd>
   <dt id="pwa">Installation als App</dt>
   <dd>
   <p>
