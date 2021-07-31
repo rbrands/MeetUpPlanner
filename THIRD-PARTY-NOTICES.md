@@ -12,3 +12,5 @@ The Blazor Component Library from Radzen provides a comprehensive set of compone
 Another handy tool to provide file download in Blazor: https://github.com/arivera12/BlazorDownloadFile
 
 And of course Bootstrap for the responsive design is used.
+
+To assemble link previews LinkTools https://github.com/MSiccDev/LinkTools is used: Copyright (c) 2021 MSiccDev Software Development (Marco Siccardi)
