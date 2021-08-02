@@ -55,8 +55,8 @@ namespace MeetUpPlanner.Functions
             LinkPreviewRequest previewRequest = new LinkPreviewRequest(linkPreview.Url);
 
             LinkPreviewRequest previewResponse = await _linkPreviewRepository.GetLinkDataAsync(previewRequest, false, true, false, true);
-            linkPreview.Title = previewResponse.Result.Title;
-            linkPreview.Description = previewResponse.Result.Description;
+            linkPreview.Title = System.Web.HttpUtility.HtmlDecode(previewResponse.Result.Title);
+            linkPreview.Description = System.Web.HttpUtility.HtmlDecode(previewResponse.Result.Description);
             linkPreview.ImageUrl = previewResponse.Result.ImageUrl;
             linkPreview.Url = previewResponse.Result.Url;
             linkPreview.CanoncialUrl = previewResponse.Result.CanoncialUrl;
