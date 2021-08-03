@@ -28,6 +28,12 @@
             }
         }
     </div>
+    @if (!String.IsNullOrEmpty(CalendarItem.LinkImage))
+    {
+        <a href="@CalendarItem.Link" target="_blank">
+            <img class="card-img-top" src="@CalendarItem.LinkImage" alt="@CalendarItem.LinkTitle">
+        </a>
+    }
     <div class="card-body">
         <h6 class="text-muted card-subtitle mb-2">
             @CalendarItem.LevelDescription - @CalendarItem.Tempo
@@ -110,7 +116,7 @@
 
                         }
                     </ul>
-                 <hr />
+                    <hr />
                 }
             }
             @if (!String.IsNullOrEmpty(CalendarItem.Link))
@@ -136,7 +142,7 @@
             </div>
             <div class="btn-group mr-2" role="group" aria-label="Teilnehmen">
                 @if (!IsGuest)
-                { 
+                {
                     <button class="btn btn-sm btn-outline-secondary" title="Kommentieren" @onclick="@(() => ShowComment(CalendarItem))"><span class="oi oi-comment-square"></span></button>
                 }
                 @if (AppStateStore.ClientSettings.GuestsEnabled && !ShowHistory && !IsGuest)
