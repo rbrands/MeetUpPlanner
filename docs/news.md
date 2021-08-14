@@ -1,6 +1,6 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
-*demnächst*
+*14.8.2021*
 - Ausfahrten können als "Training" markiert werden.
 - Der "Preview" eines Strecken-Links wird auch bei Gäste-Links angezeigt.
 
