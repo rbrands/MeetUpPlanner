@@ -51,6 +51,8 @@ namespace MeetUpPlanner.Shared
         public string LinkImage { get; set; }
         [JsonProperty(PropertyName = "isCross")]
         public Boolean IsCross { get; set; } = false;
+        [JsonProperty(PropertyName = "isTraining")]
+        public Boolean IsTraining { get; set; } = false;
         [JsonProperty(PropertyName = "isCanceled")]
         public Boolean IsCanceled { get; set; } = false;
         [JsonProperty(PropertyName = "guestScope", NullValueHandling = NullValueHandling.Ignore), MaxLength(20, ErrorMessage = "Gast-Scope zu lang.")]
