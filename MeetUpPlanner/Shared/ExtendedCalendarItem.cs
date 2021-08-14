@@ -49,6 +49,7 @@ namespace MeetUpPlanner.Shared
             this.ParticipantsList = new List<Participant>();
             this.CommentsList = new List<CalendarComment>();
             this.IsCross = calendarItem.IsCross;
+            this.IsTraining = calendarItem.IsTraining;
             this.IsCanceled = calendarItem.IsCanceled;
             this.Tenant = calendarItem.Tenant;
             this.WithoutHost = calendarItem.WithoutHost;
