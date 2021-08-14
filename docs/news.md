@@ -1,5 +1,9 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
+*demnächst*
+- Ausfahrten können als "Training" markiert werden.
+- Der "Preview" eines Strecken-Links wird auch bei Gäste-Links angezeigt.
+
 *27.7.2021*
 - Per Konfiguration kann jetzt eingestellt werden, dass man sich auch ohne Eingabe eines Schlüsselworts die Ausfahrten sieht und anmelden kann. Für das Anlegen von Ausfahrten ist auf jeden Fall weiterhin ein Schlüsselwort erforderlich.
 - Bei einem Streckenlink kann eine Preview des Links abgerufen werden.
