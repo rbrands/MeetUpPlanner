@@ -1,0 +1,120 @@
+﻿@page "/participants/{ItemId}"
+@inject HttpClient Http
+@inject AppState AppStateStore
+@inject KeywordCheck KeywordCheck
+@inject NavigationManager NavigationManager
+@implements IDisposable
+@using MeetUpPlanner.Shared
+@using Newtonsoft.Json
+@using Microsoft.AspNetCore.SignalR.Client
+
+<MeetUp CalendarItem="@meetup" NameDisplayLength="@AppStateStore.ClientSettings.NameDisplayLength" />
+
+<ParticipantsList Participants="@meetup.ParticipantsList" OnRemoveParticipant="RemoveParticipant" NameDisplayLength="0"></ParticipantsList>
+<button type="reset" id="BtnCancel" class="btn btn-secondary" @onclick="@(() => OnCancel())">Zurück ...</button>
+
+<p class="alert-info">
+    @logMessage
+</p>
+
+@code {
+    [Parameter]
+    public string ItemId { get; set; }
+    ExtendedCalendarItem meetup = new ExtendedCalendarItem();
+    string logMessage;
+    private HubConnection hubConnection;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (null != AppStateStore && KeywordCheck.IsParticipant)
+        {
+            hubConnection = new HubConnectionBuilder()
+                 .WithUrl(NavigationManager.ToAbsoluteUri("/broadcastHub"))
+                 .WithAutomaticReconnect()
+                 .Build();
+            await hubConnection.StartAsync();
+
+            await ReadData();
+            if (!KeywordCheck.IsAdmin && !CheckIfUserIsHost(meetup))
+            {
+                NavigationManager.NavigateTo("/");
+            }
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+
+    protected async Task RemoveParticipant(Participant p)
+    {
+        PrepareHttpClient();
+        HttpResponseMessage response = await Http.PostAsJsonAsync<Participant>($"Calendar/removeparticipant", p);
+        string responseBody = await response.Content.ReadAsStringAsync();
+
+        BackendResult result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
+        if (result.Success)
+        {
+            if (IsConnected) await SendMessage();
+            await ReadData();
+        }
+        else
+        {
+            logMessage = result.Message;
+        }
+    }
+
+    protected bool CheckIfUserIsHost(ExtendedCalendarItem calendarItem)
+    {
+        bool isHost = !calendarItem.WithoutHost && KeywordCheck.IsUser && (calendarItem.HostFirstName.Equals(AppStateStore.FirstName) && calendarItem.HostLastName.Equals(AppStateStore.LastName));
+        return isHost;
+    }
+
+    protected void OnCancel()
+    {
+        NavigationManager.NavigateTo("/calendar");
+    }
+
+    private async Task ReadData()
+    {
+        PrepareHttpClient();
+        // Get referenced calendar item
+        meetup = await Http.GetFromJsonAsync<ExtendedCalendarItem>($"Calendar/extendedcalendaritem?itemId={ItemId}");
+    }
+
+    Task SendMessage() => hubConnection.SendAsync("SendMessage");
+
+    public bool IsConnected => hubConnection.State == HubConnectionState.Connected;
+
+    public void Dispose()
+    {
+        if (null != hubConnection)
+        {
+            try
+            {
+                _ = hubConnection.DisposeAsync();
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+    }
+
+
+    private void PrepareHttpClient()
+    {
+        if (null != AppStateStore.Tenant?.TenantKey)
+        {
+            if (!Http.DefaultRequestHeaders.Contains("x-meetup-tenant"))
+            {
+                Http.DefaultRequestHeaders.Add("x-meetup-tenant", AppStateStore.Tenant.TenantKey);
+            }
+        }
+        if (!Http.DefaultRequestHeaders.Contains("x-meetup-keyword"))
+        {
+            Http.DefaultRequestHeaders.Add("x-meetup-keyword", AppStateStore.KeyWord);
+        }
+
+    }
+}
