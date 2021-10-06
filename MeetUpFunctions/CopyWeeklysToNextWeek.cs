@@ -43,6 +43,7 @@ namespace MeetUpPlanner.Functions
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function CopyWeeklysToNextWeek processed a request.");
+            ServerSettings serverSettings = null;
 
             // Get a list of all CalendarItems and filter all applicable ones
             DateTime compareDate = DateTime.Today;
@@ -51,6 +52,15 @@ namespace MeetUpPlanner.Functions
             foreach (CalendarItem cal in rawListOfCalendarItems)
             {
                 ++counter;
+                // Get settings for tenant
+                if (null == cal.Tenant)
+                {
+                    serverSettings = await _serverSettingsRepository.GetServerSettings();
+                }
+                else
+                {
+                    serverSettings = await _serverSettingsRepository.GetServerSettings(cal.Tenant);
+                }
                 // First mark current item as processed
                 cal.IsCopiedToNextWeek = true;
                 await _cosmosRepository.UpsertItem(cal);
@@ -60,6 +70,8 @@ namespace MeetUpPlanner.Functions
                 cal.IsCanceled = false;
                 cal.StartDate = cal.StartDate.AddDays(7.0);
                 cal.PublishDate = cal.PublishDate.AddDays(7.0);
+                System.TimeSpan diffTime = cal.StartDate.Subtract(DateTime.Now);
+                cal.TimeToLive = serverSettings.AutoDeleteAfterDays * 24 * 3600 + (int)diffTime.TotalSeconds;
                 await _cosmosRepository.UpsertItem(cal);
             }
 

@@ -156,6 +156,7 @@
                                 <button class="btn btn-sm btn-outline-secondary" title="Kopieren" @onclick="@(() => ConfirmClone(item))"><span class="oi oi-fork"></span></button>
                                 <button class="btn btn-sm btn-outline-secondary" title="Löschen" @onclick="@(() => DeleteCalendarItem(item))"><span class="oi oi-trash"></span></button>
                                 <button class="btn btn-sm btn-outline-secondary" title="Absagen" @onclick="@(() => CancelMeetUp(item))"><span class="oi oi-x"></span></button>
+                                <button class="btn btn-sm btn-outline-secondary" title="Teilnehmer" @onclick="@(() => ShowParticipants(item))"><span class="oi oi-people"></span></button>
                                 @if (item.ParticipantCounter > 1)
                                 {
                                     <button class="btn btn-sm btn-outline-secondary" title="Neuer Guide" @onclick="@(() => AssignNewHost(item))"><span class="oi oi-share-boxed"></span></button>
@@ -174,7 +175,7 @@
                             }
                             @if (!CheckIfUserIsHostWithoutKeyword(item) && !CheckIfUserIsHost(item) && !ShowHistory())
                             {
-                                <button class="btn btn-sm btn-outline-secondary" title="Anmelden" hidden="@(CheckIfUserIsAlreadyRegistered(item) || item.IsCanceled)" @onclick="@(() => Checkin(item.Id))">Anmelden</button>
+                                <button class="btn btn-sm btn-outline-secondary" title="Anmelden" disabled="@checkInDisabled" hidden="@(CheckIfUserIsAlreadyRegistered(item) || item.IsCanceled)" @onclick="@(() => Checkin(item.Id))">Anmelden</button>
                                 <button class="btn btn-sm btn-outline-secondary" title="Abmelden" hidden="@(!CheckIfUserIsAlreadyRegistered(item))" @onclick="@(() => Checkout(item))">Abmelden</button>
                             }
                         </div>
@@ -201,6 +202,8 @@
     private ExtendedCalendarItem calendarItemToBeCloned = null;
     private DateTime selectedDate = DateTime.Today;
     private Boolean _onlyAdminsAsHost = false;
+    private Boolean checkInDisabled = false;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -368,6 +371,8 @@
         participant.ParticipantLastName = AppStateStore.LastName;
         participant.ParticipantAdressInfo = AppStateStore.PhoneMail;
         participant.CalendarItemId = itemId;
+        checkInDisabled = true;
+        StateHasChanged();
         PrepareHttpClient();
         HttpResponseMessage response = await Http.PostAsJsonAsync<Participant>($"Calendar/addparticipant", participant);
         string responseBody = await response.Content.ReadAsStringAsync();
@@ -384,6 +389,7 @@
         {
             notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Fehler", Detail = result.Message, Duration = 4000 });
         }
+        checkInDisabled = false;
     }
     protected async Task Checkout(ExtendedCalendarItem calendarItem)
     {
@@ -433,6 +439,10 @@
     protected void ShowComment(ExtendedCalendarItem calendarItem)
     {
         NavigationManager.NavigateTo($"/Comment/{calendarItem.Id}");
+    }
+    protected void ShowParticipants(ExtendedCalendarItem calendarItem)
+    {
+        NavigationManager.NavigateTo($"/Participants/{calendarItem.Id}");
     }
     protected void Invite(ExtendedCalendarItem calendarItem)
     {
