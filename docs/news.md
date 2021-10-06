@@ -1,5 +1,10 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
+*6.10.2021*
+- Bei wöchentlich wiederkehrenden Terminen wird jetzt das "Verfalldatum" richtig berechnet, damit die Termine nicht unerwartet automatisch gelöscht werden.
+- Die Veranstalterin eines MeetUps und Admins können jetzt die Teilnehmer eines MeetUps anzeigen und Teilnehmer löschen.
+- Die privaten Schlüsselwörter werden jetzt alle drei gespeichert.
+
 *14.8.2021*
 - Ausfahrten können als "Training" markiert werden.
 - Der "Preview" eines Strecken-Links wird auch bei Gäste-Links angezeigt.
