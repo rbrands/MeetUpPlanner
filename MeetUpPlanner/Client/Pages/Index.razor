@@ -124,7 +124,7 @@
             AppStateStore.PhoneMail = permAppState.PhoneMail;
             AppStateStore.PrivateKeyWord1 = permAppState.PrivateKeyWord1;
             AppStateStore.PrivateKeyWord2 = permAppState.PrivateKeyWord2;
-            AppStateStore.PrivateKeyWord2 = permAppState.PrivateKeyWord2;
+            AppStateStore.PrivateKeyWord3 = permAppState.PrivateKeyWord3;
             AppStateStore.NoAddressNeeded = permAppState.NoAddressNeeded;
             // If someone has stored the settings before the disclaimer has already been accepted by user
             UsageRightsAccepted = true;
@@ -215,7 +215,7 @@
             permAppState.PhoneMail = AppStateStore.PhoneMail;
             permAppState.PrivateKeyWord1 = AppStateStore.PrivateKeyWord1;
             permAppState.PrivateKeyWord2 = AppStateStore.PrivateKeyWord2;
-            permAppState.PrivateKeyWord2 = AppStateStore.PrivateKeyWord2;
+            permAppState.PrivateKeyWord3 = AppStateStore.PrivateKeyWord3;
             permAppState.NoAddressNeeded = AppStateStore.NoAddressNeeded;
             await localStorage.SetItemAsync<PermAppState>("permAppState", permAppState);
         }
