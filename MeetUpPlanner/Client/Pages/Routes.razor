@@ -1,0 +1,25 @@
+﻿@page "/routes"
+@using MeetUpPlanner.Shared
+@inject AppState AppStateStore
+@inject KeywordCheck KeywordCheck
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<div class="jumbotron">
+    <p>
+        Hier findest du die Zusammenstellung aller Touren - sortiert nach Aktualität, d.h. die neuesten Touren stehen oben. Nutze die Filterfunktonen,
+        um leichter zu finden was du suchst.
+    </p>
+    <p>
+        Zur Verwaltung der Touren wird gerade die Web-App 
+        <a href="https://routes.meetupplanner.de/@AppStateStore.Tenant.TrackKey" target="_blank" title="MeetUpRoutes">MeetUpRoutes</a>
+        entwickelt.
+    </p>
+</div>
+
+
+<h3>Touren</h3>
+
+@code {
+
+}
