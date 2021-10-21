@@ -1,5 +1,9 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
+*demnächst*
+- Bei Strecken-Links werden Komoot-Links jetzt gesondert behandelt, um die Kartenansicht und nicht das erste Foto der Highlights als Preview-Image zu verwenden.
+- Link zur Tourensammlung eingerichtet. 
+
 *6.10.2021*
 - Bei wöchentlich wiederkehrenden Terminen wird jetzt das "Verfalldatum" richtig berechnet, damit die Termine nicht unerwartet automatisch gelöscht werden.
 - Die Veranstalterin eines MeetUps und Admins können jetzt die Teilnehmer eines MeetUps anzeigen und Teilnehmer löschen.
