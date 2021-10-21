@@ -55,21 +55,28 @@ namespace MeetUpPlanner.Functions
             LinkPreview linkPreview = JsonConvert.DeserializeObject<LinkPreview>(requestBody);
 
             LinkPreviewRequest previewRequest = new LinkPreviewRequest(linkPreview.Url);
-
-            LinkPreviewRequest previewResponse = await _linkPreviewRepository.GetLinkDataAsync(previewRequest, false, true, false, true);
-            linkPreview.Title = System.Web.HttpUtility.HtmlDecode(previewResponse.Result.Title);
-            linkPreview.Description = System.Web.HttpUtility.HtmlDecode(previewResponse.Result.Description);
-            linkPreview.ImageUrl = ParseKomootLink(linkPreview.Url.ToString());
-            if (null == linkPreview.ImageUrl)
-            { 
-                linkPreview.ImageUrl = previewResponse.Result.ImageUrl;
+            try
+            {
+                LinkPreviewRequest previewResponse = await _linkPreviewRepository.GetLinkDataAsync(previewRequest, false, true, false, true);
+                linkPreview.Title = System.Web.HttpUtility.HtmlDecode(previewResponse.Result.Title);
+                linkPreview.Description = System.Web.HttpUtility.HtmlDecode(previewResponse.Result.Description);
+                linkPreview.ImageUrl = ParseKomootLink(linkPreview.Url.ToString());
+                if (null == linkPreview.ImageUrl)
+                {
+                    linkPreview.ImageUrl = previewResponse.Result.ImageUrl;
+                }
+                linkPreview.Url = previewResponse.Result.Url;
+                linkPreview.CanoncialUrl = previewResponse.Result.CanoncialUrl;
+                linkPreview.Success = previewResponse.IsSuccess;
+                if (!linkPreview.Success && null != previewResponse.Error)
+                {
+                    linkPreview.Message = previewResponse.Error.Message;
+                }
             }
-            linkPreview.Url = previewResponse.Result.Url;
-            linkPreview.CanoncialUrl = previewResponse.Result.CanoncialUrl;
-            linkPreview.Success = previewResponse.IsSuccess;
-            if (!linkPreview.Success && null != previewResponse.Error)
-            { 
-                linkPreview.Message = previewResponse.Error.Message;
+            catch (Exception ex)
+            {
+                linkPreview.Success = false;
+                linkPreview.Message = ex.Message;
             }
 
             return new OkObjectResult(linkPreview);

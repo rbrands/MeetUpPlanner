@@ -269,8 +269,14 @@
             linkPreview = JsonConvert.DeserializeObject<LinkPreview>(responseBody);
             if (linkPreview.Success)
             {
-                meetup.LinkImage = linkPreview.ImageUrl.ToString();
-                meetup.LinkTitle = linkPreview.Title;
+                if ( null != linkPreview.ImageUrl)
+                {
+                    meetup.LinkImage = linkPreview.ImageUrl.ToString();
+                }
+                if (null != linkPreview.Title)
+                {
+                    meetup.LinkTitle = linkPreview.Title;
+                }
             }
         }
     }

@@ -39,13 +39,13 @@ namespace MeetUpPlanner.Shared
         public int MinRegistrationsCount { get; set; } = 0;
         [JsonProperty(PropertyName = "privateKeyword", NullValueHandling = NullValueHandling.Ignore), MaxLength(50, ErrorMessage = "Privates Schlüsselwort zu lang.")]
         public string PrivateKeyword { get; set; }
-        [JsonProperty(PropertyName = "levelDescription"), Required(ErrorMessage = "Bitte Angaben zur Länge/Dauer machen."), MaxLength(35, ErrorMessage = "Angabe zur Länge bitte kürzen.")]
+        [JsonProperty(PropertyName = "levelDescription"), Required(ErrorMessage = "Bitte Angaben zur Länge/Dauer machen."), MaxLength(60, ErrorMessage = "Angabe zur Länge bitte kürzen.")]
         public string LevelDescription { get; set; }
         [JsonProperty(PropertyName = "tempo"), Required(ErrorMessage = "Bitte geplante Geschwindigkeit angeben."), MaxLength(35, ErrorMessage = "Tempo-Angabe zu lang.")]
         public string Tempo { get; set; }
         [JsonProperty(PropertyName = "link", NullValueHandling = NullValueHandling.Ignore), MaxLength(256, ErrorMessage = "Link zu lang"), UIHint("url")]
         public string Link { get; set; }
-        [JsonProperty(PropertyName = "linkTitle", NullValueHandling = NullValueHandling.Ignore), MaxLength(60, ErrorMessage = "Link-Bezeichnung zu lang.")]
+        [JsonProperty(PropertyName = "linkTitle", NullValueHandling = NullValueHandling.Ignore), MaxLength(120, ErrorMessage = "Link-Bezeichnung zu lang.")]
         public string LinkTitle { get; set; }
         [JsonProperty(PropertyName = "linkImage", NullValueHandling = NullValueHandling.Ignore)]
         public string LinkImage { get; set; }
@@ -55,7 +55,7 @@ namespace MeetUpPlanner.Shared
         public Boolean IsTraining { get; set; } = false;
         [JsonProperty(PropertyName = "isCanceled")]
         public Boolean IsCanceled { get; set; } = false;
-        [JsonProperty(PropertyName = "guestScope", NullValueHandling = NullValueHandling.Ignore), MaxLength(20, ErrorMessage = "Gast-Scope zu lang.")]
+        [JsonProperty(PropertyName = "guestScope", NullValueHandling = NullValueHandling.Ignore), MaxLength(60, ErrorMessage = "Gast-Scope zu lang.")]
         [RegularExpression("[a-zA-Z0-9-_]*", ErrorMessage = "Bitte nur Buchstaben und Zahlen für Gast-Scope.")] 
         public string GuestScope { get; set; }
         /// <summary>
