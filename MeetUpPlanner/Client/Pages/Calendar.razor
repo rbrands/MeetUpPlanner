@@ -83,7 +83,9 @@
                         }
                     </h4>
                     <p class="card-text">
-                        @((MarkupString)item.Summary)
+                        <div class="overflow-auto" style="max-height: 500px">
+                            @((MarkupString)item.Summary)
+                        </div>
                         @if (KeywordCheck.IsAdmin && item.PublishDate.ToLocalTime().CompareTo(DateTime.Now) > 0)
                         {
                             <small><em>Veröffentlichung @item.GetPublishDateAsString()</em></small>

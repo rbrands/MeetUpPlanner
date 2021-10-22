@@ -46,7 +46,9 @@
             }
         </h4>
         <p class="card-text">
-            @((MarkupString)CalendarItem.Summary)
+            <div class="overflow-auto" style="max-height: 500px">
+                @((MarkupString)CalendarItem.Summary)
+            </div>
             @if (IsAdmin && CalendarItem.PublishDate.ToLocalTime().CompareTo(DateTime.Now) > 0)
             {
                 <small><em>Veröffentlichung @CalendarItem.GetPublishDateAsString()</em></small>
