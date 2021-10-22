@@ -155,6 +155,16 @@ namespace MeetUpPlanner.Server.Repositories
                             .GetJsonAsync<IEnumerable<ExtendedInfoItem>>();
             return infoItems;
         }
+        public async Task<IEnumerable<MeetingPlace>> GetMeetingPlaces(string tenant, string keyword)
+        {
+            IEnumerable<MeetingPlace> meetingPlaces;
+            meetingPlaces = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/GetMeetingPlaces"
+                            .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
+                            .WithHeader(HEADER_KEYWORD, keyword)
+                            .WithHeader(HEADER_TENANT, tenant)
+                            .GetJsonAsync<IEnumerable<MeetingPlace>>();
+            return meetingPlaces;
+        }
         public async Task<IEnumerable<ExtendedCalendarItem>> GetExtendedCalendarItemsForDate(string tenant, string keyword, string privatekeywords, string requestedDate)
         {
             IEnumerable<ExtendedCalendarItem> calendarItems;

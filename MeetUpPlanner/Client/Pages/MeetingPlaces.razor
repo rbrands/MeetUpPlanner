@@ -1,0 +1,75 @@
+﻿@page "/meetingplaces"
+@using MeetUpPlanner.Shared
+@inject AppState AppStateStore
+@inject KeywordCheck KeywordCheck
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject NotificationService notificationService
+
+
+<div class="jumbotron">
+    <p>
+        Hier wird die Liste der Startpunkte von Ausfahrten gepflegt. Die Liste hilft dann bei der Erstellung von Ausfahrten, in dem einfach aus der hier gepflegten Liste ein Ort inkl. Kartenlink ausgewählt werden kann. Bei jeder Ausfahrt kann aber wie bisher
+        ein belieber Startort beschrieben werden.
+    </p>
+</div>
+
+
+<h3>Startpunkte</h3>
+
+@code {
+
+    IEnumerable<MeetingPlace> _meetingPlaces = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!String.IsNullOrEmpty(AppStateStore?.KeyWord))
+        {
+            {
+                string keyword = AppStateStore.KeyWord;
+                await ReadData();
+            }
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+
+    protected async Task ReadData()
+    {
+        PrepareHttpClient();
+        try
+        {
+            _meetingPlaces = await Http.GetFromJsonAsync<IList<MeetingPlace>>($"api/calendar/meetingplaces");
+        }
+        catch (Exception ex)
+        {
+            notificationService.Notify(new NotificationMessage()
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Offline",
+                Detail = $"Momentan gibt es keine Netzverbindung oder die Anwendung offline. Fehlermeldung: {ex.Message}",
+                Duration = 4000
+            });
+        }
+        StateHasChanged();
+    }
+
+    private void PrepareHttpClient()
+    {
+        if (null != AppStateStore.Tenant?.TenantKey)
+        {
+            if (!Http.DefaultRequestHeaders.Contains("x-meetup-tenant"))
+            {
+                Http.DefaultRequestHeaders.Add("x-meetup-tenant", AppStateStore.Tenant.TenantKey);
+            }
+        }
+        if (!Http.DefaultRequestHeaders.Contains("x-meetup-keyword"))
+        {
+            Http.DefaultRequestHeaders.Add("x-meetup-keyword", AppStateStore.KeyWord);
+        }
+
+    }
+
+}
