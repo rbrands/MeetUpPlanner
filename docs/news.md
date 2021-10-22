@@ -3,6 +3,7 @@
 *demnächst*
 - Bei Strecken-Links werden Komoot-Links jetzt gesondert behandelt, um die Kartenansicht und nicht das erste Foto der Highlights als Preview-Image zu verwenden.
 - Link zur Tourensammlung eingerichtet. 
+- Wenn der Text zu einem MeetUp zu lang ist, wird die Ausgabe beschränkt (auf eine Höhe von 500px) und automatisch eine Scrollbar angezeigt.
 
 *6.10.2021*
 - Bei wöchentlich wiederkehrenden Terminen wird jetzt das "Verfalldatum" richtig berechnet, damit die Termine nicht unerwartet automatisch gelöscht werden.
