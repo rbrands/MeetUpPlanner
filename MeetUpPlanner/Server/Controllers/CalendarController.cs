@@ -27,6 +27,13 @@ namespace MeetUpPlanner.Server.Controllers
             await _meetUpFunctions.WriteCalendarItem(tenant, keyword, calendarItem);
             return Ok();
         }
+        [HttpPost("writemeetingplace")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> WriteMeetingPlace([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] MeetingPlace meetingPlace)
+        {
+            await _meetUpFunctions.WriteMeetingPlace(tenant, keyword, meetingPlace);
+            return Ok();
+        }
 
         [HttpGet("calendaritems")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -45,6 +52,20 @@ namespace MeetUpPlanner.Server.Controllers
             }
             IEnumerable<ExtendedCalendarItem> calendarItems = await _meetUpFunctions.GetExtendedCalendarItems(tenant, keyword, privatekeywords);
             return Ok(calendarItems);
+        }
+        [HttpGet("getmeetingplaces")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetMeetingPlaces([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword)
+        {
+            IEnumerable<MeetingPlace> neetingPlaces = await _meetUpFunctions.GetMeetingPlaces(tenant, keyword);
+            return Ok(neetingPlaces);
+        }
+        [HttpGet("getmeetingplace")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetMeetingPlace([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromQuery] string itemId)
+        {
+            MeetingPlace neetingPlace = await _meetUpFunctions.GetMeetingPlace(tenant, keyword, itemId);
+            return Ok(neetingPlace);
         }
         [HttpGet("extendedcalendaritemsfordate")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -155,6 +176,13 @@ namespace MeetUpPlanner.Server.Controllers
         public async Task<IActionResult> DeleteCalendarItem([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] CalendarItem calendarItem)
         {
             BackendResult result = await _meetUpFunctions.DeleteCalendarItem(tenant, keyword, calendarItem);
+            return Ok(result);
+        }
+        [HttpPost("deletemeetingplace")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> DeleteMeetingPlace([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] MeetingPlace meetingPlace)
+        {
+            BackendResult result = await _meetUpFunctions.DeleteMeetingPlace(tenant, keyword, meetingPlace);
             return Ok(result);
         }
         [HttpPost("requesttrackingreport")]
