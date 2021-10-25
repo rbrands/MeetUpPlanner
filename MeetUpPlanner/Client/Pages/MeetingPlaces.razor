@@ -1,10 +1,12 @@
 ﻿@page "/meetingplaces"
 @using MeetUpPlanner.Shared
+@using Newtonsoft.Json
 @inject AppState AppStateStore
 @inject KeywordCheck KeywordCheck
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @inject NotificationService notificationService
+@inject DialogService dialogService
 
 
 <div class="jumbotron">
@@ -16,14 +18,54 @@
 
 
 <h3>Startpunkte</h3>
+<p class="alert-info">
+    @_logMessage
+</p>
+
+@if (null == _meetingPlaces)
+{
+    <p><em>Daten werden geladen...</em></p>
+}
+else
+{
+    <p>
+        <AddMeetingPlace OnSave="SaveMeetingPlace" OnCancel="OnCancel" MeetingPlaceToEdit="@_selectedMeetingPlace"></AddMeetingPlace>
+    </p>
+
+    <table class="table table-sm table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Aktion</th>
+                <th scope="col">Name</th>
+                <th scope="col">Link</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (MeetingPlace place in _meetingPlaces)
+            {
+                <tr>
+                    <td>
+                        <button class="btn btn-sm btn-outline-secondary" title="Ändern" @onclick="@(() => Edit(place))"><span class="oi oi-pencil"></span></button>
+                        <button class="btn btn-sm btn-outline-secondary" @onclick="@(() => ConfirmDelete(place))"><span class="oi oi-trash" title="Löschen"></span></button>
+                    </td>
+                    <td>@place.Title</td>
+                    <td><a href="@place.Link" title="Link" target="_blank">@place.Link</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 @code {
 
     IEnumerable<MeetingPlace> _meetingPlaces = null;
+    MeetingPlace _selectedMeetingPlace = new MeetingPlace();
+    MeetingPlace _meetingPlaceToBeDeleted;
+    string _logMessage;
 
     protected override async Task OnInitializedAsync()
     {
-        if (!String.IsNullOrEmpty(AppStateStore?.KeyWord))
+        if (!String.IsNullOrEmpty(AppStateStore?.KeyWord) && KeywordCheck.IsAdmin)
         {
             {
                 string keyword = AppStateStore.KeyWord;
@@ -35,13 +77,75 @@
             NavigationManager.NavigateTo("/");
         }
     }
+    private async Task SaveMeetingPlace(MeetingPlace meetingPlace)
+    {
+        string keyword = AppStateStore.KeyWord;
+        // Save Comment to server
+        if (!String.IsNullOrEmpty(meetingPlace.Title))
+        {
+            PrepareHttpClient();
+            await Http.PostAsJsonAsync<MeetingPlace>($"Calendar/writemeetingplace", meetingPlace);
+        }
+        await ReadData();
+        _selectedMeetingPlace = new MeetingPlace();
+    }
+
+    protected void OnCancel()
+    {
+
+    }
+
+    protected void Edit(MeetingPlace meetingPlace)
+    {
+        _selectedMeetingPlace = meetingPlace;
+    }
+
+    protected void ConfirmDelete(MeetingPlace meetingPlace)
+    {
+        _meetingPlaceToBeDeleted = meetingPlace;
+        dialogService.OnClose += DeleteConfirmed;
+        dialogService.Confirm("Startort wirklich löschen?", "Startort", new ConfirmOptions() { OkButtonText = "Ja", CancelButtonText = "Nein" });
+    }
+
+    protected async void DeleteConfirmed(dynamic result)
+    {
+        dialogService.OnClose -= DeleteConfirmed;
+        bool? removeIt = result;
+        if (null != removeIt && null != _meetingPlaceToBeDeleted)
+        {
+            if ((bool)removeIt)
+            {
+                await RemoveMeetingPlace(_meetingPlaceToBeDeleted);
+            }
+        }
+        _meetingPlaceToBeDeleted = null;
+        await ReadData();
+    }
+
+    protected async Task RemoveMeetingPlace(MeetingPlace meetingPlace)
+    {
+        PrepareHttpClient();
+        HttpResponseMessage response = await Http.PostAsJsonAsync<MeetingPlace>($"Calendar/deletemeetingplace", meetingPlace);
+        string responseBody = await response.Content.ReadAsStringAsync();
+
+        BackendResult result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
+        if (result.Success)
+        {
+            await ReadData();
+        }
+        else
+        {
+            _logMessage = result.Message;
+        }
+    }
+
 
     protected async Task ReadData()
     {
         PrepareHttpClient();
         try
         {
-            _meetingPlaces = await Http.GetFromJsonAsync<IList<MeetingPlace>>($"api/calendar/meetingplaces");
+            _meetingPlaces = await Http.GetFromJsonAsync<IList<MeetingPlace>>($"Calendar/getmeetingplaces");
         }
         catch (Exception ex)
         {

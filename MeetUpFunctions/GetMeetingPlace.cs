@@ -15,28 +15,29 @@ using Aliencube.AzureFunctions.Extensions.OpenApi.Core.Attributes;
 
 namespace MeetUpPlanner.Functions
 {
-    public class GetMeetingPlaces
+    public class GetMeetingPlace
     {
         private readonly ILogger _logger;
         private ServerSettingsRepository _serverSettingsRepository;
         private CosmosDBRepository<MeetingPlace> _cosmosRepository;
 
-        public GetMeetingPlaces(ILogger<GetMeetingPlaces> logger, ServerSettingsRepository serverSettingsRepository,
-                                                                          CosmosDBRepository<MeetingPlace> cosmosRepository)
+        public GetMeetingPlace(ILogger<GetMeetingPlace> logger, ServerSettingsRepository serverSettingsRepository,
+                                                                CosmosDBRepository<MeetingPlace> cosmosRepository)
         {
             _logger = logger;
             _serverSettingsRepository = serverSettingsRepository;
             _cosmosRepository = cosmosRepository;
         }
 
-        [FunctionName("GetMeetingPlaces")]
-        [OpenApiOperation(Summary = "Gets all MeetingPlaces",
-                          Description = "Reading all preconfigured meeting places. To be able to read InfoItems the user keyword must be set as header x-meetup-keyword.")]
-        [OpenApiResponseWithBody(System.Net.HttpStatusCode.OK, "application/json", typeof(IEnumerable<MeetingPlace>))]
+        [FunctionName("GetMeetingPlace")]
+        [OpenApiOperation(Summary = "Gets a MeetingPlace",
+                          Description = "Reading meeting place for editing. To be able to read MeetingPlace the user keyword must be set as header x-meetup-keyword.")]
+        [OpenApiResponseWithBody(System.Net.HttpStatusCode.OK, "application/json", typeof(MeetingPlace))]
+        [OpenApiParameter("id", Description = "Id of CalendarItem to read.")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "GetMeetingPlace/{id}")] HttpRequest req, string id)
         {
-            _logger.LogInformation("C# HTTP trigger function GetMeetingPlaces processed a request.");
+            _logger.LogInformation("C# HTTP trigger function GetMeetingPlace processed a request.");
             string tenant = req.Headers[Constants.HEADER_TENANT];
             if (String.IsNullOrWhiteSpace(tenant))
             {
@@ -44,20 +45,12 @@ namespace MeetUpPlanner.Functions
             }
             ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings(tenant);
             string keyWord = req.Headers[Constants.HEADER_KEYWORD];
-            if (String.IsNullOrEmpty(keyWord) || !serverSettings.IsUser(keyWord))
+            if (String.IsNullOrEmpty(keyWord) || !serverSettings.IsAdmin(keyWord))
             {
-                _logger.LogWarning("GetMeetingPlaces called with wrong keyword.");
+                _logger.LogWarning("GetMeetingPlace called with wrong keyword.");
                 return new BadRequestErrorMessageResult("Keyword is missing or wrong.");
             }
-            IEnumerable<MeetingPlace> meetingPlaces;
-            if (null == tenant)
-            {
-                meetingPlaces = await _cosmosRepository.GetItems(d => (d.Tenant ?? String.Empty) == String.Empty);
-            }
-            else
-            {
-                meetingPlaces = await _cosmosRepository.GetItems(d => d.Tenant.Equals(tenant));
-            }
+            MeetingPlace meetingPlaces = await _cosmosRepository.GetItem(id);
             return new OkObjectResult(meetingPlaces);
         }
     }

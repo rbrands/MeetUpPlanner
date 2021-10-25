@@ -1,0 +1,52 @@
+﻿@using MeetUpPlanner.Shared
+
+<EditForm Model="@_meetingPlace" OnValidSubmit="Save">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="linkTitle">Ortsbezeichnung</label>
+        <InputText id="linkTitle" aria-describedby="linkTitleHelp" class="form-control" @bind-Value="_meetingPlace.Title" placeholder="Treffpunkt" title="Treffpunkt" />
+        <small id="linkTitleHelp" class="form-text text-muted">
+            Kurze Bezeichnung des Treffpunkts.
+        </small>
+    </div>
+    <div class="form-group">
+        <label for="link">Link zum Startort</label>
+        <InputText id="link" aria-describedby="linkHelp" class="form-control" @bind-Value="_meetingPlace.Link" placeholder="URL" title="Link zum Startort auf einem Karten-Tool" />
+        <small id="linkHelp" class="form-text text-muted">
+            Link zum Startort z.B. bei einem Kartenanbieter.
+        </small>
+    </div>
+
+    <button type="submit" id="BtnSave" disabled="@saveDisabled" class="btn btn-primary">Startort speichern ...</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public EventCallback<MeetingPlace> OnSave { get; set; }
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+    [Parameter]
+    public MeetingPlace MeetingPlaceToEdit
+    {
+        get { return _meetingPlace; }
+        set { _meetingPlace = value;}
+    }
+    private Boolean saveDisabled = false;
+    private MeetingPlace _meetingPlace;
+
+    private async Task Save()
+    {
+        saveDisabled = true;
+        StateHasChanged();
+        await OnSave.InvokeAsync(MeetingPlaceToEdit);
+        saveDisabled = false;
+        StateHasChanged();
+    }
+    protected async Task OnCancelBtn()
+    {
+        await OnCancel.InvokeAsync(null);
+    }
+
+}

@@ -123,6 +123,16 @@ namespace MeetUpPlanner.Server.Repositories
 
             return new OkResult();
         }
+        public async Task<IActionResult> WriteMeetingPlace(string tenant, string keyword, MeetingPlace meetingPlace)
+        {
+            await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/WriteMeetingPlace"
+                            .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
+                            .WithHeader(HEADER_KEYWORD, keyword)
+                            .WithHeader(HEADER_TENANT, tenant)
+                            .PostJsonAsync(meetingPlace);
+
+            return new OkResult();
+        }
         public async Task<IEnumerable<CalendarItem>> GetCalendarItems(string tenant, string keyword, string privatekeywords)
         {
 
@@ -164,6 +174,15 @@ namespace MeetUpPlanner.Server.Repositories
                             .WithHeader(HEADER_TENANT, tenant)
                             .GetJsonAsync<IEnumerable<MeetingPlace>>();
             return meetingPlaces;
+        }
+        public async Task<MeetingPlace> GetMeetingPlace(string tenant, string keyword, string itemId)
+        {
+            MeetingPlace meetingPlace = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/GetMeetingPlace/{itemId}"
+                            .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
+                            .WithHeader(HEADER_KEYWORD, keyword)
+                            .WithHeader(HEADER_TENANT, tenant)
+                            .GetJsonAsync<MeetingPlace>();
+            return meetingPlace;
         }
         public async Task<IEnumerable<ExtendedCalendarItem>> GetExtendedCalendarItemsForDate(string tenant, string keyword, string privatekeywords, string requestedDate)
         {
@@ -309,6 +328,16 @@ namespace MeetUpPlanner.Server.Repositories
                             .WithHeader(HEADER_KEYWORD, keyword)
                             .WithHeader(HEADER_TENANT, tenant)
                             .PostJsonAsync(infoItem)
+                            .ReceiveJson<BackendResult>();
+            return result;
+        }
+        public async Task<BackendResult> DeleteMeetingPlace(string tenant, string keyword, MeetingPlace meetingPlace)
+        {
+            BackendResult result = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/DeleteMeetingPlace"
+                            .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
+                            .WithHeader(HEADER_KEYWORD, keyword)
+                            .WithHeader(HEADER_TENANT, tenant)
+                            .PostJsonAsync(meetingPlace)
                             .ReceiveJson<BackendResult>();
             return result;
         }
