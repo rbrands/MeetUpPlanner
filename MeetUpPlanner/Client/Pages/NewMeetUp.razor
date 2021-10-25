@@ -75,6 +75,19 @@
         </div>
     </div>
     <div class="form-group">
+        <label for="SelectMeetingPlace">Auswahl Standard-Startort</label>
+        <select class="form-control" @onchange="@((ChangeEventArgs e) => OnMeetingPlaceChanged(e.Value.ToString()))">
+            <option value=""></option>
+            @foreach (MeetingPlace place in _meetingPlaces)
+            {
+                <option value="@place.Id">@place.Title</option>
+            }
+        </select>
+        <small id="standardPlaceHelp" class="form-text text-muted">
+            Hier sind die Standard-Treffpunkte zur Auswahl.
+        </small>
+    </div>
+    <div class="form-group">
         <label for="place">Startort</label>
         <InputText id="place" aria-describedby="placeHelp" class="form-control" @bind-Value="meetup.Place" autocomplete="on" placeholder="Startpunkt der Ausfahrt" />
         <small id="placeHelp" class="form-text text-muted">
@@ -227,11 +240,12 @@
 </EditForm>
 
 @code {
-    [Parameter]
-    public string ItemId { get; set; }
+        [Parameter]
+        public string ItemId { get; set; }
     private HubConnection hubConnection;
     ExtendedCalendarItem meetup = new ExtendedCalendarItem();
     string whenDateString = String.Empty;
+    string _selectedMeetingPlaceId = String.Empty;
     DateTime whenTime = DateTime.Now;
     DateTime whenDate = DateTime.Now;
     DateTime publishTime = DateTime.Now.AddHours(-1.0);
@@ -242,6 +256,8 @@
     private bool saveDisabled = false;
     private bool withoutHost = false;
     private bool _linkPreviewEnabled = false;
+    IEnumerable<MeetingPlace> _meetingPlaces = new List<MeetingPlace>();
+
     Boolean LinkPreviewEnabled
     {
         get
@@ -327,6 +343,8 @@
             publishDate = meetup.PublishDate.ToLocalTime();
             publishTime = meetup.PublishDate.ToLocalTime();
             withoutHost = meetup.WithoutHost;
+            PrepareHttpClient();
+            _meetingPlaces = await Http.GetFromJsonAsync<IEnumerable<MeetingPlace>>($"Calendar/getmeetingplaces");
         }
         else
         {
@@ -423,6 +441,17 @@
     {
         NavigationManager.NavigateTo("/calendar");
     }
+
+    protected void OnMeetingPlaceChanged(string id)
+    {
+        MeetingPlace meetingPlace = _meetingPlaces.FirstOrDefault(m => m.Id.Equals(id));
+        if (null != meetingPlace)
+        {
+            meetup.Place = meetingPlace.Title;
+            meetup.DirectionsLink = meetingPlace.Link;
+        }
+    }
+
     Task SendMessage() => hubConnection.SendAsync("SendMessage");
 
     public bool IsConnected => hubConnection.State == HubConnectionState.Connected;
