@@ -12,7 +12,7 @@ using MeetUpPlanner.Shared;
 
 namespace MeetUpPlanner.Server.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/routes")]
     [ApiController]
     public class RoutesApiController : ControllerBase
     {
@@ -39,6 +39,20 @@ namespace MeetUpPlanner.Server.Controllers
                                     .WithHeader(HEADER_TENANT, tenant)
                                     .GetStringAsync();
             return result;
+        }
+
+        [HttpPost("getroutes")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IEnumerable<ExtendedRoute>> GetRoutes([FromHeader(Name = HEADER_TENANT)] string tenant, [FromHeader(Name = HEADER_KEYWORD)] string keyword, [FromBody] RouteFilter filter)
+        {
+            _logger.LogInformation($"GetRoutes()");
+
+            IEnumerable<ExtendedRoute> routes = await $"https://{_routesApiFunc}/api/GetRoutes"
+                          .WithHeader(HEADER_KEYWORD, keyword)
+                          .WithHeader(HEADER_TENANT, tenant)
+                          .PostJsonAsync(filter)
+                          .ReceiveJson<IEnumerable<ExtendedRoute>>();
+            return routes;
         }
 
     }

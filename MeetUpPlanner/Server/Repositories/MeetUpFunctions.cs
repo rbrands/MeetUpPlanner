@@ -375,6 +375,7 @@ namespace MeetUpPlanner.Server.Repositories
     public class MeetUpFunctionsConfig
     {
         public string FunctionAppName { get; set; }
+        public string RoutesApiUrl { get; set; }
         public string ApiKey { get; set; }
         public string InviteGuestKey { get; set; }
     }
