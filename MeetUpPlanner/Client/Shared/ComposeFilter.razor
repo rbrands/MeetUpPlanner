@@ -1,0 +1,212 @@
+﻿@using MeetUpPlanner.Shared
+@inject AppState AppStateStore
+@inject KeywordCheck KeywordCheck 
+
+<div class="col-12 col-sm-6 col-lg-4 col-xl-4 mt-2">
+    <div class="card">
+        <div class="card-header">Ausgewählt für die Suche</div>
+        <div class="card-body">
+            @foreach (IList<RouteTag> routeTagList in Filter.Tags)
+            {
+                @foreach (RouteTag rt in routeTagList)
+                {
+                    <div class="badge badge-@GetBadgeClass(rt.BadgeColor) p-2 m-1" title="Tag auswählen" @onclick="@(() => UnSelectTag(routeTagList, rt))">
+                        @rt.TagLabel<text>&nbsp;</text><span class="oi oi-minus"></span>
+                    </div>
+                }
+            }
+            @if (KeywordCheck.IsUser)
+            {
+                @if (Filter.OnlyForMembers)
+                {
+                    <div class="badge badge-light p-2 m-1" title="Für Mitglieder" @onclick="(() => UnSelectMemberRoutes())">
+                        Für Mitglieder<text>&nbsp;</text><span class="oi oi-minus"></span>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+<div class="col-12 col-sm-6 col-lg-4 col-xl-4 mt-2">
+    <div class="card">
+        <div class="card-header">Auswählen</div>
+        <div class="card-body">
+            @if (null != TagSets)
+            {
+                @foreach (TagSet ts in TagSets)
+                {
+                    @foreach (Tag t in ts.Tags)
+                    {
+                        @if (!t.HideFromSelection)
+                        {
+                            <div class="badge badge-@GetBadgeClass(ts.BadgeColor) p-2 m-1" title="Tag auswählen" @onclick="@(() => SelectTag(ts, t))">
+                                @t.Label<text>&nbsp;</text><span class="oi oi-plus"></span>
+                            </div>
+                        }
+                    }
+                }
+            }
+            @if (KeywordCheck.IsUser)
+            {
+                if (!Filter.OnlyForMembers)
+                {
+                    <div class="badge badge-light p-2 m-1" title="Für Mitglieder" @onclick="(() => SelectMemberRoutes())">
+                        Für Mitglieder<text>&nbsp;</text><span class="oi oi-plus"></span>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public RouteFilter Filter { get; set; } = new RouteFilter();
+    [Parameter]
+    public IEnumerable<TagSet> TagSets { get; set; } = new List<TagSet>();
+    [Parameter]
+    public EventCallback OnChangeCallback { get; set; }
+    [Parameter]
+    public string TagByName { get; set; }
+
+    private string[] BadgeClasses =
+{
+        "primary",
+        "secondary",
+        "success",
+        "danger",
+        "warning",
+        "info",
+        "light",
+        "dark"
+    };
+    private string GetBadgeClass(TagBadgeColor color)
+    {
+        return BadgeClasses[(int)color];
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        if (!String.IsNullOrEmpty(TagByName))
+        {
+            await SelectTagByLabel(TagByName);
+        }
+        CheckAvailableTags();
+    }
+    private async Task SelectTag(TagSet tagSet, Tag tag, Boolean withReload = true)
+    {
+        RouteTag routeTag = FindRouteTagInFilter(tag);
+        if (null == routeTag)
+        {
+            routeTag = new RouteTag();
+        }
+        tag.HideFromSelection = true;
+        routeTag.TagId = tag.TagId;
+        routeTag.TagId = tag.TagId;
+        routeTag.TagLabel = tag.Label;
+        routeTag.TagSetId = tagSet.Id;
+        routeTag.BadgeColor = tagSet.BadgeColor;
+        // Find first list in filter that holds one RouteTag with the same TagSetIt
+        IList<RouteTag> filterRouteTag = null;
+        foreach (IList<RouteTag> routeTagList in Filter.Tags)
+        {
+            RouteTag foundRouteTag = routeTagList.FirstOrDefault(t => t.TagSetId.CompareTo(routeTag.TagSetId) == 0);
+            if (null != foundRouteTag)
+            {
+                filterRouteTag = routeTagList;
+                break;
+            }
+        }
+        if (null == filterRouteTag)
+        {
+            filterRouteTag = new List<RouteTag>();
+            Filter.Tags.Add(filterRouteTag);
+        }
+        filterRouteTag.Add(routeTag);
+        if (withReload)
+        {
+            await OnChangeCallback.InvokeAsync();
+        }
+    }
+    private async Task SelectTagByLabel(string label)
+    {
+        TagSet foundTagSet = null;
+        Tag foundTag = null;
+        string labelToCompare = label.ToLowerInvariant();
+        foreach (TagSet tagSet in TagSets)
+        {
+            foundTag = tagSet.Tags.FirstOrDefault(t => t.Label.ToLowerInvariant().CompareTo(labelToCompare) == 0);
+            if (null != foundTag)
+            {
+                foundTagSet = tagSet;
+                break;
+            }
+        }
+        if (null != foundTag)
+        {
+            await SelectTag(foundTagSet, foundTag, true);
+        }
+    }
+    private async Task SelectMemberRoutes()
+    {
+        Filter.OnlyForMembers = true;
+        await OnChangeCallback.InvokeAsync();
+    }
+    private async Task UnSelectMemberRoutes()
+    {
+        Filter.OnlyForMembers = false;
+        await OnChangeCallback.InvokeAsync();
+    }
+
+    private async Task UnSelectTag(IList<RouteTag> routeTagList, RouteTag routeTag)
+    {
+        routeTagList.Remove(routeTag);
+        Tag tag = FindCorrespondingTag(routeTag);
+        if (null != tag)
+        {
+            tag.HideFromSelection = false;
+        }
+        await OnChangeCallback.InvokeAsync();
+    }
+
+    private Tag FindCorrespondingTag(RouteTag routeTag)
+    {
+        TagSet tagSet = TagSets.FirstOrDefault(rt => rt.Id.CompareTo(routeTag.TagSetId) == 0);
+        Tag tag = null;
+        if (null != tagSet)
+        {
+            tag = tagSet.Tags.FirstOrDefault(ft => ft.TagId.CompareTo(routeTag.TagId) == 0);
+        }
+        return tag;
+    }
+
+    private RouteTag FindRouteTagInFilter(Tag tag)
+    {
+        RouteTag routeTag = null;
+        foreach (IList<RouteTag> routeTagList in Filter.Tags)
+        {
+            routeTag = routeTagList.FirstOrDefault(t => t.TagId.CompareTo(tag.TagId) == 0);
+            if (null != routeTag)
+            {
+                return routeTag;
+            }
+        }
+        return routeTag;
+    }
+
+    private void CheckAvailableTags()
+    {
+        foreach (IList<RouteTag> routeTagList in Filter.Tags)
+        {
+            foreach (RouteTag rt in routeTagList)
+            {
+                Tag tag = FindCorrespondingTag(rt);
+                if (null != tag)
+                {
+                    tag.HideFromSelection = true;
+                }
+            }
+        }
+    }
+
+
+}

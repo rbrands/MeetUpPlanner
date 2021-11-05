@@ -1,6 +1,6 @@
 ﻿@page "/routes"
 @using MeetUpPlanner.Shared
-@using MeetUpPlanner.Client.Shared 
+@using MeetUpPlanner.Client.Shared
 @inject AppState AppStateStore
 @inject KeywordCheck KeywordCheck
 @inject HttpClient Http
@@ -19,10 +19,31 @@
         Version: @_version
     </p>
 </div>
-
-
-<h3>Routen</h3>
 <StatusMessage @ref="_statusMessage"></StatusMessage>
+
+<h1>Routen</h1>
+@if (null == _routes)
+{
+    <p><em>Daten werden geladen... Beim ersten Aufruf dauert das ein bisschen.</em></p>
+}
+else
+{
+    <p>
+        <button class="btn btn-primary" title="Suche anzeigen" @onclick="@(() => ToggleSearchCollapse())"><span class="oi oi-magnifying-glass"></span></button>
+        <button class="btn btn-primary" title="Reload" @onclick="@(() => Reload())"><span class="oi oi-reload"></span></button>
+    </p>
+    <div class="row @_searchCollapse">
+        <ComposeFilter Filter="@_filter" TagSets="@_tagSets" OnChangeCallback="Reload"></ComposeFilter>
+    </div>
+    <div class="row">
+        @foreach (ExtendedRoute route in _routes)
+        {
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-4 mt-2">
+                <RouteCard RouteItem="@route" OnReload="Reload"></RouteCard>
+            </div>
+        }
+    </div>
+}
 
 @code {
     private string _version;
@@ -30,6 +51,7 @@
     private RouteFilter _filter = new RouteFilter();
     private IEnumerable<ExtendedRoute> _routes = null;
     private IEnumerable<TagSet> _tagSets;
+    private string _searchCollapse = "collapse";
 
     protected override async Task OnInitializedAsync()
     {
@@ -43,6 +65,21 @@
         catch (Exception ex)
         {
             _statusMessage.ShowError(ex.Message);
+        }
+    }
+    private void ToggleSearchCollapse()
+    {
+        _searchCollapse = String.IsNullOrEmpty(_searchCollapse) ? "collapse" : String.Empty;
+    }
+    private async Task Reload()
+    {
+        try
+        {
+            _routes = await RoutesApi.GetRoutes(_filter);
+        }
+        catch (Exception ex)
+        {
+            _statusMessage.ShowError($"Fehler: {ex.Message}");
         }
     }
 }
