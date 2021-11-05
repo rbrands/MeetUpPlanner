@@ -1,9 +1,11 @@
 ﻿@page "/routes"
 @using MeetUpPlanner.Shared
+@using MeetUpPlanner.Client.Shared 
 @inject AppState AppStateStore
 @inject KeywordCheck KeywordCheck
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@inject RouteApiRepository RoutesApi
 
 <div class="jumbotron">
     <p>
@@ -11,15 +13,36 @@
         um leichter zu finden was du suchst.
     </p>
     <p>
-        Zur Verwaltung der Touren wird gerade die Web-App 
+        Zur Verwaltung der Touren wird gerade die Web-App
         <a href="https://routes.meetupplanner.de/@AppStateStore.Tenant.TrackKey" target="_blank" title="MeetUpRoutes">MeetUpRoutes</a>
         entwickelt.
+        Version: @_version
     </p>
 </div>
 
 
-<h3>Touren</h3>
+<h3>Routen</h3>
+<StatusMessage @ref="_statusMessage"></StatusMessage>
 
 @code {
+    private string _version;
+    StatusMessage _statusMessage;
+    private RouteFilter _filter = new RouteFilter();
+    private IEnumerable<ExtendedRoute> _routes = null;
+    private IEnumerable<TagSet> _tagSets;
 
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _version = await RoutesApi.GetVersion();
+            _tagSets = await RoutesApi.GetTagSets();
+            _routes = await RoutesApi.GetRoutes(_filter);
+
+        }
+        catch (Exception ex)
+        {
+            _statusMessage.ShowError(ex.Message);
+        }
+    }
 }

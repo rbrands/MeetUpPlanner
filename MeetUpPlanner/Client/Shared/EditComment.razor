@@ -1,0 +1,65 @@
+﻿@using MeetUpPlanner.Shared
+@using System.Collections.Generic
+@inject AppState AppStateStore
+@inject RouteApiRepository Api
+
+@if (!_editMode)
+{
+    <div>
+        <small>
+            <em>@Comment.Core.AuthorDisplayName (@Comment.Core.DisplayDate): </em>@Comment.Core.CommentText
+            @if (!String.IsNullOrEmpty(Comment.Core.Link))
+            {
+                <text>&nbsp;</text><a title="@Comment.Core.DisplayLinkTitle" target="_blank" href="@Comment.Core.Link">@Comment.Core.DisplayLinkTitle</a>
+            }
+        </small>
+    </div>
+}
+else
+{
+    <EditForm Model="@Comment.Core">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-group">
+            <InputTextArea id="comment" aria-describedby="commentHelp" class="form-control" @bind-Value="Comment.Core.CommentText" placeholder="Kurzer Kommentar oder Frage."></InputTextArea>
+        </div>
+        <button class="btn btn-sm btn-outline-secondary" type="submit"><span class="oi oi-check" title="Speichern"></span></button>
+        <button class="btn btn-sm btn-outline-secondary" type="reset" @onclick="@(() => Cancel())"><span class="oi oi-x" title="Abbrechen"></span></button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public ExtendedComment Comment { get; set; }
+    [Parameter]
+    public string ReferenceId { get; set; }
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+    [Parameter]
+    public EventCallback OnSave { get; set; }
+
+
+    private bool _editMode = false;
+
+    protected override void OnInitialized()
+    {
+        if (null == Comment)
+        {
+            Comment = new ExtendedComment();
+            Comment.Core.ReferenceId = ReferenceId;
+            _editMode = true;
+        }
+    }
+    private void SwitchToEditMode()
+    {
+        _editMode = true;
+    }
+    private async Task Cancel()
+    {
+        _editMode = false;
+        await OnCancel.InvokeAsync();
+    }
+
+
+
+}

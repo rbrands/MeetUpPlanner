@@ -1,0 +1,43 @@
+﻿@using MeetUpPlanner.Shared
+<div class="@_alertCSS" role="alert" hidden="@_hideAlert">
+    @((MarkupString)_alertMessage)
+</div>
+
+@code {
+    private string _alertMessage;
+    private Boolean _hideAlert = true;
+    private string _alertCSS = "alert alert-warning";
+
+    private void ShowMessage(string message, string css)
+    {
+        _alertMessage = message;
+        _hideAlert = false;
+        _alertCSS = css;
+        StateHasChanged();
+    }
+
+    public void ShowInfo(string message)
+    {
+        ShowMessage(message, "alert alert-info");
+    }
+    public void ShowWarning(string message)
+    {
+        ShowMessage(message, "alert alert-warning");
+    }
+    public void ShowSuccess(string message)
+    {
+        ShowMessage(message, "alert alert-success");
+    }
+    public void ShowError(string message)
+    {
+        ShowMessage(message, "alert alert-danger");
+    }
+
+    public void Hide()
+    {
+        _hideAlert = true;
+        _alertMessage = String.Empty;
+        StateHasChanged();
+    }
+
+}

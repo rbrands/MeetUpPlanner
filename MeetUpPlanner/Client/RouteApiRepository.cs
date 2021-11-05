@@ -29,6 +29,14 @@ namespace MeetUpPlanner.Client
             }
         }
 
+
+        public async Task<String> GetVersion()
+        {
+            this.PrepareHttpClient();
+            String response = await _http.GetStringAsync($"/api/routes/GetVersion");
+            _http.DefaultRequestHeaders.Remove(HEADER_TENANT);
+            return response;
+        }
         public async Task<IEnumerable<ExtendedRoute>> GetRoutes(RouteFilter filter)
         {
             this.PrepareHttpClient();
@@ -36,6 +44,21 @@ namespace MeetUpPlanner.Client
             response.EnsureSuccessStatusCode();
             _http.DefaultRequestHeaders.Remove(HEADER_TENANT);
             return await response.Content.ReadFromJsonAsync<IEnumerable<ExtendedRoute>>();
+        }
+        public async Task<IEnumerable<TagSet>> GetTagSets()
+        {
+            this.PrepareHttpClient();
+            IEnumerable<TagSet> response = await _http.GetFromJsonAsync<IEnumerable<TagSet>>($"/api/routes/GetTagSets");
+            _http.DefaultRequestHeaders.Remove(HEADER_TENANT);
+            return response;
+        }
+        public async Task<Comment> WriteComment(Comment comment)
+        {
+            this.PrepareHttpClient();
+            HttpResponseMessage response = await _http.PostAsJsonAsync<Comment>($"/api/routes/WriteComment", comment);
+            response.EnsureSuccessStatusCode();
+            _http.DefaultRequestHeaders.Remove(HEADER_TENANT);
+            return await response.Content.ReadFromJsonAsync<Comment>();
         }
 
 
