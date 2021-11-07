@@ -240,8 +240,8 @@
 </EditForm>
 
 @code {
-        [Parameter]
-        public string ItemId { get; set; }
+    [Parameter]
+    public string ItemId { get; set; }
     private HubConnection hubConnection;
     ExtendedCalendarItem meetup = new ExtendedCalendarItem();
     string whenDateString = String.Empty;
@@ -335,6 +335,17 @@
                     {
                         meetup.StartDate = dateToSetStartTime.AddHours(18.0);
                     }
+                }
+                if (null != AppStateStore.RouteArg && null != AppStateStore.RouteArg.Core)
+                {
+                    meetup.Title = AppStateStore.RouteArg.Core.Title;
+                    meetup.Summary = AppStateStore.RouteArg.Core.Description;
+                    meetup.LevelDescription = AppStateStore.RouteArg.Core.LevelDescription;
+                    meetup.Link = AppStateStore.RouteArg.Core.RouteLink;
+                    meetup.LinkImage = AppStateStore.RouteArg.Core.RouteLinkImage;
+                    meetup.LinkTitle = AppStateStore.RouteArg.Core.RouteLinkTitle;
+                    meetup.Place = AppStateStore.RouteArg.Core.Place;
+                    meetup.DirectionsLink = AppStateStore.RouteArg.Core.DirectionsLink;
                 }
             }
             whenDate = meetup.StartDate;
