@@ -16,7 +16,7 @@
 <EditForm Model="@meetup" OnValidSubmit="OnSave">
     <DataAnnotationsValidator />
 
-    @if (String.IsNullOrEmpty(ItemId) && !String.IsNullOrEmpty(AppStateStore.ClientSettings.RouteTagForQuickSelection) && null != _standardRoutes && _standardRoutes.Count() > 0)
+    @if (String.IsNullOrEmpty(ItemId) && AppStateStore.Tenant.TracksEnabled && !String.IsNullOrEmpty(AppStateStore.ClientSettings.RouteTagForQuickSelection) && null != _standardRoutes && _standardRoutes.Count() > 0)
     {
         <div class="form-group">
             <label for="SelectMeetingPlace">Auswahl Standard-Route</label>
@@ -365,7 +365,7 @@
 
                     AppStateStore.RouteArg = null;
                 }
-                else
+                else if (AppStateStore.Tenant.TracksEnabled)
                 {
                     _standardRoutes = await GetListOfStandardRoutes();
                 }
