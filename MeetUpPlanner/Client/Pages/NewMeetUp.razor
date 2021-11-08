@@ -15,6 +15,24 @@
 <h1>Ausfahrt</h1>
 <EditForm Model="@meetup" OnValidSubmit="OnSave">
     <DataAnnotationsValidator />
+
+    @if (String.IsNullOrEmpty(ItemId) && !String.IsNullOrEmpty(AppStateStore.ClientSettings.RouteTagForQuickSelection) && null != _standardRoutes && _standardRoutes.Count() > 0)
+    {
+        <div class="form-group">
+            <label for="SelectMeetingPlace">Auswahl Standard-Route</label>
+            <select class="form-control" @onchange="@((ChangeEventArgs e) => OnStandardRouteChanged(e.Value.ToString()))">
+                <option value=""></option>
+                @foreach (ExtendedRoute r in _standardRoutes)
+                {
+                    <option value="@r.Core.Id">@r.Core.Title</option>
+                }
+            </select>
+            <small id="standardPlaceHelp" class="form-text text-muted">
+                Optional: Hier kannst du schnell eine Standard-Route auswählen.
+            </small>
+        </div>
+
+    }
     <div class="form-group">
         <label for="title">Titel</label>
         <InputText id="title" aria-describedby="titleHelp" class="form-control" @bind-Value="meetup.Title" autocomplete="on" placeholder="Kurzer Titel der Ausfahrt" title="Titel" />
@@ -259,6 +277,7 @@
     private bool _linkPreviewEnabled = false;
     IEnumerable<MeetingPlace> _meetingPlaces = new List<MeetingPlace>();
     private MeetUpPlanner.Shared.Comment _routeComment;
+    private IEnumerable<ExtendedRoute> _standardRoutes = null;
 
     Boolean LinkPreviewEnabled
     {
@@ -342,40 +361,13 @@
                 }
                 if (null != AppStateStore.RouteArg && null != AppStateStore.RouteArg.Core)
                 {
-                    meetup.Title = AppStateStore.RouteArg.Core.Title;
-                    if (!String.IsNullOrEmpty(AppStateStore.RouteArg.Core.Description))
-                    {
-                        await htmlDescription.LoadHTMLContent(AppStateStore.RouteArg.Core.Description);
-                    }
-                    meetup.LevelDescription = AppStateStore.RouteArg.Core.LevelDescription;
-                    if (!String.IsNullOrEmpty(AppStateStore.RouteArg.Core.RouteLink))
-                    {
-                        meetup.Link = AppStateStore.RouteArg.Core.RouteLink;
-                        meetup.LinkTitle = AppStateStore.RouteArg.Core.RouteLinkTitle;
-                        if (!String.IsNullOrEmpty(AppStateStore.RouteArg.Core.RouteLinkImage))
-                        {
-                            meetup.LinkImage = AppStateStore.RouteArg.Core.RouteLinkImage;
-                            _linkPreviewEnabled = true;
-                        }
-                    }
-                    meetup.Place = AppStateStore.RouteArg.Core.Place;
-                    if (!String.IsNullOrEmpty(AppStateStore.RouteArg.Core.DirectionsLink))
-                    {
-                        meetup.DirectionsLink = AppStateStore.RouteArg.Core.DirectionsLink;
-                    }
-                    if (!String.IsNullOrEmpty(AppStateStore.RouteArg.Core.Scope))
-                    {
-                        meetup.RouteLink = $"https://www.meetuproutes.de/{AppStateStore.Tenant.TrackKey}/{AppStateStore.RouteArg.Core.Scope}";
-                    }
-                    meetup.IsCross = (null != AppStateStore.RouteArg.Core.RouteTags.FirstOrDefault(t => t.TagLabel.ToLowerInvariant().Contains("cross")))
-                                      || (null != AppStateStore.RouteArg.Core.RouteTags.FirstOrDefault(t => t.TagLabel.ToLowerInvariant().Contains("gravel")))
-                                      || (null != AppStateStore.RouteArg.Core.RouteTags.FirstOrDefault(t => t.TagLabel.ToLowerInvariant().Contains("cross")));
-                    _routeComment = new MeetUpPlanner.Shared.Comment();
-                    _routeComment.ReferenceId = AppStateStore.RouteArg.Core.Id;
-                    _routeComment.CommentText = "Im MeetUpPlanner für eine Ausfahrt ausgewählt!";
-                    _routeComment.AuthorDisplayName = $"{AppStateStore.FirstName}";
+                    await InitializeMeetUpFromRoute(AppStateStore.RouteArg);
 
                     AppStateStore.RouteArg = null;
+                }
+                else
+                {
+                    _standardRoutes = await GetListOfStandardRoutes();
                 }
             }
             whenDate = meetup.StartDate;
@@ -496,6 +488,15 @@
         }
     }
 
+    protected async Task OnStandardRouteChanged(string id)
+    {
+        ExtendedRoute route = _standardRoutes.FirstOrDefault(r => r.Core.Id.Equals(id));
+        if (null != route)
+        {
+            await InitializeMeetUpFromRoute(route);
+        }
+    }
+
     Task SendMessage() => hubConnection.SendAsync("SendMessage");
 
     public bool IsConnected => hubConnection.State == HubConnectionState.Connected;
@@ -576,6 +577,78 @@
         {
             Http.DefaultRequestHeaders.Add("x-meetup-keyword", AppStateStore.KeyWord);
         }
+
+    }
+
+    private async  Task<IEnumerable<ExtendedRoute>> GetListOfStandardRoutes()
+    {
+        IEnumerable<ExtendedRoute> standardRoutes = new List<ExtendedRoute>();
+        RouteFilter filter = new RouteFilter();
+        IEnumerable<TagSet> tagSets = await RouteApi.GetTagSets();
+        TagSet foundTagSet = null;
+        Tag foundTag = null;
+        string labelToCompare = AppStateStore.ClientSettings.RouteTagForQuickSelection.ToLowerInvariant();
+        foreach (TagSet tagSet in tagSets)
+        {
+            foundTag = tagSet.Tags.FirstOrDefault(t => t.Label.ToLowerInvariant().CompareTo(labelToCompare) == 0);
+            if (null != foundTag)
+            {
+                foundTagSet = tagSet;
+                break;
+            }
+        }
+        if (null != foundTag && null != foundTagSet)
+        {
+            RouteTag routeTag = new RouteTag();
+            routeTag.TagId = foundTag.TagId;
+            routeTag.TagId = foundTag.TagId;
+            routeTag.TagLabel = foundTag.Label;
+            routeTag.TagSetId = foundTagSet.Id;
+            routeTag.BadgeColor = foundTagSet.BadgeColor;
+
+            IList<RouteTag> filterRouteTag = new List<RouteTag>();
+            filterRouteTag.Add(routeTag);
+            filter.Tags.Add(filterRouteTag);
+            standardRoutes = await RouteApi.GetRoutes(filter);
+        }
+
+        return standardRoutes;
+    }
+
+    public async Task InitializeMeetUpFromRoute(ExtendedRoute route)
+    {
+        meetup.Title = route.Core.Title;
+        if (!String.IsNullOrEmpty(route.Core.Description))
+        {
+            await htmlDescription.LoadHTMLContent(route.Core.Description);
+        }
+        meetup.LevelDescription = route.Core.LevelDescription;
+        if (!String.IsNullOrEmpty(route.Core.RouteLink))
+        {
+            meetup.Link = route.Core.RouteLink;
+            meetup.LinkTitle = route.Core.RouteLinkTitle;
+            if (!String.IsNullOrEmpty(route.Core.RouteLinkImage))
+            {
+                meetup.LinkImage = route.Core.RouteLinkImage;
+                _linkPreviewEnabled = true;
+            }
+        }
+        meetup.Place = route.Core.Place;
+        if (!String.IsNullOrEmpty(route.Core.DirectionsLink))
+        {
+            meetup.DirectionsLink = route.Core.DirectionsLink;
+        }
+        if (!String.IsNullOrEmpty(route.Core.Scope))
+        {
+            meetup.RouteLink = $"https://www.meetuproutes.de/{AppStateStore.Tenant.TrackKey}/{route.Core.Scope}";
+        }
+        meetup.IsCross = (null != route.Core.RouteTags.FirstOrDefault(t => t.TagLabel.ToLowerInvariant().Contains("cross")))
+                          || (null != route.Core.RouteTags.FirstOrDefault(t => t.TagLabel.ToLowerInvariant().Contains("gravel")))
+                          || (null != route.Core.RouteTags.FirstOrDefault(t => t.TagLabel.ToLowerInvariant().Contains("cross")));
+        _routeComment = new MeetUpPlanner.Shared.Comment();
+        _routeComment.ReferenceId = route.Core.Id;
+        _routeComment.CommentText = "Im MeetUpPlanner für eine Ausfahrt ausgewählt!";
+        _routeComment.AuthorDisplayName = $"{AppStateStore.FirstName}";
 
     }
 
