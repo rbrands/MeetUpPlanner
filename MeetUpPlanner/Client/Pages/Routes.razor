@@ -9,14 +9,8 @@
 
 <div class="jumbotron">
     <p>
-        Hier findest du die Zusammenstellung aller Touren - sortiert nach Aktualität, d.h. die neuesten Touren stehen oben. Nutze die Filterfunktonen,
-        um leichter zu finden was du suchst.
-    </p>
-    <p>
-        Zur Verwaltung der Touren wird gerade die Web-App
-        <a href="https://routes.meetupplanner.de/@AppStateStore.Tenant.TrackKey" target="_blank" title="MeetUpRoutes">MeetUpRoutes</a>
-        entwickelt.
-        Version: @_version
+        Suche hier nach einer passenden Route, wähle sie aus und erstell eine Ausfahrt mit der Route.
+        Die vollständige Routen-Verwaltung findest du als eigene Web-App <a href="https://www.meetuproutes.de/@AppStateStore.Tenant.TrackKey" target="_blank" title="MeetUpRoutes">MeetUpRoutes</a>.
     </p>
 </div>
 <StatusMessage @ref="_statusMessage"></StatusMessage>
@@ -46,7 +40,6 @@ else
 }
 
 @code {
-    private string _version;
     StatusMessage _statusMessage;
     private RouteFilter _filter = new RouteFilter();
     private IEnumerable<ExtendedRoute> _routes = null;
@@ -57,7 +50,6 @@ else
     {
         try
         {
-            _version = await RoutesApi.GetVersion();
             _tagSets = await RoutesApi.GetTagSets();
             _routes = await RoutesApi.GetRoutes(_filter);
 

@@ -18,6 +18,7 @@
 <h1>Ausfahrten</h1>
 <p>
     <a class="btn btn-primary" href="/newmeetup" title="Neue Ausfahrt" hidden="@(!KeywordCheck.IsUser || _onlyAdminsAsHost && !KeywordCheck.IsAdmin)">Neue Ausfahrt erstellen</a>
+    <a class="btn btn-primary" href="/routes" title="Routen" hidden="@(!AppStateStore.Tenant.TracksEnabled)">Routen</a>
     <button class="btn btn-primary" title="Reload" @onclick="@(() => Reload())"><span class="oi oi-reload"></span></button>
     @if (KeywordCheck.IsAdmin)
     {
@@ -88,7 +89,7 @@
                         </div>
                         @if (KeywordCheck.IsAdmin && item.PublishDate.ToLocalTime().CompareTo(DateTime.Now) > 0)
                         {
-                            <small><em>Veröffentlichung @item.GetPublishDateAsString()</em></small>
+                        <small><em>Veröffentlichung @item.GetPublishDateAsString()</em></small>
                         }
                         @if (!String.IsNullOrEmpty(item.GuestScope))
                         {
@@ -96,11 +97,17 @@
                                 <small><em>Gäste-Link <a href="/guests/@item.GuestScope" target="_blank">/guests/@item.GuestScope</a></em></small>
                             </div>
                         }
+                        @if (!String.IsNullOrEmpty(item.RouteLink))
+                        {
+                            <div>
+                                <small><em>Aus <a href="@item.RouteLink" target="_blank">@item.RouteLink</a></em></small>
+                            </div>
+                        }
                         <hr />
                         <small>Dabei (@item.ParticipantCounter von @item.MaxRegistrationsCount)</small>
                         @if (item.ParticipantCounter < item.MinRegistrationsCount)
                         {
-                            <span class="badge badge-danger" title="Mindestteilnehmerzahl">Min @item.MinRegistrationsCount</span>
+                        <span class="badge badge-danger" title="Mindestteilnehmerzahl">Min @item.MinRegistrationsCount</span>
                         }
                         <small>: <b>@item.HostDisplayName(AppStateStore.ClientSettings.NameDisplayLength)</b>@item.ParticipantsDisplay(AppStateStore.ClientSettings.NameDisplayLength)</small>
                         <hr />
@@ -108,19 +115,19 @@
                         {
                             <ul class="list-unstyled">
                                 @foreach (CalendarComment c in item.GetMostRecentComments(commentsToDisplay))
-                                {
-                                    <li>
-                                        <small>
-                                            <em>@c.AuthorDisplayName(AppStateStore.ClientSettings.NameDisplayLength) (@c.DisplayDate): </em>@c.Comment
-                                            @if (!String.IsNullOrEmpty(c.Link))
-                                            {
-                                                <text>&nbsp;</text><a title="@c.DisplayLinkTitle" target="_blank" href="@c.Link">@c.DisplayLinkTitle</a>
-                                            }
-                                        </small>
-                                    </li>
-                                }
+                                    {
+                                <li>
+                                    <small>
+                                        <em>@c.AuthorDisplayName(AppStateStore.ClientSettings.NameDisplayLength) (@c.DisplayDate): </em>@c.Comment
+                                        @if (!String.IsNullOrEmpty(c.Link))
+                                                {
+                                        <text>&nbsp;</text><a title="@c.DisplayLinkTitle" target="_blank" href="@c.Link">@c.DisplayLinkTitle</a>
+                                                }
+                                    </small>
+                                </li>
+                                    }
                                 @if(!item.HideOlderCommments)
-                                { 
+                                {
                                     @foreach (CalendarComment c in item.GetOlderComments(commentsToDisplay))
                                     {
                                         <li>
@@ -135,14 +142,13 @@
                                     }
                                 } else if (item.CommentsCounter > commentsToDisplay)
                                 {
-                                    <li>
-                                        <button class="btn btn-link text-left" type="button" @onclick="e => item.HideOlderCommments = false"><small><em>mehr ...</em></small></button>
-                                    </li>
-
+                                        <li>
+                                            <button class="btn btn-link text-left" type="button" @onclick="e => item.HideOlderCommments = false"><small><em>mehr ...</em></small></button>
+                                        </li>
                                 }
                             </ul>
                             <hr />
-                        }
+                         }
                     </p>
                     @if (!String.IsNullOrEmpty(item.Link))
                     {

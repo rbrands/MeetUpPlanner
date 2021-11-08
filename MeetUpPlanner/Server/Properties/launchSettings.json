@@ -14,7 +14,7 @@
       "environmentVariables": {
         "MeetUpFunctionsConfig:FunctionAppName": "meetupplanner-dev",
         "MeetUpFunctionsConfig:ApiKey": "NxfLA9Q/xtSa4vV9ft0oWHoMSnfhYDikr46eVMSVl3WAHXk1hTuQoQ==",
-        "MeetUpFunctionsConfig:RoutesApiUrl": "https://brave-forest-0d0217a03-48.westeurope.azurestaticapps.net",
+        "MeetUpFunctionsConfig:RoutesApiUrl": "https://www.meetuproutes.de",
         "MeetUpFunctionsConfig:InviteGuestKey": "90F38844-1393-49AE-A788-CACB599ABB58",
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

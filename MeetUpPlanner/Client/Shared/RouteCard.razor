@@ -1,6 +1,7 @@
 ﻿@using MeetUpPlanner.Shared
 @using System.Text.RegularExpressions
 @inject AppState AppStateStore
+@inject KeywordCheck KeywordCheck 
 @inject RouteApiRepository RouteApi
 @inject NavigationManager NavigationManager
 
@@ -40,7 +41,7 @@
             @RouteItem.Core.Title
             @if (!String.IsNullOrEmpty(RouteItem.Core.Scope))
             {
-                <text>&nbsp;</text><a href="/@AppStateStore.Tenant.TrackKey/@RouteItem.Core.Scope"><span class="oi oi-link-intact"></span></a>
+                <text>&nbsp;</text><a href="https://www.meetuproutes.de/@AppStateStore.Tenant.TrackKey/@RouteItem.Core.Scope" target="_blank"><span class="oi oi-link-intact"></span></a>
             }
         </h5>
         <p class="card-text">
@@ -54,6 +55,7 @@
             </small>
             @if (RouteItem.CommentsList.Count() > 0)
             {
+                <hr />
                 <ul class="list-unstyled overflow-auto" style="max-height: 160px">
                     @foreach (ExtendedComment comment in RouteItem.CommentsList)
                     {
@@ -73,7 +75,13 @@
     </div>
     <div class="card-footer">
         <div class="btn-toolbar" role="toolbar" aria-label="Aktionen zur Tour">
-            <div class="btn-group mr-2" role="group" aria-label="Tour-Infos">
+            @if (KeywordCheck.IsUser)
+            { 
+                <div class="btn-group mr-2" role="group" aria-label="Ausfahrt anlegen">
+                    <a class="btn btn-sm btn-outline-secondary" @onclick="@(() => SelectForMeetUp())" hidden="@(!KeywordCheck.IsUser || AppStateStore.ClientSettings.OnlyAdminsAsHost && !KeywordCheck.IsAdmin)">Ausfahrt anlegen</a>
+                </div>
+             }
+            <div class="btn-group mr-2" role="group" aria-label="Routen-Infos">
                 <a href="@RouteItem.Core.GpxLink" target="_blank" title="GPX-Link" class="btn btn-sm btn-outline-secondary" hidden="@String.IsNullOrEmpty(RouteItem.Core.GpxLink)">GPX</a>
                 <a href="@RouteItem.Core.StravaLink" target="_blank" title="Strava" class="btn btn-sm btn-outline-secondary" hidden="@String.IsNullOrEmpty(RouteItem.Core.StravaLink)">Strava</a>
                 <a href="@RouteItem.Core.PhotosLink" target="_blank" title="Fotos" class="btn btn-sm btn-outline-secondary" hidden="@String.IsNullOrEmpty(RouteItem.Core.PhotosLink)"><span class="oi oi-camera-slr"></span></a>
@@ -88,8 +96,9 @@
     public ExtendedRoute RouteItem { get; set; } = new ExtendedRoute();
     [Parameter]
     public EventCallback OnReload { get; set; }
+
     private string[] BadgeClasses =
-    {
+{
         "primary",
         "secondary",
         "success",
@@ -99,6 +108,7 @@
         "light",
         "dark"
     };
+
 
     private string GetBadgeClass(TagBadgeColor color)
     {
@@ -113,6 +123,11 @@
         comment.AuthorDisplayName = $"{AppStateStore.FirstName}";
         await RouteApi.WriteComment(comment);
         await OnReload.InvokeAsync();
+    }
+    protected void SelectForMeetUp()
+    {
+        AppStateStore.RouteArg = RouteItem;
+        NavigationManager.NavigateTo("/newmeetup");
     }
     private async Task Reload()
     {

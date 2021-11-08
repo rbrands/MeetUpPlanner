@@ -1,6 +1,7 @@
 ﻿@page "/newmeetup"
 @page "/newmeetup/{ItemId}"
 @inject HttpClient Http
+@inject RouteApiRepository RouteApi
 @inject AppState AppStateStore
 @inject KeywordCheck KeywordCheck
 @inject NavigationManager NavigationManager
@@ -44,7 +45,7 @@
                 </span>
             </ToolbarContent>
             <EditorContent>
-                @if (null != meetup.Summary)
+                @if (!String.IsNullOrEmpty(meetup.Summary))
                 {@((MarkupString)meetup.Summary)}
             </EditorContent>
         </BlazoredTextEditor>
@@ -257,6 +258,7 @@
     private bool withoutHost = false;
     private bool _linkPreviewEnabled = false;
     IEnumerable<MeetingPlace> _meetingPlaces = new List<MeetingPlace>();
+    private MeetUpPlanner.Shared.Comment _routeComment;
 
     Boolean LinkPreviewEnabled
     {
@@ -285,7 +287,7 @@
             linkPreview = JsonConvert.DeserializeObject<LinkPreview>(responseBody);
             if (linkPreview.Success)
             {
-                if ( null != linkPreview.ImageUrl)
+                if (null != linkPreview.ImageUrl)
                 {
                     meetup.LinkImage = linkPreview.ImageUrl.ToString();
                 }
@@ -309,6 +311,8 @@
 
             onlyScopedMeetUps = AppStateStore.ClientSettings.OnlyScopedMeetUpsAllowed;
             scopedDates = GetScopedDays();
+            PrepareHttpClient();
+            _meetingPlaces = await Http.GetFromJsonAsync<IEnumerable<MeetingPlace>>($"Calendar/getmeetingplaces");
             if (!String.IsNullOrEmpty(ItemId))
             {
                 PrepareHttpClient();
@@ -339,13 +343,39 @@
                 if (null != AppStateStore.RouteArg && null != AppStateStore.RouteArg.Core)
                 {
                     meetup.Title = AppStateStore.RouteArg.Core.Title;
-                    meetup.Summary = AppStateStore.RouteArg.Core.Description;
+                    if (!String.IsNullOrEmpty(AppStateStore.RouteArg.Core.Description))
+                    {
+                        await htmlDescription.LoadHTMLContent(AppStateStore.RouteArg.Core.Description);
+                    }
                     meetup.LevelDescription = AppStateStore.RouteArg.Core.LevelDescription;
-                    meetup.Link = AppStateStore.RouteArg.Core.RouteLink;
-                    meetup.LinkImage = AppStateStore.RouteArg.Core.RouteLinkImage;
-                    meetup.LinkTitle = AppStateStore.RouteArg.Core.RouteLinkTitle;
+                    if (!String.IsNullOrEmpty(AppStateStore.RouteArg.Core.RouteLink))
+                    {
+                        meetup.Link = AppStateStore.RouteArg.Core.RouteLink;
+                        meetup.LinkTitle = AppStateStore.RouteArg.Core.RouteLinkTitle;
+                        if (!String.IsNullOrEmpty(AppStateStore.RouteArg.Core.RouteLinkImage))
+                        {
+                            meetup.LinkImage = AppStateStore.RouteArg.Core.RouteLinkImage;
+                            _linkPreviewEnabled = true;
+                        }
+                    }
                     meetup.Place = AppStateStore.RouteArg.Core.Place;
-                    meetup.DirectionsLink = AppStateStore.RouteArg.Core.DirectionsLink;
+                    if (!String.IsNullOrEmpty(AppStateStore.RouteArg.Core.DirectionsLink))
+                    {
+                        meetup.DirectionsLink = AppStateStore.RouteArg.Core.DirectionsLink;
+                    }
+                    if (!String.IsNullOrEmpty(AppStateStore.RouteArg.Core.Scope))
+                    {
+                        meetup.RouteLink = $"https://www.meetuproutes.de/{AppStateStore.Tenant.TrackKey}/{AppStateStore.RouteArg.Core.Scope}";
+                    }
+                    meetup.IsCross = (null != AppStateStore.RouteArg.Core.RouteTags.FirstOrDefault(t => t.TagLabel.ToLowerInvariant().Contains("cross")))
+                                      || (null != AppStateStore.RouteArg.Core.RouteTags.FirstOrDefault(t => t.TagLabel.ToLowerInvariant().Contains("gravel")))
+                                      || (null != AppStateStore.RouteArg.Core.RouteTags.FirstOrDefault(t => t.TagLabel.ToLowerInvariant().Contains("cross")));
+                    _routeComment = new MeetUpPlanner.Shared.Comment();
+                    _routeComment.ReferenceId = AppStateStore.RouteArg.Core.Id;
+                    _routeComment.CommentText = "Im MeetUpPlanner für eine Ausfahrt ausgewählt!";
+                    _routeComment.AuthorDisplayName = $"{AppStateStore.FirstName}";
+
+                    AppStateStore.RouteArg = null;
                 }
             }
             whenDate = meetup.StartDate;
@@ -354,8 +384,6 @@
             publishDate = meetup.PublishDate.ToLocalTime();
             publishTime = meetup.PublishDate.ToLocalTime();
             withoutHost = meetup.WithoutHost;
-            PrepareHttpClient();
-            _meetingPlaces = await Http.GetFromJsonAsync<IEnumerable<MeetingPlace>>($"Calendar/getmeetingplaces");
         }
         else
         {
@@ -443,6 +471,11 @@
         {
             await Http.PostAsJsonAsync<Participant>($"Calendar/addparticipant", participantToBeAdded);
         }
+        if (null != _routeComment)
+        {
+            await RouteApi.WriteComment(_routeComment);
+        }
+
 
         if (IsConnected) await SendMessage();
 

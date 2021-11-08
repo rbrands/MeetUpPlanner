@@ -59,6 +59,12 @@
                     <small><em>Gäste-Link <a href="/guests/@CalendarItem.GuestScope" target="_blank">/guests/@CalendarItem.GuestScope</a></em></small>
                 </div>
             }
+            @if (!String.IsNullOrEmpty(CalendarItem.RouteLink))
+            {
+                <div>
+                    <small><em>Aus <a href="@CalendarItem.RouteLink" target="_blank">@CalendarItem.RouteLink</a></em></small>
+                </div>
+            }
             <hr />
             @if (!IsGuest)
             {
