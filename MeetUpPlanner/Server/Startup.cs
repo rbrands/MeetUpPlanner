@@ -39,6 +39,7 @@ namespace MeetUpPlanner.Server
             services.Configure<MeetUpFunctionsConfig>(Configuration.GetSection("MeetUpFunctionsConfig"));
             MeetUpFunctionsConfig functionsConfig = Configuration.GetSection("MeetUpFunctionsConfig").Get<MeetUpFunctionsConfig>();
             MeetUpFunctions meetUpFunctions = new MeetUpFunctions(functionsConfig);
+            services.AddSingleton(functionsConfig);
             services.AddSingleton(meetUpFunctions);
         }
 

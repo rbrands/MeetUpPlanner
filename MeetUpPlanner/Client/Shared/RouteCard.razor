@@ -1,0 +1,136 @@
+﻿@using MeetUpPlanner.Shared
+@using System.Text.RegularExpressions
+@inject AppState AppStateStore
+@inject KeywordCheck KeywordCheck 
+@inject RouteApiRepository RouteApi
+@inject NavigationManager NavigationManager
+
+
+<div class="card">
+    <div class="card-header">
+        @if (!RouteItem.Core.IsReviewed)
+        {
+            <span class="badge badge-warning p-2 m-1" title="Freigabe notwendig">Review!</span>
+        }
+        @if (RouteItem.Core.IsNonPublic)
+        {
+            <span class="badge badge-danger p-2 m-1"><span class="oi oi-key" title="Nicht öffentlich"></span></span>
+        }
+        @foreach (RouteTag rt in RouteItem.Core.RouteTags)
+        {
+            <span class="badge badge-@GetBadgeClass(rt.BadgeColor) p-2 m-1">
+                @rt.TagLabel
+            </span>
+        }
+        @if (!String.IsNullOrEmpty(RouteItem.Core.DirectionsLink))
+        {
+            <a href="@RouteItem.Core.DirectionsLink" class="btn btn-outline-success btn-sm" role="button" target="_blank" tite="Startort"><span class="oi oi-map-marker"></span></a>
+        }
+    </div>
+    @if (!String.IsNullOrEmpty(RouteItem.Core.RouteLinkImage))
+    {
+        <a href="@RouteItem.Core.RouteLink" target="_blank">
+            <img class="card-img-top" src="@RouteItem.Core.RouteLinkImage" alt="@RouteItem.Core.RouteLinkTitle">
+        </a>
+    }
+    <div class="card-body">
+        <h6 class="text-muted card-subtitle mb-2">
+            @RouteItem.Core.LevelDescription
+        </h6>
+        <h5 class="card-title">
+            @RouteItem.Core.Title
+            @if (!String.IsNullOrEmpty(RouteItem.Core.Scope))
+            {
+                <text>&nbsp;</text><a href="https://www.meetuproutes.de/@AppStateStore.Tenant.TrackKey/@RouteItem.Core.Scope" target="_blank"><span class="oi oi-link-intact"></span></a>
+            }
+        </h5>
+        <p class="card-text">
+            <div class="overflow-auto" style="max-height: 500px">
+                @((MarkupString)RouteItem.Core.Description)
+            </div>
+            <small>
+                <em>
+                    @RouteItem.AuthorDisplayName @RouteItem.LastUpdate.ToLocalTime().ToString("dd.MM.yyyy")
+                </em>
+            </small>
+            @if (RouteItem.CommentsList.Count() > 0)
+            {
+                <hr />
+                <ul class="list-unstyled overflow-auto" style="max-height: 160px">
+                    @foreach (ExtendedComment comment in RouteItem.CommentsList)
+                    {
+                        <li>
+                            <EditComment Comment="@comment" ReferenceId="@RouteItem.Core.Id" OnSave="Reload"></EditComment>
+                        </li>
+                    }
+                </ul>
+            }
+            <hr />
+            @if (!String.IsNullOrEmpty(RouteItem.Core.RouteLink))
+            {
+                <a href="@RouteItem.Core.RouteLink" target="_blank" class="card-link">@RouteItem.DisplayLinkTitle</a>
+            }
+        </p>
+
+    </div>
+    <div class="card-footer">
+        <div class="btn-toolbar" role="toolbar" aria-label="Aktionen zur Tour">
+            @if (KeywordCheck.IsUser)
+            { 
+                <div class="btn-group mr-2" role="group" aria-label="Ausfahrt anlegen">
+                    <a class="btn btn-sm btn-outline-secondary" @onclick="@(() => SelectForMeetUp())" hidden="@(!KeywordCheck.IsUser || AppStateStore.ClientSettings.OnlyAdminsAsHost && !KeywordCheck.IsAdmin)">Ausfahrt anlegen</a>
+                </div>
+             }
+            <div class="btn-group mr-2" role="group" aria-label="Routen-Infos">
+                <a href="@RouteItem.Core.GpxLink" target="_blank" title="GPX-Link" class="btn btn-sm btn-outline-secondary" hidden="@String.IsNullOrEmpty(RouteItem.Core.GpxLink)">GPX</a>
+                <a href="@RouteItem.Core.StravaLink" target="_blank" title="Strava" class="btn btn-sm btn-outline-secondary" hidden="@String.IsNullOrEmpty(RouteItem.Core.StravaLink)">Strava</a>
+                <a href="@RouteItem.Core.PhotosLink" target="_blank" title="Fotos" class="btn btn-sm btn-outline-secondary" hidden="@String.IsNullOrEmpty(RouteItem.Core.PhotosLink)"><span class="oi oi-camera-slr"></span></a>
+                <a href="@RouteItem.Core.VideoLink" target="_blank" title="Video" class="btn btn-sm btn-outline-secondary" hidden="@String.IsNullOrEmpty(RouteItem.Core.VideoLink)"><span class="oi oi-video"></span></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public ExtendedRoute RouteItem { get; set; } = new ExtendedRoute();
+    [Parameter]
+    public EventCallback OnReload { get; set; }
+
+    private string[] BadgeClasses =
+{
+        "primary",
+        "secondary",
+        "success",
+        "danger",
+        "warning",
+        "info",
+        "light",
+        "dark"
+    };
+
+
+    private string GetBadgeClass(TagBadgeColor color)
+    {
+        return BadgeClasses[(int)color];
+    }
+
+    protected async Task AddRidingComment()
+    {
+        Comment comment = new Comment();
+        comment.ReferenceId = RouteItem.Core.Id;
+        comment.CommentText = "Die Route wurde im MeetUpPlanner verwendet!";
+        comment.AuthorDisplayName = $"{AppStateStore.FirstName}";
+        await RouteApi.WriteComment(comment);
+        await OnReload.InvokeAsync();
+    }
+    protected void SelectForMeetUp()
+    {
+        AppStateStore.RouteArg = RouteItem;
+        NavigationManager.NavigateTo("/newmeetup");
+    }
+    private async Task Reload()
+    {
+        await OnReload.InvokeAsync();
+    }
+}

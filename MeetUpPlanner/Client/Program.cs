@@ -30,6 +30,7 @@ namespace MeetUpPlanner.Client
             builder.Services.AddClipboard();
             builder.Services.AddScoped<DialogService>();
             builder.Services.AddScoped<NotificationService>();
+            builder.Services.AddScoped<RouteApiRepository>();
             await builder.Build().RunAsync();
         }
     }

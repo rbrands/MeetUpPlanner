@@ -43,6 +43,8 @@ namespace MeetUpPlanner.Shared
         public string LevelDescription { get; set; }
         [JsonProperty(PropertyName = "tempo"), Required(ErrorMessage = "Bitte geplante Geschwindigkeit angeben."), MaxLength(35, ErrorMessage = "Tempo-Angabe zu lang.")]
         public string Tempo { get; set; }
+        [JsonProperty(PropertyName = "routeLink", NullValueHandling = NullValueHandling.Ignore), MaxLength(256, ErrorMessage = "Link zu lang"), UIHint("url")]
+        public string RouteLink { get; set; }
         [JsonProperty(PropertyName = "link", NullValueHandling = NullValueHandling.Ignore), MaxLength(256, ErrorMessage = "Link zu lang"), UIHint("url")]
         public string Link { get; set; }
         [JsonProperty(PropertyName = "linkTitle", NullValueHandling = NullValueHandling.Ignore), MaxLength(120, ErrorMessage = "Link-Bezeichnung zu lang.")]

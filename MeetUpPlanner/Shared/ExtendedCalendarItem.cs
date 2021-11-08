@@ -34,6 +34,7 @@ namespace MeetUpPlanner.Shared
             this.IsCopiedToNextWeek = calendarItem.IsCopiedToNextWeek;
             this.Place = calendarItem.Place;
             this.DirectionsLink = calendarItem.DirectionsLink;
+            this.RouteLink = calendarItem.RouteLink;
             this.HostFirstName = calendarItem.HostFirstName;
             this.HostLastName = calendarItem.HostLastName;
             this.HostAdressInfo = calendarItem.HostAdressInfo;

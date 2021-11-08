@@ -44,6 +44,7 @@ namespace MeetUpPlanner.Client
         public string PhoneMail { get; set; }
         public Boolean NoAddressNeeded { get; set; } = false;
         public bool SaveSettings { get; set; } = true;
+        public ExtendedRoute RouteArg { get; set; }
 
         public bool NotificationSubscriptionRequested { get; set; } = false;
 

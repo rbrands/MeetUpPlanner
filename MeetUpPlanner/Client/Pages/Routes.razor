@@ -1,25 +1,77 @@
 ﻿@page "/routes"
 @using MeetUpPlanner.Shared
+@using MeetUpPlanner.Client.Shared
 @inject AppState AppStateStore
 @inject KeywordCheck KeywordCheck
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@inject RouteApiRepository RoutesApi
 
 <div class="jumbotron">
     <p>
-        Hier findest du die Zusammenstellung aller Touren - sortiert nach Aktualität, d.h. die neuesten Touren stehen oben. Nutze die Filterfunktonen,
-        um leichter zu finden was du suchst.
-    </p>
-    <p>
-        Zur Verwaltung der Touren wird gerade die Web-App 
-        <a href="https://routes.meetupplanner.de/@AppStateStore.Tenant.TrackKey" target="_blank" title="MeetUpRoutes">MeetUpRoutes</a>
-        entwickelt.
+        Suche hier nach einer passenden Route, wähle sie aus und erstell eine Ausfahrt mit der Route.
+        Die vollständige Routen-Verwaltung findest du als eigene Web-App <a href="https://www.meetuproutes.de/@AppStateStore.Tenant.TrackKey" target="_blank" title="MeetUpRoutes">MeetUpRoutes</a>.
     </p>
 </div>
+<StatusMessage @ref="_statusMessage"></StatusMessage>
 
-
-<h3>Touren</h3>
+<h1>Routen</h1>
+@if (null == _routes)
+{
+    <p><em>Daten werden geladen... Beim ersten Aufruf dauert das ein bisschen.</em></p>
+}
+else
+{
+    <p>
+        <button class="btn btn-primary" title="Suche anzeigen" @onclick="@(() => ToggleSearchCollapse())"><span class="oi oi-magnifying-glass"></span></button>
+        <button class="btn btn-primary" title="Reload" @onclick="@(() => Reload())"><span class="oi oi-reload"></span></button>
+    </p>
+    <div class="row @_searchCollapse">
+        <ComposeFilter Filter="@_filter" TagSets="@_tagSets" OnChangeCallback="Reload"></ComposeFilter>
+    </div>
+    <div class="row">
+        @foreach (ExtendedRoute route in _routes)
+        {
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-4 mt-2">
+                <RouteCard RouteItem="@route" OnReload="Reload"></RouteCard>
+            </div>
+        }
+    </div>
+}
 
 @code {
+    StatusMessage _statusMessage;
+    private RouteFilter _filter = new RouteFilter();
+    private IEnumerable<ExtendedRoute> _routes = null;
+    private IEnumerable<TagSet> _tagSets;
+    private string _searchCollapse = "";
 
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _tagSets = await RoutesApi.GetTagSets();
+            _routes = await RoutesApi.GetRoutes(_filter);
+
+        }
+        catch (Exception ex)
+        {
+            _statusMessage.ShowError(ex.Message);
+        }
+    }
+    private void ToggleSearchCollapse()
+    {
+        _searchCollapse = String.IsNullOrEmpty(_searchCollapse) ? "collapse" : String.Empty;
+    }
+    private async Task Reload()
+    {
+        try
+        {
+            _routes = await RoutesApi.GetRoutes(_filter);
+        }
+        catch (Exception ex)
+        {
+            _statusMessage.ShowError($"Fehler: {ex.Message}");
+        }
+    }
 }
