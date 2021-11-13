@@ -7,6 +7,7 @@
 @inject NavigationManager NavigationManager
 @inject NotificationService notificationService
 @using Newtonsoft.Json
+@using System.Text 
 @using Microsoft.AspNetCore.SignalR.Client
 @using MeetUpPlanner.Shared
 @using Blazored.TextEditor
@@ -648,8 +649,7 @@
         _routeComment = new MeetUpPlanner.Shared.Comment();
         _routeComment.ReferenceId = route.Core.Id;
         _routeComment.CommentText = "Im MeetUpPlanner für eine Ausfahrt ausgewählt!";
-        _routeComment.AuthorDisplayName = $"{AppStateStore.FirstName}";
-
+        _routeComment.AuthorDisplayName = AppStateStore.DisplayName;
     }
 
 }
