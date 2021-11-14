@@ -36,6 +36,7 @@ namespace MeetUpPlanner.Shared
             this.OrderId = infoItem.OrderId;
             this.Tenant = infoItem.Tenant;
             this.Title = infoItem.Title;
+            this.SubTitle = infoItem.SubTitle;
         }
     }
 }

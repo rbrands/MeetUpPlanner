@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text;
 using MeetUpPlanner.Shared;
 using System.ComponentModel.DataAnnotations;
 
@@ -39,6 +40,21 @@ namespace MeetUpPlanner.Client
         [MaxLength(80, ErrorMessage = "Der Nachname ist zu lang."), MinLength(3, ErrorMessage = "Der Nachname ist zu kurz.")]
         [Required(ErrorMessage = "Der Nachname fehlt.")]
         public string LastName { get; set; }
+        public string DisplayName
+        {
+            get
+            {
+                int nameDisplayLength = _clientSettings != null ? _clientSettings.NameDisplayLength : 0;
+                int length = nameDisplayLength > 0 ? Math.Min(nameDisplayLength, LastName.Length) : LastName.Length;
+                StringBuilder sb = new StringBuilder(FirstName).Append(' ');
+                sb.Append(LastName.Substring(0, length));
+                if (length < LastName.Length)
+                {
+                    sb.Append('.');
+                }
+                return sb.ToString();
+            }
+        }
         [MaxLength(120, ErrorMessage = "Die Tel-Nr/Mail-Adresse ist zu lang"), MinLength(8, ErrorMessage = "Die Tel-Nr/Mail-Adresse ist zu kurz.")]
         [Required(ErrorMessage = "Tel-Nr/Mail-Adresse fehlen.")]
         public string PhoneMail { get; set; }

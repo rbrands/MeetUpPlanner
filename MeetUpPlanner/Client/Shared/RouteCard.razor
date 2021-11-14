@@ -79,8 +79,10 @@
             { 
                 <div class="btn-group mr-2" role="group" aria-label="Ausfahrt anlegen">
                     <a class="btn btn-sm btn-outline-secondary" @onclick="@(() => SelectForMeetUp())" hidden="@(!KeywordCheck.IsUser || AppStateStore.ClientSettings.OnlyAdminsAsHost && !KeywordCheck.IsAdmin)">Ausfahrt anlegen</a>
+                    <button class="btn btn-sm btn-outline-secondary" title="Kommentieren" @onclick="@(() => ToggleCommentInput())"><span class="oi oi-comment-square"></span></button>
+                    <button class="btn btn-sm btn-outline-secondary" title="Ich bin die Route gefahren" @onclick="@(() => AddRidingComment())"><span class="oi oi-thumb-up"></span>Bin die Route gefahren.</button>
                 </div>
-             }
+            }
             <div class="btn-group mr-2" role="group" aria-label="Routen-Infos">
                 <a href="@RouteItem.Core.GpxLink" target="_blank" title="GPX-Link" class="btn btn-sm btn-outline-secondary" hidden="@String.IsNullOrEmpty(RouteItem.Core.GpxLink)">GPX</a>
                 <a href="@RouteItem.Core.StravaLink" target="_blank" title="Strava" class="btn btn-sm btn-outline-secondary" hidden="@String.IsNullOrEmpty(RouteItem.Core.StravaLink)">Strava</a>
@@ -88,6 +90,10 @@
                 <a href="@RouteItem.Core.VideoLink" target="_blank" title="Video" class="btn btn-sm btn-outline-secondary" hidden="@String.IsNullOrEmpty(RouteItem.Core.VideoLink)"><span class="oi oi-video"></span></a>
             </div>
         </div>
+        @if (_enableCommentInput)
+        {
+            <EditComment ReferenceId="@RouteItem.Core.Id" OnCancel="ToggleCommentInput" OnSave="OnSaveComment"></EditComment>
+        }
     </div>
 </div>
 
@@ -96,6 +102,7 @@
     public ExtendedRoute RouteItem { get; set; } = new ExtendedRoute();
     [Parameter]
     public EventCallback OnReload { get; set; }
+    private Boolean _enableCommentInput = false;
 
     private string[] BadgeClasses =
 {
@@ -119,8 +126,8 @@
     {
         Comment comment = new Comment();
         comment.ReferenceId = RouteItem.Core.Id;
-        comment.CommentText = "Die Route wurde im MeetUpPlanner verwendet!";
-        comment.AuthorDisplayName = $"{AppStateStore.FirstName}";
+        comment.CommentText = "Danke, ich bin die Route gefahren!";
+        comment.AuthorDisplayName = AppStateStore.DisplayName;
         await RouteApi.WriteComment(comment);
         await OnReload.InvokeAsync();
     }
@@ -133,4 +140,15 @@
     {
         await OnReload.InvokeAsync();
     }
+    private void ToggleCommentInput()
+    {
+        _enableCommentInput = !_enableCommentInput;
+    }
+    private async Task OnSaveComment()
+    {
+        _enableCommentInput = !_enableCommentInput;
+        await OnReload.InvokeAsync();
+    }
+
+
 }

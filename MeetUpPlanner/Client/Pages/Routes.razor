@@ -25,6 +25,7 @@ else
     <p>
         <button class="btn btn-primary" title="Suche anzeigen" @onclick="@(() => ToggleSearchCollapse())"><span class="oi oi-magnifying-glass"></span></button>
         <button class="btn btn-primary" title="Reload" @onclick="@(() => Reload())"><span class="oi oi-reload"></span></button>
+        <a class="btn btn-primary" title="Hilfe" href="https://docs.meetuproutes.de" target="_blank"><span class="oi oi-question-mark"></span></a>
     </p>
     <div class="row @_searchCollapse">
         <ComposeFilter Filter="@_filter" TagSets="@_tagSets" OnChangeCallback="Reload"></ComposeFilter>
@@ -67,7 +68,12 @@ else
     {
         try
         {
+            _statusMessage.Hide();
             _routes = await RoutesApi.GetRoutes(_filter);
+            if (_routes.Count() == 0)
+            {
+                _statusMessage.ShowWarning("Keine Route mit den Suchkriterien gefunden. Bitte ändere deinen Suchfilter.");
+            }
         }
         catch (Exception ex)
         {
