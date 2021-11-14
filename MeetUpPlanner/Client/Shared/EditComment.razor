@@ -17,7 +17,7 @@
 }
 else
 {
-    <EditForm Model="@Comment.Core">
+    <EditForm Model="@Comment.Core" OnValidSubmit="SaveComment">
         <DataAnnotationsValidator />
         <ValidationSummary />
         <div class="form-group">
@@ -60,6 +60,15 @@ else
         await OnCancel.InvokeAsync();
     }
 
-
+    private async Task SaveComment()
+    {
+        if (!String.IsNullOrEmpty(Comment.Core.CommentText) || !String.IsNullOrEmpty(Comment.Core.Link))
+        {
+            Comment.Core.AuthorDisplayName = AppStateStore.DisplayName;
+            await Api.WriteComment(Comment.Core);
+        }
+        _editMode = false;
+        await OnSave.InvokeAsync();
+    }
 
 }
