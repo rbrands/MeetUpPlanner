@@ -1,5 +1,8 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
+*14.11.2021*
+- Es können jetzt Routen auch vom MeetUpPlanner aus kommentiert werden.
+
 *8.11.2021*
 - Die Routen-Verwaltung wurde jetzt integriert: Wenn die Routen-Verwaltung aktiviert ist, gibt es eine neue Seite/Link "Routen", auf der eine Route ausgesucht werden kann für eine neue Ausfahrt. Wenn ein für Standard-Routen konfiguriert wurde - z.B. "Scudi-Standard" für die Scuderia Südstadt, werden entsprechend gekennzeichnete Routen bei der Neuanlage einer Ausfahrt in der Schnellauswahl angeboten. So kann schnell und einfach eine Ausfahrt auf einer Standard-Route angelegt werden.
 
