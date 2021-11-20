@@ -27,7 +27,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (null != AppStateStore && KeywordCheck.IsParticipant)
+        if (null != AppStateStore )
         {
             hubConnection = new HubConnectionBuilder()
                  .WithUrl(NavigationManager.ToAbsoluteUri("/broadcastHub"))

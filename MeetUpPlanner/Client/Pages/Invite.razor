@@ -32,7 +32,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _checkinUrl = $"{Http.BaseAddress}register/{ItemId}";
+        _checkinUrl = $"{Http.BaseAddress}{ItemId}";
         _imageUrl = $"Util/qrcodeimage?link={_checkinUrl}";
         if (null != AppStateStore && KeywordCheck.IsParticipant)
         {
