@@ -53,10 +53,10 @@
             {
                 <small><em>Veröffentlichung @CalendarItem.GetPublishDateAsString()</em></small>
             }
-            @if (!IsGuest && !String.IsNullOrEmpty(CalendarItem.GuestScope))
+            @if ((!IsGuest || AppStateStore.ClientSettings.PublicMeetUpJoiningEnabled) && !String.IsNullOrEmpty(CalendarItem.GuestScope))
             {
                 <div>
-                    <small><em>Gäste-Link <a href="/guests/@CalendarItem.GuestScope" target="_blank">/guests/@CalendarItem.GuestScope</a></em></small>
+                    <small><em>Link <a href="/@CalendarItem.GuestScope" target="_blank">/@CalendarItem.GuestScope</a></em></small>
                 </div>
             }
             @if (!String.IsNullOrEmpty(CalendarItem.RouteLink))
@@ -66,7 +66,7 @@
                 </div>
             }
             <hr />
-            @if (!IsGuest)
+            @if (!IsGuest || AppStateStore.ClientSettings.PublicMeetUpJoiningEnabled)
             {
                 <small>Dabei (@CalendarItem.ParticipantCounter von @CalendarItem.MaxRegistrationsCount)</small>
                 @if (CalendarItem.ParticipantCounter < CalendarItem.MinRegistrationsCount)
@@ -84,7 +84,7 @@
                 }
             }
             <hr />
-            @if (!IsGuest)
+            @if (!IsGuest || AppStateStore.ClientSettings.PublicMeetUpJoiningEnabled)
             {
                 @if (CalendarItem.CommentsList.Count() > 0)
                 {
@@ -149,7 +149,7 @@
                 }
             </div>
             <div class="btn-group mr-2" role="group" aria-label="Teilnehmen">
-                @if (!IsGuest)
+                @if ((!IsGuest || AppStateStore.ClientSettings.PublicMeetUpJoiningEnabled))
                 {
                     <button class="btn btn-sm btn-outline-secondary" title="Kommentieren" @onclick="@(() => ShowComment(CalendarItem))"><span class="oi oi-comment-square"></span></button>
                 }

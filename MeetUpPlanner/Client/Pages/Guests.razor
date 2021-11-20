@@ -1,4 +1,5 @@
 ﻿@page "/guests/{Scope}"
+@page "/{Scope}"
 @inject HttpClient Http
 @inject AppState AppStateStore
 @using MeetUpPlanner.Shared
@@ -8,7 +9,6 @@
 @implements IDisposable
 @using Newtonsoft.Json
 @using Microsoft.AspNetCore.SignalR.Client
-<h1>Gäste Willkommen - @Scope</h1>
 <h4>Kontaktdaten</h4>
 <EditForm EditContext="@_editContext">
     <DataAnnotationsValidator />
@@ -52,7 +52,7 @@
     </div>
 </EditForm>
 
-<h4>Aktuelle Ausfahrten</h4>
+<h4>Ausfahrten "@Scope"</h4>
 <div class="row">
     @foreach (ExtendedCalendarItem item in calendarItems)
     {
