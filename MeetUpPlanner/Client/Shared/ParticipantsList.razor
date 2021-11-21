@@ -1,9 +1,15 @@
 ﻿@using MeetUpPlanner.Shared
 @inject DialogService dialogService
+@inject KeywordCheck KeywordCheck
+
 
 <h1>Teilnehmer</h1>
 <ul>
-    @foreach (Participant p in Participants)
+    @if (KeywordCheck.IsAdmin && !CalendarItem.WithoutHost)
+    {
+        <li><b>@CalendarItem.HostDisplayName(NameDisplayLength)</b> - @CalendarItem.HostAdressInfo</li>
+    }
+    @foreach (Participant p in CalendarItem.ParticipantsList)
     {
         <li>
             <button class="btn btn-sm btn-outline-secondary" disabled="@saveDisabled" @onclick="@(() => ConfirmDelete(p))"><span class="oi oi-trash" title="Abmelden"></span></button>
@@ -15,7 +21,7 @@
 
 @code {
     [Parameter]
-    public IEnumerable<Participant> Participants { get; set; }
+    public ExtendedCalendarItem CalendarItem { get; set; }
     [Parameter]
     public EventCallback<Participant> OnRemoveParticipant { get; set; }
     [Parameter]

@@ -247,10 +247,10 @@
     @if (AppStateStore.ClientSettings.GuestsEnabled)
     {
         <div class="form-group">
-            <label for="guestScope">"Scope" für Gäste</label>
-            <InputText id="guestScope" aria-describedby="guestScopeHelp" class="form-control" @bind-Value="meetup.GuestScope" autocomplete="on" placeholder="Kürzel, das im Gäste-Link verwendet wird." />
+            <label for="guestScope">"Scope" für direkte Verlinking</label>
+            <InputText id="guestScope" aria-describedby="guestScopeHelp" class="form-control" @bind-Value="meetup.GuestScope" autocomplete="on" placeholder="Kürzel, das im Link verwendet wird." />
             <small id="guestScopeHelp" class="form-text text-muted">
-                Über den "Scope" können Ausfahrten für Gäste zusammen gefasst werden und sind dann über einen Link der Form ".../guests/scope" erreichbar.
+                Über den "Scope" können Ausfahrten z.B. Gäste zusammen gefasst werden und sind dann über einen Link der Form ".../scope" erreichbar.
             </small>
         </div>
     }

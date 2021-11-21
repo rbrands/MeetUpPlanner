@@ -1,4 +1,5 @@
 ﻿@page "/guests/{Scope}"
+@page "/{Scope}"
 @inject HttpClient Http
 @inject AppState AppStateStore
 @using MeetUpPlanner.Shared
@@ -8,7 +9,6 @@
 @implements IDisposable
 @using Newtonsoft.Json
 @using Microsoft.AspNetCore.SignalR.Client
-<h1>Gäste Willkommen - @Scope</h1>
 <h4>Kontaktdaten</h4>
 <EditForm EditContext="@_editContext">
     <DataAnnotationsValidator />
@@ -28,7 +28,14 @@
             <InputText id="lastName" area-describedby="nameHelp" class="form-control" @bind-Value="@_guest.ParticipantLastName" autocomplete="on" placeholder="Nachname" title="Nachname" />
         </div>
     </div>
-    <div class="form-group">
+    <div class="form-group" hidden="@(!AppStateStore.Tenant.ClubMemberShipAllowed)">
+        <div class="form-check">
+            <InputCheckbox id="addressNotNeeded" @oninput="@(e => { _guest.ParticipantAdressInfo = ((bool)e.Value ? "Vereinsmitglied" : String.Empty); })" aria-describedby="addressNotNeededHelp" class="form-check-input" @bind-Value="AppStateStore.NoAddressNeeded"></InputCheckbox>
+            <label for="addressNotNeeded" class="form-check-label">Vereinsmitglied?</label>
+        </div>
+        <small id="addressNotNeededHelp">Als Vereinsmitglied werden keine weiteren Adressinfos benötgt, Vor- und Nachname reichen dann.</small>
+    </div>
+    <div class="form-group" hidden="@AppStateStore.NoAddressNeeded">
         <label for="Phone">Telefon/Mail</label>
         <InputText id="Phone" aria-describedby="phoneHelp" class="form-control" @bind-Value="@_guest.ParticipantAdressInfo" autocomplete="on" placeholder="Telefon-Nr. oder Mail-Adresse" title="Bitte Telefonnummer oder Mailadresse angeben." />
         <small id="phoneHelp" class="form-text text-muted">
@@ -52,17 +59,18 @@
     </div>
 </EditForm>
 
-<h4>Aktuelle Ausfahrten</h4>
+<h4>Ausfahrt(en) "@_scopeTitle"</h4>
 <div class="row">
     @foreach (ExtendedCalendarItem item in calendarItems)
     {
-        <div class="col-12 col-sm-12 col-lg-6 col-xl-4 mt-2">
+        <div class="col">
             <MeetUpCard FirstName="@_permAppState.FirstName" LastName="@_permAppState.LastName"
                         CalendarItem="@item"
                         IsGuest="true"
                         EnableCheckInCheckOut="true"
                         OnCheckinCallback="@(e => RegisterGuest(item))"
-                        OnCheckoutCallback="@(e => RegisterGuest(item))">
+                        OnCheckoutCallback="@(e => RegisterGuest(item))"
+                        OnCommentCallback="@(e => ShowComment(item.Id))">
             </MeetUpCard>
         </div>
     }
@@ -83,6 +91,7 @@
     private EditContext _editContext;
     private Boolean _noMeetUps = false;
     private string _noMeetUpsMessage;
+    private string _scopeTitle;
 
     Boolean UsageRightsAccepted
     {
@@ -96,6 +105,42 @@
         }
     }
 
+    protected async Task ShowComment(string calendarItemId)
+    {
+        if (!_editContext.Validate())
+        {
+            return;
+        }
+        if (!_usageRightsAccepted)
+        {
+            notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Warning, Summary = "Einverständnis erklären", Detail = "Bitte unten das Einverständnis zur Speicherung der Kontaktdaten ankreuzen..", Duration = 4000 });
+            return;
+        }
+        _guest.ParticipantFirstName = _guest.ParticipantFirstName.Trim();
+        _guest.ParticipantLastName = _guest.ParticipantLastName.Trim();
+        _guest.ParticipantAdressInfo = _guest.ParticipantAdressInfo.Trim();
+        AppStateStore.FirstName = _guest.ParticipantFirstName;
+        AppStateStore.LastName = _guest.ParticipantLastName;
+        AppStateStore.PhoneMail = _guest.ParticipantAdressInfo;
+        if (AppStateStore.SaveSettings)
+        {
+            // Copy from app state to permanent storage
+            _permAppState = new PermAppState();
+            _permAppState.FirstName = _guest.ParticipantFirstName;
+            _permAppState.LastName = _guest.ParticipantLastName;
+            _permAppState.PhoneMail = _guest.ParticipantAdressInfo;
+            _permAppState.NoAddressNeeded = AppStateStore.NoAddressNeeded;
+            await LocalStorage.SetItemAsync<PermAppState>(PERM_STORAGE, _permAppState);
+        }
+        else
+        {
+            await LocalStorage.RemoveItemAsync(PERM_STORAGE);
+        }
+        _guest.IsGuest = !AppStateStore.Tenant.GuestNameShown;
+        _guest.CalendarItemId = calendarItemId;
+        NavigationManager.NavigateTo($"/Comment/{calendarItemId}");
+    }
+
     protected override async Task OnInitializedAsync()
     {
         if (await LocalStorage.ContainKeyAsync(PERM_STORAGE))
@@ -106,6 +151,9 @@
             _guest.ParticipantFirstName = _permAppState.FirstName;
             _guest.ParticipantLastName = _permAppState.LastName;
             _guest.ParticipantAdressInfo = _permAppState.PhoneMail;
+            AppStateStore.NoAddressNeeded = _permAppState.NoAddressNeeded;
+            // If someone has stored the settings before the disclaimer has already been accepted by user
+            UsageRightsAccepted = true;
         }
         // Get client settings from server
         PrepareHttpClient();
@@ -155,6 +203,23 @@
         // Get list of calendar items
         PrepareHttpClient();
         calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"calendar/scopedcalendaritems?scope={Scope}");
+        _scopeTitle = Scope;
+        if (calendarItems.Count() == 0)
+        {
+            // Given scope might be a id, try it ...
+            ExtendedCalendarItem meetup = await Http.GetFromJsonAsync<ExtendedCalendarItem>($"Calendar/extendedcalendaritemforguest?itemId={Scope}");
+            if (null != meetup && meetup.StartDate.CompareTo(DateTime.Now.AddHours(-13)) < 0)
+            {
+                // MeetUp too old ==> set it to null again
+                meetup = null;
+            }
+            if (null != meetup)
+            {
+                calendarItems = new List<ExtendedCalendarItem>();
+                calendarItems.Add(meetup);
+                _scopeTitle = meetup.Title;
+            }
+        }
         _noMeetUps = calendarItems.Count() == 0;
         StateHasChanged();
     }
@@ -174,7 +239,7 @@
         }
         if (!_usageRightsAccepted)
         {
-            notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Warning, Summary = "Enverständnis erklären", Detail = "Bitte unten das Einverständnis zur Speicherung der Kontaktdaten ankreuzen..", Duration = 4000 });
+            notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Warning, Summary = "Einverständnis erklären", Detail = "Bitte unten das Einverständnis zur Speicherung der Kontaktdaten ankreuzen..", Duration = 4000 });
             return;
         }
         _guest.ParticipantFirstName = _guest.ParticipantFirstName.Trim();
