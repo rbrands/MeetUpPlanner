@@ -1,5 +1,8 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
+*21.11.2021*
+Der Link für Gäste und die Seite dazu wurde erweitert: Jetzt werden da alle Informationen inkl. Kommentaren angezeigt, die auch auf der regulären Kalendarseite angezeigt werden. Der Link wurde gekürzt, d.h "guest" in der URL fällt weg.
+
 *14.11.2021*
 - Es können jetzt Routen auch vom MeetUpPlanner aus kommentiert werden.
 
