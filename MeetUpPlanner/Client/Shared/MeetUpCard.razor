@@ -42,13 +42,13 @@
         <h6 class="text-muted card-subtitle mb-2">
             @CalendarItem.LevelDescription - @CalendarItem.Tempo
         </h6>
-        <h4 class="card-title">
+        <h5 class="card-title">
             @CalendarItem.Title
             @if (CalendarItem.IsCanceled)
             {
                 <span class="badge badge-danger" title="Abgesagt">Abgesagt!</span>
             }
-        </h4>
+        </h5>
         <p class="card-text">
             <div class="overflow-auto" style="max-height: 500px">
                 @((MarkupString)CalendarItem.Summary)

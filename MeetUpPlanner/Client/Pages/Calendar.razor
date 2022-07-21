@@ -80,13 +80,13 @@
                     <h6 class="text-muted card-subtitle mb-2">
                         @item.LevelDescription - @item.Tempo
                     </h6>
-                    <h4 class="card-title">
+                    <h5 class="card-title">
                         @item.Title
                         @if (item.IsCanceled)
                         {
                             <span class="badge badge-danger" title="Abgesagt">Abgesagt!</span>
                         }
-                    </h4>
+                    </h5>
                     <p class="card-text">
                         <div class="overflow-auto" style="max-height: 500px">
                             @((MarkupString)item.Summary)
