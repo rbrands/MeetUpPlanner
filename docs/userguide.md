@@ -30,6 +30,9 @@ Außerdem ist es möglich, sich auf Android, PC (kurzum Chrome-basierte Browser,
       Falls entsprechend eingestellt, sind alle Ausfahrten öffentlich, d.h. werden angezeigt ohne dass die Benutzer:innen das Schlüsselwort auf der Startseite angeben. Ausfahrten können aber auch als "Vereinsintern" gekennzeichnet werden, in dem die entsprechende Checkbox markiert wird. Die so gekennzeichneten Ausfahrten sind nur sichtbar für Benutzer:innen, die auf der Startseite ein gültiges Schlüsselwort angeben. 
       Die vereinsinternen Ausfahrten werden mit einem kleinen Schlüssel neben dem Titel gekennzeichnet.
     </p>
+    <p>
+      Auch vereinsinterne Ausfahrten können über den Gästelink oder den "Scope"-Link geteilt werden und so zu Anmeldung für Gäste geöffnet werden.
+    <p>
   </dd>
 <dt id="private">"Private" Ausfahrten</dt>
   <dd>
