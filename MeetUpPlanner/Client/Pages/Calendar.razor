@@ -52,6 +52,10 @@
                             <a href="@item.DirectionsLink" class="btn btn-outline-success btn-sm" role="button" target="_blank" tite="Startort"><span class="oi oi-map-marker"></span></a>
                         }
                     </em>
+                    @if (item.IsInternal)
+                    {
+                        <span class="badge badge-danger"><span class="oi oi-key" title="Vereinsintern"></span></span>
+                    }
                     @if (!String.IsNullOrEmpty(item.PrivateKeyword))
                     {
                         <span class="badge badge-danger"><span class="oi oi-key" title="Private Ausfahrt"></span> @item.PrivateKeyword</span>
