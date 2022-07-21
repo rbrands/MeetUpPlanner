@@ -86,6 +86,11 @@ namespace MeetUpPlanner.Functions
                     // If calendar item is not ready for publishing skip it
                     continue;
                 }
+                if (!serverSettings.IsUser(keyWord) && item.IsInternal)
+                {
+                    // If calendar item is only internal and user is not a regular one (with proper keyword) skip it
+                    continue;
+                }
                 if (String.IsNullOrEmpty(extendedItem.PrivateKeyword))
                 {
                     // No private keyword for item ==> use it

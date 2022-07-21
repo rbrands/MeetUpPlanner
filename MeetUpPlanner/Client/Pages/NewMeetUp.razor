@@ -157,6 +157,20 @@
             Die Ausfahrt ist nicht "nur" eine Ausfahrt, sondern ein strukturiertes Training und wird entsprechend markiert.
         </small>
     </div>
+    @if (AppStateStore.ClientSettings.PublicMeetUpJoiningEnabled)
+    {
+        <div class="form-group">
+            <div class="form-check">
+                <InputCheckbox id="internal" aria-describedby="internalHelp" class="form-check-input" @bind-Value="meetup.IsInternal" />
+                <label for="internal" class="form-check-label">
+                    Nur für Vereinsmitglieder?
+                </label>
+            </div>
+            <small id="internalHelp" class="form-text text-muted">
+                Soll die Ausfahrt nur für Vereinsmitglieder, die auf der Startseite das Schlüsselwort angegeben haben, offen sein?
+            </small>
+        </div>
+    }
     <div class="form-row">
         <div class="form-group col-md-10">
             <InputText id="link" aria-describedby="linkHelp" class="form-control" @bind-Value="meetup.Link" placeholder="Link zu weiterer Streckeninfo" title="Link zu weiterer Streckeninfo" />
@@ -202,12 +216,12 @@
         </div>
         <div class="form-group">
             <div class="form-check">
-                <InputCheckbox id="withoutHost" aria-describedby="crossHelp" class="form-check-input" @bind-Value="meetup.WithoutHost" />
+                <InputCheckbox id="withoutHost" aria-describedby="withoutHostHelp" class="form-check-input" @bind-Value="meetup.WithoutHost" />
                 <label for="withoutHost" class="form-check-label">
                     Ausfahrt ohne Guide eintragen?
                 </label>
             </div>
-            <small id="crossHelp" class="form-text text-muted">
+            <small id="withoutHostHelp" class="form-text text-muted">
                 Für Termine ohne Guide, z.B. wiederkehrende Ausfahrten.
             </small>
         </div>
