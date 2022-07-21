@@ -32,7 +32,7 @@ Außerdem ist es möglich, sich auf Android, PC (kurzum Chrome-basierte Browser,
     </p>
     <p>
       Auch vereinsinterne Ausfahrten können über den Gästelink oder den "Scope"-Link geteilt werden und so zu Anmeldung für Gäste geöffnet werden.
-    <p>
+    </p>
   </dd>
 <dt id="private">"Private" Ausfahrten</dt>
   <dd>
