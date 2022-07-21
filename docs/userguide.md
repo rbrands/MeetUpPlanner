@@ -24,15 +24,21 @@ Außerdem ist es möglich, sich auf Android, PC (kurzum Chrome-basierte Browser,
  Die Benachrichtigungen lassen sich nachträglich auch wieder in den Einstellungen des Browsers abstellen.
 </p>
 </dd>
-
-<dt>"Private" Ausfahrten</dt>
+<dt id="internal">Vereinsinterne Ausfahrten</dt>
+  <dd>
+    <p>
+      Falls entsprechend eingestellt, sind alle Ausfahrten öffentlich, d.h. werden angezeigt ohne dass die Benutzer:innen das Schlüsselwort auf der Startseite angeben. Ausfahrten können aber auch als "Vereinsintern" gekennzeichnet werden, in dem die entsprechende Checkbox markiert wird. Die so gekennzeichneten Ausfahrten sind nur sichtbar für Benutzer:innen, die auf der Startseite ein gültiges Schlüsselwort angeben. 
+      Die vereinsinternen Ausfahrten werden mit einem kleinen Schlüssel neben dem Titel gekennzeichnet.
+    </p>
+    <p>
+      Auch vereinsinterne Ausfahrten können über den Gästelink oder den "Scope"-Link geteilt werden und so zu Anmeldung für Gäste geöffnet werden.
+    </p>
+  </dd>
+<dt id="private">"Private" Ausfahrten</dt>
   <dd>
     <p>
       Normalerweise sind alle Termine, die angelegt werden, für alle sichtbar, die sich mit dem normalen Benutzer-Schlüsselwort oder dem Admin-Schlüsselwort anmelden. Wird aber ein Termin angelegt oder ein existierender geändert, gibt es weiter unten über das Eingabefeld "Private Ausfahrt?" die Möglichkeit, für den Termin ein Schlüsselwort zu vereinbaren. Ein so gekennzeichneter Termin wird anderen Benutzern nur dann angezeigt, wenn sie eben dieses Schlüsselwort in einem der drei Felder "Optionale Schlüsselwörter für private Ausfahrten" auf der Startseite eingeben.
-  </p>
-  <p>
-    Beispiel: Wenn eine vereinsinterne Ausfahrt organisiert werden soll, könnte diese mit dem Schlüsselwort "MeinClub" versehen werden. Dieses Schlüsselwort wird den Vereinsmitgliedern per Mail/SMS mit geteilt. Die geben "MeinClub" im Feld "Optionale Schlüsselwörter" ein und sehen so - und nur sie - die besagte Ausfahrt. Dies kann also genutzt werden, um den Kreis der potentiellen Teilnehmer einzuschränken und trotzdem die Nachverfolgbarkeit zu gewährleisten.
-  </p>
+    </p>
   </dd>
   <dt>Gäste einladen</dt>
   <dd>

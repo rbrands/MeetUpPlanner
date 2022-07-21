@@ -1,5 +1,9 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
+* 21.7.2022 *
+- Migration auf .NET 6 (Functions stehen noch aus)
+- Ausfahrten können als "vereinsintern" gekennzeichnet werden und werden dann nur angezeigt, wenn die Benutzer:in mit Schlüsselwort angemeldet ist.
+
 *21.11.2021*
 Der Link für Gäste und die Seite dazu wurde erweitert: Jetzt werden da alle Informationen inkl. Kommentaren angezeigt, die auch auf der regulären Kalendarseite angezeigt werden. Der Link wurde gekürzt, d.h "guest" in der URL fällt weg.
 
