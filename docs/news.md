@@ -1,6 +1,9 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
-* 21.7.2022 *
+*28.7.2022*
+- Umstellung auf .NET 6 jetzt auch für die Azure Functions
+
+*21.7.2022*
 - Migration auf .NET 6 (Functions stehen noch aus)
 - Ausfahrten können als "vereinsintern" gekennzeichnet werden und werden dann nur angezeigt, wenn die Benutzer:in mit Schlüsselwort angemeldet ist.
 
