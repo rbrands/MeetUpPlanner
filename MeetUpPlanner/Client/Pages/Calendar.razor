@@ -398,7 +398,24 @@
         if (result.Success)
         {
             if (IsConnected) await SendMessage();
-            notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Angemeldet", Detail = "Du bist jetzt angemeldet. Falls du doch nicht dabei sein kannst, melde dich bitte wieder ab.", Duration = 4000 });
+            // Read data again
+            await ReadData();
+            foreach (ExtendedCalendarItem c in calendarItems)
+            {
+                if (c.Id.Equals(itemId))
+                {
+                    participant = c.FindParticipant(participant.ParticipantFirstName, participant.ParticipantLastName);
+                    break;
+                }
+            }
+            if (null != participant && participant.IsWaiting )
+            {
+                notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Warning, Summary = "Warteliste", Detail = "Du stehst jetzt auf der Warteliste. Falls du doch nicht dabei sein kannst, melde dich bitte wieder ab.", Duration = 4000 });
+            }
+            else
+            {
+                notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Angemeldet", Detail = "Du bist jetzt angemeldet. Falls du doch nicht dabei sein kannst, melde dich bitte wieder ab.", Duration = 4000 });
+            }
             // Read data again
             await ReadData();
         }
