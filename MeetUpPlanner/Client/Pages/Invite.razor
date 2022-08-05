@@ -37,6 +37,13 @@
         if (null != AppStateStore && KeywordCheck.IsParticipant)
         {
             await ReadData();
+            if (null != meetup)
+            {
+                if (!String.IsNullOrEmpty(meetup.GuestScope))
+                {
+                    _checkinUrl = $"{Http.BaseAddress}{meetup.GuestScope}";
+                }
+            }
         }
         else
         {

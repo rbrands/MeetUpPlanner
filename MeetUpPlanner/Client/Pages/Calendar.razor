@@ -1,5 +1,6 @@
 ﻿@page "/calendar"
 @using MeetUpPlanner.Shared
+@using CurrieTechnologies.Razor.Clipboard
 @inject AppState AppStateStore
 @inject KeywordCheck KeywordCheck
 @inject HttpClient Http
@@ -9,6 +10,7 @@
 @inject BlazorTimer Timer
 @inject BlazorTimer Timer2
 @inject IJSRuntime JSRuntime
+@inject ClipboardService clipboard
 @implements IDisposable
 @using Newtonsoft.Json
 @using System.IO
@@ -66,7 +68,7 @@
                         string badge = GetCalendarBadge(item);
                         if (!String.IsNullOrEmpty(badge))
                         {
-                            <span class="badge badge-info">@badge</span>
+                                <span class="badge badge-info">@badge</span>
                         }
                     }
                 </div>
@@ -98,6 +100,7 @@
                         @if (!String.IsNullOrEmpty(item.GuestScope))
                         {
                             <div>
+                                <button class="btn btn-sm btn-outline-secondary" @onclick="(async e => await clipboard.WriteTextAsync(GetScopeLink(item)))" title="In die Zwischenablage kopieren"><span class="oi oi-clipboard"></span></button>
                                 <small><em>Link <a href="/@item.GuestScope" target="_blank">/@item.GuestScope</a></em></small>
                             </div>
                         }
@@ -555,6 +558,10 @@
 
         }
         return checkInLabel;
+    }
+    private string GetScopeLink(ExtendedCalendarItem calendarItem)
+    {
+        return $"{Http.BaseAddress}{calendarItem.GuestScope}";
     }
 
     private void PrepareHttpClient()
