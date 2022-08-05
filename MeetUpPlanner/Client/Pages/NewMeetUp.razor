@@ -245,6 +245,13 @@
         </small>
     </div>
     <div class="form-group">
+        <label for="size">Warteliste</label>
+        <RadzenNumeric id="size" aria-describedby="sizeHelp" class="form-control" TValue="int" Min="0" Max="@AppStateStore.ClientSettings?.GetMaxGroupSize(KeywordCheck.IsAdmin)" @bind-Value="meetup.MaxWaitingList" />
+        <small id="sizeHelp" class="form-text text-muted">
+            Soll eine Warteliste eingerichtet werden und wie groß soll sie sein (0 = keine Warteliste)? Maximale Größe ist momentan @(AppStateStore.ClientSettings?.GetMaxGroupSize(KeywordCheck.IsAdmin)).
+        </small>
+    </div>
+    <div class="form-group">
         <label for="size">Mindestteilnehmerzahl</label>
         <RadzenNumeric id="minSize" aria-describedby="sizeHelp" class="form-control" TValue="int" Min="0" Max="@AppStateStore.ClientSettings?.GetMaxGroupSize(KeywordCheck.IsAdmin)" @bind-Value="meetup.MinRegistrationsCount" />
         <small id="sizeHelp" class="form-text text-muted">

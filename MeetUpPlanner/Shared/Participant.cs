@@ -24,6 +24,8 @@ namespace MeetUpPlanner.Shared
         public DateTime CheckInDate { get; set; }
         [JsonProperty(PropertyName = "isGuest")]
         public Boolean IsGuest { get; set; } = false;
+        [JsonProperty(PropertyName = "isWaiting")]
+        public Boolean IsWaiting { get; set; } = false;
 
         public Participant()
         {

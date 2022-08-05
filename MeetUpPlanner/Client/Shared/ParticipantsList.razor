@@ -11,12 +11,32 @@
     }
     @foreach (Participant p in CalendarItem.ParticipantsList)
     {
-        <li>
-            <button class="btn btn-sm btn-outline-secondary" disabled="@saveDisabled" @onclick="@(() => ConfirmDelete(p))"><span class="oi oi-trash" title="Abmelden"></span></button>
-            @p.ParticipantDisplayName(NameDisplayLength) - @p.ParticipantAdressInfo
-        </li>
+        @if (!p.IsWaiting)
+        {
+            <li>
+                <button class="btn btn-sm btn-outline-secondary" disabled="@saveDisabled" @onclick="@(() => ConfirmDelete(p))"><span class="oi oi-trash" title="Abmelden"></span></button>
+                @p.ParticipantDisplayName(NameDisplayLength) - @p.ParticipantAdressInfo
+            </li>
+        }
     }
 </ul>
+@if (CalendarItem.WaitingListCounter > 0)
+{
+    <h1>Warteliste</h1>
+    <ul>
+        @foreach (Participant p in CalendarItem.ParticipantsList)
+        {
+            if (p.IsWaiting)
+            {
+                <li>
+                    <button class="btn btn-sm btn-outline-secondary" disabled="@saveDisabled" @onclick="@(() => ConfirmDelete(p))"><span class="oi oi-trash" title="Abmelden"></span></button>
+                    @p.ParticipantDisplayName(NameDisplayLength) - @p.ParticipantAdressInfo
+                </li>
+            }
+        }
+    </ul>
+}
+
 
 
 @code {

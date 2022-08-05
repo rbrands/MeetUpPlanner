@@ -111,9 +111,14 @@
                         <small>Dabei (@item.ParticipantCounter von @item.MaxRegistrationsCount)</small>
                         @if (item.ParticipantCounter < item.MinRegistrationsCount)
                         {
-                        <span class="badge badge-danger" title="Mindestteilnehmerzahl">Min @item.MinRegistrationsCount</span>
+                            <span class="badge badge-danger" title="Mindestteilnehmerzahl">Min @item.MinRegistrationsCount</span>
                         }
                         <small>: <b>@item.HostDisplayName(AppStateStore.ClientSettings.NameDisplayLength)</b>@item.ParticipantsDisplay(AppStateStore.ClientSettings.NameDisplayLength)</small>
+                        @if (0 < item.WaitingListCounter)
+                        {
+                            <hr />
+                            <small>Warteliste (@item.WaitingListCounter von @item.MaxWaitingList): @item.WaitingListDisplay(AppStateStore.ClientSettings.NameDisplayLength)</small>
+                        }
                         <hr />
                         @if (item.CommentsList.Count() > 0)
                         {
@@ -187,7 +192,7 @@
                             }
                             @if (!CheckIfUserIsHostWithoutKeyword(item) && !CheckIfUserIsHost(item) && !ShowHistory())
                             {
-                                <button class="btn btn-sm btn-outline-secondary" title="Anmelden" disabled="@checkInDisabled" hidden="@(CheckIfUserIsAlreadyRegistered(item) || item.IsCanceled)" @onclick="@(() => Checkin(item.Id))">Anmelden</button>
+                                <button class="btn btn-sm btn-outline-secondary" title="@GetCheckInLabel(item)" disabled="@checkInDisabled" hidden="@(CheckIfUserIsAlreadyRegistered(item) || item.IsCanceled)" @onclick="@(() => Checkin(item.Id))">@GetCheckInLabel(item)</button>
                                 <button class="btn btn-sm btn-outline-secondary" title="Abmelden" hidden="@(!CheckIfUserIsAlreadyRegistered(item))" @onclick="@(() => Checkout(item))">Abmelden</button>
                             }
                         </div>
@@ -393,7 +398,24 @@
         if (result.Success)
         {
             if (IsConnected) await SendMessage();
-            notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Angemeldet", Detail = "Du bist jetzt angemeldet. Falls du doch nicht dabei sein kannst, melde dich bitte wieder ab.", Duration = 4000 });
+            // Read data again
+            await ReadData();
+            foreach (ExtendedCalendarItem c in calendarItems)
+            {
+                if (c.Id.Equals(itemId))
+                {
+                    participant = c.FindParticipant(participant.ParticipantFirstName, participant.ParticipantLastName);
+                    break;
+                }
+            }
+            if (null != participant && participant.IsWaiting )
+            {
+                notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Warning, Summary = "Warteliste", Detail = "Du stehst jetzt auf der Warteliste. Falls du doch nicht dabei sein kannst, melde dich bitte wieder ab.", Duration = 4000 });
+            }
+            else
+            {
+                notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Angemeldet", Detail = "Du bist jetzt angemeldet. Falls du doch nicht dabei sein kannst, melde dich bitte wieder ab.", Duration = 4000 });
+            }
             // Read data again
             await ReadData();
         }
@@ -523,6 +545,16 @@
 
 
         return badge;
+    }
+    private string GetCheckInLabel(ExtendedCalendarItem calendarItem)
+    {
+        string checkInLabel = "Anmelden";
+        if (calendarItem.ParticipantCounter >= calendarItem.MaxRegistrationsCount && calendarItem.MaxWaitingList > 0)
+        {
+            checkInLabel = "Auf Warteliste";
+
+        }
+        return checkInLabel;
     }
 
     private void PrepareHttpClient()

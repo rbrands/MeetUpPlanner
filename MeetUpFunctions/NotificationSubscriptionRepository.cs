@@ -48,10 +48,48 @@ namespace MeetUpPlanner.Functions
             IEnumerable<NotificationSubscription> subscriptions = await _cosmosDbRepository.GetItems();
             return subscriptions;
         }
+        public async Task NotifyParticipant(CalendarItem calendarItem, Participant participant, string message)
+        {
+            IEnumerable<NotificationSubscription> subscriptions;
+            var publicKey = "BJkgu1ZbFHQm1gQCkYBvsHgZn8-f_v9f9HzIi9UQlCYq2DfUzv4OEx1Dfg9gD0s88fSQ8Ya8kdE4Ib422JHk_E0";
+            var privateKey = _notificationPrivateKey;
+
+            var vapidDetails = new VapidDetails("mailto:info@meetupplanner.de", publicKey, privateKey);
+            var webPushClient = new WebPushClient();
+            _logger.LogInformation($"NotifiyParticpant(<{calendarItem.Title}>, <{participant.ParticipantFirstName}>, <{participant.ParticipantLastName}>, <{message}>)");
+            if (null == calendarItem.Tenant)
+            {
+                subscriptions = await _cosmosDbRepository.GetItems(d => d.UserFirstName.Equals(participant.ParticipantFirstName) && d.UserLastName.Equals(participant.ParticipantLastName) && (d.Tenant ?? String.Empty) == String.Empty);
+            }
+            else
+            {
+                subscriptions = await _cosmosDbRepository.GetItems(d => d.UserFirstName.Equals(participant.ParticipantFirstName) && d.UserLastName.Equals(participant.ParticipantLastName) && d.Tenant.Equals(calendarItem.Tenant));
+            }
+            _logger.LogInformation($"NotifiyParticpant: {subscriptions.Count()} subscriptions for {participant.ParticipantFirstName} {participant.ParticipantLastName} ");
+            foreach (NotificationSubscription subscription in subscriptions)
+            {
+                try
+                {
+                    var pushSubscription = new PushSubscription(subscription.Url, subscription.P256dh, subscription.Auth);
+                    var payload = JsonSerializer.Serialize(new
+                    {
+                        title = calendarItem.Title,
+                        message,
+                        url = subscription.PlannerUrl,
+                    }); ;
+                    _logger.LogInformation($"NotifiyParticpant.SendNotificationAsync({pushSubscription.Endpoint})");
+                    await webPushClient.SendNotificationAsync(pushSubscription, payload, vapidDetails);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Error sending push notification: " + ex.Message);
+                    await _cosmosDbRepository.DeleteItemAsync(subscription.Id);
+                }
+            }
+        }
 
         public async Task NotifyParticipants(ExtendedCalendarItem calendarItem, string firstName, string lastName, string message)
         {
-            IEnumerable<NotificationSubscription> subscriptions;
             var publicKey = "BJkgu1ZbFHQm1gQCkYBvsHgZn8-f_v9f9HzIi9UQlCYq2DfUzv4OEx1Dfg9gD0s88fSQ8Ya8kdE4Ib422JHk_E0";
             var privateKey = _notificationPrivateKey;
 
@@ -70,35 +108,7 @@ namespace MeetUpPlanner.Functions
                 _logger.LogInformation($"NotifiyParticpants: Participant {p.ParticipantFirstName} {p.ParticipantLastName} ");
                 if (!p.ParticipantFirstName.Equals(firstName) || !p.ParticipantLastName.Equals(lastName))
                 {
-                    if (null == calendarItem.Tenant)
-                    {
-                        subscriptions = await _cosmosDbRepository.GetItems(d => d.UserFirstName.Equals(p.ParticipantFirstName) && d.UserLastName.Equals(p.ParticipantLastName) && (d.Tenant ?? String.Empty) == String.Empty);
-                    }
-                    else
-                    {
-                        subscriptions = await _cosmosDbRepository.GetItems(d => d.UserFirstName.Equals(p.ParticipantFirstName) && d.UserLastName.Equals(p.ParticipantLastName) && d.Tenant.Equals(calendarItem.Tenant));
-                    }
-                    _logger.LogInformation($"NotifiyParticpants: {subscriptions.Count()} subscriptions for {p.ParticipantFirstName} {p.ParticipantLastName} ");
-                    foreach (NotificationSubscription subscription in subscriptions)
-                    {
-                        try
-                        {
-                            var pushSubscription = new PushSubscription(subscription.Url, subscription.P256dh, subscription.Auth);
-                            var payload = JsonSerializer.Serialize(new
-                            {
-                                title = calendarItem.Title,
-                                message,
-                                url = subscription.PlannerUrl,
-                            }); ;
-                            _logger.LogInformation($"NotifiyParticpants.SendNotificationAsync({pushSubscription.Endpoint})");
-                            await webPushClient.SendNotificationAsync(pushSubscription, payload, vapidDetails);
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.LogError("Error sending push notification: " + ex.Message);
-                            await _cosmosDbRepository.DeleteItemAsync(subscription.Id);
-                        }
-                    }
+                    await NotifyParticipant(calendarItem, p, message);
                 }
             }
 

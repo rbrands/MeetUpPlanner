@@ -41,6 +41,7 @@ namespace MeetUpPlanner.Shared
             this.Summary = calendarItem.Summary;
             this.MaxRegistrationsCount = calendarItem.MaxRegistrationsCount;
             this.MinRegistrationsCount = calendarItem.MinRegistrationsCount;
+            this.MaxWaitingList = calendarItem.MaxWaitingList;
             this.PrivateKeyword = calendarItem.PrivateKeyword;
             this.IsInternal = calendarItem.IsInternal;
             this.LevelDescription = calendarItem.LevelDescription;
@@ -64,12 +65,33 @@ namespace MeetUpPlanner.Shared
             int counter = WithoutHost ? 0 : 1;
             foreach (Participant participant in this.ParticipantsList)
             {
-                if (counter > 0)
+                if (!participant.IsWaiting)
                 { 
-                    sb.Append(", ");
+                    if (counter > 0)
+                    { 
+                        sb.Append(", ");
+                    }
+                    sb.Append(participant.ParticipantDisplayName(nameDisplayLength));
+                    ++counter;
                 }
-                sb.Append(participant.ParticipantDisplayName(nameDisplayLength));
-                ++counter;
+            }
+            return sb.ToString();
+        }
+        public string WaitingListDisplay(int nameDisplayLength)
+        {
+            StringBuilder sb = new StringBuilder(100);
+            int counter = 0;
+            foreach (Participant participant in this.ParticipantsList)
+            {
+                if (participant.IsWaiting)
+                { 
+                    if (counter > 0)
+                    {
+                        sb.Append(", ");
+                    }
+                    sb.Append(participant.ParticipantDisplayName(nameDisplayLength));
+                    ++counter;
+                }
             }
             return sb.ToString();
         }
@@ -118,7 +140,26 @@ namespace MeetUpPlanner.Shared
                 int counter = WithoutHost ? 0 : 1;
                 foreach (Participant p in ParticipantsList)
                 {
-                    ++counter;
+                    if (!p.IsWaiting)
+                    { 
+                        ++counter;
+                    }
+                }
+                return counter;
+            }
+        }
+        [JsonIgnore]
+        public int WaitingListCounter
+        {
+            get
+            {
+                int counter = 0;
+                foreach (Participant p in ParticipantsList)
+                {
+                    if (p.IsWaiting)
+                    { 
+                        ++counter;
+                    }
                 }
                 return counter;
             }
@@ -145,8 +186,6 @@ namespace MeetUpPlanner.Shared
             }
             return participant;
         }
-
-
     }
 }
 

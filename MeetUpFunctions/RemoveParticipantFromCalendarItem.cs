@@ -19,14 +19,21 @@ namespace MeetUpPlanner.Functions
         private readonly ILogger _logger;
         private ServerSettingsRepository _serverSettingsRepository;
         private CosmosDBRepository<Participant> _cosmosRepository;
+        private CosmosDBRepository<CalendarItem> _calendarRepository;
+        private NotificationSubscriptionRepository _subscriptionRepository;
+
         public RemoveParticipantFromCalendarItem(ILogger<RemoveParticipantFromCalendarItem> logger,
                                             ServerSettingsRepository serverSettingsRepository,
+                                            NotificationSubscriptionRepository subscriptionRepository,
+                                            CosmosDBRepository<CalendarItem> calendarRepository,
                                             CosmosDBRepository<Participant> cosmosRepository
                                             )
         {
             _logger = logger;
             _serverSettingsRepository = serverSettingsRepository;
             _cosmosRepository = cosmosRepository;
+            _calendarRepository = calendarRepository;
+            _subscriptionRepository = subscriptionRepository;
         }
 
         [FunctionName("RemoveParticipantFromCalendarItem")]
@@ -57,6 +64,19 @@ namespace MeetUpPlanner.Functions
                 return new OkObjectResult(new BackendResult(false, "Die Id des Teilnehmers fehlt."));
             }
             await _cosmosRepository.DeleteItemAsync(participant.Id);
+            // Check if there is someone on waiting list who can be promoted now
+            IEnumerable<Participant> participants = await _cosmosRepository.GetItems(p => p.CalendarItemId.Equals(participant.CalendarItemId));
+            foreach (Participant p in participants)
+            {
+                if (p.IsWaiting)
+                {
+                    p.IsWaiting = false;
+                    await _cosmosRepository.UpsertItem(p);
+                    CalendarItem calendarItem = await _calendarRepository.GetItem(p.CalendarItemId);
+                    await _subscriptionRepository.NotifyParticipant(calendarItem, p, "Das Warten hat sich gelohnt - Du bist jetzt angemeldet.");
+                    break; // only the first one from waiting list can be promoted
+                }
+            }
 
             return new OkObjectResult(new BackendResult(true));
         }

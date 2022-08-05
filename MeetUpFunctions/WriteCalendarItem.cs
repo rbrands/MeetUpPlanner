@@ -111,12 +111,30 @@ namespace MeetUpPlanner.Functions
                 {
                     message = "Neue Infos!";
                 }
+                ExtendedCalendarItem extendedCalendarItem = new ExtendedCalendarItem(calendarItem);
+                // Read all participants for this calendar item
+                extendedCalendarItem.ParticipantsList = await _participantRepository.GetItems(p => p.CalendarItemId.Equals(extendedCalendarItem.Id));
                 if (null != message)
                 {
-                    ExtendedCalendarItem extendedCalendarItem = new ExtendedCalendarItem(calendarItem);
-                    // Read all participants for this calendar item
-                    extendedCalendarItem.ParticipantsList = await _participantRepository.GetItems(p => p.CalendarItemId.Equals(extendedCalendarItem.Id));
                     await _subscriptionRepository.NotifyParticipants(extendedCalendarItem, extendedCalendarItem.HostFirstName, extendedCalendarItem.HostLastName, message);
+                }
+                // In case of updating a MeetUp the participants already checked-in have to be updated
+                if (null != oldCalendarItem)
+                { 
+                    foreach (Participant p in extendedCalendarItem.ParticipantsList)
+                    {
+                        if (p.IsWaiting)
+                        {
+                            if (extendedCalendarItem.ParticipantCounter < extendedCalendarItem.MaxRegistrationsCount)
+                            {
+                                p.IsWaiting = false;
+                                await _subscriptionRepository.NotifyParticipant(extendedCalendarItem, p, "Das Warten hat sich gelohnt - Du bist jetzt angemeldet.");
+                            }
+                        }
+                        // Set TTL for participant the same as for CalendarItem
+                        p.TimeToLive = calendarItem.TimeToLive;
+                        await _participantRepository.UpsertItem(p);
+                    }
                 }
             }
 

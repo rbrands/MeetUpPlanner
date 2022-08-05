@@ -78,6 +78,11 @@
                     <span class="badge badge-danger" title="Mindestteilnehmerzahl">Min @CalendarItem.MinRegistrationsCount</span>
                 }
                 <small>: <b>@CalendarItem.HostDisplayName(AppStateStore.ClientSettings.NameDisplayLength)</b>@CalendarItem.ParticipantsDisplay(AppStateStore.ClientSettings.NameDisplayLength)</small>
+                @if (0 < CalendarItem.WaitingListCounter)
+                {
+                    <hr />
+                    <small>Warteliste (@CalendarItem.WaitingListCounter von @CalendarItem.MaxWaitingList): @CalendarItem.WaitingListDisplay(AppStateStore.ClientSettings.NameDisplayLength)</small>
+                }
             }
             else
             {
@@ -164,7 +169,7 @@
                 }
                 @if (!CheckIfUserIsHost(CalendarItem) && !ShowHistory)
                 {
-                    <button class="btn btn-sm btn-outline-secondary" title="Anmelden" hidden="@(CheckIfUserIsAlreadyRegistered(CalendarItem) || CalendarItem.IsCanceled)" @onclick="OnCheckinCallback">Anmelden</button>
+                    <button class="btn btn-sm btn-outline-secondary" title="@GetCheckInLabel(CalendarItem)" hidden="@(CheckIfUserIsAlreadyRegistered(CalendarItem) || CalendarItem.IsCanceled)" @onclick="OnCheckinCallback">@GetCheckInLabel(CalendarItem)</button>
                     <button class="btn btn-sm btn-outline-secondary" title="Abmelden" hidden="@(!CheckIfUserIsAlreadyRegistered(CalendarItem))" @onclick="OnCheckoutCallback">Abmelden</button>
                 }
             </div>
@@ -298,6 +303,15 @@
 
         return badge;
     }
+    private string GetCheckInLabel(ExtendedCalendarItem calendarItem)
+    {
+        string checkInLabel = "Anmelden";
+        if (calendarItem.ParticipantCounter >= calendarItem.MaxRegistrationsCount && calendarItem.MaxWaitingList > 0)
+        {
+            checkInLabel = "Auf Warteliste";
 
+        }
+        return checkInLabel;
+    }
 
 }
