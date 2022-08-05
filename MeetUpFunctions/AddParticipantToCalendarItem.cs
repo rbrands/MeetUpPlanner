@@ -67,13 +67,21 @@ namespace MeetUpPlanner.Functions
             // Get participant list to check max registrations and if caller is already registered.
             IEnumerable<Participant> participants = await _cosmosRepository.GetItems(p => p.CalendarItemId.Equals(calendarItem.Id));
             int counter = calendarItem.WithoutHost ? 0 : 1;
+            int waitingCounter = 0;
             foreach (Participant p in participants)
             {
                 if (p.ParticipantFirstName.Equals(participant.ParticipantFirstName) && p.ParticipantLastName.Equals(participant.ParticipantLastName))
                 {
                     return new OkObjectResult(new BackendResult(false, "Bereits registriert."));
                 }
-                ++counter;
+                if (!participant.IsWaiting)
+                { 
+                    ++counter;
+                }
+                else
+                {
+                    ++waitingCounter;
+                }
             }
             int maxRegistrationCount = calendarItem.MaxRegistrationsCount;
             if (serverSettings.IsAdmin(keyWord))
@@ -83,7 +91,11 @@ namespace MeetUpPlanner.Functions
             }
             if (counter >= maxRegistrationCount)
             {
-                return new OkObjectResult(new BackendResult(false, "Maximale Anzahl Registrierungen bereits erreicht."));
+                participant.IsWaiting = true;
+                if (waitingCounter >= calendarItem.MaxWaitingList)
+                {
+                    return new OkObjectResult(new BackendResult(false, "Maximale Anzahl Registrierungen bereits erreicht."));
+                }
             }
             // Set TTL for participant the same as for CalendarItem
             System.TimeSpan diffTime = calendarItem.StartDate.Subtract(DateTime.Now);

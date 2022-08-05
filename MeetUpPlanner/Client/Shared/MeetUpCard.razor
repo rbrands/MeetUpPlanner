@@ -78,6 +78,11 @@
                     <span class="badge badge-danger" title="Mindestteilnehmerzahl">Min @CalendarItem.MinRegistrationsCount</span>
                 }
                 <small>: <b>@CalendarItem.HostDisplayName(AppStateStore.ClientSettings.NameDisplayLength)</b>@CalendarItem.ParticipantsDisplay(AppStateStore.ClientSettings.NameDisplayLength)</small>
+                @if (0 < CalendarItem.WaitingListCounter)
+                {
+                    <hr />
+                    <small>Warteliste (@CalendarItem.WaitingListCounter von @CalendarItem.MaxWaitingList): @CalendarItem.WaitingListDisplay(AppStateStore.ClientSettings.NameDisplayLength)</small>
+                }
             }
             else
             {

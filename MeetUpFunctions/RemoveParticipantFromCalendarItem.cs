@@ -57,6 +57,17 @@ namespace MeetUpPlanner.Functions
                 return new OkObjectResult(new BackendResult(false, "Die Id des Teilnehmers fehlt."));
             }
             await _cosmosRepository.DeleteItemAsync(participant.Id);
+            // Check if there is someone on waiting list who can be promoted now
+            IEnumerable<Participant> participants = await _cosmosRepository.GetItems(p => p.CalendarItemId.Equals(participant.CalendarItemId));
+            foreach (Participant p in participants)
+            {
+                if (p.IsWaiting)
+                {
+                    p.IsWaiting = false;
+                    await _cosmosRepository.UpsertItem(p);
+                    break; // only the first one from waiting list can be promoted
+                }
+            }
 
             return new OkObjectResult(new BackendResult(true));
         }
