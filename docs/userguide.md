@@ -37,7 +37,7 @@ Außerdem ist es möglich, sich auf Android, PC (kurzum Chrome-basierte Browser,
 <dt id="waitinglist">Warteliste</dt>
 <dd>
   <p>
-    Für Termine kann optional eine Warteliste eingerichtet werden. Dazu beim Anlegen/Ändern eines Termins im Feld "Warteliste" eine max. zulässige Anzahl "Wartender" größer 0 eingeben. Wenn dann ein Termin "ausgebucht" ist, können sich Interessenten auf die Warteliste setzen und werden automatisch angemeldet, wenn ein Platz frei wird.
+    Für Termine kann optional eine Warteliste eingerichtet werden. Dazu beim Anlegen/Ändern eines Termins im Feld "Warteliste" eine max. zulässige Anzahl "Wartender" größer 0 eingeben. Hier gilt die gleiche Größenbeschränkung wie für Gruppen. Wenn dann ein Termin "ausgebucht" ist, können sich Interessenten auf die Warteliste setzen und werden automatisch angemeldet, wenn ein Platz frei wird, wenn sich jemand anders abmeldet oder die Gruppengröße erhöht wird. Es werden auch Benachrichtigungen an die "Nachrücker" verschickt. Dazu müssen sie allerdings Benachrichtigungen für diese Web-App erlaubt haben (siehe oben unter "Installation als App") und für iOS ist dieses Feature ("Web-Push Benachrichtigungen") erst für 2023 angekündigt. D.h. momentan müssen alle auf der Warteliste regelmäßig nachschauen, ob sie nachgerückt sind.  
   </p>
   <p>
     Auch vereinsinterne Ausfahrten können über den Gästelink oder den "Scope"-Link geteilt werden und so zu Anmeldung für Gäste geöffnet werden.
