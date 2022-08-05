@@ -1,5 +1,8 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
+*4.8.2022*
+- Unterstützung von Wartelisten
+
 *28.7.2022*
 - Umstellung auf .NET 6 jetzt auch für die Azure Functions
 

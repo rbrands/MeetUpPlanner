@@ -25,15 +25,24 @@ Außerdem ist es möglich, sich auf Android, PC (kurzum Chrome-basierte Browser,
 </p>
 </dd>
 <dt id="internal">Vereinsinterne Ausfahrten</dt>
-  <dd>
-    <p>
-      Falls entsprechend eingestellt, sind alle Ausfahrten öffentlich, d.h. werden angezeigt ohne dass die Benutzer:innen das Schlüsselwort auf der Startseite angeben. Ausfahrten können aber auch als "Vereinsintern" gekennzeichnet werden, in dem die entsprechende Checkbox markiert wird. Die so gekennzeichneten Ausfahrten sind nur sichtbar für Benutzer:innen, die auf der Startseite ein gültiges Schlüsselwort angeben. 
-      Die vereinsinternen Ausfahrten werden mit einem kleinen Schlüssel neben dem Titel gekennzeichnet.
-    </p>
-    <p>
-      Auch vereinsinterne Ausfahrten können über den Gästelink oder den "Scope"-Link geteilt werden und so zu Anmeldung für Gäste geöffnet werden.
-    </p>
-  </dd>
+<dd>
+  <p>
+    Falls entsprechend eingestellt, sind alle Ausfahrten öffentlich, d.h. werden angezeigt ohne dass die Benutzer:innen das Schlüsselwort auf der Startseite angeben. Ausfahrten können aber auch als "Vereinsintern" gekennzeichnet werden, in dem die entsprechende Checkbox markiert wird. Die so gekennzeichneten Ausfahrten sind nur sichtbar für Benutzer:innen, die auf der Startseite ein gültiges Schlüsselwort angeben. 
+    Die vereinsinternen Ausfahrten werden mit einem kleinen Schlüssel neben dem Titel gekennzeichnet.
+  </p>
+  <p>
+    Auch vereinsinterne Ausfahrten können über den Gästelink oder den "Scope"-Link geteilt werden und so zu Anmeldung für Gäste geöffnet werden.
+  </p>
+</dd>
+<dt id="waitinglist">Warteliste</dt>
+<dd>
+  <p>
+    Für Termine kann optional eine Warteliste eingerichtet werden. Dazu beim Anlegen/Ändern eines Termins im Feld "Warteliste" eine max. zulässige Anzahl "Wartender" größer 0 eingeben. Wenn dann ein Termin "ausgebucht" ist, können sich Interessenten auf die Warteliste setzen und werden automatisch angemeldet, wenn ein Platz frei wird.
+  </p>
+  <p>
+    Auch vereinsinterne Ausfahrten können über den Gästelink oder den "Scope"-Link geteilt werden und so zu Anmeldung für Gäste geöffnet werden.
+  </p>
+</dd>
 <dt id="private">"Private" Ausfahrten</dt>
   <dd>
     <p>
