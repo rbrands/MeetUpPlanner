@@ -64,17 +64,20 @@ namespace MeetUpPlanner.Functions
                 return new OkObjectResult(new BackendResult(false, "Die Id des Teilnehmers fehlt."));
             }
             await _cosmosRepository.DeleteItemAsync(participant.Id);
-            // Check if there is someone on waiting list who can be promoted now
-            IEnumerable<Participant> participants = await _cosmosRepository.GetItems(p => p.CalendarItemId.Equals(participant.CalendarItemId));
-            foreach (Participant p in participants)
+            // Check if there is someone on waiting list who can be promoted now. But only if removed participant is not from waiting list
+            if (!participant.IsWaiting)
             {
-                if (p.IsWaiting)
+                IEnumerable<Participant> participants = await _cosmosRepository.GetItems(p => p.CalendarItemId.Equals(participant.CalendarItemId));
+                foreach (Participant p in participants)
                 {
-                    p.IsWaiting = false;
-                    await _cosmosRepository.UpsertItem(p);
-                    CalendarItem calendarItem = await _calendarRepository.GetItem(p.CalendarItemId);
-                    await _subscriptionRepository.NotifyParticipant(calendarItem, p, "Das Warten hat sich gelohnt - Du bist jetzt angemeldet.");
-                    break; // only the first one from waiting list can be promoted
+                    if (!p.Id.Equals(participant.Id) && p.IsWaiting)
+                    {
+                        p.IsWaiting = false;
+                        await _cosmosRepository.UpsertItem(p);
+                        CalendarItem calendarItem = await _calendarRepository.GetItem(p.CalendarItemId);
+                        await _subscriptionRepository.NotifyParticipant(calendarItem, p, "Das Warten hat sich gelohnt - Du bist jetzt angemeldet.");
+                        break; // only the first one from waiting list can be promoted
+                    }
                 }
             }
 
