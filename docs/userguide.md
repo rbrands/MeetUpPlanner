@@ -92,11 +92,6 @@ Außerdem ist es möglich, sich auf Android, PC (kurzum Chrome-basierte Browser,
 ## Weitere Features für Admins
 Mit dem sog. "Admin-Schlüsselwort" stehen einem weitere Funktionen zur Verfügung:  
 <dl>
-  <dt>Zusätzliche Teilnehmer</dt>
-  <dd>
-    Admins können auf zwei Arten zusätzliche Teilnehmer anmelden bzw. einladen: Zum einen können Admins eine Ausfahrt "überbuchen", d.h. sie können andere Teilnehmer hinzufügen auch wenn die maximale Teilnehmeranzahl überschritten ist. Dahinter steckt die Idee, dass es im Sinne der Nachverfolgbarkeit besser ist, jemanden zu registrieren auch wenn die Ausfahrt eigentlich voll ist, als sie/ihn "stillschweigend" mitfahren zu lassen.
-  </dd>
-  
   <dt>Regelmäßige Termine</dt>
   <dd>
     Durch die Kombination von mehreren Features wird die Erstellung von regelmäßigen, wöchentlichen Terminen unterstützt.
