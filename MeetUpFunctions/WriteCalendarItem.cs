@@ -120,7 +120,8 @@ namespace MeetUpPlanner.Functions
                 }
                 // In case of updating a MeetUp the participants already checked-in have to be updated
                 if (null != oldCalendarItem)
-                { 
+                {
+                    int participantQueueCounter = extendedCalendarItem.WithoutHost ? 0 : 1;
                     foreach (Participant p in extendedCalendarItem.ParticipantsList)
                     {
                         if (p.IsWaiting)
@@ -129,6 +130,19 @@ namespace MeetUpPlanner.Functions
                             {
                                 p.IsWaiting = false;
                                 await _subscriptionRepository.NotifyParticipant(extendedCalendarItem, p, "Das Warten hat sich gelohnt - Du bist jetzt angemeldet.");
+                                ++participantQueueCounter;
+                            }
+                        }
+                        else
+                        {
+                            if (participantQueueCounter >= extendedCalendarItem.MaxRegistrationsCount)
+                            {
+                                p.IsWaiting = true;
+                                await _subscriptionRepository.NotifyParticipant(extendedCalendarItem, p, "Du stehst jetzt auf der Warteliste.");
+                            }
+                            else
+                            {
+                                ++participantQueueCounter;
                             }
                         }
                         // Set TTL for participant the same as for CalendarItem
