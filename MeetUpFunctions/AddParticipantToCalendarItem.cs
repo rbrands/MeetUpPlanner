@@ -74,7 +74,7 @@ namespace MeetUpPlanner.Functions
                 {
                     return new OkObjectResult(new BackendResult(false, "Bereits registriert."));
                 }
-                if (!participant.IsWaiting)
+                if (!p.IsWaiting)
                 { 
                     ++counter;
                 }
@@ -89,13 +89,13 @@ namespace MeetUpPlanner.Functions
                 // Admin can "overbook" a meetup to be able to add some extra guests
                 maxRegistrationCount *= Constants.ADMINOVERBOOKFACTOR;
             }
-            if (counter >= maxRegistrationCount)
+            if (counter >= maxRegistrationCount && waitingCounter < calendarItem.MaxWaitingList)
             {
                 participant.IsWaiting = true;
-                if (waitingCounter >= calendarItem.MaxWaitingList)
-                {
-                    return new OkObjectResult(new BackendResult(false, "Maximale Anzahl Registrierungen bereits erreicht."));
-                }
+            }
+            else
+            {
+                return new OkObjectResult(new BackendResult(false, "Maximale Anzahl Registrierungen bereits erreicht."));
             }
             // Set TTL for participant the same as for CalendarItem
             System.TimeSpan diffTime = calendarItem.StartDate.Subtract(DateTime.Now);
