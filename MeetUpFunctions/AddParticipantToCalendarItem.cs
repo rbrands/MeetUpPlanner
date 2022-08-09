@@ -89,8 +89,14 @@ namespace MeetUpPlanner.Functions
                 // Admin can "overbook" a meetup to be able to add some extra guests
                 maxRegistrationCount *= Constants.ADMINOVERBOOKFACTOR;
             }
-            if (counter >= maxRegistrationCount && waitingCounter < calendarItem.MaxWaitingList)
+            if (counter < maxRegistrationCount)
             {
+                ++counter;
+                participant.IsWaiting = false;
+            }
+            else if (waitingCounter < calendarItem.MaxWaitingList)
+            {
+                ++waitingCounter;
                 participant.IsWaiting = true;
             }
             else
