@@ -42,6 +42,12 @@ Außerdem ist es möglich, sich auf Android, PC (kurzum Chrome-basierte Browser,
   <p>
     Es werden auch Benachrichtigungen an die "Nachrücker" verschickt. Dazu müssen sie allerdings Benachrichtigungen für diese Web-App erlaubt haben (siehe oben unter "Installation als App") und für iOS ist dieses Feature ("Web-Push Benachrichtigungen") erst für 2023 angekündigt. D.h. momentan müssen alle auf der Warteliste regelmäßig nachschauen, ob sie nachgerückt sind.  
   </p>
+  <p>
+    Umgekehrt werden die zuletzt angemeldeten Teilnehmer:innen auf die Warteliste "geschoben", wenn die Gruppengröße verkleinert wird (sollte aber die Ausnahme sein!). Auch hier werden die betroffenen Teilnehmer:inen benachrichtigt (s.o).
+  </p>
+  <p>
+    Es kann vorkommen - durch reges Anmelden/Abmelden kurz vor Ausfahrten - dass eine Gruppe "überbucht" ist, also z.B. (13 von 12). Als Abhilfe die Ausdahrt zum Editieren öffnen (das kann natürlich nur die Organisator:in) und speichern, dann wird das korrigiert.
+  </p>
 </dd>
 <dt id="private">"Private" Ausfahrten</dt>
   <dd>
