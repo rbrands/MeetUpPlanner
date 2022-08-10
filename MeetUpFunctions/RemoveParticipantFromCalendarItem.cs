@@ -63,7 +63,6 @@ namespace MeetUpPlanner.Functions
             {
                 return new OkObjectResult(new BackendResult(false, "Die Id des Teilnehmers fehlt."));
             }
-            await _cosmosRepository.DeleteItemAsync(participant.Id);
             // Check if there is someone on waiting list who can be promoted now. But only if removed participant is not from waiting list
             if (!participant.IsWaiting)
             {
@@ -80,6 +79,7 @@ namespace MeetUpPlanner.Functions
                     }
                 }
             }
+            await _cosmosRepository.DeleteItemAsync(participant.Id);
 
             return new OkObjectResult(new BackendResult(true));
         }
