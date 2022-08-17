@@ -98,12 +98,13 @@ namespace MeetUpPlanner.Functions
 
             _logger.LogInformation($"NotifiyParticpants(<{calendarItem.Title}>, <{firstName}>, <{lastName}>, <{message}>)");
             // Add host as participant to avoid extra handling
+            List<Participant> participants = new List<Participant>(calendarItem.ParticipantsList);
             if (!calendarItem.WithoutHost)
             {
                 Participant hostAsParticipant = new Participant() { ParticipantFirstName = calendarItem.HostFirstName, ParticipantLastName = calendarItem.HostLastName }               ;
-                calendarItem.ParticipantsList = calendarItem.ParticipantsList.Append(hostAsParticipant);
+                participants.Append(hostAsParticipant);
             }
-            foreach (Participant p in calendarItem.ParticipantsList)
+            foreach (Participant p in participants)
             {
                 _logger.LogInformation($"NotifiyParticpants: Participant {p.ParticipantFirstName} {p.ParticipantLastName} ");
                 if (!p.ParticipantFirstName.Equals(firstName) || !p.ParticipantLastName.Equals(lastName))

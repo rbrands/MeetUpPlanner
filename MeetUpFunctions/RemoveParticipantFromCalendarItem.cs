@@ -63,6 +63,13 @@ namespace MeetUpPlanner.Functions
             {
                 return new OkObjectResult(new BackendResult(false, "Die Id des Teilnehmers fehlt."));
             }
+            // Get most current version from database to be sure that the participant still exists and to get the actual waiting status
+            participant = await _cosmosRepository.GetItem(participant.Id);
+            if (null == participant)
+            {
+                // nothing to do, participant is already removed
+                return new OkObjectResult(new BackendResult(true));
+            }
             // Check if there is someone on waiting list who can be promoted now. But only if removed participant is not from waiting list
             if (!participant.IsWaiting)
             {
