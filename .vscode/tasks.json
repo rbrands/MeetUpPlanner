@@ -71,7 +71,7 @@
 			"type": "func",
 			"dependsOn": "build (functions)",
 			"options": {
-				"cwd": "${workspaceFolder}/MeetUpFunctions/bin/Debug/netcoreapp3.1"
+				"cwd": "${workspaceFolder}/MeetUpFunctions/bin/Debug/net6.0"
 			},
 			"command": "host start",
 			"isBackground": true,
