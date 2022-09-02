@@ -7,7 +7,7 @@ namespace MeetUpPlanner.Shared
 {
     public class InfoItem : CosmosDBEntity
     {
-        [JsonProperty(PropertyName = "orderId"), Range(0.0, 1000.0, ErrorMessage = "Ordnungszahl zur Steuerung der Reihenfolge nicht im gültigen Bereich."), Display(Name = "Ordnungszahl zur Steuerung der Reihenfolge.", Prompt = "Ordnungszahl zur Steuerung der Reihenfolge"), Required(ErrorMessage = "Ordnungszahl zur Steuerung der Reihenfolge eingeben.")]
+        [JsonProperty(PropertyName = "orderId"), Range(-1000.0, 1000.0, ErrorMessage = "Ordnungszahl zur Steuerung der Reihenfolge nicht im gültigen Bereich."), Display(Name = "Ordnungszahl zur Steuerung der Reihenfolge.", Prompt = "Ordnungszahl zur Steuerung der Reihenfolge"), Required(ErrorMessage = "Ordnungszahl zur Steuerung der Reihenfolge eingeben.")]
         public int OrderId { get; set; } = 100;
         [JsonProperty(PropertyName = "headerTitle", NullValueHandling = NullValueHandling.Ignore), Display(Name = "Kopf-Titel", Prompt = "Kopf-Titel der Info"), MaxLength(120, ErrorMessage = "Kopf-Titel zu lang."), Required(ErrorMessage = "Bitte Kopf-Titel eingeben.")]
         public string HeaderTitle { get; set; }

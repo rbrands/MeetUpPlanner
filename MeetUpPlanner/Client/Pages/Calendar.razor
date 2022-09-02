@@ -42,6 +42,12 @@
 </div>
 
 <div class="row">
+    @foreach (ExtendedInfoItem infoItem in introInfoItems)
+    {
+        <div class="col-12 col-sm-6 col-lg-4 col-xl-4 mt-2">
+            <InfoCard InfoItem="@infoItem" IsAdmin="@KeywordCheck.IsAdmin" OnChangeCallback="@(e => ReadData())"></InfoCard>
+        </div>
+    }
     @foreach (ExtendedCalendarItem item in calendarItems)
     {
         <div class="col-12 col-sm-6 col-lg-4 col-xl-4 mt-2">
@@ -204,7 +210,7 @@
             </div>
         </div>
     }
-    @foreach (ExtendedInfoItem infoItem in infoItems)
+    @foreach (ExtendedInfoItem infoItem in epilogInfoItems)
     {
         <div class="col-12 col-sm-6 col-lg-4 col-xl-4 mt-2">
             <InfoCard InfoItem="@infoItem" IsAdmin="@KeywordCheck.IsAdmin" OnChangeCallback="@(e => ReadData())"></InfoCard>
@@ -215,6 +221,8 @@
 @code {
     private IList<ExtendedCalendarItem> calendarItems = new List<ExtendedCalendarItem>();
     private IList<ExtendedInfoItem> infoItems = new List<ExtendedInfoItem>();
+    private IList<ExtendedInfoItem> introInfoItems = new List<ExtendedInfoItem>();
+    private IList<ExtendedInfoItem> epilogInfoItems = new List<ExtendedInfoItem>();
     const double refreshInterval = 30000;
     const double navigateAwayInterval = 10 * 60 * 1000;
     const int commentsToDisplay = 5;
@@ -293,6 +301,18 @@
                 calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"calendar/extendedcalendaritemsfordate?privatekeywords={privateKeywords}&requesteddate={dateArg}");
             }
             infoItems = await Http.GetFromJsonAsync<IList<ExtendedInfoItem>>($"api/info/extendedinfoitems");
+            // Get all items to be presented in front of the calendar
+            foreach (ExtendedInfoItem infoItem in infoItems)
+            {
+                if (infoItem.OrderId < 0)
+                {
+                    introInfoItems.Add(infoItem);
+                }
+                else
+                {
+                    epilogInfoItems.Add(infoItem);
+                }
+            }
         }
         catch (Exception ex)
         {
