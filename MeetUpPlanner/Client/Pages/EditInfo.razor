@@ -14,9 +14,9 @@
     <DataAnnotationsValidator />
     <div class="form-group">
         <label for="orderId">Ordnungs ID</label>
-        <RadzenNumeric id="orderId" aria-describedby="orderIdHelp" class="form-control" TValue="int" Min="0" Max="1000" @bind-Value="infoItem.OrderId" />
+        <RadzenNumeric id="orderId" aria-describedby="orderIdHelp" class="form-control" TValue="int" Min="-1000" Max="1000" @bind-Value="infoItem.OrderId" />
         <small id="orderIdHelp" class="form-text text-muted">
-            Über die Ordnungs ID wird die Reihenfolge der Anzeige der Info-Boxen gesteuert.
+            Über die Ordnungs ID wird die Reihenfolge der Anzeige der Info-Boxen gesteuert. Infoboxen mit negativen Ordnungsnummern werden vor den Terminen angezeigt, mit positiven nach den Terminen.
         </small>
     </div>
     <div class="form-group">
