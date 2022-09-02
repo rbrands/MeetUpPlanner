@@ -20,7 +20,7 @@ namespace MeetUpPlanner.Shared
         [JsonProperty(PropertyName = "place"), Display(Name = "Ort", Prompt = "Wo findet die Veranstaltung statt bzw. wo ist der Start"), MaxLength(256), Required(ErrorMessage = "Bitte den Startort angeben.")]
         public string Place { get; set; }
 
-        [JsonProperty(PropertyName = "DirectionsLink"), Display(Name = "Link zum Startpunkt", Prompt = "Link zum Startpunkt der Ausfahrt."), MaxLength(256), UIHint("url")]
+        [JsonProperty(PropertyName = "DirectionsLink"), Display(Name = "Link zum Startpunkt", Prompt = "Link zum Startpunkt der Ausfahrt."), MaxLength(512), UIHint("url")]
         public string DirectionsLink { get; set; }
         [JsonProperty(PropertyName = "hostFirstName", NullValueHandling = NullValueHandling.Ignore), MaxLength(100), Required(ErrorMessage = "Gastgeber bitte eingeben.")]
         public string HostFirstName { get; set; }
@@ -53,7 +53,7 @@ namespace MeetUpPlanner.Shared
         public string Link { get; set; }
         [JsonProperty(PropertyName = "linkTitle", NullValueHandling = NullValueHandling.Ignore), MaxLength(120, ErrorMessage = "Link-Bezeichnung zu lang.")]
         public string LinkTitle { get; set; }
-        [JsonProperty(PropertyName = "linkImage", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "linkImage", NullValueHandling = NullValueHandling.Ignore), MaxLength(512 , ErrorMessage = "Link zu lang"), UIHint("url")]
         public string LinkImage { get; set; }
         [JsonProperty(PropertyName = "isCross")]
         public Boolean IsCross { get; set; } = false;

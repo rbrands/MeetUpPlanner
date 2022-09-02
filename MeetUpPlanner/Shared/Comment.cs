@@ -16,11 +16,11 @@ namespace MeetUpPlanner.Shared
         public string AuthorDisplayName { get; set; }
         [JsonProperty(PropertyName = "commentDate")]
         public DateTime CommentDate { get; set; } = DateTime.UtcNow;
-        [JsonProperty(PropertyName = "commentText"), MaxLength(350, ErrorMessage = "Kommentar zu lang.")]
+        [JsonProperty(PropertyName = "commentText"), MaxLength(512, ErrorMessage = "Kommentar zu lang.")]
         public string CommentText { get; set; }
-        [JsonProperty(PropertyName = "link", NullValueHandling = NullValueHandling.Ignore), MaxLength(200, ErrorMessage = "Link zu lang.")]
+        [JsonProperty(PropertyName = "link", NullValueHandling = NullValueHandling.Ignore), MaxLength(512, ErrorMessage = "Link zu lang.")]
         public string Link { get; set; }
-        [JsonProperty(PropertyName = "linkTitle", NullValueHandling = NullValueHandling.Ignore), MaxLength(80, ErrorMessage = "Link-Titel zu lang.")]
+        [JsonProperty(PropertyName = "linkTitle", NullValueHandling = NullValueHandling.Ignore), MaxLength(512, ErrorMessage = "Link-Titel zu lang.")]
         public string LinkTitle { get; set; }
         [JsonIgnore]
         public string DisplayDate
