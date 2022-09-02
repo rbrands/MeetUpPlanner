@@ -1,5 +1,8 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
+*2.9.2022*
+- Infoboxen können jetzt auch vor den Terminen angelegt werden. Dazu negative Ordnungsnummern verwenden.
+
 *4.8.2022*
 - Unterstützung von Wartelisten
 
