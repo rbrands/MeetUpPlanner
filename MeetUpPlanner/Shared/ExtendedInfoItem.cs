@@ -31,6 +31,7 @@ namespace MeetUpPlanner.Shared
             this.InfoContent = infoItem.InfoContent;
             this.InfoLifeTimeInDays = infoItem.InfoLifeTimeInDays;
             this.IsHtmlCode = infoItem.IsHtmlCode;
+            this.LinkImage = infoItem.LinkImage;
             this.Link = infoItem.Link;
             this.LinkTitle = infoItem.LinkTitle;
             this.OrderId = infoItem.OrderId;
