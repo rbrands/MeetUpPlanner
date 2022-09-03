@@ -19,6 +19,8 @@ namespace MeetUpPlanner.Shared
         public string Link { get; set; }
         [JsonProperty(PropertyName = "linkTitle", NullValueHandling = NullValueHandling.Ignore), MaxLength(60, ErrorMessage = "Link-Bezeichnung zu lang.")]
         public string LinkTitle { get; set; }
+        [JsonProperty(PropertyName = "linkImage", NullValueHandling = NullValueHandling.Ignore), MaxLength(512 , ErrorMessage = "Link zu lang"), UIHint("url")]
+        public string LinkImage { get; set; }
         [JsonProperty(PropertyName = "infoContent", NullValueHandling = NullValueHandling.Ignore), Display(Name = "Inhalt", Prompt = "Inhalt der Info-Card"), MaxLength(5000, ErrorMessage = "Info zu lang.")]
         public string InfoContent { get; set; }
         [JsonProperty(PropertyName = "isHtmlCode")]
