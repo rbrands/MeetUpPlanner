@@ -301,6 +301,8 @@
                 calendarItems = await Http.GetFromJsonAsync<IList<ExtendedCalendarItem>>($"calendar/extendedcalendaritemsfordate?privatekeywords={privateKeywords}&requesteddate={dateArg}");
             }
             infoItems = await Http.GetFromJsonAsync<IList<ExtendedInfoItem>>($"api/info/extendedinfoitems");
+            introInfoItems.Clear();
+            epilogInfoItems.Clear();
             // Get all items to be presented in front of the calendar
             foreach (ExtendedInfoItem infoItem in infoItems)
             {
