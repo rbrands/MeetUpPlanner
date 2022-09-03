@@ -5,6 +5,7 @@
 @inject KeywordCheck KeywordCheck
 @inject NavigationManager NavigationManager
 @inject NotificationService notificationService
+@using Newtonsoft.Json
 @using Microsoft.AspNetCore.SignalR.Client
 @using MeetUpPlanner.Shared
 @using Blazored.TextEditor
@@ -107,11 +108,24 @@
             Hier kann eingestellt werden, nach wie vielen Tagen die Kommentare automatisch gelöscht werden sollen. 0 = kein automatisches Löschen.
         </small>
     </div>
+    <div class="form-row">
+        <div class="form-group col-md-10">
+            <InputText id="link" aria-describedby="linkHelp" class="form-control" @bind-Value="infoItem.Link" placeholder="URL" title="Link zu weiterer Infos" />
+            <small id="linkHelp" class="form-text text-muted">
+                Optional: Link zu weiteren Infos.
+            </small>
+        </div>
+        <div class="form-group col-md-2">
+            <div class="form-check">
+                <button id="btnLinkPreviewEnabled" class="btn btn-primary" type="button" @onclick="@(() => ToggleLinkPreview())">Preview An/Aus</button>
+            </div>
+        </div>
+    </div>
     <div class="form-group">
-        <label for="link">Link</label>
-        <InputText id="link" aria-describedby="linkHelp" class="form-control" @bind-Value="infoItem.Link" placeholder="URL" title="Link zu weiterer Infos" />
-        <small id="linkHelp" class="form-text text-muted">
-            Optional: Link zu weiteren Infos, z.B. Komoot, Strava usw.
+        <label for="linkImage">Link zu einem Bild</label>
+        <InputText id="linkImage" aria-describedby="linkImageHelp" class="form-control" @bind-Value="infoItem.LinkImage" placeholder="URL" title="Link zu einem Image" />
+        <small id="linkImageHelp" class="form-text text-muted">
+            Optional: Link zu einem Bild zur Strecke
         </small>
     </div>
     <div class="form-group">
@@ -132,7 +146,47 @@
     InfoItem infoItem = new InfoItem();
     BlazoredTextEditor htmlDescription;
     private HubConnection hubConnection;
+    private bool _linkPreviewEnabled = false;
     private bool saveDisabled = false;
+
+    Boolean LinkPreviewEnabled
+    {
+        get
+        {
+            return _linkPreviewEnabled;
+        }
+        set
+        {
+            _linkPreviewEnabled = value;
+        }
+    }
+    protected async Task ToggleLinkPreview()
+    {
+        infoItem.LinkImage = null;
+        LinkPreviewEnabled = !LinkPreviewEnabled;
+        this.StateHasChanged();
+        if (LinkPreviewEnabled && !String.IsNullOrEmpty(infoItem.Link))
+        {
+            LinkPreview linkPreview = new LinkPreview();
+            linkPreview.Url = new Uri(infoItem.Link);
+            HttpResponseMessage response = await Http.PostAsJsonAsync<LinkPreview>($"Util/getlinkpreview", linkPreview);
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            linkPreview = JsonConvert.DeserializeObject<LinkPreview>(responseBody);
+            if (linkPreview.Success)
+            {
+                if (null != linkPreview.ImageUrl)
+                {
+                    infoItem.LinkImage = linkPreview.ImageUrl.ToString();
+                }
+                if (null != linkPreview.Title)
+                {
+                    infoItem.LinkTitle = linkPreview.Title;
+                }
+            }
+        }
+    }
+
 
     protected override async Task OnInitializedAsync()
     {

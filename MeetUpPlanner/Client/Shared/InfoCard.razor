@@ -6,6 +6,12 @@
 
 <div class="card">
     <div class="card-header"><em>@InfoItem.HeaderTitle</em></div>
+    @if (!String.IsNullOrEmpty(InfoItem.LinkImage))
+    {
+        <a href="@InfoItem.Link" target="_blank">
+            <img class="card-img-top" src="@InfoItem.LinkImage" alt="@InfoItem.LinkTitle">
+        </a>
+    }
     <div class="card-body">
         @if (!String.IsNullOrEmpty(InfoItem.SubTitle))
         {
