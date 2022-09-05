@@ -1,7 +1,9 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
-*2.9.2022*
+*3.9.2022*
 - Infoboxen können jetzt auch vor den Terminen angelegt werden. Dazu negative Ordnungsnummern verwenden.
+- Die Links zu Titelbildern können jetzt direkt eingegeben werden. Dadurch wird es möglich, beliebige Bilder einzubinden.
+- Infoboxen haben jetzt auch Links zu Bildern.
 
 *4.8.2022*
 - Unterstützung von Wartelisten
