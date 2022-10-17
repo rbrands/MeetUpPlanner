@@ -5,7 +5,6 @@ using MeetUpPlanner.Shared;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Azure.Cosmos;
 using System.Threading.Tasks;
-using BlazorApp.Shared;
 using Microsoft.Extensions.Logging;
 
 namespace MeetUpPlanner.Functions
@@ -31,7 +30,7 @@ namespace MeetUpPlanner.Functions
                     throw new Exception("Missing challengeTitle for call GetChallengeByTitle()");
                 }
                 string challengeTitleLowerCase = challengeTitle.ToLowerInvariant();
-                _logger.LogInformation($"GetChallengeByTitle(ChallengeTitle = {challengeTitleLowerCase}");
+                _logger.LogInformation($"GetChallengeByTitle(ChallengeTitle = {challengeTitleLowerCase}, Container = {CosmosDbContainer})");
                 StravaSegmentChallenge challenge = await this.GetFirstItemOrDefault(c => c.UrlTitle == challengeTitleLowerCase);
                 return challenge;
             }

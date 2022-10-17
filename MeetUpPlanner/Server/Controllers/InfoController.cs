@@ -63,6 +63,13 @@ namespace MeetUpPlanner.Server.Controllers
             ExtendedInfoItem infoItem = await _meetUpFunctions.GetExtendedInfoItem(tenant, keyword, itemId);
             return Ok(infoItem);
         }
+        [HttpGet("getchallengebytitle")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetChallengeByTitle([FromQuery] string challengeTitle)
+        {
+            StravaSegmentChallenge challenge = await _meetUpFunctions.GetChallengeByTitle(challengeTitle);
+            return Ok(challenge);
+        }
         [HttpPost("addcomment")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> AddComment([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] CalendarComment comment)

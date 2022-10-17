@@ -1,0 +1,40 @@
+﻿<div class="tooltip-wrapper">
+    <span>
+        @if (!String.IsNullOrEmpty(ImageLink))
+        {
+            @if (!String.IsNullOrEmpty(Link))
+            {
+                <a href="@Link" target="_blank" alt="@Text" title="@Text">
+                    <img src="@ImageLink" class="img-fluid" style="max-height:@ImageHeight" />
+                </a>
+            }
+            else
+            {
+                <img src="@ImageLink" class="img-fluid" style="max-height:@ImageHeight" />
+                @Text
+            }
+        }
+        else
+        {
+            @if (!String.IsNullOrEmpty(Link))
+            {
+                <a href="@Link" target="_blank" alt="@Text" title="@Text">
+                    @Text
+                </a>
+            }
+            else
+            {
+                @Text
+            }
+        }
+    </span>
+    @ChildContent
+</div>
+
+@code {
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public string Text { get; set; }
+    [Parameter] public string ImageLink { get; set; }
+    [Parameter] public string ImageHeight { get; set; }
+    [Parameter] public string Link { get; set; }
+} 

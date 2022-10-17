@@ -8,6 +8,7 @@ using MeetUpPlanner.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using System.Net.Http;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace MeetUpPlanner.Server.Repositories
 {
@@ -225,6 +226,13 @@ namespace MeetUpPlanner.Server.Repositories
                           .WithHeader(HEADER_TENANT, tenant)
                           .GetJsonAsync<InfoItem>();
             return infoItem;
+        }
+        public async Task<StravaSegmentChallenge> GetChallengeByTitle(string challengeTitle)
+        {
+            StravaSegmentChallenge challenge = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/GetChallengeByTitle/{challengeTitle}"
+                                                  .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
+                                                  .GetJsonAsync<StravaSegmentChallenge>();
+            return challenge;
         }
 
         public async Task<ExtendedCalendarItem> GetExtendedCalendarItem(string tenant, string keyword, string itemId)

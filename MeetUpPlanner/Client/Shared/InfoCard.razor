@@ -12,7 +12,7 @@
             <img class="card-img-top" src="@InfoItem.LinkImage" alt="@InfoItem.LinkTitle">
         </a>
     }
-    <div class="card-body">
+    <div class="card-body overflow-auto" style="max-height:500px">
         @if (!String.IsNullOrEmpty(InfoItem.SubTitle))
         {
             <h6 class="text-muted card-subtitle mb-2">@InfoItem.SubTitle</h6>
@@ -23,6 +23,10 @@
         }
         <p class="card-text">
             @((MarkupString)InfoItem.InfoContent)
+            @if(!String.IsNullOrEmpty(InfoItem.AttachedInfoType))
+            {
+                <DynamicComponent Type="@_attachedInfoType" Parameters="@_attachedInfoParameters"></DynamicComponent>
+            }
             <hr/>
             @if (InfoItem.CommentsList.Count() > 0)
             { 
@@ -71,11 +75,18 @@
     [Parameter]
     public EventCallback OnChangeCallback { get; set; }
     const int commentsToDisplay = 2;
+    private Dictionary<string, object> _attachedInfoParameters = new Dictionary<string, object>();
+    private Type _attachedInfoType; 
 
 
 
     protected override void OnInitialized()
     {
+        if (!String.IsNullOrEmpty(InfoItem.AttachedInfoType))
+        {
+            _attachedInfoParameters.Add("Key", InfoItem.AttachedInfoKey);
+            _attachedInfoType = Type.GetType($"MeetUpPlanner.Client.Shared.{InfoItem.AttachedInfoType}");
+        }
     }
 
     protected void ConfirmDelete()

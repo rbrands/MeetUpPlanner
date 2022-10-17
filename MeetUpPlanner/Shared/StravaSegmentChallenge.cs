@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations;
 using MeetUpPlanner.Shared;
 
-namespace BlazorApp.Shared
+namespace MeetUpPlanner.Shared
 {
     public class StravaSegmentChallenge : CosmosDBEntity
     {

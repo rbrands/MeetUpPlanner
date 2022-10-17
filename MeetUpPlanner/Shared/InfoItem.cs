@@ -35,6 +35,10 @@ namespace MeetUpPlanner.Shared
         public string AuthorFirstName { get; set; }
         [JsonProperty(PropertyName = "authorLastName", NullValueHandling = NullValueHandling.Ignore), MaxLength(100), Required(ErrorMessage = "Autor bitte eingeben.")]
         public string AuthorLastName { get; set; }
+        [JsonProperty(PropertyName = "attachedInfoType", NullValueHandling = NullValueHandling.Ignore), MaxLength(256)]
+        public string AttachedInfoType { get; set; }
+        [JsonProperty(PropertyName = "attachedInfoKey", NullValueHandling = NullValueHandling.Ignore), MaxLength(256)]
+        public string AttachedInfoKey { get; set; }
 
         [JsonIgnore]
         public string AuthorDisplayName

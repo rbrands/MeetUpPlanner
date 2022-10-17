@@ -135,6 +135,24 @@
             Optional: Kurze Bezeichnung zu dem Link oben, falls der Standardtext nicht passt.
         </small>
     </div>
+    <div class="form-group">
+        <label for="attachedInfo">Zusätzliche Info </label>
+        <InputSelect id="attachedInfo" aria-describedby="attachedInfoHelp" @bind-Value="infoItem.AttachedInfoType" class="form-control">
+            <option value="">Typ der Zusatzinfo auswählen...</option>
+            <option value="@nameof(ChallengeRanking)">Bergfest Challenge</option>
+        </InputSelect>
+    </div>
+    <small id="attachedInfoHelp" class="form-text text-muted">
+        Optional: Typ der zusätzlichen Info, die in die Infobox übernommen werden soll.
+    </small>
+    <div class="form-group">
+        <label for="attachedInfoKey">Schlüssel für Zusatzinfo</label>
+        <InputText id="attachedInfoKey" aria-describedby="attachedInfoKeyHelp" class="form-control" @bind-Value="infoItem.AttachedInfoKey" placeholder="Schlüssel um Zusatzinfo zu lesen" title="Schlüssel um Zusatzinfo zu lesen" />
+        <small id="attachedInfoKeyHelp" class="form-text text-muted">
+            Wenn eine Zusatzinfo in die Infobox übernommen werden soll, hier den Schlüssel, um diese zu lesen angeben..
+        </small>
+    </div>
+
     <ValidationSummary />
     <button type="submit" id="BtnSave" disabled="@saveDisabled" class="btn btn-primary">Info speichern ...</button>
     <button type="reset" id="BtnCancel" class="btn btn-secondary" @onclick="@(() => OnCancel())">Zurück ohne Speichern</button>

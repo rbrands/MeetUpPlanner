@@ -48,5 +48,28 @@ namespace MeetUpPlanner.Client
             return response;
         }
 
+        public async Task<StravaSegmentChallenge> GetChallengeByTitle(string challengeTitle)
+        {
+            this.PrepareHttpClient();
+
+            //StravaSegmentChallenge response = await _http.GetFromJsonAsync<StravaSegmentChallenge>($"api/info/getchallengebytitle?challengeTitle={challengeTitle}");
+            StravaSegmentChallenge challenge = null;
+            var response = await _http.GetAsync($"api/info/getchallengebytitle?challengeTitle={challengeTitle}");
+            if (response.IsSuccessStatusCode)
+            {
+                if ((response.Content.Headers.ContentLength ?? 0) > 0)
+                {
+                    challenge = await response.Content.ReadFromJsonAsync<StravaSegmentChallenge>();
+                }
+            }
+            else
+            {
+                throw new Exception($"Http Fehlercode - {response.StatusCode.ToString()}");
+            }
+
+            _http.DefaultRequestHeaders.Remove(HEADER_TENANT);
+            return challenge;
+        }
+
     }
 }
