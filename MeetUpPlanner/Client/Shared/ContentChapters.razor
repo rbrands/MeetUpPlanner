@@ -1,0 +1,31 @@
+﻿@using System.Collections.Generic
+@using MeetUpPlanner.Shared
+@using MeetUpPlanner.Client.Shared
+@inject AppState AppStateStore
+@inject BackendApiRepository Api
+
+<AccordionControl>
+    <AccordionPanel Text="Überschrift #1">
+        Hier steht dann also Text und alles was man mag.
+    </AccordionPanel>
+    <AccordionPanel Text="Überschrift #2">
+        Hier steht dann also Text und alles was man mag.
+    </AccordionPanel>
+    <AccordionPanel Text="Überschrift #3">
+        Hier steht dann also Text und alles was man mag.
+    </AccordionPanel>
+</AccordionControl>
+@if (!String.IsNullOrEmpty(_message))
+{
+    <p>
+        @_message
+    </p>
+}
+
+
+@code {
+    [Parameter]
+    public string Key { get; set; }
+    private string _message = String.Empty;
+
+}

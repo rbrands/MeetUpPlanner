@@ -124,6 +124,16 @@ namespace MeetUpPlanner.Server.Repositories
 
             return new OkResult();
         }
+        public async Task<IActionResult> WriteContentWithChaptersItem(string tenant, string keyword, ContentWithChaptersItem infoItem)
+        {
+            await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/WriteContentWithChaptersItem"
+                            .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
+                            .WithHeader(HEADER_KEYWORD, keyword)
+                            .WithHeader(HEADER_TENANT, tenant)
+                            .PostJsonAsync(infoItem);
+
+            return new OkResult();
+        }
         public async Task<IActionResult> WriteMeetingPlace(string tenant, string keyword, MeetingPlace meetingPlace)
         {
             await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/WriteMeetingPlace"
@@ -225,6 +235,16 @@ namespace MeetUpPlanner.Server.Repositories
                           .WithHeader(HEADER_KEYWORD, keyword)
                           .WithHeader(HEADER_TENANT, tenant)
                           .GetJsonAsync<InfoItem>();
+            return infoItem;
+        }
+        public async Task<ContentWithChaptersItem> GetContentWithChaptersItem(string tenant, string keyword, string key)
+        {
+
+            ContentWithChaptersItem infoItem = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/GetContentWithChaptersItem/{key}"
+                          .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
+                          .WithHeader(HEADER_KEYWORD, keyword)
+                          .WithHeader(HEADER_TENANT, tenant)
+                          .GetJsonAsync<ContentWithChaptersItem>();
             return infoItem;
         }
         public async Task<StravaSegmentChallenge> GetChallengeByTitle(string challengeTitle)

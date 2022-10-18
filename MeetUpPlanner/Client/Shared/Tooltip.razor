@@ -12,6 +12,7 @@
             {
                 <img src="@ImageLink" class="img-fluid" style="max-height:@ImageHeight" />
                 @Text
+                @Description
             }
         }
         else
@@ -25,6 +26,7 @@
             else
             {
                 @Text
+                @Description
             }
         }
     </span>
@@ -33,6 +35,7 @@
 
 @code {
     [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public RenderFragment Description { get; set; }
     [Parameter] public string Text { get; set; }
     [Parameter] public string ImageLink { get; set; }
     [Parameter] public string ImageHeight { get; set; }

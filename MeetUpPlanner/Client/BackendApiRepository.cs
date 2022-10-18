@@ -70,6 +70,27 @@ namespace MeetUpPlanner.Client
             _http.DefaultRequestHeaders.Remove(HEADER_TENANT);
             return challenge;
         }
+        public async Task<WinterpokalTeam> GetWinterpokalTeam(string teamId)
+        {
+            this.PrepareHttpClient();
+
+            WinterpokalTeam team = null;
+            var response = await _http.GetAsync($"api/winterpokal/getteam/{teamId}");
+            if (response.IsSuccessStatusCode)
+            {
+                if ((response.Content.Headers.ContentLength ?? 0) > 0)
+                {
+                    team = await response.Content.ReadFromJsonAsync<WinterpokalTeam>();
+                }
+            }
+            else
+            {
+                throw new Exception($"Http Fehlercode - {response.StatusCode.ToString()}");
+            }
+
+            _http.DefaultRequestHeaders.Remove(HEADER_TENANT);
+            return team;
+        }
 
     }
 }

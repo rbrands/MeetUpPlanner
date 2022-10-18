@@ -1,0 +1,63 @@
+﻿<CascadingValue Value="this">
+	<div class="accordion">
+		@foreach (var panel in Pages)
+		{
+			<div class="card">
+				<div class="card-header">
+					<h2 class="mb-0">
+						<button type="button" class="@GetButtonClass(panel)" @onclick=@( () => ActivatePage(panel) )>
+							@panel.Text
+						</button>
+					</h2>
+				</div>
+				<div class="@GetPanelClass(panel)">
+					<div class="card-body">
+						@panel.ChildContent
+					</div>
+				</div>
+			</div>
+		}
+	</div>
+	@ChildContent
+</CascadingValue>
+
+@code {
+	// Next line is needed so we are able to add <TabPage> components inside
+	[Parameter]
+	public RenderFragment ChildContent { get; set; }
+
+	public AccordionPanel ActivePage { get; set; }
+	List<AccordionPanel> Pages = new List<AccordionPanel>();
+
+	internal void AddPage(AccordionPanel tabPage)
+	{
+		Pages.Add(tabPage);
+		if (Pages.Count == 1)
+			ActivePage = tabPage;
+		StateHasChanged();
+	}
+
+	string GetButtonClass(AccordionPanel page)
+	{
+		return page == ActivePage ? "btn btn-link btn-block text-left" : "btn btn-link btn-block text-left collapsed";
+	}
+	string GetPanelClass(AccordionPanel page)
+	{
+		return page == ActivePage ? "collapse show" : "collapse";
+	}
+
+	void ActivatePage(AccordionPanel page)
+	{
+		ActivePage = page;
+	}
+	public void ActivatePage(string name)
+	{
+		AccordionPanel pageToActivate = Pages.Find(p => p.Name == name);
+		if (null != pageToActivate)
+		{
+			ActivatePage(pageToActivate);
+			StateHasChanged();
+		}
+	}
+
+}

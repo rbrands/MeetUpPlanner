@@ -35,24 +35,32 @@ namespace MeetUpPlanner.Server.Controllers
                           .GetJsonAsync();
             WinterpokalTeam team = new WinterpokalTeam()
             {
-                Id = response.data.team.id,
-                Name = response.data.team.name,
-                Description = response.data.team.description,
-                Link = response.data.team.url
+                Id = Convert.ToInt64(teamId)
             };
-            IList<Object> teamUsers = response.data.users;
-            foreach(dynamic teamUser in teamUsers)
+            if (response.status != "OK")
             {
-                WinterpokalUser user = new WinterpokalUser()
+                team.Name = "Team unbekannt";
+            }
+            else
+            {
+                team.Id = response.data.team.id;
+                team.Name = response.data.team.name;
+                team.Description = response.data.team.description;
+                team.Link = response.data.team.url;
+                IList<Object> teamUsers = response.data.users;
+                foreach (dynamic teamUser in teamUsers)
                 {
-                    Id = teamUser.id,
-                    Name=teamUser.name,
-                    Entries=teamUser.entries,
-                    Points=teamUser.points,
-                    Duration=teamUser.duration,
-                    Link=teamUser.url
-                };
-                team.Users.Add(user);
+                    WinterpokalUser user = new WinterpokalUser()
+                    {
+                        Id = teamUser.id,
+                        Name = teamUser.name,
+                        Entries = teamUser.entries,
+                        Points = teamUser.points,
+                        Duration = teamUser.duration,
+                        Link = teamUser.url
+                    };
+                    team.Users.Add(user);
+                }
             }
             return team;
         }
