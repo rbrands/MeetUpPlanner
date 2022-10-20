@@ -439,6 +439,7 @@
             meetup.PublishDate = new DateTime(publishDate.Year, publishDate.Month, publishDate.Day, publishTime.Hour, publishTime.Minute, publishTime.Second).ToUniversalTime();
         }
         meetup.Summary = await htmlDescription.GetHTML();
+        meetup.Summary = StripEmptyHtml(meetup.Summary);
         if (!String.IsNullOrWhiteSpace(meetup.PrivateKeyword))
         {
             meetup.PrivateKeyword = meetup.PrivateKeyword.Trim();
@@ -678,6 +679,17 @@
         _routeComment.ReferenceId = route.Core.Id;
         _routeComment.CommentText = "Im MeetUpPlanner für eine Ausfahrt ausgewählt!";
         _routeComment.AuthorDisplayName = AppStateStore.DisplayName;
+    }
+    
+    private string StripEmptyHtml(string htmlContent)
+    {
+        htmlContent =  (null == htmlContent || htmlContent.Equals("<p><br></p>")) ? null : htmlContent;
+        if (null != htmlContent)
+        {
+            htmlContent = htmlContent.Replace("<p><br></p>", " ");
+            htmlContent = htmlContent.Replace("<p></p>", " ");
+        }
+        return htmlContent;
     }
 
 }

@@ -7,6 +7,7 @@
 					<h2 class="mb-0">
 						<button type="button" class="@GetButtonClass(panel)" @onclick=@( () => ActivatePage(panel) )>
 							@panel.Text
+							<span class="@GetChevronClass(panel)"></span>
 						</button>
 					</h2>
 				</div>
@@ -40,6 +41,10 @@
 	string GetButtonClass(AccordionPanel page)
 	{
 		return page == ActivePage ? "btn btn-link btn-block text-left" : "btn btn-link btn-block text-left collapsed";
+	}
+	string GetChevronClass(AccordionPanel page)
+	{
+		return page == ActivePage ? "oi oi-chevron-bottom float-right" : "oi oi-chevron-top float-right";
 	}
 	string GetPanelClass(AccordionPanel page)
 	{

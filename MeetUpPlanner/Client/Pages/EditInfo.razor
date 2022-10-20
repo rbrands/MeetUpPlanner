@@ -265,6 +265,7 @@
         else
         {
             infoItem.InfoContent = await htmlDescription.GetHTML();
+            infoItem.InfoContent = StripEmptyHtml(infoItem.InfoContent);
         }
         PrepareHttpClient();
         await Http.PostAsJsonAsync<InfoItem>($"api/info/writeinfoitem", infoItem);
@@ -288,5 +289,15 @@
         }
     }
 
+    private string StripEmptyHtml(string htmlContent)
+    {
+        htmlContent = (null == htmlContent || htmlContent.Equals("<p><br></p>")) ? null : htmlContent;
+        if (null != htmlContent)
+        {
+            htmlContent = htmlContent.Replace("<p><br></p>", " ");
+            htmlContent = htmlContent.Replace("<p></p>", " ");
+        }
+        return htmlContent;
+    }
 
 }

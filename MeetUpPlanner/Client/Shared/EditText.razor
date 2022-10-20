@@ -1,0 +1,150 @@
+﻿@using MeetUpPlanner.Shared
+@using MeetUpPlanner.Client.Shared
+@using Blazored.TextEditor
+
+@if (!_editMode)
+{
+    @if (!String.IsNullOrEmpty(Text.Content))
+    {
+        @((MarkupString)Text.Content)
+    }
+    <p>
+        <button class="btn btn-sm btn-outline-secondary" role="button" @onclick="@(() => SwitchToEditMode())"><span class="oi oi-pencil"></span></button>
+    </p>
+}
+else
+{
+    <BlazoredTextEditor @ref="_htmlArticle" Placeholder="Artikel-Text">
+        <ToolbarContent>
+            <select class="ql-header">
+                <option selected=""></option>
+                <option value="1"></option>
+                <option value="2"></option>
+                <option value="3"></option>
+                <option value="4"></option>
+                <option value="5"></option>
+            </select>
+            <span class="ql-formats">
+                <select class="ql-font">
+                    <option selected=""></option>
+                    <option value="serif"></option>
+                    <option value="monospace"></option>
+                </select>
+                <select class="ql-size">
+                    <option value="small"></option>
+                    <option selected=""></option>
+                    <option value="large"></option>
+                    <option value="huge"></option>
+                </select>
+            </span>
+            <span class="ql-formats">
+                <button class="ql-bold"></button>
+                <button class="ql-italic"></button>
+                <button class="ql-underline"></button>
+                <button class="ql-strike"></button>
+            </span>
+            <span class="ql-formats">
+                <select class="ql-color"></select>
+                <select class="ql-background"></select>
+            </span>
+            <span class="ql-formats">
+                <button class="ql-list" value="ordered"></button>
+                <button class="ql-list" value="bullet"></button>
+                <button class="ql-indent" value="-1"></button>
+                <button class="ql-indent" value="+1"></button>
+                <select class="ql-align">
+                    <option selected=""></option>
+                    <option value="center"></option>
+                    <option value="right"></option>
+                    <option value="justify"></option>
+                </select>
+            </span>
+            <span class="ql-formats">
+                <button class="ql-link"></button>
+            </span>
+        </ToolbarContent>
+        <EditorContent>
+            @if (null != Text.Content)
+            {
+                @((MarkupString)Text.Content)
+            }
+            else
+            {
+                @ChildContent
+            }
+        </EditorContent>
+    </BlazoredTextEditor>
+    <button class="btn btn-sm btn-outline-secondary" role="button" @onclick="@(() => SaveArticle())"><span class="oi oi-check" title="Speichern"></span></button>
+    <button class="btn btn-sm btn-outline-secondary" role="button" @onclick="@(() => Cancel())"><span class="oi oi-x" title="Abbrechen"></span></button>
+    <div class="form-row">
+        <div class="form-group col-md-10">
+            <input class="form-control" @bind="@_imageLink" placeholder="Link zu einem Bild" title="Bildlink"></input>
+            <small id="imageInlineLinkHelp" class="form-text text-muted">
+                Optional: Image in Text einfügen.
+            </small>
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-sm btn-outline-secondary" role="button" @onclick="@(() => InsertImage())">Bild einfügen</button>
+        </div>
+    </div>
+
+}
+
+@code {
+    public class TextContainer
+    {
+        public string Content { get; set; }
+        public TextContainer(string text)
+        {
+            Content = text;
+        }
+    }
+    [Parameter]
+    public TextContainer Text { get; set; }
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+    private BlazoredTextEditor _htmlArticle;
+    private bool _editMode = false;
+    private string _imageLink = String.Empty;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+    private async Task SaveArticle()
+    {
+        if (null != _htmlArticle)
+        {
+            Text.Content = await _htmlArticle.GetHTML();
+            Text.Content = StripEmptyHtml(Text.Content);
+        }
+        _editMode = false;
+    }
+    public async Task InsertImage()
+    {
+        if (!String.IsNullOrEmpty(_imageLink))
+        {
+            await _htmlArticle!.InsertImage(_imageLink);
+        }
+    }
+
+    private void SwitchToEditMode()
+    {
+        _editMode = true;
+    }
+    private void Cancel()
+    {
+        _editMode = false;
+    }
+    private string StripEmptyHtml(string htmlContent)
+    {
+        htmlContent = (null == htmlContent || htmlContent.Equals("<p><br></p>")) ? null : htmlContent;
+        if (null != htmlContent)
+        {
+            htmlContent = htmlContent.Replace("<p><br></p>", " ");
+            htmlContent = htmlContent.Replace("<p></p>", " ");
+        }
+        return htmlContent;
+    }
+
+}

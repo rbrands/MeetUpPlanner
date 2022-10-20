@@ -1,0 +1,113 @@
+﻿@using MeetUpPlanner.Shared
+@using System.Collections.Generic
+@using MeetUpPlanner.Client.Shared
+@inject AppState AppStateStore
+@inject KeywordCheck KeywordCheck
+@inject BackendApiRepository Api
+@using Blazored.TextEditor
+@inject Radzen.DialogService DialogService
+
+<p>
+    Lebensdauer in Tagen: <input @bind-value="Content.InfoLifeTimeInDays" placeholder="Lebensdauer der Info" alt="Lebensdauer" />
+</p>
+@foreach(var adminChapter in _adminChapters.Where(a => !a.IsDeleted))
+{
+    <div class="card">
+        <div class="card-header">
+            <button class="btn btn-sm btn-outline-secondary" title="Löschen" @onclick="@(() => RemoveChapter(adminChapter))"><span class="oi oi-minus"></span></button>
+            <button class="btn btn-sm btn-outline-secondary" title="Hinzufügen" @onclick="@(() => AddAfter(adminChapter))"><span class="oi oi-plus"></span></button>
+            <input @bind-value="adminChapter.Chapter.Title" />
+         </div>
+    </div>
+    <div class="card-body">
+        <p class="card-text">
+            <EditText Text="@adminChapter.TextContainer"></EditText>
+        </p>
+    </div>
+}
+<div class="btn-toolbar" role="toolbar" aria-label="Aktionen">
+    <button class="btn btn-sm btn-outline-secondary" title="Hinzufügen" @onclick="@(() => AddChapter())"><span class="oi oi-plus"></span></button>
+    <button class="btn btn-sm btn-outline-secondary" title="Hinzufügen" @onclick="@(() => Save())">Speichern</button>
+    <button class="btn btn-sm btn-outline-secondary" title="Hinzufügen" @onclick="@(() => DialogService.Close(true))">Zurück</button>
+</div>
+
+
+@code {
+    private class AdminChapter
+    {
+        public ContentWithChaptersItem.Chapter Chapter;
+        public EditText.TextContainer TextContainer;
+        public bool IsDeleted = false;
+        public AdminChapter(ContentWithChaptersItem.Chapter c)
+        {
+            Chapter = c;
+            TextContainer = new EditText.TextContainer(c.Content);
+        }
+    }
+
+    [Parameter]
+    public ContentWithChaptersItem Content { get; set; }
+    private IList<AdminChapter> _adminChapters = new List<AdminChapter>(); 
+
+    protected override void OnInitialized()
+    {
+        foreach(var c in Content.Chapters)
+        {
+            _adminChapters.Add(new AdminChapter(c));
+        }
+        base.OnInitialized();
+    }
+
+    private void AddChapter()
+    {
+        ContentWithChaptersItem.Chapter newChapter = new ContentWithChaptersItem.Chapter()
+            {
+                Title = "Neues Kapitel",
+                Content = "Hier Text eingeben"
+            };
+        _adminChapters.Add(new AdminChapter(newChapter));
+    }
+    private void AddAfter(AdminChapter chapter)
+    {
+        ContentWithChaptersItem.Chapter newChapter = new ContentWithChaptersItem.Chapter()
+            {
+                Title = "Neues Kapitel",
+                Content = "Hier Text eingeben"
+            };
+        int i = 0;
+        IList<AdminChapter> newAdminList = new List<AdminChapter>(_adminChapters);
+        foreach (var ac in newAdminList)
+        {
+            ++i;
+            if (ac == chapter)
+            {
+                newAdminList.Insert(i, new AdminChapter(newChapter));
+                break;
+            }
+        }
+        _adminChapters = newAdminList;
+        StateHasChanged();
+    }
+    private void RemoveChapter(AdminChapter chapter)
+    {
+        foreach(var ac in _adminChapters)
+        {
+            if (ac == chapter)
+            {
+                ac.IsDeleted = true;
+                _adminChapters.Remove(chapter);
+                break;
+            }
+        }
+    }
+    private async Task Save()
+    {
+        Content.Chapters = new List<ContentWithChaptersItem.Chapter>();
+        foreach(var ac in _adminChapters.Where(c => !c.IsDeleted))
+        {
+            ac.Chapter.Content = ac.TextContainer.Content;
+            Content.Chapters.Add(ac.Chapter);
+        }
+        await Api.WriteContentWithChapters(Content);
+    }
+}

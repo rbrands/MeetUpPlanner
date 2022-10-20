@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Json;
 using MeetUpPlanner.Shared;
+using MeetUpPlanner.Client.Pages;
 
 namespace MeetUpPlanner.Client
 {
@@ -70,6 +71,37 @@ namespace MeetUpPlanner.Client
             _http.DefaultRequestHeaders.Remove(HEADER_TENANT);
             return challenge;
         }
+        public async Task<ContentWithChaptersItem> GetContentWithChapters(string contentKey)
+        {
+            this.PrepareHttpClient();
+
+            ContentWithChaptersItem content = null;
+            var response = await _http.GetAsync($"api/info/getcontentwithchapters/{contentKey}");
+            if (response.IsSuccessStatusCode)
+            {
+                if ((response.Content.Headers.ContentLength ?? 0) > 0)
+                {
+                    content = await response.Content.ReadFromJsonAsync<ContentWithChaptersItem>();
+                }
+            }
+            else
+            {
+                throw new Exception($"Http Fehlercode - {response.StatusCode.ToString()}");
+            }
+
+            _http.DefaultRequestHeaders.Remove(HEADER_TENANT);
+            return content;
+        }
+        public async Task WriteContentWithChapters(ContentWithChaptersItem content)
+        {
+            this.PrepareHttpClient();
+            HttpResponseMessage response = await _http.PostAsJsonAsync<ContentWithChaptersItem>($"api/info/writecontentwithchaptersitem", content);
+            response.EnsureSuccessStatusCode();
+            _http.DefaultRequestHeaders.Remove(HEADER_TENANT);
+            return;
+
+        }
+
         public async Task<WinterpokalTeam> GetWinterpokalTeam(string teamId)
         {
             this.PrepareHttpClient();

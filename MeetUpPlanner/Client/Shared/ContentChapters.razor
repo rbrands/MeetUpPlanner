@@ -1,20 +1,26 @@
 ﻿@using System.Collections.Generic
 @using MeetUpPlanner.Shared
 @using MeetUpPlanner.Client.Shared
+@implements IDisposable
 @inject AppState AppStateStore
+@inject KeywordCheck KeywordCheck
 @inject BackendApiRepository Api
+@inject DialogService DialogService
 
 <AccordionControl>
-    <AccordionPanel Text="Überschrift #1">
-        Hier steht dann also Text und alles was man mag.
-    </AccordionPanel>
-    <AccordionPanel Text="Überschrift #2">
-        Hier steht dann also Text und alles was man mag.
-    </AccordionPanel>
-    <AccordionPanel Text="Überschrift #3">
-        Hier steht dann also Text und alles was man mag.
-    </AccordionPanel>
+    @foreach(var c in _content.Chapters)
+    {
+        <AccordionPanel Text="@c.Title">
+            @((MarkupString)c.Content)
+        </AccordionPanel>
+    }
 </AccordionControl>
+@if (KeywordCheck.IsAdmin)
+{
+    <div class="btn-toolbar" role="toolbar" aria-label="Aktionen">
+        <button class="btn btn-sm btn-outline-secondary" title="Ändern" @onclick="@(() => Edit())"><span class="oi oi-pencil"></span></button>
+    </div>
+}
 @if (!String.IsNullOrEmpty(_message))
 {
     <p>
@@ -27,5 +33,50 @@
     [Parameter]
     public string Key { get; set; }
     private string _message = String.Empty;
+    private ContentWithChaptersItem _content = new ContentWithChaptersItem();
 
+    protected override async Task OnInitializedAsync()
+    {
+        await Reload();
+        DialogService.OnClose += OnCloseEditDialog;
+    }
+    public void Dispose()
+    {
+        // The DialogService is a singleton so it is advisable to unsubscribe.
+        DialogService.OnClose -= OnCloseEditDialog;
+    }
+    protected async Task Reload()
+    {
+        try
+        {
+            _content = await Api.GetContentWithChapters(Key);
+            if (null == _content)
+            {
+                _content = new ContentWithChaptersItem()
+                    {
+                        LogicalKey = Key
+                    };
+            }
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            _message = $"Fehler: {ex.Message}";
+        }
+    }
+
+    public async Task Edit()
+    {
+        await DialogService.OpenAsync<EditContentChapters>($"Editieren >{Key}<",
+                new Dictionary<string, object>() { { "Content", _content } },
+                new DialogOptions() { Width = "700px", Height = "530px", Resizable = true, Draggable = true });
+    }
+
+    void OnCloseEditDialog(dynamic result)
+    {
+        Task.Run(async () =>
+        {
+            await Reload();
+        });
+    }
 }
