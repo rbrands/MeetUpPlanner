@@ -2,6 +2,7 @@
 # Änderungshistorie zum MeetUpPlanner
 *20.10.2022*
 - Infoboxen können jetzt so konfiguriert werden, dass externe Daten eingelesen und angezeigt werden. Momemtan sind das: Ergebnisse einer Bergfest-Challenge, Team/Einzelwertung des Winterpokals und allgemein in Kapitel strukturierte Inhalte z.B. für die Darstellung von Rennergebnissen.
+
 *3.9.2022*
 - Infoboxen können jetzt auch vor den Terminen angelegt werden. Dazu negative Ordnungsnummern verwenden.
 - Die Links zu Titelbildern können jetzt direkt eingegeben werden. Dadurch wird es möglich, beliebige Bilder einzubinden.
