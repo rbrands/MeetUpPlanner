@@ -27,6 +27,13 @@ namespace MeetUpPlanner.Server.Controllers
             await _meetUpFunctions.WriteInfoItem(tenant, keyword, infoItem);
             return Ok();
         }
+        [HttpPost("writecontentwithchaptersitem")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> WriteContentWithChaptersItem([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] ContentWithChaptersItem infoItem)
+        {
+            await _meetUpFunctions.WriteContentWithChaptersItem(tenant, keyword, infoItem);
+            return Ok();
+        }
         [HttpGet("extendedinfoitems")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetExtendedInfoItems([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword)
@@ -62,6 +69,20 @@ namespace MeetUpPlanner.Server.Controllers
             }
             ExtendedInfoItem infoItem = await _meetUpFunctions.GetExtendedInfoItem(tenant, keyword, itemId);
             return Ok(infoItem);
+        }
+        [HttpGet("getchallengebytitle")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetChallengeByTitle([FromQuery] string challengeTitle)
+        {
+            StravaSegmentChallenge challenge = await _meetUpFunctions.GetChallengeByTitle(challengeTitle);
+            return Ok(challenge);
+        }
+        [HttpGet("getcontentwithchapters/{key}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetContentWithChapters([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromRoute] string key)
+        {
+            ContentWithChaptersItem item = await _meetUpFunctions.GetContentWithChaptersItem(tenant, keyword, key);
+            return Ok(item);
         }
         [HttpPost("addcomment")]
         [ProducesResponseType(StatusCodes.Status200OK)]

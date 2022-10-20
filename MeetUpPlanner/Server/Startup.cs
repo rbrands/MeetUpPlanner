@@ -41,6 +41,9 @@ namespace MeetUpPlanner.Server
             MeetUpFunctions meetUpFunctions = new MeetUpFunctions(functionsConfig);
             services.AddSingleton(functionsConfig);
             services.AddSingleton(meetUpFunctions);
+            services.Configure<WinterpokalConfig>(Configuration.GetSection("WinterpokalConfig"));
+            WinterpokalConfig winterpokalConfig = Configuration.GetSection("WinterpokalConfig").Get<WinterpokalConfig>();
+            services.AddSingleton(winterpokalConfig);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

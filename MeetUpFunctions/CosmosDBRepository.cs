@@ -31,6 +31,17 @@ namespace MeetUpPlanner.Functions
             _cosmosDbDatabase = _config["COSMOS_DB_DATABASE"];
             _cosmosDbContainer = _config["COSMOS_DB_CONTAINER"];
         }
+        public string CosmosDbDatabase
+        {
+            get => _cosmosDbDatabase;
+            set => _cosmosDbDatabase = value;
+        }
+        public string CosmosDbContainer
+        {
+            get => _cosmosDbContainer;
+            set => _cosmosDbContainer = value;
+        }
+
         public async Task<T> CreateItem(T item)
         {
             if (null == item)

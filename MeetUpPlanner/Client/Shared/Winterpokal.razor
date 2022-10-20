@@ -1,0 +1,147 @@
+﻿@using System.Collections.Generic
+@using MeetUpPlanner.Shared
+@using MeetUpPlanner.Client.Shared
+@inject AppState AppStateStore
+@inject BackendApiRepository Api
+
+<TabControl>
+    <TabPage Text="Teams">
+        @if (null != _orderedTeams)
+        {
+        <table class="table table-sm">
+            <tbody>
+                @{
+                    _teamRanking = 0;
+                }
+                @foreach (var team in _orderedTeams)
+                {
+                        ++_teamRanking;
+                        <tr>
+                            <td>
+                                <span class="badge bg-primary text-white rounded-pill">@_teamRanking.ToString("##").</span>
+                            </td>
+                            <td>
+                                <Tooltip>
+                                    <ChildContent>
+                                        <a title="@team.Name" href="@team.Link" target="_blank" alt="@team.Name">
+                                            @team.Name
+                                        </a>
+                                    </ChildContent>
+                                    <Description>
+                                        <p class="small">
+                                            @foreach(var u in team.Users)
+                                            {
+                                                <a title="@u.Name" href="@u.Link" target="_blank" alt="@u.Name">
+                                                    @u.Name<text>(@u.Points) </text>
+                                                </a>
+                                            }
+                                        </p>
+                                        <p class="small">
+                                            @team.Description
+                                        </p>
+                                    </Description>
+                                </Tooltip>
+                            </td>
+                            <td align="right">
+                                <span class="badge bg-primary text-white rounded-pill">@team.TeamPoints.ToString("###0")</span>
+                            </td>
+                        </tr>
+                }
+                </tbody>
+            </table>
+        }
+    </TabPage>
+    <TabPage Text="Einzelwertung">
+        @if (null != _orderedUsers)
+        {
+            <table class="table table-sm">
+                <tbody>
+                    @{
+                        _userRanking = 0;
+                    }
+                    @foreach (var user in _orderedUsers)
+                    {
+                        ++_userRanking;
+                        <tr>
+                            <td>
+                                <span class="badge bg-primary text-white rounded-pill">@_userRanking.ToString("##").</span>
+                            </td>
+                            <td>
+                                <a title="@user.Name" href="@user.Link" target="_blank" alt="@user.Name">
+                                    @user.Name
+                                </a>
+                            </td>
+                            <td align="right">
+                                <span class="badge bg-primary text-white rounded-pill">@user.Points.ToString("###0")</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </TabPage>
+</TabControl>
+@if (!String.IsNullOrEmpty(_message))
+{
+    <p>
+        @_message
+    </p>
+}
+
+@code {
+    [Parameter]
+    public string Key { get; set; }
+    private IList<WinterpokalTeam> _teams = new List<WinterpokalTeam>();
+    private IList<WinterpokalUser> _users = new List<WinterpokalUser>();
+    private IOrderedEnumerable<WinterpokalTeam> _orderedTeams;
+    private IOrderedEnumerable<WinterpokalUser> _orderedUsers;
+    private string _message = String.Empty;
+    int _teamRanking = 0;
+    int _userRanking = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (String.IsNullOrEmpty(Key))
+        {
+            _message = "Komma-separierte Liste mit Team-Ids als Key erwartet";
+            return;
+        }
+        string[] teamIds = GetTeamIds(Key);
+        foreach(string id in teamIds)
+        {
+            try
+            {
+                WinterpokalTeam team = await Api.GetWinterpokalTeam(id);
+                _teams.Add(team);
+                foreach(var user in team.Users)
+                {
+                    _users.Add(user);
+                }
+            }
+            catch (Exception ex)
+            {
+                WinterpokalTeam team = new WinterpokalTeam()
+                    {
+                        Id = Convert.ToUInt16(id),
+                        Name = $"Fehler für Id >{id}<",
+                        Description = ex.Message
+                    };
+                _teams.Add(team);
+            }
+        }
+        _orderedTeams = _teams.OrderByDescending(t => t.TeamPoints);
+        _orderedUsers = _users.OrderByDescending(u => u.Points);
+    }
+    private string[] GetTeamIds(string idList)
+    {
+        string[] ids = { };
+        char[] charSeparators = new char[] { ',', ';' };
+        if (!String.IsNullOrEmpty(idList))
+        {
+            ids = idList.Split(charSeparators, StringSplitOptions.RemoveEmptyEntries);
+        }
+        return ids;
+    }
+
+
+}

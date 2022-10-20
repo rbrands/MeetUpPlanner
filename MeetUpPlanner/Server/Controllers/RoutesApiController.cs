@@ -22,8 +22,6 @@ namespace MeetUpPlanner.Server.Controllers
         public const string HEADER_KEYWORD = "x-meetup-keyword";
         public const string HEADER_TENANT = "x-meetup-tenant";
 
-
-
         public RoutesApiController(ILogger<RoutesApiController> logger, MeetUpFunctionsConfig functionsConfig)
         {
             _functionsConfig = functionsConfig;

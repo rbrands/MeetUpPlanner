@@ -1,0 +1,79 @@
+﻿@using System.Collections.Generic
+@using MeetUpPlanner.Shared
+@using MeetUpPlanner.Client.Shared
+@inject AppState AppStateStore
+@inject BackendApiRepository Api
+
+
+<TabControl>
+    <TabPage Text="Gesamt">
+        <table class="table table-sm">
+            <tbody>
+                @foreach (var p in _challenge.Participants)
+                {
+                    <tr>
+                        <td>
+                            <span class="badge bg-primary text-white rounded-pill">@p.Value.Rank.ToString("##").</span>
+                        </td>
+                        <td>
+                            <Tooltip Text="Strava Profil" ImageLink="@p.Value.ProfileImage" ImageHeight="124px" Link="@p.Value.GetAhtleteLink()">@p.Value.AthleteName</Tooltip>
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary text-white rounded-pill">@p.Value.SegmentCounter/@_challenge.Segments?.Count</span>
+                        </td>
+                        <td align="right">
+                            <span class="badge bg-primary text-white rounded-pill">@p.Value.TotalPoints.ToString("##0.0")</span>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+        </table>
+    </TabPage>
+    <TabPage Text="Frauen">
+        <table class="table table-sm">
+            <tbody>
+                @foreach (var p in _challenge.ParticipantsFemale)
+                {
+                    <tr>
+                        <td>
+                            <span class="badge bg-primary text-white rounded-pill"> @p.Value.Rank.ToString("##").</span>
+                        </td>
+                        <td>
+                            <Tooltip Text="Strava Profil" ImageLink="@p.Value.ProfileImage" ImageHeight="124px" Link="@p.Value.GetAhtleteLink()">@p.Value.AthleteName</Tooltip>
+                        </td>
+                        <td>
+                                <span class="badge bg-secondary text-white rounded-pill">@p.Value.SegmentCounter/@_challenge.Segments?.Count</span>
+                        </td>
+                        <td align="right">
+                            <span class="badge bg-primary text-white rounded-pill">@p.Value.TotalPoints.ToString("##0.0")</span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </TabPage>
+</TabControl>
+@if (!String.IsNullOrEmpty(_message))
+{
+    <p>
+        @_message
+    </p>
+}
+
+@code {
+    [Parameter]
+    public string Key { get; set; }
+    private StravaSegmentChallenge _challenge = new StravaSegmentChallenge();
+    private string _message = String.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _challenge = await Api.GetChallengeByTitle(Key);
+        if (null == _challenge)
+        {
+            _challenge = new StravaSegmentChallenge();
+            _message = $"Keine Challenge mit Namen >{Key}< gefunden.";
+        }
+    }
+
+}

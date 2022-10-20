@@ -38,6 +38,8 @@ namespace MeetUpPlanner.Shared
             this.Tenant = infoItem.Tenant;
             this.Title = infoItem.Title;
             this.SubTitle = infoItem.SubTitle;
+            this.AttachedInfoType = infoItem.AttachedInfoType;
+            this.AttachedInfoKey = infoItem.AttachedInfoKey;
         }
     }
 }
