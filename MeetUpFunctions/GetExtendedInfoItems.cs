@@ -66,6 +66,11 @@ namespace MeetUpPlanner.Functions
             {
                 // Create ExtendedInfoItem and get comments
                 ExtendedInfoItem extendedItem = new ExtendedInfoItem(item);
+                if (!serverSettings.IsUser(keyWord) && item.IsInternal)
+                {
+                    // If info item is only internal and user is not a regular one (with proper keyword) skip it
+                    continue;
+                }
                 resultInfoItems.Add(extendedItem);
                 // Read all comments
                 extendedItem.CommentsList = (await _commentRepository.GetItems(c => c.CalendarItemId.Equals(extendedItem.Id))).OrderByDescending(c => c.CommentDate);

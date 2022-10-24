@@ -34,6 +34,7 @@ namespace MeetUpPlanner.Shared
             this.LinkImage = infoItem.LinkImage;
             this.Link = infoItem.Link;
             this.LinkTitle = infoItem.LinkTitle;
+            this.IsInternal = infoItem.IsInternal;
             this.OrderId = infoItem.OrderId;
             this.Tenant = infoItem.Tenant;
             this.Title = infoItem.Title;

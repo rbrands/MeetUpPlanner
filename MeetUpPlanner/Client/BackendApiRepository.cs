@@ -6,6 +6,10 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using MeetUpPlanner.Shared;
 using MeetUpPlanner.Client.Pages;
+using Microsoft.AspNetCore.Components.Forms;
+using Azure.Storage.Blobs.Models;
+using Azure.Storage.Blobs;
+using Azure.Core;
 
 namespace MeetUpPlanner.Client
 {
@@ -122,6 +126,31 @@ namespace MeetUpPlanner.Client
 
             _http.DefaultRequestHeaders.Remove(HEADER_TENANT);
             return team;
+        }
+        public async Task<BlobAccessSignature> GetBlobAccessSignatureForPNGImageUpload()
+        {
+            this.PrepareHttpClient();
+            return await _http.GetFromJsonAsync<BlobAccessSignature>($"/Util/GetBlobAccessSignatureForPNGImageUpload");
+        }
+
+        public async Task<string> UploadImage(IBrowserFile picture, string title)
+        {
+            BlobAccessSignature sas = await GetBlobAccessSignatureForPNGImageUpload();
+            BlobClientOptions clientOptions = new BlobClientOptions();
+            clientOptions.Retry.MaxRetries = 0;
+            BlobClient blobClient = new BlobClient(sas.Sas, clientOptions);
+
+            using var stream = picture.OpenReadStream(maxAllowedSize: 2048000);
+            BlobUploadOptions options = new BlobUploadOptions();
+            options.HttpHeaders = new BlobHttpHeaders() { ContentType = picture.ContentType };
+            options.Metadata = new Dictionary<string, string>
+            {
+                { "Filename", picture.Name },
+                { "Title", title }
+            };
+            
+            await blobClient.UploadAsync(stream, options);
+            return sas.PublicLink; 
         }
 
     }

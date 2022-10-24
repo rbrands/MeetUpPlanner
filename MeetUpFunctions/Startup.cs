@@ -54,6 +54,7 @@ namespace MeetUpPlanner.Functions
             builder.Services.AddSingleton<ChallengeRepository>();
             builder.Services.AddSingleton(new LinkPreviewService());
             builder.Services.AddSingleton<CosmosDBRepository<ContentWithChaptersItem>>();
+            builder.Services.AddSingleton<BlobStorageRepository>();
             builder.Services.AddHttpClient();
 
         }
