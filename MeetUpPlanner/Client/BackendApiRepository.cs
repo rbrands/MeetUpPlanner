@@ -133,7 +133,7 @@ namespace MeetUpPlanner.Client
             return await _http.GetFromJsonAsync<BlobAccessSignature>($"/Util/GetBlobAccessSignatureForPNGImageUpload");
         }
 
-        public async Task<string> UploadImage(IBrowserFile picture, string title)
+        public async Task<string> UploadImage(IBrowserFile picture, string title, string label = null)
         {
             BlobAccessSignature sas = await GetBlobAccessSignatureForPNGImageUpload();
             BlobClientOptions clientOptions = new BlobClientOptions();
@@ -145,8 +145,9 @@ namespace MeetUpPlanner.Client
             options.HttpHeaders = new BlobHttpHeaders() { ContentType = picture.ContentType };
             options.Metadata = new Dictionary<string, string>
             {
-                { "Filename", picture.Name },
-                { "Title", title }
+                { "Label", label ?? String.Empty },
+                { "Title", title ?? String.Empty },
+                { "Filename", picture.Name ?? String.Empty }
             };
             
             await blobClient.UploadAsync(stream, options);

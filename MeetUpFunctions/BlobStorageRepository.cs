@@ -28,7 +28,7 @@ namespace MeetUpPlanner.Functions
             _storageAccountName = _config["BLOB_ACCOUNT"];
             _storageAccountKey = _config["BLOB_KEY"];
             _storageUri = _config["BLOB_URI"];
-            _container = "uploads";
+            _container = _config["BLOB_CONTAINER"] ?? "meetups";
         }
 
         /// <summary>

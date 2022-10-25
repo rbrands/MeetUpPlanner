@@ -14,6 +14,8 @@
     [Parameter]
     public int MaxHeight { get; set; } = 1024;
     [Parameter]
+    public string Label { get; set; }
+    [Parameter]
     public string Title { get; set; } = "Image";
     [Parameter] 
     public EventCallback<string> OnFileUploaded { get; set; }
@@ -23,8 +25,14 @@
     {
         try
         {
+            _message = String.Empty;
+            if (!eventArgs.File.ContentType.Contains("image"))
+            {
+                throw new Exception("Kein Bild");
+            }
+            string label = Label ?? (AppStateStore.ClientSettings.Tenant ?? "scuderia");
             var browserFile = await eventArgs.File.RequestImageFileAsync("image/png", MaxWidth, MaxHeight);
-            string imageUrl = await Api.UploadImage(browserFile, Title);
+            string imageUrl = await Api.UploadImage(browserFile, Title, label);
             await OnFileUploaded.InvokeAsync(imageUrl);
         }
         catch (Exception ex)
