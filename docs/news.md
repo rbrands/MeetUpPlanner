@@ -1,5 +1,8 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
+*25.10.2022*
+- Es können jetzt Bilder hochgeladen werden.
+
 *20.10.2022*
 - Infoboxen können jetzt so konfiguriert werden, dass externe Daten eingelesen und angezeigt werden. Momemtan sind das: Ergebnisse einer Bergfest-Challenge, Team/Einzelwertung des Winterpokals und allgemein in Kapitel strukturierte Inhalte z.B. für die Darstellung von Rennergebnissen.
 
