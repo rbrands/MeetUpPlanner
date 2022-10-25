@@ -1,0 +1,43 @@
+﻿@using System.IO
+@using MeetUpPlanner.Shared
+@using MeetUpPlanner.Client.Shared
+@inject AppState AppStateStore
+@inject BackendApiRepository Api
+
+<InputFile class="form-control" OnChange="@OnChange"></InputFile>
+<p>
+    @_message
+</p>
+@code {
+    [Parameter]
+    public int MaxWidth { get; set; } = 1024;
+    [Parameter]
+    public int MaxHeight { get; set; } = 1024;
+    [Parameter]
+    public string Label { get; set; }
+    [Parameter]
+    public string Title { get; set; } = "Image";
+    [Parameter] 
+    public EventCallback<string> OnFileUploaded { get; set; }
+    private string _message = String.Empty;
+
+    private async Task OnChange(InputFileChangeEventArgs eventArgs)
+    {
+        try
+        {
+            _message = String.Empty;
+            if (!eventArgs.File.ContentType.Contains("image"))
+            {
+                throw new Exception("Kein Bild");
+            }
+            string label = Label ?? (AppStateStore.ClientSettings.Tenant ?? "scuderia");
+            var browserFile = await eventArgs.File.RequestImageFileAsync("image/png", MaxWidth, MaxHeight);
+            string imageUrl = await Api.UploadImage(browserFile, Title, label);
+            await OnFileUploaded.InvokeAsync(imageUrl);
+        }
+        catch (Exception ex)
+        {
+            _message = ex.Message;
+        }
+    }
+}

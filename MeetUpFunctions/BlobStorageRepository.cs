@@ -28,7 +28,7 @@ namespace MeetUpPlanner.Functions
             _storageAccountName = _config["BLOB_ACCOUNT"];
             _storageAccountKey = _config["BLOB_KEY"];
             _storageUri = _config["BLOB_URI"];
-            _container = "tracks";
+            _container = _config["BLOB_CONTAINER"] ?? "meetups";
         }
 
         /// <summary>
@@ -54,9 +54,11 @@ namespace MeetUpPlanner.Functions
             BlobUriBuilder blobUri = new BlobUriBuilder(new Uri(_storageUri));
             blobUri.BlobContainerName = _container;
             blobUri.BlobName = blobName;
+            string publicLink = blobUri.ToUri().ToString();
             blobUri.Sas = sas.ToSasQueryParameters(credential);
 
             BlobAccessSignature blobAccess = new BlobAccessSignature(blobName, fileName, blobUri.ToUri());
+            blobAccess.PublicLink = publicLink;
 
             return blobAccess;
         }

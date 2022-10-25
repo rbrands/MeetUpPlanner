@@ -237,6 +237,16 @@ namespace MeetUpPlanner.Server.Repositories
                           .GetJsonAsync<InfoItem>();
             return infoItem;
         }
+        public async Task<BlobAccessSignature> GetBlobAccessSignatureForPNGImageUpload(string tenant, string keyword)
+        {
+
+            BlobAccessSignature sasSignature = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/GetBlobAccessSignatureForPNGImageUpload"
+                          .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
+                          .WithHeader(HEADER_KEYWORD, keyword)
+                          .WithHeader(HEADER_TENANT, tenant)
+                          .GetJsonAsync<BlobAccessSignature>();
+            return sasSignature;
+        }
         public async Task<ContentWithChaptersItem> GetContentWithChaptersItem(string tenant, string keyword, string key)
         {
 

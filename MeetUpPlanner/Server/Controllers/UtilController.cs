@@ -20,7 +20,7 @@ namespace MeetUpPlanner.Server.Controllers
     {
         private readonly MeetUpFunctions _meetUpFunctions;
         private readonly ILogger<UtilController> logger;
-        const string serverVersion = "2022-10-20";
+        const string serverVersion = "2022-10-25";
         string functionsVersion = "tbd";
 
         public UtilController(ILogger<UtilController> logger, MeetUpFunctions meetUpFunctions)
@@ -145,6 +145,13 @@ namespace MeetUpPlanner.Server.Controllers
         public async Task<IActionResult> GetLinkPreview([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] LinkPreview linkPreview)
         {
             LinkPreview result = await _meetUpFunctions.GetLinkPreview(tenant, keyword, linkPreview);
+            return Ok(result);
+        }
+        [HttpGet("getblobaccesssignatureforpngimageupload")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetBlobAccessSignatureForPNGImageUpload([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword)
+        {
+            BlobAccessSignature result = await _meetUpFunctions.GetBlobAccessSignatureForPNGImageUpload(tenant, keyword);
             return Ok(result);
         }
 

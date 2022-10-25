@@ -9,7 +9,7 @@ namespace MeetUpPlanner.Shared
         public Uri Sas { get; set; }
         public string BlobName { get; set; }
         public string FileName { get; set; }
-
+        public string PublicLink { get; set; }
         public BlobAccessSignature()
         {
 

@@ -5,14 +5,20 @@
 @inject NavigationManager NavigationManager
 
 <div class="card">
-    <div class="card-header"><em>@InfoItem.HeaderTitle</em></div>
+    <div class="card-header">
+        <em>@InfoItem.HeaderTitle</em>
+        @if (InfoItem.IsInternal)
+        {
+            <span class="badge badge-danger"><span class="oi oi-key" title="Vereinsintern"></span></span>
+        }
+    </div>
     @if (!String.IsNullOrEmpty(InfoItem.LinkImage))
     {
         <a href="@InfoItem.Link" target="_blank">
             <img class="card-img-top" src="@InfoItem.LinkImage" alt="@InfoItem.LinkTitle">
         </a>
     }
-    <div class="card-body overflow-auto" style="max-height:500px">
+    <div class="card-body">
         @if (!String.IsNullOrEmpty(InfoItem.SubTitle))
         {
             <h6 class="text-muted card-subtitle mb-2">@InfoItem.SubTitle</h6>
@@ -22,15 +28,17 @@
             <h5 class="card-title">@InfoItem.Title</h5>
         }
         <p class="card-text">
-            @((MarkupString)InfoItem.InfoContent)
-            @if(!String.IsNullOrEmpty(InfoItem.AttachedInfoType))
-            {
-                <DynamicComponent Type="@_attachedInfoType" Parameters="@_attachedInfoParameters"></DynamicComponent>
-            }
-            <hr/>
+            <div class="overflow-auto" style="max-height: 500px">
+                @((MarkupString)InfoItem.InfoContent)
+                @if(!String.IsNullOrEmpty(InfoItem.AttachedInfoType))
+                {
+                    <DynamicComponent Type="@_attachedInfoType" Parameters="@_attachedInfoParameters"></DynamicComponent>
+                }
+            </div>
+            <hr />
             @if (InfoItem.CommentsList.Count() > 0)
             { 
-                <ul class="list-unstyled">
+                <ul class="list-unstyled overflow-auto" style="max-height: 200px">
                     @foreach (CalendarComment c in InfoItem.CommentsList)
                     {
                         <li>
@@ -44,7 +52,7 @@
                         </li>
                     }
                 </ul>
-            <hr/>
+                <hr/>
             }
         </p>
         @if (!String.IsNullOrEmpty(InfoItem.Link))

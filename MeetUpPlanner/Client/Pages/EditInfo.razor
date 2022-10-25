@@ -94,6 +94,20 @@
             Sollen Kommentare zulässig sein?
         </small>
     </div>
+    @if (AppStateStore.ClientSettings.PublicMeetUpJoiningEnabled)
+    {
+        <div class="form-group">
+            <div class="form-check">
+                <InputCheckbox id="internal" aria-describedby="internalHelp" class="form-check-input" @bind-Value="infoItem.IsInternal" />
+                <label for="internal" class="form-check-label">
+                    Nur für Vereinsmitglieder?
+                </label>
+            </div>
+            <small id="internalHelp" class="form-text text-muted">
+                Soll die Info nur für Vereinsmitglieder, die auf der Startseite das Schlüsselwort angegeben haben, angezeigt werden?
+            </small>
+        </div>
+    }
     <div class="form-group">
         <label for="infoLifeTime">Lebensdauer der Info</label>
         <RadzenNumeric id="infoLifeTime" aria-describedby="infoLifeTimeHelp" class="form-control" TValue="int" Min="0" Max="100" @bind-Value="infoItem.InfoLifeTimeInDays" />
@@ -121,13 +135,18 @@
             </div>
         </div>
     </div>
-    <div class="form-group">
-        <label for="linkImage">Link zu einem Bild</label>
-        <InputText id="linkImage" aria-describedby="linkImageHelp" class="form-control" @bind-Value="infoItem.LinkImage" placeholder="URL" title="Link zu einem Image" />
-        <small id="linkImageHelp" class="form-text text-muted">
-            Optional: Link zu einem Bild zur Strecke
-        </small>
+    <div class="form-row">
+        <div class="form-group col-md-8">
+            <InputText id="linkImage" aria-describedby="linkImageHelp" class="form-control" @bind-Value="infoItem.LinkImage" placeholder="URL" title="Link zu einem Image" />
+            <small id="linkImageHelp" class="form-text text-muted">
+                Optional: Link zu einem Bild zur Infobox
+            </small>
+        </div>
+        <div class="form-group col-md-4">
+            <UploadImage Title="@infoItem.Title" OnFileUploaded="@((string uploadLink) => {infoItem.LinkImage = uploadLink; })"></UploadImage>
+        </div>
     </div>
+
     <div class="form-group">
         <label for="linkTitle">Link-Bezeichnung</label>
         <InputText id="linkTitle" aria-describedby="linkTitleHelp" class="form-control" @bind-Value="infoItem.LinkTitle" placeholder="Kurze Überschrift zum Link" title="Bezeichnung des Links zur weiterern Info" />
