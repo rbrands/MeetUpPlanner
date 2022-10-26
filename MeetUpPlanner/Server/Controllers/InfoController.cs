@@ -81,6 +81,10 @@ namespace MeetUpPlanner.Server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetContentWithChapters([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromRoute] string key)
         {
+            if (String.IsNullOrEmpty(keyword))
+            {
+                keyword = _meetUpFunctions.InviteGuestKey;
+            }
             ContentWithChaptersItem item = await _meetUpFunctions.GetContentWithChaptersItem(tenant, keyword, key);
             return Ok(item);
         }
