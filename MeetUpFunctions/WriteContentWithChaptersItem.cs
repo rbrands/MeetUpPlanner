@@ -69,6 +69,7 @@ namespace MeetUpPlanner.Functions
             }
             if (null != tenant)
             {
+                infoItem.LogicalKey += "-" + tenant;
                 infoItem.Tenant = tenant;
             }
             infoItem = await _cosmosRepository.UpsertItem(infoItem);

@@ -33,20 +33,31 @@ namespace MeetUpPlanner.Functions
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "GetContentWithChaptersItem/{key}")] HttpRequest req,
             string key)
         {
-            _logger.LogInformation($"C# HTTP trigger function GetContentWithChaptersItem/{key} processed a request.");
-            string tenant = req.Headers[Constants.HEADER_TENANT];
-            if (String.IsNullOrWhiteSpace(tenant))
+            try
             {
-                tenant = null;
+                _logger.LogInformation($"GetContentWithChaptersItem(key = {key})");
+                string tenant = null;
+                if (req.Headers.ContainsKey(Constants.HEADER_TENANT))
+                {
+                    tenant = req.Headers[Constants.HEADER_TENANT];
+                }
+                if (String.IsNullOrWhiteSpace(tenant))
+                {
+                    tenant = null;
+                }
+                if (null != tenant)
+                {
+                    key += "-" + tenant;
+                }
+                ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings(tenant);
+                ContentWithChaptersItem item = await _cosmosRepository.GetItemByKey(key);
+                return new OkObjectResult(item);
             }
-            ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings(tenant);
-            string keyWord = req.Headers[Constants.HEADER_KEYWORD];
-            if (String.IsNullOrEmpty(keyWord) || !serverSettings.IsUser(keyWord))
+            catch (Exception ex)
             {
-                return new BadRequestErrorMessageResult("Keyword is missing or wrong.");
+                _logger.LogError(ex, $"GetContentWithChaptersItem() failed.");
+                return new BadRequestErrorMessageResult(ex.Message);
             }
-            ContentWithChaptersItem item = await _cosmosRepository.GetItemByKey(key);
-            return new OkObjectResult(item);
         }
     }
 }
