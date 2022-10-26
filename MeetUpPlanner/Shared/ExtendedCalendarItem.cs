@@ -57,6 +57,9 @@ namespace MeetUpPlanner.Shared
             this.Tenant = calendarItem.Tenant;
             this.WithoutHost = calendarItem.WithoutHost;
             this.GuestScope = calendarItem.GuestScope;
+            this.AttachedInfoType = calendarItem.AttachedInfoType;
+            this.AttachedInfoKey = calendarItem.AttachedInfoKey;
+
         }
 
         public string ParticipantsDisplay(int nameDisplayLength)

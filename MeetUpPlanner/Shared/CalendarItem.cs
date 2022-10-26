@@ -64,6 +64,10 @@ namespace MeetUpPlanner.Shared
         [JsonProperty(PropertyName = "guestScope", NullValueHandling = NullValueHandling.Ignore), MaxLength(60, ErrorMessage = "Gast-Scope zu lang.")]
         [RegularExpression("[a-zA-Z0-9-_]*", ErrorMessage = "Bitte nur Buchstaben und Zahlen für Gast-Scope.")] 
         public string GuestScope { get; set; }
+        [JsonProperty(PropertyName = "attachedInfoType", NullValueHandling = NullValueHandling.Ignore), MaxLength(256)]
+        public string AttachedInfoType { get; set; }
+        [JsonProperty(PropertyName = "attachedInfoKey", NullValueHandling = NullValueHandling.Ignore), MaxLength(256)]
+        public string AttachedInfoKey { get; set; }
         /// <summary>
         /// Constructor with some suggestions about start-time: Schedule for the next day. On Saturdays and Sundays 
         /// StartTime is 10 am otherwise 18 pm
