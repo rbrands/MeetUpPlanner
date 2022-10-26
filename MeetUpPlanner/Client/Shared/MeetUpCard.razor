@@ -52,6 +52,10 @@
         <p class="card-text">
             <div class="overflow-auto" style="max-height: 500px">
                 @((MarkupString)CalendarItem.Summary)
+                @if (!String.IsNullOrEmpty(CalendarItem.AttachedInfoType))
+                {
+                    <DynamicComponent Type="@GetAttachedInfoType()" Parameters="@GetAttachedInfoParameters()"></DynamicComponent>
+                }
             </div>
             @if (IsAdmin && CalendarItem.PublishDate.ToLocalTime().CompareTo(DateTime.Now) > 0)
             {
@@ -313,5 +317,16 @@
         }
         return checkInLabel;
     }
+    private Type GetAttachedInfoType()
+    {
+        return Type.GetType($"MeetUpPlanner.Client.Shared.{CalendarItem.AttachedInfoType}");
+    }
+    private IDictionary<string, object> GetAttachedInfoParameters()
+    {
+        Dictionary<string, object> attachedInfoParameters = new Dictionary<string, object>();
+        attachedInfoParameters.Add("Key", CalendarItem.AttachedInfoKey);
+        return attachedInfoParameters;
+    }
+
 
 }

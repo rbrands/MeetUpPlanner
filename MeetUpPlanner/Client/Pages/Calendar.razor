@@ -98,6 +98,10 @@
                     <p class="card-text">
                         <div class="overflow-auto" style="max-height: 500px">
                             @((MarkupString)item.Summary)
+                            @if (!String.IsNullOrEmpty(item.AttachedInfoType))
+                            {
+                                <DynamicComponent Type="@GetAttachedInfoType(item)" Parameters="@GetAttachedInfoParameters(item)"></DynamicComponent>
+                            }
                         </div>
                         @if (KeywordCheck.IsAdmin && item.PublishDate.ToLocalTime().CompareTo(DateTime.Now) > 0)
                         {
@@ -518,6 +522,16 @@
     protected void AssignNewHost(ExtendedCalendarItem calendarItem)
     {
         NavigationManager.NavigateTo($"/AssignNewHost/{calendarItem.Id}");
+    }
+    private Type GetAttachedInfoType(ExtendedCalendarItem calendarItem)
+    {
+        return Type.GetType($"MeetUpPlanner.Client.Shared.{calendarItem.AttachedInfoType}");
+    }
+    private IDictionary<string, object> GetAttachedInfoParameters(ExtendedCalendarItem calendarItem)
+    {
+        Dictionary<string, object> attachedInfoParameters = new Dictionary<string, object>();
+        attachedInfoParameters.Add("Key", calendarItem.AttachedInfoKey);
+        return attachedInfoParameters;
     }
     public void Dispose()
     {

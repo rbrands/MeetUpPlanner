@@ -247,6 +247,25 @@
                 Falls markiert wird die Ausfahrt immer in die nächste Woche kopiert. Über das Veröffentlichungsdatum wird gesteuert, wann die Ausfahrt für alle sichtbar wird.
             </small>
         </div>
+        <div class="form-group">
+            <label for="attachedInfo">Zusätzliche Info </label>
+            <InputSelect id="attachedInfo" aria-describedby="attachedInfoHelp" @bind-Value="meetup.AttachedInfoType" class="form-control">
+                <option value="">Typ der Zusatzinfo auswählen...</option>
+                <option value="@nameof(ChallengeRanking)">Bergfest Challenge</option>
+                <option value="@nameof(Winterpokal)">Winterpokal</option>
+                <option value="@nameof(ContentChapters)">"Akkordion"</option>
+            </InputSelect>
+        </div>
+        <small id="attachedInfoHelp" class="form-text text-muted">
+            Optional: Typ der zusätzlichen Info, die in die Ausfahrt übernommen werden soll.
+        </small>
+        <div class="form-group">
+            <label for="attachedInfoKey">Schlüssel für Zusatzinfo</label>
+            <InputText id="attachedInfoKey" aria-describedby="attachedInfoKeyHelp" class="form-control" @bind-Value="meetup.AttachedInfoKey" placeholder="Schlüssel um Zusatzinfo zu lesen" title="Schlüssel um Zusatzinfo zu lesen" />
+            <small id="attachedInfoKeyHelp" class="form-text text-muted">
+                Wenn eine Zusatzinfo in die Ausfahrt übernommen werden soll, hier den Schlüssel, um diese zu lesen angeben..
+            </small>
+        </div>
     }
     <div class="form-group">
         <label for="size">Max. Gruppengröße</label>
