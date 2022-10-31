@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs;
 using Azure.Core;
+using System.Text;
 
 namespace MeetUpPlanner.Client
 {
@@ -145,13 +146,92 @@ namespace MeetUpPlanner.Client
             options.HttpHeaders = new BlobHttpHeaders() { ContentType = picture.ContentType };
             options.Metadata = new Dictionary<string, string>
             {
-                { "Label", label ?? String.Empty },
-                { "Title", title ?? String.Empty },
-                { "Filename", picture.Name ?? String.Empty }
+                { "Label", GetUrlFriendlyTitle(label) ?? String.Empty },
+                { "Title", GetUrlFriendlyTitle(title) ?? String.Empty },
+                { "Filename", GetUrlFriendlyTitle(picture.Name) ?? String.Empty }
             };
             
             await blobClient.UploadAsync(stream, options);
             return sas.PublicLink; 
+        }
+        public static string GetUrlFriendlyTitle(string title)
+        {
+            string urlFriendlyTitle = null;
+            if (!String.IsNullOrEmpty(title))
+            {
+                string titleLowerCase = title.ToLowerInvariant();
+                StringBuilder sb = new StringBuilder();
+                int charCounter = 0;
+                foreach (char c in titleLowerCase)
+                {
+                    if (++charCounter > 160)
+                    {
+                        // url not longer than 160 chars
+                        break;
+                    }
+                    switch (c)
+                    {
+                        case '\u00F6':
+                        case '\u00D6':
+                            sb.Append("oe");
+                            break;
+                        case '\u00FC':
+                        case '\u00DC':
+                            sb.Append("ue");
+                            break;
+                        case '\u00E4':
+                        case '\u00C4':
+                            sb.Append("ae");
+                            break;
+                        case '\u00DF':
+                            sb.Append("ss");
+                            break;
+                        case 'a':
+                        case 'b':
+                        case 'c':
+                        case 'd':
+                        case 'e':
+                        case 'f':
+                        case 'g':
+                        case 'h':
+                        case 'i':
+                        case 'j':
+                        case 'k':
+                        case 'l':
+                        case 'm':
+                        case 'n':
+                        case 'o':
+                        case 'p':
+                        case 'q':
+                        case 'r':
+                        case 's':
+                        case 't':
+                        case 'u':
+                        case 'v':
+                        case 'w':
+                        case 'x':
+                        case 'y':
+                        case 'z':
+                        case '0':
+                        case '1':
+                        case '2':
+                        case '3':
+                        case '4':
+                        case '5':
+                        case '6':
+                        case '7':
+                        case '8':
+                        case '9':
+                            sb.Append(c);
+                            break;
+                        default:
+                            sb.Append('-');
+                            break;
+                    }
+                }
+                urlFriendlyTitle = sb.ToString().Trim('-');
+            }
+            return urlFriendlyTitle;
         }
 
     }
