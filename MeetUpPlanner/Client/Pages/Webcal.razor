@@ -1,0 +1,41 @@
+﻿@page "/webcal"
+@using MeetUpPlanner.Shared
+@inject AppState AppStateStore
+@inject KeywordCheck KeywordCheck
+@inject BackendApiRepository Api
+@inject NavigationManager NavigationManager
+
+<div class="jumbotron">
+    <h1>Internet-Kalender</h1>
+    <p>
+        Keine Ausfahrt mehr verpassen: Du kannst die Termine im MeetUpPlanner als Internet-Kalender in deine Mail-App 
+        (Outlook, Google Kalender, Apple iCal usw.) integrieren und dort anzeigen.
+        Die Termine werden mit jeweils einer Stunde Dauer als Standard angezeigt - wie lange eine Ausfahrt genau dauert wissen 
+        wir schließlich nicht. So hast du es als Terminmerker im Kalender stehen.
+    </p>
+</div>
+
+<h3>Link zum Internet-Kalender</h3>
+<p>
+    Link öffnen oder in Mail-App eintragen: <a href="@_webcalLink" title="Webcal Link" target="_blank">@_webcalLink</a>
+</p>
+
+@code {
+    private string _webcalToken = String.Empty;
+    private string _webcalLink = String.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (null != AppStateStore && KeywordCheck.IsUser)
+        {
+            _webcalToken = await Api.GetWebcalToken();
+            _webcalLink = $"{NavigationManager.BaseUri}api/webcal/getmeetups/{_webcalToken}".Replace("https", "webcals");
+            
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+ 
+}

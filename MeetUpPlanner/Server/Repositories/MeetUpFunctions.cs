@@ -247,6 +247,16 @@ namespace MeetUpPlanner.Server.Repositories
                           .GetJsonAsync<BlobAccessSignature>();
             return sasSignature;
         }
+        public async Task<string> GetWebcalToken(string tenant, string keyword)
+        {
+
+            string webcalToken = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/GetWebcalToken"
+                          .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
+                          .WithHeader(HEADER_KEYWORD, keyword)
+                          .WithHeader(HEADER_TENANT, tenant)
+                          .GetStringAsync();
+            return webcalToken;
+        }
         public async Task<ContentWithChaptersItem> GetContentWithChaptersItem(string tenant, string keyword, string key)
         {
 
