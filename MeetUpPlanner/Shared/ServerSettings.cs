@@ -17,6 +17,9 @@ namespace MeetUpPlanner.Shared
         [JsonProperty(PropertyName = "adminKeyword")]
         [Required(ErrorMessage = "Bitte ein Schlüsselwort für den Admin-Zugriff vergeben.")]
         public string AdminKeyword { get; set; } = "DemoAdmin";
+        [JsonProperty(PropertyName = "webcalToken")]
+        [Required(ErrorMessage = "Bitte ein Token für den Webcal-Zugriff vergeben.")]
+        public string WebcalToken { get; set; } = "9F27867461D";
         /// <summary>
         /// After given days meetups are deleted
         /// </summary>
@@ -45,6 +48,11 @@ namespace MeetUpPlanner.Shared
         public bool IsUser(string keyword)
         {
             return this.UserKeyword.Equals(keyword) || this.AdminKeyword.Equals(keyword);
+        }
+
+        public bool IsWebcalToken(string token)
+        {
+            return this.WebcalToken.Equals(token);
         }
     }
 }

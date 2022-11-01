@@ -128,10 +128,17 @@ namespace MeetUpPlanner.Client
             _http.DefaultRequestHeaders.Remove(HEADER_TENANT);
             return team;
         }
+
         public async Task<BlobAccessSignature> GetBlobAccessSignatureForPNGImageUpload()
         {
             this.PrepareHttpClient();
             return await _http.GetFromJsonAsync<BlobAccessSignature>($"/Util/GetBlobAccessSignatureForPNGImageUpload");
+        }
+
+        public async Task<string> GetWebcalToken()
+        {
+            this.PrepareHttpClient();
+            return await _http.GetStringAsync($"api/webcal/getwebcaltoken");
         }
 
         public async Task<string> UploadImage(IBrowserFile picture, string title, string label = null)

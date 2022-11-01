@@ -52,7 +52,7 @@ namespace MeetUpPlanner.Functions
             _logger.LogInformation($"GetExtendedCalendarItems for tenant <{tenantBadge}>");
             ServerSettings serverSettings = await _serverSettingsRepository.GetServerSettings(tenant);
             string keyWord = req.Headers[Constants.HEADER_KEYWORD];
-            if (String.IsNullOrEmpty(keyWord) || !(serverSettings.IsUser(keyWord) || _serverSettingsRepository.IsInvitedGuest(keyWord)))
+            if (String.IsNullOrEmpty(keyWord) || !(serverSettings.IsUser(keyWord) || _serverSettingsRepository.IsInvitedGuest(keyWord) || serverSettings.IsWebcalToken(keyWord)))
             {
                 _logger.LogWarning($"GetExtendedCalendarItems<{tenantBadge}> called with wrong keyword.");
                 return new BadRequestErrorMessageResult("Keyword is missing or wrong.");
@@ -86,7 +86,7 @@ namespace MeetUpPlanner.Functions
                     // If calendar item is not ready for publishing skip it
                     continue;
                 }
-                if (!serverSettings.IsUser(keyWord) && item.IsInternal)
+                if (item.IsInternal && !serverSettings.IsUser(keyWord) && !serverSettings.IsWebcalToken(keyWord))
                 {
                     // If calendar item is only internal and user is not a regular one (with proper keyword) skip it
                     continue;
