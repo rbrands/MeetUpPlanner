@@ -20,7 +20,14 @@ Hier sollen die etwas versteckteren Features beschrieben werden.
 Die Installation ist ganz einfach: Auf Android, auf dem PC im Edge und Chrome-Browser wie üblich den MeetUpPlanner aufrufen. Oben rechts in der Addresszeile ist ein kleines +, über das man die Installation startet. Unter iOS im Safari-Browser geht man auf "Teilen" und dann "Zum Home-Bildschirm". Der MeetUpPlanner wird dann mit Logo auf dem Home-Bildschirm oder im Start-Menü (PC) angezeigt und kann von da auch einfach wieder deinstalliert werden.
 </p>
 <p>
-Außerdem ist es möglich, sich auf Android, PC (kurzum Chrome-basierte Browser, leider noch kein iOS/Safari) über Änderungen an Ausfahrten (Absage, Terminänderungen usw.) und über neue Kommentare benachrichtigen zu lassen. Beim Aufruf der Kalenderseite gibt es eine entsprechende Popup-Abfrage oder je nach Einsellung in der Adresszeile ein kleines "Glöckchen", über das man die Benachrichtungen zulassen oder eben auch ablehnen kann.
+Außerdem ist es möglich, sich auf über Änderungen an Ausfahrten (Absage, Terminänderungen usw.) und über neue Kommentare benachrichtigen zu lassen. Beim Aufruf der Kalenderseite gibt es eine entsprechende Popup-Abfrage oder je nach Einstellung in der Adresszeile ein kleines "Glöckchen", über das man die Benachrichtungen zulassen oder eben auch ablehnen kann.
+Unter iOS funktioniert die Benachrichtung erst ab Version 16.4 (März 2023). Dazu sind die folgende Schritte notwendig:
+<ul>
+  <li>In den Einstellungen "Safari" auswählen</li>
+  <li>Nach unten scrollen auf "Erweitert", dann "Experimental Features"</li>
+  <li>In der langen Liste (alphabetisch sortiert) "Push-API" aktivieren</li>
+  <li>Dann im Safari Browser auf die MeetUpPlanner Seite gehen, dann dem Home-Bildschirm hinzufügen. Beim Aufruf die Frage, ob Mitteilungen gesendet werden sollen, mit "Erlauben" beantworten.</li>
+</ul>
  Die Benachrichtigungen lassen sich nachträglich auch wieder in den Einstellungen des Browsers abstellen.
 </p>
 </dd>
@@ -40,7 +47,7 @@ Außerdem ist es möglich, sich auf Android, PC (kurzum Chrome-basierte Browser,
     Für Termine kann optional eine Warteliste eingerichtet werden. Dazu beim Anlegen/Ändern eines Termins im Feld "Warteliste" eine max. zulässige Anzahl "Wartender" größer 0 eingeben. Hier gilt die gleiche Größenbeschränkung wie für Gruppen. Wenn dann ein Termin "ausgebucht" ist, können sich Interessenten auf die Warteliste setzen und werden automatisch angemeldet, wenn ein Platz frei wird und zwar wenn sich jemand anders abmeldet oder die Gruppengröße erhöht wird. 
   </p>
   <p>
-    Es werden auch Benachrichtigungen an die "Nachrücker" verschickt. Dazu müssen sie allerdings Benachrichtigungen für diese Web-App erlaubt haben (siehe oben unter "Installation als App") und für iOS ist dieses Feature ("Web-Push Benachrichtigungen") erst für 2023 angekündigt. D.h. momentan müssen alle auf der Warteliste regelmäßig nachschauen, ob sie nachgerückt sind.  
+    Es werden auch Benachrichtigungen an die "Nachrücker" verschickt. Dazu müssen sie allerdings Benachrichtigungen für diese Web-App erlaubt haben (siehe oben unter "Installation als App").  
   </p>
   <p>
     Umgekehrt werden die zuletzt angemeldeten Teilnehmer:innen auf die Warteliste "geschoben", wenn die Gruppengröße verkleinert wird (sollte aber die Ausnahme sein!). Auch hier werden die betroffenen Teilnehmer:inen benachrichtigt (s.o).
