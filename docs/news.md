@@ -1,5 +1,8 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
+*9.5.2023*
+- Upgrade auf .NET 7 für den Client und den Server (die Azure Functions bleiben auf .NET 6).
+
 *25.10.2022*
 - Es können jetzt Bilder hochgeladen werden.
 
