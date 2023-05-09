@@ -45,7 +45,7 @@ namespace MeetUpPlanner.Shared
         {
             get
             {
-                return (null != CommentDate) ? CommentDate.ToString("dd.MM. HH:mm") : String.Empty;
+                return CommentDate.ToString("dd.MM. HH:mm");
             }
         }
         [JsonIgnore]

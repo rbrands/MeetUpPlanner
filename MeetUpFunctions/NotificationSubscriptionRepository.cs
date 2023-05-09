@@ -102,7 +102,7 @@ namespace MeetUpPlanner.Functions
             if (!calendarItem.WithoutHost)
             {
                 Participant hostAsParticipant = new Participant() { ParticipantFirstName = calendarItem.HostFirstName, ParticipantLastName = calendarItem.HostLastName }               ;
-                participants.Append(hostAsParticipant);
+                participants.Add(hostAsParticipant);
             }
             foreach (Participant p in participants)
             {
