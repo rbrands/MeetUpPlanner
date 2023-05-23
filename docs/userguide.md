@@ -1,11 +1,11 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
-# Benutzerhinweise
+# Benutzer:innenhinweise
 
 Es ist sicherlich kein Benutzerhandbuch notwendig, der MeetUpPlanner sollte selbsterklärend sein: Ausfahrt anlegen, ändern, löschen, teilnehmen, kommentieren. Hoffentlich alles naheliegend wie es funktioniert.
 
 Hier sollen die etwas versteckteren Features beschrieben werden.
 
-## Features für alle Benutzer
+## Features für alle Benutzer:innen
 <dl>
   <dt id="linkpreview">Preview An/Aus</dt>
   <dd>
@@ -17,18 +17,12 @@ Hier sollen die etwas versteckteren Features beschrieben werden.
     Den MeetUpPlanner kann man auch als App und zwar als PWA (<a href="https://de.wikipedia.org/wiki/Progressive_Web_App" target="_blank">"Progressive Web App"</a>)       installieren. Damit verkürzt sich die Startzeit und die App bleibt länger aktiv, um Updates zu den Ausfahrten direkt anzeigen zu können.
     </p>
 <p>  
-Die Installation ist ganz einfach: Auf Android, auf dem PC im Edge und Chrome-Browser wie üblich den MeetUpPlanner aufrufen. Oben rechts in der Addresszeile ist ein kleines +, über das man die Installation startet. Unter iOS im Safari-Browser geht man auf "Teilen" und dann "Zum Home-Bildschirm". Der MeetUpPlanner wird dann mit Logo auf dem Home-Bildschirm oder im Start-Menü (PC) angezeigt und kann von da auch einfach wieder deinstalliert werden.
+Die Installation ist ganz einfach: Auf Android, auf dem PC im Edge und Chrome-Browser wie üblich den MeetUpPlanner aufrufen. Oben rechts in der Addresszeile ist ein kleines +, über das man die Installation startet. Unter iOS im Safari-Browser oder neuerdings auch in alternativen Browsern geht man auf "Teilen" und dann "Zum Home-Bildschirm". Der MeetUpPlanner wird dann mit Logo auf dem Home-Bildschirm oder im Start-Menü (PC) angezeigt und kann von da auch einfach wieder deinstalliert werden.
 </p>
 <p>
 Außerdem ist es möglich, sich auf über Änderungen an Ausfahrten (Absage, Terminänderungen usw.) und über neue Kommentare benachrichtigen zu lassen. Beim Aufruf der Kalenderseite gibt es eine entsprechende Popup-Abfrage oder je nach Einstellung in der Adresszeile ein kleines "Glöckchen", über das man die Benachrichtungen zulassen oder eben auch ablehnen kann.
-Unter iOS funktioniert die Benachrichtung erst ab Version 16.4 (März 2023). Dazu sind die folgende Schritte notwendig:
-<ul>
-  <li>In den Einstellungen "Safari" auswählen</li>
-  <li>Nach unten scrollen auf "Erweitert", dann "Experimental Features"</li>
-  <li>In der langen Liste (alphabetisch sortiert) "Push-API" aktivieren</li>
-  <li>Dann im Safari Browser auf die MeetUpPlanner Seite gehen, dann dem Home-Bildschirm hinzufügen. Beim Aufruf die Frage, ob Mitteilungen gesendet werden sollen, mit "Erlauben" beantworten.</li>
-</ul>
- Die Benachrichtigungen lassen sich nachträglich auch wieder in den Einstellungen des Browsers abstellen.
+Unter iOS funktioniert die Benachrichtung erst ab Version 16.4 (März 2023).
+Die Benachrichtigungen lassen sich nachträglich auch wieder in den Einstellungen des Browsers abstellen.
 </p>
 </dd>
 <dt id="internal">Vereinsinterne Ausfahrten</dt>
