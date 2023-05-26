@@ -20,7 +20,7 @@ Hier sollen die etwas versteckteren Features beschrieben werden.
 Die Installation ist ganz einfach: Auf Android, auf dem PC im Edge und Chrome-Browser wie üblich den MeetUpPlanner aufrufen. Oben rechts in der Addresszeile ist ein kleines +, über das man die Installation startet. Unter iOS im Safari-Browser oder neuerdings auch in alternativen Browsern geht man auf "Teilen" und dann "Zum Home-Bildschirm". Der MeetUpPlanner wird dann mit Logo auf dem Home-Bildschirm oder im Start-Menü (PC) angezeigt und kann von da auch einfach wieder deinstalliert werden.
 </p>
 <p>
-Außerdem ist es möglich, sich auf über Änderungen an Ausfahrten (Absage, Terminänderungen usw.) und über neue Kommentare benachrichtigen zu lassen. Beim Aufruf der Kalenderseite gibt es eine entsprechende Popup-Abfrage oder je nach Einstellung in der Adresszeile ein kleines "Glöckchen", über das man die Benachrichtungen zulassen oder eben auch ablehnen kann.
+Außerdem ist es möglich, sich über Änderungen an Ausfahrten (Absage, Terminänderungen usw.) und über neue Kommentare benachrichtigen zu lassen. Beim Aufruf der Kalenderseite gibt es eine entsprechende Popup-Abfrage oder je nach Einstellung in der Adresszeile ein kleines "Glöckchen", über das man die Benachrichtungen zulassen oder eben auch ablehnen kann.
 Unter iOS funktioniert die Benachrichtung erst ab Version 16.4 (März 2023).
 Die Benachrichtigungen lassen sich nachträglich auch wieder in den Einstellungen des Browsers abstellen.
 </p>
