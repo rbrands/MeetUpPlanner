@@ -305,6 +305,20 @@
             </small>
         </div>
     }
+    @if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.Federation))
+    {
+        <div class="form-group">
+            <div class="form-check">
+                <input type="checkbox" id="federation" checked="@IsFederated()" @oninput="@(() => CheckFederation())" aria-describedby="federationHelp" class="form-check-input">
+                <label for="federation" class="form-check-label">
+                    Teilen mit @AppStateStore.ClientSettings.Federation?
+                </label>
+            </div>
+            <small id="federationHelp" class="form-text text-muted">
+                Auswählen, wenn die Ausfahrt/der Termin geteilt werden soll, d.h. auch beim Partner-Club angezeigt werden soll.
+            </small>
+        </div>
+    }
     <ValidationSummary />
     <button type="submit" id="BtnSave" disabled="@saveDisabled" class="btn btn-primary">Termin speichern ...</button>
     <button type="reset" id="BtnCancel" class="btn btn-secondary" @onclick="@(() => OnCancel())">Zurück ohne Speichern</button>
@@ -703,7 +717,24 @@
         _routeComment.CommentText = "Im MeetUpPlanner für eine Ausfahrt ausgewählt!";
         _routeComment.AuthorDisplayName = AppStateStore.DisplayName;
     }
-    
+    protected void CheckFederation()
+    {
+        if (IsFederated())
+        {
+            meetup.Federation = String.Empty;
+            meetup.FederatedFrom = String.Empty;
+        }
+        else
+        {
+            meetup.Federation = AppStateStore.ClientSettings.Federation;
+            meetup.FederatedFrom = AppStateStore.Tenant.FederationKey;
+        }
+    }
+    protected bool IsFederated()
+    {
+        return (!String.IsNullOrEmpty(meetup.Federation));
+    }
+
     private string StripEmptyHtml(string htmlContent)
     {
         htmlContent =  (null == htmlContent || htmlContent.Equals("<p><br></p>")) ? null : htmlContent;

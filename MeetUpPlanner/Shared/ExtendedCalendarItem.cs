@@ -59,6 +59,8 @@ namespace MeetUpPlanner.Shared
             this.GuestScope = calendarItem.GuestScope;
             this.AttachedInfoType = calendarItem.AttachedInfoType;
             this.AttachedInfoKey = calendarItem.AttachedInfoKey;
+            this.Federation = calendarItem.Federation;
+            this.FederatedFrom = calendarItem.FederatedFrom;
 
         }
 
