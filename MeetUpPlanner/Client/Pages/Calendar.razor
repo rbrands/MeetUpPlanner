@@ -70,6 +70,7 @@
                     }
                     <span class="badge badge-warning" hidden="@(!item.IsCross)">Cross</span>
                     <span class="badge badge-secondary" hidden="@(!item.IsTraining)">Training</span>
+                    <span class="badge badge-success" hidden="@(!IsFederated(item))">@item.FederatedFrom</span>
                     @{
                         string badge = GetCalendarBadge(item);
                         if (!String.IsNullOrEmpty(badge))
@@ -655,6 +656,10 @@
             // no push messages supported
             // notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Fehler", Detail = ex.Message, Duration = 4000 });
         }
+    }
+    bool IsFederated(ExtendedCalendarItem calendarItem)
+    {
+        return calendarItem.IsFederated() && calendarItem.FederatedFrom != AppStateStore.Tenant.FederationKey;
     }
 
 }

@@ -171,6 +171,20 @@
             </small>
         </div>
     }
+    @if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.Federation))
+    {
+        <div class="form-group">
+            <div class="form-check">
+                <input type="checkbox" id="federation" checked="@IsFederated()" @oninput="@(() => CheckFederation())" aria-describedby="federationHelp" class="form-check-input">
+                <label for="federation" class="form-check-label">
+                    Teilen mit @AppStateStore.ClientSettings.Federation?
+                </label>
+            </div>
+            <small id="federationHelp" class="form-text text-muted">
+                Auswählen, wenn die Ausfahrt/der Termin geteilt werden soll, d.h. auch beim Partner-Club angezeigt werden soll.
+            </small>
+        </div>
+    }
     <div class="form-row">
         <div class="form-group col-md-10">
             <InputText id="link" aria-describedby="linkHelp" class="form-control" @bind-Value="meetup.Link" placeholder="Link zu weiterer Streckeninfo" title="Link zu weiterer Streckeninfo" />
@@ -302,20 +316,6 @@
             <InputText id="guestScope" aria-describedby="guestScopeHelp" class="form-control" @bind-Value="meetup.GuestScope" autocomplete="on" placeholder="Kürzel, das im Link verwendet wird." />
             <small id="guestScopeHelp" class="form-text text-muted">
                 Über den "Scope" können Ausfahrten z.B. Gäste zusammen gefasst werden und sind dann über einen Link der Form ".../scope" erreichbar.
-            </small>
-        </div>
-    }
-    @if (!String.IsNullOrEmpty(AppStateStore.ClientSettings.Federation))
-    {
-        <div class="form-group">
-            <div class="form-check">
-                <input type="checkbox" id="federation" checked="@IsFederated()" @oninput="@(() => CheckFederation())" aria-describedby="federationHelp" class="form-check-input">
-                <label for="federation" class="form-check-label">
-                    Teilen mit @AppStateStore.ClientSettings.Federation?
-                </label>
-            </div>
-            <small id="federationHelp" class="form-text text-muted">
-                Auswählen, wenn die Ausfahrt/der Termin geteilt werden soll, d.h. auch beim Partner-Club angezeigt werden soll.
             </small>
         </div>
     }
