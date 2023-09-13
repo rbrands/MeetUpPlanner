@@ -4,6 +4,7 @@
 @inject AppState AppStateStore
 @inject KeywordCheck KeywordCheck
 @inject HttpClient Http
+@inject BackendApiRepository Api
 @inject NavigationManager NavigationManager
 @inject NotificationService notificationService
 @inject DialogService dialogService
@@ -181,7 +182,14 @@
                 <div class="card-footer">
                     <div class="btn-toolbar" role="toolbar" aria-label="Aktionen zur Ausfahrt">
                         <div class="btn-group mr-2" role="group" aria-label="Ändern">
-                            @if (CheckIfUserIsHost(item) || KeywordCheck.IsAdmin)
+                            @if (IsFederated(item))
+                            {
+                                if (KeywordCheck.IsAdmin)
+                                {
+                                    <button class="btn btn-sm btn-outline-secondary" title="Einladung ablehnen" @onclick="@(() => RemoveFederation(item))"><span class="oi oi-x"></span></button>
+                                }
+                            }
+                            else if (CheckIfUserIsHost(item) || KeywordCheck.IsAdmin)
                             {
                                 <button class="btn btn-sm btn-outline-secondary" title="Ändern" @onclick="@(() => EditCalendarItem(item.Id))"><span class="oi oi-pencil"></span></button>
                                 <button class="btn btn-sm btn-outline-secondary" title="Kopieren" @onclick="@(() => ConfirmClone(item))"><span class="oi oi-fork"></span></button>
@@ -410,7 +418,11 @@
         }
         //await ReadData();
     }
-
+    protected async Task RemoveFederation(ExtendedCalendarItem calendarItem)
+    {
+        await Api.RemoveFederation(calendarItem);
+        await ReadData();
+    }
     protected async Task Checkin(string itemId)
     {
         Participant participant = new Participant();

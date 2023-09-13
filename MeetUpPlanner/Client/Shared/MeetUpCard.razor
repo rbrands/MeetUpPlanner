@@ -1,6 +1,7 @@
 ﻿@using MeetUpPlanner.Shared
 @inject DialogService dialogService
 @inject HttpClient Http
+@inject BackendApiRepository Api
 @inject AppState AppStateStore
 @inject NavigationManager NavigationManager
 @inject DialogService dialogService
@@ -24,6 +25,8 @@
             <span class="badge badge-danger"><span class="oi oi-key" title="Private Ausfahrt"></span> @CalendarItem.PrivateKeyword</span>
         }
         <span class="badge badge-warning" hidden="@(!CalendarItem.IsCross)">Cross</span>
+        <span class="badge badge-secondary" hidden="@(!CalendarItem.IsTraining)">Training</span>
+        <span class="badge badge-success" hidden="@(!IsFederated())">@CalendarItem.FederatedFrom</span>
         @{
             string badge = GetCalendarBadge(CalendarItem);
             if (!String.IsNullOrEmpty(badge))
@@ -222,6 +225,11 @@
         bool isHost = !calendarItem.WithoutHost && (calendarItem.HostFirstName.Equals(FirstName) && calendarItem.HostLastName.Equals(LastName));
         return isHost;
     }
+    protected async Task RemoveFederation(ExtendedCalendarItem calendarItem)
+    {
+        await Api.RemoveFederation(calendarItem);
+    }
+
 
     protected void EditCalendarItem(string itemId)
     {
@@ -326,6 +334,10 @@
         Dictionary<string, object> attachedInfoParameters = new Dictionary<string, object>();
         attachedInfoParameters.Add("Key", CalendarItem.AttachedInfoKey);
         return attachedInfoParameters;
+    }
+    bool IsFederated()
+    {
+        return CalendarItem.IsFederated() && CalendarItem.FederatedFrom != AppStateStore.Tenant.FederationKey;
     }
 
 

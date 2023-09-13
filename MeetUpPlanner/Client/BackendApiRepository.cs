@@ -241,5 +241,15 @@ namespace MeetUpPlanner.Client
             return urlFriendlyTitle;
         }
 
+        public async Task RemoveFederation(CalendarItem calendarItem)
+        {
+            this.PrepareHttpClient();
+            HttpResponseMessage response = await _http.PostAsJsonAsync<CalendarItem>($"api/calendar/removefederation", calendarItem);
+            response.EnsureSuccessStatusCode();
+            _http.DefaultRequestHeaders.Remove(HEADER_TENANT);
+            return;
+
+        }
+
     }
 }
