@@ -36,6 +36,7 @@ namespace MeetUpPlanner.Functions
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 _logger.LogError(ex, "GetChallengeByTitle failed.");
                 throw;
             }
