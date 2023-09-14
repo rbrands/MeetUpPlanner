@@ -31,6 +31,8 @@ namespace MeetUpPlanner.Shared
         [Required(ErrorMessage = "Anzeigewindows in Stunden für Ausfahrten eingeben.")]
         [Range(0, 240, ErrorMessage = "Für Anzeigewindows Werte zwischen 0 und 240 eingeben.")]
         public int CalendarItemsPastWindowHours { get; set; } = 12;
+        [JsonProperty(PropertyName = "federation", NullValueHandling = NullValueHandling.Ignore)]
+        public string Federation { get; set; }
         /// <summary>
         /// Checks if the given keyword matches the admin keyword
         /// </summary>

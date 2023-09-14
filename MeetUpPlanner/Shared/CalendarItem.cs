@@ -68,6 +68,14 @@ namespace MeetUpPlanner.Shared
         public string AttachedInfoType { get; set; }
         [JsonProperty(PropertyName = "attachedInfoKey", NullValueHandling = NullValueHandling.Ignore), MaxLength(256)]
         public string AttachedInfoKey { get; set; }
+        [JsonProperty(PropertyName = "federation", NullValueHandling = NullValueHandling.Ignore)]
+        public string Federation { get; set; }
+        [JsonProperty(PropertyName = "federatedFrom", NullValueHandling = NullValueHandling.Ignore)]
+        public string FederatedFrom {  get; set; }
+        public Boolean IsFederated()
+        {
+            return !String.IsNullOrEmpty(FederatedFrom);
+        }
         /// <summary>
         /// Constructor with some suggestions about start-time: Schedule for the next day. On Saturdays and Sundays 
         /// StartTime is 10 am otherwise 18 pm

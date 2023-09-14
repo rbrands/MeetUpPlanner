@@ -27,6 +27,13 @@ namespace MeetUpPlanner.Server.Controllers
             await _meetUpFunctions.WriteCalendarItem(tenant, keyword, calendarItem);
             return Ok();
         }
+        [HttpPost("removefederation")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> RemoveFederation([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] CalendarItem calendarItem)
+        {
+            await _meetUpFunctions.RemoveFederation(tenant, keyword, calendarItem);
+            return Ok();
+        }
         [HttpPost("writemeetingplace")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> WriteMeetingPlace([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] MeetingPlace meetingPlace)

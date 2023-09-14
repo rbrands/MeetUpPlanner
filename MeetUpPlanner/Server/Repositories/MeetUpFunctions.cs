@@ -104,6 +104,16 @@ namespace MeetUpPlanner.Server.Repositories
 
             return new OkResult();
         }
+        public async Task<IActionResult> RemoveFederation(string tenant, string keyword, CalendarItem calendarItem)
+        {
+            await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/RemoveFederation"
+                            .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
+                            .WithHeader(HEADER_KEYWORD, keyword)
+                            .WithHeader(HEADER_TENANT, tenant)
+                            .PostJsonAsync(calendarItem);
+
+            return new OkResult();
+        }
         public async Task<IActionResult> WriteNotificationSubscription(string tenant, string keyword, NotificationSubscription subscription)
         {
             await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/WriteNotificationSubscription"

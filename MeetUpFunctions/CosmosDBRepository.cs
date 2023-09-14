@@ -18,6 +18,8 @@ namespace MeetUpPlanner.Functions
         private CosmosClient _cosmosClient;
         string _cosmosDbDatabase;
         string _cosmosDbContainer;
+        const int MAX_PATCH_OPERATIONS = 10;
+
 
         /// <summary>
         /// Create repository, typically as singleton. Create CosmosClient before.
@@ -167,7 +169,47 @@ namespace MeetUpPlanner.Functions
 
             return response.Resource;
         }
+        public async Task<T> PatchItem(string id, IReadOnlyList<PatchOperation> patchOperations, string timestamp = null)
+        {
+            Container container = _cosmosClient.GetDatabase(_cosmosDbDatabase).GetContainer(_cosmosDbContainer);
+            PartitionKey partitionKey = new PartitionKey(typeof(T).Name);
 
+            if (String.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException("id");
+            }
+            PatchItemRequestOptions patchOption = new PatchItemRequestOptions();
+            if (null != timestamp)
+            {
+                patchOption.FilterPredicate = $"from c where c._ts = {timestamp}";
+            }
+            // PatchItem only supports up to 10 operations. If there are more than that given, create more batches and 
+            // patch the document several times.
+            ItemResponse<T> response = null;
+            do
+            {
+                List<PatchOperation> po = new List<PatchOperation>(patchOperations.Take(MAX_PATCH_OPERATIONS));
+                response = await container.PatchItemAsync<T>(
+                    id: id,
+                    partitionKey: partitionKey,
+                    patchOperations: po,
+                    requestOptions: patchOption
+                );
+                patchOperations = new List<PatchOperation>(patchOperations.Skip(MAX_PATCH_OPERATIONS));
+            }
+            while (patchOperations.Count > 0);
+
+            return response.Resource;
+        }
+        public async Task<T> PatchField(string id, string fieldName, object value, string timestamp = null)
+        {
+            List<PatchOperation> patchOperations = new()
+            {
+                PatchOperation.Add($"/{fieldName}", value)
+            };
+
+            return await PatchItem(id, patchOperations, timestamp);
+        }
 
     }
 }

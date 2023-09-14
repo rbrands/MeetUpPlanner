@@ -76,8 +76,22 @@ namespace MeetUpPlanner.Functions
             {
                 rawListOfCalendarItems = await _cosmosRepository.GetItems(d => d.StartDate > compareDate && d.Tenant.Equals(tenant));
             }
+            IEnumerable<CalendarItem> rawCalendarItemsWithFederatedOnes = rawListOfCalendarItems;
+            if (!String.IsNullOrEmpty(serverSettings.Federation))
+            {
+                IEnumerable<CalendarItem> rawListOfFederatedCalendarItems;
+                if (null == tenant)
+                {
+                    rawListOfFederatedCalendarItems = await _cosmosRepository.GetItems(d => d.StartDate > compareDate && (d.Tenant ?? String.Empty) == String.Empty && d.Federation == serverSettings.Federation);
+                }
+                else
+                {
+                    rawListOfFederatedCalendarItems = await _cosmosRepository.GetItems(d => d.StartDate > compareDate && d.Tenant.Equals(tenant) && d.Federation == serverSettings.Federation);
+                }
+                rawCalendarItemsWithFederatedOnes = rawListOfCalendarItems.Concat(rawListOfFederatedCalendarItems);
+            }
             List<ExtendedCalendarItem> resultCalendarItems = new List<ExtendedCalendarItem>(10);
-            foreach (CalendarItem item in rawListOfCalendarItems)
+            foreach (CalendarItem item in rawCalendarItemsWithFederatedOnes)
             {
                 // Create ExtendedCalendarItem and get comments and participants
                 ExtendedCalendarItem extendedItem = new ExtendedCalendarItem(item);

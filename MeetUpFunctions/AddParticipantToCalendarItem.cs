@@ -112,6 +112,7 @@ namespace MeetUpPlanner.Functions
             { 
                 participant.Tenant = tenant;
             }
+            participant.Federation = serverSettings.Federation;
 
             participant = await _cosmosRepository.UpsertItem(participant);
             BackendResult result = new BackendResult(true);
