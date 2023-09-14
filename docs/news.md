@@ -1,5 +1,8 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
+*14.9.2023*
+- Einführung von "Federation", das Teilen von Ausfahrten mit einem befeundeten Verein.
+
 *9.5.2023*
 - Upgrade auf .NET 7 für den Client und den Server (die Azure Functions bleiben auf .NET 6).
 
