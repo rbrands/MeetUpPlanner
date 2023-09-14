@@ -1,6 +1,7 @@
 ﻿@using MeetUpPlanner.Shared
 @inject DialogService dialogService
 @inject KeywordCheck KeywordCheck
+@inject AppState AppStateStore
 
 
 <h1>Teilnehmer</h1>
@@ -15,7 +16,14 @@
         {
             <li>
                 <button class="btn btn-sm btn-outline-secondary" disabled="@saveDisabled" @onclick="@(() => ConfirmDelete(p))"><span class="oi oi-trash" title="Abmelden"></span></button>
-                @p.ParticipantDisplayName(NameDisplayLength) - @p.ParticipantAdressInfo
+                @if (p.Federation == AppStateStore.Tenant.FederationKey)
+                {
+                    @p.ParticipantDisplayName(NameDisplayLength)<text> - </text>@p.ParticipantAdressInfo
+                }
+                else
+                {
+                    @p.ParticipantDisplayName(NameDisplayLength)<span class="badge badge-success">@p.Federation</span><text> - </text>@p.ParticipantAdressInfo
+                }
             </li>
         }
     }
@@ -30,7 +38,14 @@
             {
                 <li>
                     <button class="btn btn-sm btn-outline-secondary" disabled="@saveDisabled" @onclick="@(() => ConfirmDelete(p))"><span class="oi oi-trash" title="Abmelden"></span></button>
-                    @p.ParticipantDisplayName(NameDisplayLength) - @p.ParticipantAdressInfo
+                    @if (p.Federation == AppStateStore.Tenant.FederationKey)
+                    {
+                        @p.ParticipantDisplayName(NameDisplayLength)<text> - </text>@p.ParticipantAdressInfo
+                    }
+                    else
+                    {
+                        @p.ParticipantDisplayName(NameDisplayLength)<span class="badge badge-success">@p.Federation</span><text> - </text>@p.ParticipantAdressInfo
+                    }
                 </li>
             }
         }

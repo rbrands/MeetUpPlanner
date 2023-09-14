@@ -26,6 +26,8 @@ namespace MeetUpPlanner.Shared
         public Boolean IsGuest { get; set; } = false;
         [JsonProperty(PropertyName = "isWaiting")]
         public Boolean IsWaiting { get; set; } = false;
+        [JsonProperty(PropertyName = "federaton")]
+        public string Federation { get; set; }
 
         public Participant()
         {
