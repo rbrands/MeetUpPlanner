@@ -42,6 +42,7 @@ namespace MeetUpPlanner.Functions
             }
             catch (Exception ex)
             {
+                _logger.LogError("Error " + ex.Message);
                 _logger.LogError(ex, $"GetChallenge(challengeTitle = {challengeTitle}) failed.");
                 return new BadRequestErrorMessageResult(ex.Message);
             }
