@@ -80,14 +80,7 @@ namespace MeetUpPlanner.Functions
             if (!String.IsNullOrEmpty(serverSettings.Federation))
             {
                 IEnumerable<CalendarItem> rawListOfFederatedCalendarItems;
-                if (null == tenant)
-                {
-                    rawListOfFederatedCalendarItems = await _cosmosRepository.GetItems(d => d.StartDate > compareDate && (d.Tenant ?? String.Empty) == String.Empty && d.Federation == serverSettings.Federation);
-                }
-                else
-                {
-                    rawListOfFederatedCalendarItems = await _cosmosRepository.GetItems(d => d.StartDate > compareDate && d.Tenant.Equals(tenant) && d.Federation == serverSettings.Federation);
-                }
+                rawListOfFederatedCalendarItems = await _cosmosRepository.GetItems(d => d.StartDate > compareDate && d.Federation.Equals(serverSettings.Federation));
                 rawCalendarItemsWithFederatedOnes = rawListOfCalendarItems.Concat(rawListOfFederatedCalendarItems);
             }
             List<ExtendedCalendarItem> resultCalendarItems = new List<ExtendedCalendarItem>(10);
