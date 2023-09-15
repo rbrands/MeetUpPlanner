@@ -97,7 +97,7 @@ Die Benachrichtigungen lassen sich nachträglich auch wieder in den Einstellunge
   <dt id="federation">Federation</dt>
   <dd>
     <p>
-      Mit "Federation" ist gemeint, dass Ausfahrten zwischen zwei Clubs geteilt werden können. Dazu müssen die Admins (siehe separate Beschreibung) die Federation zunächst einrichten. Eine Federation kann immer höchstens mit einem anderen Club eingerichtet werden. Das Teilen einer Ausfahrt/eines Termins bedeuted:
+      Mit "Federation" ist gemeint, dass Ausfahrten zwischen zwei Clubs geteilt werden können. Dazu müssen die Admins (siehe separate Beschreibung) die Federation zunächst einrichten. Eine Federation kann immer höchstens mit einem anderen Club eingerichtet werden. Das Teilen einer Ausfahrt/eines Termins bedeutet:
       <ul>
         <li>Die Ausfahrt ist im MeetUpPlanner des befreundeten Clubs sichtbar, entsprechend gekennzeichnet durch einen gründen Badge.</li>
         <li>Die Anmeldung zur Ausfahrt ist in beiden Clubs möglich.</li>
@@ -105,6 +105,7 @@ Die Benachrichtigungen lassen sich nachträglich auch wieder in den Einstellunge
     </p>
     <p>
       Und so funktioniert es: Beim Anlegen einer Ausfahrt/eines Termins kann über die Checkbox "Teilen mit ..." die Ausfahrt geteilt werden. Die Anmeldung ist in beiden Clubs ohne Einschränkung möglich. Wer die Ausfahrt erstellt hat, kann in der Teilnehmerliste sehen, wer sich vom befreundeten Club angemeldet hat.
+      ![Checkbox Federation](./auswahlfederation.jpg)
     </p>
   </dd>
 </dl>
