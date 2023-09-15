@@ -102,10 +102,11 @@ Die Benachrichtigungen lassen sich nachträglich auch wieder in den Einstellunge
         <li>Die Ausfahrt ist im MeetUpPlanner des befreundeten Clubs sichtbar, entsprechend gekennzeichnet durch einen gründen Badge.</li>
         <li>Die Anmeldung zur Ausfahrt ist in beiden Clubs möglich.</li>
         <li>In der Liste der Teilnehmer:innen (für den Guide oder Admin sichbar) werden die Anmeldungen aus dem "federierten" Club gekennzeichnet.</li>
-      </ul>  
+      </ul>
     </p>
     <p>
       Und so funktioniert es: Beim Anlegen einer Ausfahrt/eines Termins kann über die Checkbox "Teilen mit ..." die Ausfahrt geteilt werden. Die Anmeldung ist in beiden Clubs ohne Einschränkung möglich. Wer die Ausfahrt erstellt hat, kann in der Teilnehmerliste sehen, wer sich vom befreundeten Club angemeldet hat.
+      Ein Admin im befreundeten Club kann das Teilen einer Ausfahrt/eines Termins "absagen" über den Button "Einladung ablehnen", dann bitte nicht wieder neu teilen, sondern akzeptieren, dass die Ausfahrt nicht geteilt werden soll.
     </p>
     <p>
       <img title="Checkbox Federation" width="600px" src="./auswahlfederation.jpg">
@@ -149,7 +150,12 @@ Mit dem sog. "Admin-Schlüsselwort" stehen einem weitere Funktionen zur Verfügu
 
   <dt id="federationadmin">Ausfahrten vom Partner-Club</dt>
   <dd>
-    Falls eine Ausfahrt, die vom Partnerclub geteilt wurde, nicht angezeigt werden soll, kann ein Admin die "Federation" aufheben. D.h. der "Absagen"-Button macht das Teilen der Ausfahrt rückgängig. Alle bereits erfolgten Anmeldungen bleiben alledings bestehen, also am besten dieses Feature frühzeitig nutzen, wenn eine unerwünschte Ausfahrt des Partnerclubs auftaucht.
+    <p>
+      Falls eine Ausfahrt, die vom Partnerclub geteilt wurde, nicht angezeigt werden soll, kann ein Admin die "Federation" aufheben. D.h. der "Absagen"-Button macht das Teilen der Ausfahrt rückgängig. Alle bereits erfolgten Anmeldungen bleiben alledings bestehen, also am besten dieses Feature frühzeitig nutzen, wenn eine unerwünschte Ausfahrt des Partnerclubs auftaucht.
+    </p>
+    <p>
+      <img title="Einladung ablehnen" width="600px" src="./ablehnen.jpg">
+    </p>
   </dd>
 </dl>
 
