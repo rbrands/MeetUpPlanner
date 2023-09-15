@@ -101,11 +101,14 @@ Die Benachrichtigungen lassen sich nachträglich auch wieder in den Einstellunge
       <ul>
         <li>Die Ausfahrt ist im MeetUpPlanner des befreundeten Clubs sichtbar, entsprechend gekennzeichnet durch einen gründen Badge.</li>
         <li>Die Anmeldung zur Ausfahrt ist in beiden Clubs möglich.</li>
+        <li>In der Liste der Teilnehmer:innen (für den Guide oder Admin sichbar) werden die Anmeldungen aus dem "federierten" Club gekennzeichnet.</li>
       </ul>  
     </p>
     <p>
       Und so funktioniert es: Beim Anlegen einer Ausfahrt/eines Termins kann über die Checkbox "Teilen mit ..." die Ausfahrt geteilt werden. Die Anmeldung ist in beiden Clubs ohne Einschränkung möglich. Wer die Ausfahrt erstellt hat, kann in der Teilnehmerliste sehen, wer sich vom befreundeten Club angemeldet hat.
-      ![Checkbox Federation](./auswahlfederation.jpg)
+    </p>
+    <p>
+      <img title="Checkbox Federation" width="600px" src="./auswahlfederation.jpg">
     </p>
   </dd>
 </dl>
@@ -142,6 +145,11 @@ Mit dem sog. "Admin-Schlüsselwort" stehen einem weitere Funktionen zur Verfügu
   <dt>Infoboxen</dt>
   <dd>
     Admins können sog. "Infoboxen" anlegen, die ähnlich wie Termine angezeigt werden können. So können zusätzliche Infos zur Bedienung, Wetteraussichten usw. angezeigt werden. Es lässt sich einstellen, ob Kommentare zugelassen sind und wie lange diese gespeichert werden sollen. Auf diese Weite kann ein "Schwarzes Brett" umgesetzt werden, über das die Nutzer sich austauschen können.
+  </dd>
+
+  <dt id="federationadmin">Ausfahrten vom Partner-Club</dt>
+  <dd>
+    Falls eine Ausfahrt, die vom Partnerclub geteilt wurde, nicht angezeigt werden soll, kann ein Admin die "Federation" aufheben. D.h. der "Absagen"-Button macht das Teilen der Ausfahrt rückgängig. Alle bereits erfolgten Anmeldungen bleiben alledings bestehen, also am besten dieses Feature frühzeitig nutzen, wenn eine unerwünschte Ausfahrt des Partnerclubs auftaucht.
   </dd>
 </dl>
 
