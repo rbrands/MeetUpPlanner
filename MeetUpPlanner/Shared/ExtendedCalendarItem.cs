@@ -42,6 +42,7 @@ namespace MeetUpPlanner.Shared
             this.MaxRegistrationsCount = calendarItem.MaxRegistrationsCount;
             this.MinRegistrationsCount = calendarItem.MinRegistrationsCount;
             this.MaxWaitingList = calendarItem.MaxWaitingList;
+            this.MaxCoGuidesCount = calendarItem.MaxCoGuidesCount;
             this.PrivateKeyword = calendarItem.PrivateKeyword;
             this.IsInternal = calendarItem.IsInternal;
             this.LevelDescription = calendarItem.LevelDescription;

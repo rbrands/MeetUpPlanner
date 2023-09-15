@@ -39,6 +39,8 @@ namespace MeetUpPlanner.Shared
         public int MinRegistrationsCount { get; set; } = 0;
         [JsonProperty(PropertyName = "maxWaitingList", NullValueHandling = NullValueHandling.Ignore), Range(0.0, 150.0, ErrorMessage = "Größe der Warteliste nicht im gültigen Bereich."), Display(Name = "Maximale Anzahl auf Warteliste", Prompt = "Anzahl eingeben"), Required(ErrorMessage = "Max. Anzahl auf Warteliste eingeben")]
         public int MaxWaitingList { get; set; } = 0;
+        [JsonProperty(PropertyName = "maxCoGuidesCount", NullValueHandling = NullValueHandling.Ignore)]
+        public int MaxCoGuidesCount { get; set; } = 0;
         [JsonProperty(PropertyName = "privateKeyword", NullValueHandling = NullValueHandling.Ignore), MaxLength(50, ErrorMessage = "Privates Schlüsselwort zu lang.")]
         public string PrivateKeyword { get; set; }
         [JsonProperty(PropertyName = "isInternal")]
