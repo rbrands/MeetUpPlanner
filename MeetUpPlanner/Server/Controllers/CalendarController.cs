@@ -124,6 +124,17 @@ namespace MeetUpPlanner.Server.Controllers
             BackendResult result = await _meetUpFunctions.AddParticipantToCalendarItem(tenant, keyword, participant);
             return Ok(result);
         }
+        [HttpPost("addparticipantascoguide")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> AddParticipantAsCoGuide([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] Participant participant)
+        {
+            if (String.IsNullOrEmpty(keyword))
+            {
+                keyword = _meetUpFunctions.InviteGuestKey;
+            }
+            BackendResult result = await _meetUpFunctions.AddParticipantAsCoGuideToCalendarItem(tenant, keyword, participant);
+            return Ok(result);
+        }
         [HttpPost("addguest")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> AddGuest([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromBody] Participant participant)

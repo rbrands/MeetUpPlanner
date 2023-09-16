@@ -42,6 +42,7 @@ namespace MeetUpPlanner.Shared
             this.MaxRegistrationsCount = calendarItem.MaxRegistrationsCount;
             this.MinRegistrationsCount = calendarItem.MinRegistrationsCount;
             this.MaxWaitingList = calendarItem.MaxWaitingList;
+            this.MaxCoGuidesCount = calendarItem.MaxCoGuidesCount;
             this.PrivateKeyword = calendarItem.PrivateKeyword;
             this.IsInternal = calendarItem.IsInternal;
             this.LevelDescription = calendarItem.LevelDescription;
@@ -61,6 +62,7 @@ namespace MeetUpPlanner.Shared
             this.AttachedInfoKey = calendarItem.AttachedInfoKey;
             this.Federation = calendarItem.Federation;
             this.FederatedFrom = calendarItem.FederatedFrom;
+            this.MaxCoGuidesCount = calendarItem.MaxCoGuidesCount;
 
         }
 
@@ -68,8 +70,10 @@ namespace MeetUpPlanner.Shared
         {
             StringBuilder sb = new StringBuilder(100);
             int counter = WithoutHost ? 0 : 1;
+            int coGuideCounter = 0;
             foreach (Participant participant in this.ParticipantsList)
             {
+                if (participant.IsCoGuide) coGuideCounter++;
                 if (!participant.IsWaiting)
                 { 
                     if (counter > 0)
@@ -77,6 +81,10 @@ namespace MeetUpPlanner.Shared
                         sb.Append(", ");
                     }
                     sb.Append(participant.ParticipantDisplayName(nameDisplayLength));
+                    if (participant.IsCoGuide && coGuideCounter <= this.MaxCoGuidesCount)
+                    {
+                        sb.Append("(Co-Guide)");
+                    }
                     ++counter;
                 }
             }
@@ -163,6 +171,22 @@ namespace MeetUpPlanner.Shared
                 {
                     if (p.IsWaiting)
                     { 
+                        ++counter;
+                    }
+                }
+                return counter;
+            }
+        }
+        [JsonIgnore]
+        public int CoGuidesCounter
+        {
+            get
+            {
+                int counter = 0;
+                foreach (Participant p in ParticipantsList)
+                {
+                    if (p.IsCoGuide)
+                    {
                         ++counter;
                     }
                 }

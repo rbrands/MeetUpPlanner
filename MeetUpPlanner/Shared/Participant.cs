@@ -26,6 +26,8 @@ namespace MeetUpPlanner.Shared
         public Boolean IsGuest { get; set; } = false;
         [JsonProperty(PropertyName = "isWaiting")]
         public Boolean IsWaiting { get; set; } = false;
+        [JsonProperty(PropertyName = "isCoGuide")]
+        public Boolean IsCoGuide { get; set; } = false;
         [JsonProperty(PropertyName = "federaton")]
         public string Federation { get; set; }
 
@@ -54,6 +56,30 @@ namespace MeetUpPlanner.Shared
                 if (length < ParticipantLastName.Length)
                 {
                     sb.Append('.');
+                }
+            }
+
+            return sb.ToString();
+        }
+        public string ParticipantDisplayNameWithCoGuideSuffix(int nameDisplayLength)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (IsGuest)
+            {
+                sb.Append("Gast");
+            }
+            else
+            {
+                int length = nameDisplayLength > 0 ? Math.Min(nameDisplayLength, ParticipantLastName.Length) : ParticipantLastName.Length;
+                sb.Append(ParticipantFirstName).Append(" ");
+                sb.Append(ParticipantLastName.Substring(0, length));
+                if (length < ParticipantLastName.Length)
+                {
+                    sb.Append('.');
+                }
+                if (IsCoGuide)
+                {
+                    sb.Append(" (Co-Guide)");
                 }
             }
 

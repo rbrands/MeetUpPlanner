@@ -215,6 +215,7 @@
                             @if (!CheckIfUserIsHostWithoutKeyword(item) && !CheckIfUserIsHost(item) && !ShowHistory())
                             {
                                 <button class="btn btn-sm btn-outline-secondary" title="@GetCheckInLabel(item)" disabled="@checkInDisabled" hidden="@(CheckIfUserIsAlreadyRegistered(item) || item.IsCanceled)" @onclick="@(() => Checkin(item.Id))">@GetCheckInLabel(item)</button>
+                                <button class="btn btn-sm btn-outline-secondary" title="@GetCheckInAsCoGuideLabel(item)" disabled="@checkInDisabled" hidden="@(!CheckIfCoGuideIsWanted(item) || item.IsCanceled)" @onclick="@(() => CheckinAsCoGuide(item.Id))">@GetCheckInAsCoGuideLabel(item)</button>
                                 <button class="btn btn-sm btn-outline-secondary" title="Abmelden" hidden="@(!CheckIfUserIsAlreadyRegistered(item))" @onclick="@(() => Checkout(item))">Abmelden</button>
                             }
                         </div>
@@ -467,6 +468,51 @@
         }
         checkInDisabled = false;
     }
+    protected async Task CheckinAsCoGuide(string itemId)
+    {
+        Participant participant = new Participant();
+        participant.ParticipantFirstName = AppStateStore.FirstName;
+        participant.ParticipantLastName = AppStateStore.LastName;
+        participant.ParticipantAdressInfo = AppStateStore.PhoneMail;
+        participant.CalendarItemId = itemId;
+        participant.IsCoGuide = true;
+        checkInDisabled = true;
+        StateHasChanged();
+        PrepareHttpClient();
+        HttpResponseMessage response = await Http.PostAsJsonAsync<Participant>($"Calendar/addparticipantascoguide", participant);
+        string responseBody = await response.Content.ReadAsStringAsync();
+
+        BackendResult result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
+        if (result.Success)
+        {
+            if (IsConnected) await SendMessage();
+            // Read data again
+            await ReadData();
+            foreach (ExtendedCalendarItem c in calendarItems)
+            {
+                if (c.Id.Equals(itemId))
+                {
+                    participant = c.FindParticipant(participant.ParticipantFirstName, participant.ParticipantLastName);
+                    break;
+                }
+            }
+            if (null != participant && participant.IsWaiting)
+            {
+                notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Warning, Summary = "Warteliste", Detail = "Du stehst jetzt auf der Warteliste. Falls du doch nicht dabei sein kannst, melde dich bitte wieder ab.", Duration = 4000 });
+            }
+            else
+            {
+                notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = "Angemeldet", Detail = "Du bist jetzt angemeldet. Falls du doch nicht dabei sein kannst, melde dich bitte wieder ab.", Duration = 4000 });
+            }
+            // Read data again
+            await ReadData();
+        }
+        else
+        {
+            notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Fehler", Detail = result.Message, Duration = 4000 });
+        }
+        checkInDisabled = false;
+    }
     protected async Task Checkout(ExtendedCalendarItem calendarItem)
     {
         // Find corresponding participant item
@@ -491,6 +537,10 @@
     {
         bool alreadyRegistered = calendarItem.FindParticipant(AppStateStore.FirstName, AppStateStore.LastName) != null;
         return alreadyRegistered;
+    }
+    protected bool CheckIfCoGuideIsWanted(ExtendedCalendarItem calendarItem)
+    {
+        return (KeywordCheck.IsUser && calendarItem.MaxCoGuidesCount > 0);
     }
     protected bool CheckIfUserIsHost(ExtendedCalendarItem calendarItem)
     {
@@ -606,6 +656,11 @@
             checkInLabel = "Auf Warteliste";
 
         }
+        return checkInLabel;
+    }
+    private string GetCheckInAsCoGuideLabel(ExtendedCalendarItem calendarItem)
+    {
+        string checkInLabel = "als Co-Guide";
         return checkInLabel;
     }
     private string GetScopeLink(ExtendedCalendarItem calendarItem)
