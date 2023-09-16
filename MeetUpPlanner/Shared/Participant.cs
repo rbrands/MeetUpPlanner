@@ -61,6 +61,30 @@ namespace MeetUpPlanner.Shared
 
             return sb.ToString();
         }
+        public string ParticipantDisplayNameWithCoGuideSuffix(int nameDisplayLength)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (IsGuest)
+            {
+                sb.Append("Gast");
+            }
+            else
+            {
+                int length = nameDisplayLength > 0 ? Math.Min(nameDisplayLength, ParticipantLastName.Length) : ParticipantLastName.Length;
+                sb.Append(ParticipantFirstName).Append(" ");
+                sb.Append(ParticipantLastName.Substring(0, length));
+                if (length < ParticipantLastName.Length)
+                {
+                    sb.Append('.');
+                }
+                if (IsCoGuide)
+                {
+                    sb.Append(" (Co-Guide)");
+                }
+            }
+
+            return sb.ToString();
+        }
 
     }
 }

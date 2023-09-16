@@ -72,6 +72,7 @@ namespace MeetUpPlanner.Functions
                 {
                     // already registered
                     alreadyRegistered = true;
+                    participant.Id = p.Id;
                 }
                 if (!p.IsWaiting)
                 {
