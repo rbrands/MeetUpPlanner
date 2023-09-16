@@ -97,7 +97,7 @@ Die Benachrichtigungen lassen sich nachträglich auch wieder in den Einstellunge
   <dt id="coguides">Co-Guides</dt>
   <dd>
     <p>
-      Wünscht man sich für eine Ausfahrt einen oder mehrere Co-Guides, so kann das bei der Anlage einer Ausfahrt direkt unter der Mindestteilnehmerzahl angegeben werden. Es können sich 1 - 3 Co-Guides "gewünscht" werden. Vereinsmitglieder (die also das Schlsselwort auf der Startseite eingeben), haben dann neben dem Butten "Anmelden" einen weiteren Button "Als Co-Guide". Damit melden sie sich an und erklären sich bereit, als Co-Guide die Ausfahrt zu begleiten. Nebeneffekt: Wenn eine Ausfahrt ausgebucht ist, kann als Co-Guide noch dazu. Die Ausfahrt kann mit der Anzahl angeforderter Co-Guides "überbucht" werden. Danach kann man sich zwar als Co-Guide melden, landet aber trotzdem auf der Warteliste. 
+      Wünscht man sich für eine Ausfahrt einen oder mehrere Co-Guides, so kann das bei der Anlage einer Ausfahrt direkt unter der Mindestteilnehmerzahl angegeben werden. Es können sich 1 - 3 Co-Guides "gewünscht" werden. Vereinsmitglieder, die also das Schlsselwort auf der Startseite eingeben, haben dann neben dem Butten "Anmelden" einen weiteren Button "Als Co-Guide". Damit melden sie sich an und erklären sich bereit, als Co-Guide die Ausfahrt zu begleiten. Nebeneffekt: Wenn eine Ausfahrt ausgebucht ist, kommt man  als Co-Guide noch dazu. Die Ausfahrt kann mit der Anzahl angeforderter Co-Guides "überbucht" werden. Danach kann man sich zwar als Co-Guide melden, landet aber trotzdem auf der Warteliste. 
     </p>
     <p>
       <img title="Co-Guide" width="600px" src="./coguides.jpg">
