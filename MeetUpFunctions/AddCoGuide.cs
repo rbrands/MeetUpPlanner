@@ -73,6 +73,7 @@ namespace MeetUpPlanner.Functions
                     // already registered
                     alreadyRegistered = true;
                     participant.Id = p.Id;
+                    participant.IsWaiting = p.IsWaiting;
                 }
                 if (!p.IsWaiting)
                 {
@@ -93,27 +94,24 @@ namespace MeetUpPlanner.Functions
                 // Admin can "overbook" a meetup to be able to add some extra guests
                 maxRegistrationCount *= Constants.ADMINOVERBOOKFACTOR;
             }
-            // Add extra slots for guides
+            // Add extra slots for co-guides
             if (coGuideCounter < calendarItem.MaxCoGuidesCount)
             { 
-                maxRegistrationCount += (calendarItem.MaxCoGuidesCount - coGuideCounter);
+                maxRegistrationCount += calendarItem.MaxCoGuidesCount;
             }
-            if (!alreadyRegistered)
+            if (counter < maxRegistrationCount)
             {
-                if (counter < maxRegistrationCount)
-                {
-                    ++counter;
-                    participant.IsWaiting = false;
-                }
-                else if (waitingCounter < calendarItem.MaxWaitingList)
-                {
-                    ++waitingCounter;
-                    participant.IsWaiting = true;
-                }
-                else
-                {
-                    return new OkObjectResult(new BackendResult(false, "Maximale Anzahl Registrierungen bereits erreicht."));
-                }
+                ++counter;
+                participant.IsWaiting = false;
+            }
+            else if (waitingCounter < calendarItem.MaxWaitingList)
+            {
+                ++waitingCounter;
+                participant.IsWaiting = true;
+            }
+            else
+            {
+                return new OkObjectResult(new BackendResult(false, "Maximale Anzahl Registrierungen bereits erreicht."));
             }
             // Set TTL for participant the same as for CalendarItem
             System.TimeSpan diffTime = calendarItem.StartDate.Subtract(DateTime.Now);
