@@ -80,10 +80,14 @@ namespace MeetUpPlanner.Shared
                     { 
                         sb.Append(", ");
                     }
+                    if (participant.IsCoGuide && coGuideCounter <= this.MaxCoGuidesCount)
+                    {
+                        sb.Append("<i>");
+                    }
                     sb.Append(participant.ParticipantDisplayName(nameDisplayLength));
                     if (participant.IsCoGuide && coGuideCounter <= this.MaxCoGuidesCount)
                     {
-                        sb.Append("(Co-Guide)");
+                        sb.Append("(Co-Guide)</i>");
                     }
                     ++counter;
                 }
