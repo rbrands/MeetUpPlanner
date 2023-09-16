@@ -1,5 +1,8 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
+*16.9.2023*
+- Unterstützung von Co-Guides.
+
 *14.9.2023*
 - Einführung von "Federation", das Teilen von Ausfahrten mit einem befeundeten Verein.
 
