@@ -540,7 +540,8 @@
     }
     protected bool CheckIfCoGuideIsWanted(ExtendedCalendarItem calendarItem)
     {
-        return (KeywordCheck.IsUser && calendarItem.MaxCoGuidesCount > 0);
+        Participant registered = calendarItem.FindParticipant(AppStateStore.FirstName, AppStateStore.LastName);
+        return (KeywordCheck.IsUser && calendarItem.MaxCoGuidesCount > 0 && (null == registered || !registered.IsCoGuide));
     }
     protected bool CheckIfUserIsHost(ExtendedCalendarItem calendarItem)
     {
