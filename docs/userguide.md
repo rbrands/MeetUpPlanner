@@ -102,6 +102,7 @@ Die Benachrichtigungen lassen sich nachträglich auch wieder in den Einstellunge
         <li>Die Ausfahrt ist im MeetUpPlanner des befreundeten Clubs sichtbar, entsprechend gekennzeichnet durch einen gründen Badge.</li>
         <li>Die Anmeldung zur Ausfahrt ist in beiden Clubs möglich.</li>
         <li>In der Liste der Teilnehmer:innen (für den Guide oder Admin sichbar) werden die Anmeldungen aus dem "federierten" Club gekennzeichnet.</li>
+        <li>Wird eine Ausfahrt als "vereinsintern" markiert, ist die Ausfahrt auch im Partnerclub nur intern sichtbar.</li>
       </ul>
     </p>
     <p>
