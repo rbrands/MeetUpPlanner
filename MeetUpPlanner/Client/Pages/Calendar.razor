@@ -128,7 +128,7 @@
                         {
                             <span class="badge badge-danger" title="Mindestteilnehmerzahl">Min @item.MinRegistrationsCount</span>
                         }
-                        <small>: <b>@item.HostDisplayName(AppStateStore.ClientSettings.NameDisplayLength)</b>@item.ParticipantsDisplay(AppStateStore.ClientSettings.NameDisplayLength)</small>
+                        <small>: <b>@item.HostDisplayName(AppStateStore.ClientSettings.NameDisplayLength)</b>@((MarkupString)item.ParticipantsDisplay(AppStateStore.ClientSettings.NameDisplayLength))</small>
                         @if (0 < item.WaitingListCounter)
                         {
                             <hr />

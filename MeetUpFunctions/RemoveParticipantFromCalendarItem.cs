@@ -74,16 +74,28 @@ namespace MeetUpPlanner.Functions
             if (!participant.IsWaiting)
             {
                 IEnumerable<Participant> participants = await _cosmosRepository.GetItems(p => p.CalendarItemId.Equals(participant.CalendarItemId));
+                int counter = 0;
+                int coGuideCounter = 0;
                 foreach (Participant p in participants)
                 {
+                    if (!p.IsWaiting) counter++;
                     if (!p.Id.Equals(participant.Id) && p.IsWaiting)
                     {
-                        p.IsWaiting = false;
-                        await _cosmosRepository.UpsertItem(p);
                         CalendarItem calendarItem = await _calendarRepository.GetItem(p.CalendarItemId);
-                        await _subscriptionRepository.NotifyParticipant(calendarItem, p, "Das Warten hat sich gelohnt - Du bist jetzt angemeldet.");
+                        int maxRegistrationCount = calendarItem.MaxRegistrationsCount;
+                        if (p.IsCoGuide)
+                        {
+                            maxRegistrationCount += (calendarItem.MaxCoGuidesCount - coGuideCounter);
+                        }
+                        if (counter < maxRegistrationCount)
+                        {
+                            p.IsWaiting = false;
+                            await _cosmosRepository.UpsertItem(p);
+                            await _subscriptionRepository.NotifyParticipant(calendarItem, p, "Das Warten hat sich gelohnt - Du bist jetzt angemeldet.");
+                        }
                         break; // only the first one from waiting list can be promoted
                     }
+                    if (p.IsCoGuide) coGuideCounter++;
                 }
             }
             await _cosmosRepository.DeleteItemAsync(participant.Id);
