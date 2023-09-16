@@ -315,6 +315,16 @@ namespace MeetUpPlanner.Server.Repositories
                             .ReceiveJson<BackendResult>();
             return result;
         }
+        public async Task<BackendResult> AddParticipantAsCoGuideToCalendarItem(string tenant, string keyword, Participant participant)
+        {
+            BackendResult result = await $"https://{_functionsConfig.FunctionAppName}.azurewebsites.net/api/AddCoGuide"
+                            .WithHeader(HEADER_FUNCTIONS_KEY, _functionsConfig.ApiKey)
+                            .WithHeader(HEADER_KEYWORD, keyword)
+                            .WithHeader(HEADER_TENANT, tenant)
+                            .PostJsonAsync(participant)
+                            .ReceiveJson<BackendResult>();
+            return result;
+        }
         public async Task<BackendResult> AddCommentToCalendarItem(string tenant, string keyword, CalendarComment comment)
         {
             BackendResult result;

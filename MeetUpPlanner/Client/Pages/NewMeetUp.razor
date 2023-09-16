@@ -303,6 +303,18 @@
         </small>
     </div>
     <div class="form-group">
+        <label for="CoGuides">Anzahl gewünschte Co-Guides</label>
+        <InputSelect id="CoGuides" @bind-Value="meetup.MaxCoGuidesCount" class="form-control">
+            <option value="0">Kein Co-Guide</option>
+            <option value="1">Ein Co-Guide gewünscht</option>
+            <option value="2">Zwei Co-Guides gewünscht</option>
+            <option value="3">Drei Co-Guides gewünscht</option>
+        </InputSelect>
+        <small id="standardPlaceHelp" class="form-text text-muted">
+            Wünscht du dir Unterstützung von Co-Guides? Du kannst bis zu drei Co-Guides anfragen.
+        </small>
+    </div>
+    <div class="form-group">
         <label for="privateKeyword">Private Ausfahrt?</label>
         <InputText id="privateKeyword" aria-describedby="privateKeywordHelp" class="form-control" @bind-Value="meetup.PrivateKeyword" autocomplete="on" placeholder="Schlüsselwort für private Ausfahrt" />
         <small id="privateKeywordHelp" class="form-text text-muted">
