@@ -19,6 +19,11 @@ Hier sollen die etwas versteckteren Features beschrieben werden.
 <p>  
 Die Installation ist ganz einfach: Auf Android, auf dem PC im Edge und Chrome-Browser wie üblich den MeetUpPlanner aufrufen. Oben rechts in der Addresszeile ist ein kleines +, über das man die Installation startet. Unter iOS im Safari-Browser oder neuerdings auch in alternativen Browsern geht man auf "Teilen" und dann "Zum Home-Bildschirm". Der MeetUpPlanner wird dann mit Logo auf dem Home-Bildschirm oder im Start-Menü (PC) angezeigt und kann von da auch einfach wieder deinstalliert werden.
 </p>
+    <p>
+      <img title="PWA Desktop" width="500px" src="./pwainstallation.jpg">
+      <img title="PWA iOS teilen" width="200px" src="./iosteilen.jpg">
+      <img title="PWA iOS zum Home Bildschirm" width="200px" src="./ioshomebildschirm.jpg">
+    </p>
 <p>
 Außerdem ist es möglich, sich über Änderungen an Ausfahrten (Absage, Terminänderungen usw.) und über neue Kommentare benachrichtigen zu lassen. Beim Aufruf der Kalenderseite gibt es eine entsprechende Popup-Abfrage oder je nach Einstellung in der Adresszeile ein kleines "Glöckchen", über das man die Benachrichtungen zulassen oder eben auch ablehnen kann.
 Unter iOS funktioniert die Benachrichtung erst ab Version 16.4 (März 2023).
