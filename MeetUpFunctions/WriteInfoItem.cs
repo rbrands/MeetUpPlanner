@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using MeetUpPlanner.Shared;
 using System.Web.Http;
-using Aliencube.AzureFunctions.Extensions.OpenApi.Core.Attributes;
 
 
 namespace MeetUpPlanner.Functions
@@ -33,10 +32,6 @@ namespace MeetUpPlanner.Functions
         /// <param name="req"></param>
         /// <returns></returns>
         [FunctionName("WriteInfoItem")]
-        [OpenApiOperation(Summary = "Writes a new or updated InfoItem to database.",
-                          Description = "If the InfoItem already exists (same id) it is overwritten.")]
-        [OpenApiRequestBody("application/json", typeof(InfoItem), Description = "New InfoItem to be written.")]
-        [OpenApiResponseWithBody(System.Net.HttpStatusCode.OK, "application/json", typeof(InfoItem), Description = "New InfoItem as written to database.")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
         {

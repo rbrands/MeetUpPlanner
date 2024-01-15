@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Web.Http;
-using Aliencube.AzureFunctions.Extensions.OpenApi.Core.Attributes;
 using MeetUpPlanner.Shared;
 using System.Collections.Generic;
 
@@ -65,13 +64,13 @@ namespace MeetUpPlanner.Functions
             int counter = calendarItem.WithoutHost ? 0 : 1;
             int waitingCounter = 0;
             int coGuideCounter = 0;
-            bool alreadyRegistered = false;
+            // bool alreadyRegistered = false;
             foreach (Participant p in participants)
             {
                 if (p.ParticipantFirstName.Equals(participant.ParticipantFirstName) && p.ParticipantLastName.Equals(participant.ParticipantLastName))
                 {
                     // already registered
-                    alreadyRegistered = true;
+                    // alreadyRegistered = true;
                     participant.Id = p.Id;
                     participant.IsWaiting = p.IsWaiting;
                 }

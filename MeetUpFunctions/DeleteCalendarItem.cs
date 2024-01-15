@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Web.Http;
-using Aliencube.AzureFunctions.Extensions.OpenApi.Core.Attributes;
 using MeetUpPlanner.Shared;
 using System.Collections.Generic;
 
@@ -36,10 +35,6 @@ namespace MeetUpPlanner.Functions
         }
 
         [FunctionName("DeleteCalendarItem")]
-        [OpenApiOperation(Summary = "Deletes a CalendarItem including all corresponding Participant and CalendarComment items.",
-                          Description = "Every CalendarItem has a unique id that is used to delete it.")]
-        [OpenApiRequestBody("application/json", typeof(CalendarItem), Description = "CalendarItem to be removed.")]
-        [OpenApiResponseWithBody(System.Net.HttpStatusCode.OK, "application/json", typeof(BackendResult), Description = "Status of operation.")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
         {

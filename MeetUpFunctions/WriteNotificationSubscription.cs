@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using MeetUpPlanner.Shared;
 using System.Web.Http;
-using Aliencube.AzureFunctions.Extensions.OpenApi.Core.Attributes;
 
 
 namespace MeetUpPlanner.Functions
@@ -33,10 +32,6 @@ namespace MeetUpPlanner.Functions
         /// <param name="req"></param>
         /// <returns></returns>
         [FunctionName("WriteNotificationSubscription")]
-        [OpenApiOperation(Summary = "Writes a new or updated NotificationSubscription to database.",
-                          Description = "If the NotificationSubscription already exists (same tenant + url) it it overwritten.")]
-        [OpenApiRequestBody("application/json", typeof(NotificationSubscription), Description = "New NotificationSubscription to be written.")]
-        [OpenApiResponseWithBody(System.Net.HttpStatusCode.OK, "application/json", typeof(NotificationSubscription), Description = "New NotificationSubscription as to be written to database.")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
         {

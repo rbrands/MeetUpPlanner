@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -9,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using MeetUpPlanner.Shared;
 using Microsoft.Extensions.Configuration;
 using MeetUpPlanner.Functions;
-using Aliencube.AzureFunctions.Extensions.OpenApi.Core.Attributes;
 
 namespace MeetUpFunctions
 {
@@ -32,8 +30,6 @@ namespace MeetUpFunctions
         /// <param name="req"></param>
         /// <returns></returns>
         [FunctionName(nameof(GetClientSettings))]
-        [OpenApiOperation(Summary = "Gets the active ClientSettings", Description = "Reading the ClientSettings should be done at the very beginning of the client application.")]
-        [OpenApiResponseWithBody(System.Net.HttpStatusCode.OK, "application/json", typeof(ClientSettings))]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req)
         {

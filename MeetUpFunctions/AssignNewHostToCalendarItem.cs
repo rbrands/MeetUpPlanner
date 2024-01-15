@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Web.Http;
-using Aliencube.AzureFunctions.Extensions.OpenApi.Core.Attributes;
 using MeetUpPlanner.Shared;
 using System.Collections.Generic;
 
@@ -32,10 +31,6 @@ namespace MeetUpPlanner.Functions
         }
 
         [FunctionName("AssignNewHostToCalendarItem")]
-        [OpenApiOperation(Summary = "Assign a new host.",
-                          Description = "The given participant will be assigned as new host for the CalendarItem.")]
-        [OpenApiRequestBody("application/json", typeof(Participant), Description = "Participant to be the new host.")]
-        [OpenApiResponseWithBody(System.Net.HttpStatusCode.OK, "application/json", typeof(BackendResult), Description = "Status of operation.")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
         {

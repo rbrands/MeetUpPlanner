@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 using MeetUpPlanner.Shared;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Azure.Cosmos;
 using System.Threading.Tasks;
 using WebPush;
 using System.Linq;
 using Microsoft.Extensions.Logging;
-using System.Security.Policy;
-using System.Text.Encodings.Web;
-using System.Runtime.CompilerServices;
 
 namespace MeetUpPlanner.Functions
 {

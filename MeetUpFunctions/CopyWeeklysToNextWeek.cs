@@ -7,11 +7,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 using MeetUpPlanner.Shared;
-using System.Web.Http;
-using System.Linq;
-using Aliencube.AzureFunctions.Extensions.OpenApi.Core.Attributes;
 
 
 
@@ -36,9 +32,6 @@ namespace MeetUpPlanner.Functions
         /// <param name="req"></param>
         /// <returns></returns>
         [FunctionName("CopyWeeklysToNextWeek")]
-        [OpenApiOperation(Summary = "Copies all CalendarItems marked as weekly to next week.",
-                          Description = "Copies all CalendarItems marked as weekly from current day to next week.")]
-        [OpenApiResponseWithBody(System.Net.HttpStatusCode.OK, "application/json", typeof(BackendResult), Description = "Result of operation.")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
         {

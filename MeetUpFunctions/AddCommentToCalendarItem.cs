@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Web.Http;
 using MeetUpPlanner.Shared;
-using Aliencube.AzureFunctions.Extensions.OpenApi.Core.Attributes;
 
 namespace MeetUpPlanner.Functions
 {
@@ -38,10 +37,6 @@ namespace MeetUpPlanner.Functions
         }
 
         [FunctionName("AddCommentToCalendarItem")]
-        [OpenApiOperation(Summary = "Add a comment to the referenced CalendarItem.",
-                          Description = "If the CalendarComment already exists (same id) it is overwritten.")]
-        [OpenApiRequestBody("application/json", typeof(CalendarComment), Description = "New CalendarComment to be written.")]
-        [OpenApiResponseWithBody(System.Net.HttpStatusCode.OK, "application/json", typeof(BackendResult), Description = "Status of operation.")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
         {
