@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Web.Http;
-using Aliencube.AzureFunctions.Extensions.OpenApi.Core.Attributes;
 using MSiccDev.Libs.LinkTools.LinkPreview;
 using MeetUpPlanner.Shared;
 
@@ -31,10 +30,6 @@ namespace MeetUpPlanner.Functions
 
 
         [FunctionName("GetLinkPreview")]
-        [OpenApiOperation(Summary = "Gets the LinkPreview for given URL",
-                          Description = "Retrieves the link preview infos.")]
-        [OpenApiRequestBody("application/json", typeof(LinkPreview), Description = "LinkPreview with url to be evaluated.")]
-        [OpenApiResponseWithBody(System.Net.HttpStatusCode.OK, "application/json", typeof(LinkPreview))]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
         {

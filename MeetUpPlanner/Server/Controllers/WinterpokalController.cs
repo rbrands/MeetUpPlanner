@@ -32,7 +32,7 @@ namespace MeetUpPlanner.Server.Controllers
 
             dynamic response = await $"{_winterpokalConfig.ApiEndpoint}/api/v1/teams/get/{teamId}.json"
                           .WithHeader("api-token", _winterpokalConfig.ApiKey)
-                          .GetJsonAsync();
+                          .GetJsonAsync<dynamic>();
             WinterpokalTeam team = new WinterpokalTeam()
             {
                 Id = Convert.ToInt64(teamId)

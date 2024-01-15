@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Drawing;
-using System.IO;
-using QRCoder;
+//using System.Drawing;
+//using System.IO;
+//using QRCoder;
 
 using MeetUpPlanner.Server.Repositories;
 using MeetUpPlanner.Shared;
@@ -20,7 +20,7 @@ namespace MeetUpPlanner.Server.Controllers
     {
         private readonly MeetUpFunctions _meetUpFunctions;
         private readonly ILogger<UtilController> logger;
-        const string serverVersion = "2023-09-16";
+        const string serverVersion = "2024-01-02";
         string functionsVersion = "tbd";
 
         public UtilController(ILogger<UtilController> logger, MeetUpFunctions meetUpFunctions)
@@ -107,37 +107,37 @@ namespace MeetUpPlanner.Server.Controllers
         public String GetQrCode([FromQuery] string link)
         {
             string imageUrl = "";
-            QRCodeGenerator qrGenerator = new QRCodeGenerator();
-            QRCodeData qrCodeData = qrGenerator.CreateQrCode(link, QRCodeGenerator.ECCLevel.Q);
-            QRCode qrCode = new QRCode(qrCodeData);
+            //QRCodeGenerator qrGenerator = new QRCodeGenerator();
+            //QRCodeData qrCodeData = qrGenerator.CreateQrCode(link, QRCodeGenerator.ECCLevel.Q);
+            //QRCode qrCode = new QRCode(qrCodeData);
 
-            using (Bitmap bitMap = qrCode.GetGraphic(20))
-            {
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    bitMap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                    byte[] byteImage = ms.ToArray();
-                    imageUrl = "data:image/png;base64," + Convert.ToBase64String(byteImage);
-                }
-            }
+            //using (Bitmap bitMap = qrCode.GetGraphic(20))
+            //{
+            //    using (MemoryStream ms = new MemoryStream())
+            //    {
+            //        bitMap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+            //        byte[] byteImage = ms.ToArray();
+            //        imageUrl = "data:image/png;base64," + Convert.ToBase64String(byteImage);
+            //    }
+            //}
             return imageUrl;
         }
         [HttpGet("qrcodeimage")]
         public IActionResult GetQrCodeImage([FromQuery] string link)
         {
-            QRCodeGenerator qrGenerator = new QRCodeGenerator();
-            QRCodeData qrCodeData = qrGenerator.CreateQrCode(link, QRCodeGenerator.ECCLevel.Q);
-            QRCode qrCode = new QRCode(qrCodeData);
-            byte[] byteImage;
+            byte[] byteImage = new byte[] { 0 };
+            //QRCodeGenerator qrGenerator = new QRCodeGenerator();
+            //QRCodeData qrCodeData = qrGenerator.CreateQrCode(link, QRCodeGenerator.ECCLevel.Q);
+            //QRCode qrCode = new QRCode(qrCodeData);
 
-            using (Bitmap bitMap = qrCode.GetGraphic(20))
-            {
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    bitMap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                    byteImage = ms.ToArray();
-                }
-            }
+            //using (Bitmap bitMap = qrCode.GetGraphic(20))
+            //{
+            //    using (MemoryStream ms = new MemoryStream())
+            //    {
+            //        bitMap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+            //        byteImage = ms.ToArray();
+            //    }
+            //}
             return File(byteImage, "image/png");
         }
         [HttpPost("getlinkpreview")]

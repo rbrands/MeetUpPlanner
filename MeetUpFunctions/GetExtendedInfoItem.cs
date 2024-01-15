@@ -1,17 +1,13 @@
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using Newtonsoft.Json;
 using MeetUpPlanner.Shared;
 using System.Web.Http;
 using System.Linq;
-using Aliencube.AzureFunctions.Extensions.OpenApi.Core.Attributes;
 
 namespace MeetUpPlanner.Functions
 {
@@ -34,9 +30,6 @@ namespace MeetUpPlanner.Functions
         }
 
         [FunctionName("GetExtendedInfoItem")]
-        [OpenApiOperation(Summary = "Gets the InfoUtem with all referencing data",
-                          Description = "Reading given InfoItem. To be able to read InfoItem the user keyword must be set as header x-meetup-keyword.")]
-        [OpenApiResponseWithBody(System.Net.HttpStatusCode.OK, "application/json", typeof(ExtendedInfoItem))]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "GetExtendedInfoItem/{id}")] HttpRequest req, string id)
         {

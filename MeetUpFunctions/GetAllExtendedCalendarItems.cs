@@ -11,7 +11,6 @@ using Newtonsoft.Json;
 using MeetUpPlanner.Shared;
 using System.Web.Http;
 using System.Linq;
-using Aliencube.AzureFunctions.Extensions.OpenApi.Core.Attributes;
 
 namespace MeetUpPlanner.Functions
 {
@@ -36,9 +35,6 @@ namespace MeetUpPlanner.Functions
         }
 
         [FunctionName("GetAllExtendedCalendarItems")]
-        [OpenApiOperation(Summary = "Gets all ExtendedCalendarIitems",
-                          Description = "Reading all ExtendedCalendarItems (including particpants and comments) for tracking issues. To be able to read all ExtendedCalenderItems the admin keyword must be set as header x-meetup-keyword.")]
-        [OpenApiResponseWithBody(System.Net.HttpStatusCode.OK, "application/json", typeof(IEnumerable<ExtendedCalendarItem>))]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req)
         {

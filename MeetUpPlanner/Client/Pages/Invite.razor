@@ -9,7 +9,7 @@
 
 
 
-<MeetUp CalendarItem="@meetup" HideParticipants="true" NameDisplayLength="@AppStateStore.ClientSettings.NameDisplayLength" AdditionalText="Über den unten angezeigten Link kann ein Gast eingeladen werden. Dazu den Link kopieren (über den kleinen Button rechts neben dem Link) und per Mail, Messenger oder wie auch immer verschicken. Oder einfach den QR-Code zeigen." />
+<MeetUp CalendarItem="@meetup" HideParticipants="true" NameDisplayLength="@AppStateStore.ClientSettings.NameDisplayLength" AdditionalText="Über den unten angezeigten Link kann ein Gast eingeladen werden. Dazu den Link kopieren (über den kleinen Button rechts neben dem Link) und per Mail, Messenger oder wie auch immer verschicken." />
 
 <div class="row">
     <div class="col">
@@ -17,23 +17,16 @@
         <button class="btn btn-sm btn-outline-secondary" @onclick="(async e => await clipboard.WriteTextAsync(_checkinUrl))" title="In die Zwischenablage kopieren"><span class="oi oi-clipboard"></span></button>
     </div>
 </div>
-<div class="row">
-    <div class="col">
-        <img class="img-fluid" src="@_imageUrl" title="QRCode - Link" alt="QRCode-Link" />
-    </div>
-</div>
 
 @code {
     [Parameter]
     public string ItemId { get; set; }
     ExtendedCalendarItem meetup = new ExtendedCalendarItem();
-    string _imageUrl;
     string _checkinUrl = "";
 
     protected override async Task OnInitializedAsync()
     {
         _checkinUrl = $"{Http.BaseAddress}{ItemId}";
-        _imageUrl = $"Util/qrcodeimage?link={_checkinUrl}";
         if (null != AppStateStore && KeywordCheck.IsParticipant)
         {
             await ReadData();

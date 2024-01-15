@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Web.Http;
-using Aliencube.AzureFunctions.Extensions.OpenApi.Core.Attributes;
 using MeetUpPlanner.Shared;
 using System.Collections.Generic;
 
@@ -32,10 +31,6 @@ namespace MeetUpPlanner.Functions
         }
 
         [FunctionName("AddParticipantToCalendarItem")]
-        [OpenApiOperation(Summary = "Add a participant to the referenced CalendarItem.",
-                          Description = "If the Participants already exists (same id) it is overwritten.")]
-        [OpenApiRequestBody("application/json", typeof(Participant), Description = "New Participant to be written.")]
-        [OpenApiResponseWithBody(System.Net.HttpStatusCode.OK, "application/json", typeof(BackendResult), Description = "Status of operation.")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
         {
