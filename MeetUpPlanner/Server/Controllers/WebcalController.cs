@@ -66,8 +66,7 @@ namespace MeetUpPlanner.Server.Controllers
                     Summary = meetUp.Title,
                     Description = description.ToString(),
                     Start = new CalDateTime(meetUp.StartDate),
-                    // Ends 1 hours later.
-                    End = new CalDateTime(meetUp.StartDate.AddHours(1.0)),
+                    End = new CalDateTime(meetUp.StartDate.AddHours(meetUp.GetEstimatedDurationInHours())),
                     Location = meetUp.Place
                 };
                 webCal.Events.Add(icalEvent);

@@ -2,6 +2,7 @@
 using System.Text;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace MeetUpPlanner.Shared
 {
@@ -116,6 +117,50 @@ namespace MeetUpPlanner.Shared
                 }
             }
             return sb.ToString();
+        }
+        public uint GetTempoAsKilometersPerHour() 
+        {
+            // Usual formats: '25 - 30km/h', '30km/h', '~20kmh'. We simply parse
+            // the first 2-3 digit number and interpret it as km/h. the result
+            // is also clamped between 0..100 to guard against unexpected inputs.
+            uint kmh = 0;
+            try {
+                var match = Regex.Match(Tempo, @"(\d{1,3})");
+                if(match.Success) {
+                    kmh = uint.Parse(match.Groups[0].ToString());
+                } 
+            } catch (Exception ex) {
+            }
+
+            return Math.Clamp(kmh, 0, 100);
+        }
+        public uint GetDistanceAsKilometers() 
+        {
+            // Usual formats include '65km / 200Hm' with or without spaces, '40
+            // oder 60km'. Return value is clamped between 0 and 9999 to guard
+            // against unexpected inputs.
+            uint distance = 0;
+            try {
+                var match = Regex.Match(LevelDescription, @"(\d{1,4})\s*(?:km)?")
+                if (match.Success) {
+                    distance = uint.Parse(match.Groups[0].ToString());
+                } 
+            } catch (Exception ex) {
+            }
+
+            return Math.Clamp(distance, 0, 9999);
+        }
+        public float GetEstimatedDurationInHours() 
+        {
+            var distance = GetDistanceAsKilometers(); // 0..inf
+            if(distance == 0) { distance = 50; } // default to 50km
+
+            var speed = GetTempoAsKilometersPerHour(); // 0..100
+            if(speed == 0) { speed = 25; } // Default to 25km/h
+
+            float duration = (float)distance / (float)speed;
+            // Clamp between 15 minutes and 24 hours
+            return Math.Clamp(duration, 0.25, 24.0)
         }
         /// <summary>
         /// Returns a string ready to display in (German) UI.
