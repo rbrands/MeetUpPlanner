@@ -1,5 +1,9 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
+*20.1.2024*
+- Updateing references
+- Estimating duration of events for WebCal items, contributed by Moritz von Göwels https://github.com/the-kenny
+
 *16.9.2023*
 - Unterstützung von Co-Guides.
 
