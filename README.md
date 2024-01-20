@@ -41,6 +41,6 @@ Another handy tool to provide file download in Blazor: https://github.com/ariver
 
 And of course <a href="https://getbootstrap.com/">Bootstrap</a> for the responsive design is used.
 
-# Contributers
+# Contributors
 * Moritz von Göwels https://github.com/the-kenny - Estimating event duration for WebCal items
 
