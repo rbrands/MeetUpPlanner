@@ -16,6 +16,7 @@ using Ical.Net.Serialization;
 using System.Text;
 using System;
 using System.Web;
+using MeetUpPlanner.Client.Shared;
 
 namespace MeetUpPlanner.Server.Controllers
 {
@@ -97,6 +98,68 @@ namespace MeetUpPlanner.Server.Controllers
             {
                 return null;
             }
+        }
+
+        public static uint GetTempoAsKilometersPerHour(ExtendedCalendarItem meetUp)
+        {
+            // Usual formats: '25 - 30km/h', '30km/h', '~20kmh'. We simply parse
+            // the first 2-3 digit number and interpret it as km/h. the result
+            // is also clamped between 0..40 to guard against unexpected inputs.
+            uint kmh = 0;
+            try
+            {
+                var match = Regex.Match(meetUp.Tempo, @"(\d{1,3})");
+                if (match.Success)
+                {
+                    kmh = uint.Parse(match.Groups[0].ToString());
+                }
+            }
+            catch (Exception)
+            {
+                // in case of any exception ==> fallback to defaults
+            }
+
+            return Math.Clamp(kmh, 0, 40);
+        }
+        public static uint GetDistanceAsKilometers(ExtendedCalendarItem meetUp)
+        {
+            // Usual formats include '65km / 200Hm' with or without spaces, '40
+            // oder 60km'. Return value is clamped between 0 and 300 to guard
+            // against unexpected inputs.
+            uint distance = 0;
+            try
+            {
+                var match = Regex.Match(meetUp.LevelDescription, @"(\d{1,4})\s*(?:km)?");
+                if (match.Success)
+                {
+                    distance = uint.Parse(match.Groups[0].ToString());
+                }
+            }
+            catch (Exception)
+            {
+                // in case of any exception ==> fallback to defaults
+            }
+
+            return Math.Clamp(distance, 0, 300);
+        }
+        /// <summary>
+        /// To get a better fit for the duration (instead of 1 hour as default) this function tries to estimate the duration by parsing the tempo and length.
+        /// If no appropriate tempo/distance is detected ==> use 2 hours
+        /// Thanks to the author: Moritz von Göwels https://github.com/the-kenny
+        /// </summary>
+        /// <param name="meetUp"></param>
+        /// <returns></returns>
+        public static double GetEstimatedDurationInHours(ExtendedCalendarItem meetUp)
+        {
+            var distance = GetDistanceAsKilometers(meetUp); // 0..inf
+            if (distance == 0) { distance = 50; } // default to 50km
+
+            var speed = GetTempoAsKilometersPerHour(meetUp); // 0..100
+            if (speed == 0) { speed = 25; } // Default to 25km/h
+
+            double duration = (double)distance / (double)speed;
+            // Clamp between 15 minutes and 24 hours
+            return Math.Clamp(duration, 0.25, 24.0);
         }
 
     }
