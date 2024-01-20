@@ -67,8 +67,8 @@ namespace MeetUpPlanner.Server.Controllers
                     Summary = meetUp.Title,
                     Description = description.ToString(),
                     Start = new CalDateTime(meetUp.StartDate),
-                    // Ends 1 hours later.
-                    End = new CalDateTime(meetUp.StartDate.AddHours(1.0)),
+                    // Calculate/estimate end of event, default is 2 hours
+                    End = new CalDateTime(meetUp.StartDate.AddHours(GetEstimatedDurationInHours(meetUp))),
                     Location = meetUp.Place
                 };
                 webCal.Events.Add(icalEvent);
@@ -100,7 +100,7 @@ namespace MeetUpPlanner.Server.Controllers
             }
         }
 
-        public static uint GetTempoAsKilometersPerHour(ExtendedCalendarItem meetUp)
+        public uint GetTempoAsKilometersPerHour(ExtendedCalendarItem meetUp)
         {
             // Usual formats: '25 - 30km/h', '30km/h', '~20kmh'. We simply parse
             // the first 2-3 digit number and interpret it as km/h. the result
@@ -111,17 +111,18 @@ namespace MeetUpPlanner.Server.Controllers
                 var match = Regex.Match(meetUp.Tempo, @"(\d{1,3})");
                 if (match.Success)
                 {
-                    kmh = uint.Parse(match.Groups[0].ToString());
+                    kmh = uint.Parse(match.Groups[1].ToString());
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex.ToString());
                 // in case of any exception ==> fallback to defaults
             }
 
             return Math.Clamp(kmh, 0, 40);
         }
-        public static uint GetDistanceAsKilometers(ExtendedCalendarItem meetUp)
+        public uint GetDistanceAsKilometers(ExtendedCalendarItem meetUp)
         {
             // Usual formats include '65km / 200Hm' with or without spaces, '40
             // oder 60km'. Return value is clamped between 0 and 300 to guard
@@ -132,11 +133,12 @@ namespace MeetUpPlanner.Server.Controllers
                 var match = Regex.Match(meetUp.LevelDescription, @"(\d{1,4})\s*(?:km)?");
                 if (match.Success)
                 {
-                    distance = uint.Parse(match.Groups[0].ToString());
+                    distance = uint.Parse(match.Groups[1].ToString());
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex.ToString());
                 // in case of any exception ==> fallback to defaults
             }
 
@@ -145,11 +147,11 @@ namespace MeetUpPlanner.Server.Controllers
         /// <summary>
         /// To get a better fit for the duration (instead of 1 hour as default) this function tries to estimate the duration by parsing the tempo and length.
         /// If no appropriate tempo/distance is detected ==> use 2 hours
-        /// Thanks to the author: Moritz von Göwels https://github.com/the-kenny
+        /// Contributed by: Moritz von Göwels https://github.com/the-kenny
         /// </summary>
         /// <param name="meetUp"></param>
         /// <returns></returns>
-        public static double GetEstimatedDurationInHours(ExtendedCalendarItem meetUp)
+        public  double GetEstimatedDurationInHours(ExtendedCalendarItem meetUp)
         {
             var distance = GetDistanceAsKilometers(meetUp); // 0..inf
             if (distance == 0) { distance = 50; } // default to 50km
