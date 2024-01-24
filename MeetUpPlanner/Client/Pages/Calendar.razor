@@ -433,11 +433,7 @@
         participant.CalendarItemId = itemId;
         checkInDisabled = true;
         StateHasChanged();
-        PrepareHttpClient();
-        HttpResponseMessage response = await Http.PostAsJsonAsync<Participant>($"Calendar/addparticipant", participant);
-        string responseBody = await response.Content.ReadAsStringAsync();
-
-        BackendResult result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
+        BackendResult result = await Api.AddParticipant(participant);
         if (result.Success)
         {
             if (IsConnected) await SendMessage();
@@ -518,11 +514,7 @@
         // Find corresponding participant item
         Participant participant = calendarItem.FindParticipant(AppStateStore.FirstName, AppStateStore.LastName);
 
-        PrepareHttpClient();
-        HttpResponseMessage response = await Http.PostAsJsonAsync<Participant>($"Calendar/removeparticipant", participant);
-        string responseBody = await response.Content.ReadAsStringAsync();
-
-        BackendResult result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
+        BackendResult result = await Api.RemoveParticipant(participant);
         if (result.Success)
         {
             if (IsConnected) await SendMessage();

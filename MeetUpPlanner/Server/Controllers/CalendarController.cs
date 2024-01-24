@@ -7,6 +7,7 @@ using MeetUpPlanner.Server.Repositories;
 using MeetUpPlanner.Shared;
 using System;
 
+
 namespace MeetUpPlanner.Server.Controllers
 {
     [Route("[controller]")]
@@ -53,6 +54,7 @@ namespace MeetUpPlanner.Server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetExtendedCalendarItems([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromQuery] string privatekeywords)
         {
+            logger.LogInformation("GetExtendedCalendarItems()");
             if (String.IsNullOrEmpty(keyword))
             {
                 keyword = _meetUpFunctions.InviteGuestKey;
@@ -117,6 +119,7 @@ namespace MeetUpPlanner.Server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> AddParticipant([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] Participant participant)
         {
+            logger.LogInformation("AddParticipant");
             if (String.IsNullOrEmpty(keyword))
             {
                 keyword = _meetUpFunctions.InviteGuestKey;
@@ -146,6 +149,7 @@ namespace MeetUpPlanner.Server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> RemoveParticipant([FromHeader(Name = "x-meetup-tenant")] string tenant, [FromHeader(Name = "x-meetup-keyword")] string keyword, [FromBody] Participant participant)
         {
+            logger.LogInformation("RemoveParticipant");
             if (String.IsNullOrEmpty(keyword))
             {
                 keyword = _meetUpFunctions.InviteGuestKey;
