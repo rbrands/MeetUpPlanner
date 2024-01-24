@@ -11,6 +11,9 @@ using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs;
 using Azure.Core;
 using System.Text;
+using Newtonsoft.Json;
+using Radzen;
+using static System.Net.WebRequestMethods;
 
 namespace MeetUpPlanner.Client
 {
@@ -250,6 +253,26 @@ namespace MeetUpPlanner.Client
             return;
 
         }
+        public async Task<BackendResult> RemoveParticipant(Participant participant)
+        {
+            this.PrepareHttpClient();
+            HttpResponseMessage response = await _http.PostAsJsonAsync<Participant>($"Calendar/removeparticipant", participant);
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            BackendResult result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
+            return result;
+        }
+        public async Task<BackendResult> AddParticipant(Participant participant)
+        {
+            this.PrepareHttpClient();
+            HttpResponseMessage response = await _http.PostAsJsonAsync<Participant>($"Calendar/addparticipant", participant);
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            BackendResult result = JsonConvert.DeserializeObject<BackendResult>(responseBody);
+            return result;
+        }
+
+
 
     }
 }

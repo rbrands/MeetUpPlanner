@@ -14,11 +14,11 @@ namespace MeetUpPlanner.Shared
         /// </summary>
         [JsonProperty(PropertyName = "calendarItemId")]
         public string CalendarItemId { get; set; }
-        [JsonProperty(PropertyName = "participantFirstName"), MaxLength(100), Required(ErrorMessage = "Vornamen bitte eingeben.")]
+        [JsonProperty(PropertyName = "participantFirstName"), MaxLength(100)]
         public string ParticipantFirstName { get; set; }
-        [JsonProperty(PropertyName = "participantLastName"), MaxLength(100), Required(ErrorMessage = "Nachnamen bitte eingeben.")]
+        [JsonProperty(PropertyName = "participantLastName"), MaxLength(100)]
         public string ParticipantLastName { get; set; }
-        [JsonProperty(PropertyName = "participantAddressName", NullValueHandling = NullValueHandling.Ignore), MaxLength(100), Required(ErrorMessage = "Bitte eine Adress-Info eingeben.")]
+        [JsonProperty(PropertyName = "participantAdressInfo"), MaxLength(100)]
         public string ParticipantAdressInfo { get; set; }
         [JsonProperty(PropertyName = "checkInDate")]
         public DateTime CheckInDate { get; set; }
