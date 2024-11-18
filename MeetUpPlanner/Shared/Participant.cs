@@ -28,7 +28,7 @@ namespace MeetUpPlanner.Shared
         public Boolean IsWaiting { get; set; } = false;
         [JsonProperty(PropertyName = "isCoGuide")]
         public Boolean IsCoGuide { get; set; } = false;
-        [JsonProperty(PropertyName = "federaton")]
+        [JsonProperty(PropertyName = "federation")]
         public string Federation { get; set; }
 
         public Participant()

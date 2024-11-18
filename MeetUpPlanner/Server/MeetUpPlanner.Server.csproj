@@ -10,8 +10,8 @@
     <PackageReference Include="Flurl.Http" Version="4.0.2" />
     <PackageReference Include="Flurl.Http.Newtonsoft" Version="0.9.1" />
     <PackageReference Include="Ical.Net" Version="4.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.15" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="7.0.15" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.20" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="7.0.20" />
   </ItemGroup>
 
   <ItemGroup>

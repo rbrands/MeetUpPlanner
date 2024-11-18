@@ -26,7 +26,7 @@ namespace MeetUpPlanner.Shared
         public string HostFirstName { get; set; }
         [JsonProperty(PropertyName = "hostLastName", NullValueHandling = NullValueHandling.Ignore), MaxLength(100), Required(ErrorMessage = "Gastgeber bitte eingeben.")]
         public string HostLastName { get; set; }
-        [JsonProperty(PropertyName = "hostAddressName", NullValueHandling = NullValueHandling.Ignore), MaxLength(100)]
+        [JsonProperty(PropertyName = "hostAdressInfo", NullValueHandling = NullValueHandling.Ignore), MaxLength(100)]
         public string HostAdressInfo { get; set; }
         [JsonProperty(PropertyName = "withoutHost")]
         public Boolean WithoutHost { get; set; } = false;
