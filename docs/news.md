@@ -1,5 +1,9 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
+*19.11.2024*
+- Aktualisierung aller Komponenten (Blazor-Frontend, Web-Server Middle-Tier und Azure Functions) auf .NET 8 LTS, d.h. supported bis Mai 2026
+- Auf der Startseite wird klarer gemacht, dass die Kontaktdaten erst bei der Anmeldung zu einer Ausfahrt gespeichert werden, bis dahin nur lokal im Browser
+
 *20.1.2024*
 - Updateing references
 - Estimating duration of events for WebCal items, contributed by Moritz von Göwels https://github.com/the-kenny
