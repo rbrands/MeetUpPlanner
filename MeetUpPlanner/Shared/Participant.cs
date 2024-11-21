@@ -50,10 +50,6 @@ namespace MeetUpPlanner.Shared
             {
                 sb.Append("Gast");
             }
-            else if (IsIncognito && !IsCoGuide)
-            {
-                sb.Append("Inkognito");
-            }
             else
             { 
                 int length = nameDisplayLength > 0 ? Math.Min(nameDisplayLength, ParticipantLastName.Length) : ParticipantLastName.Length;

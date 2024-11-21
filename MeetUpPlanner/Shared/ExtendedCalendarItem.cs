@@ -76,6 +76,7 @@ namespace MeetUpPlanner.Shared
             foreach (Participant participant in this.ParticipantsList)
             {
                 if (participant.IsCoGuide) coGuideCounter++;
+                Boolean isOwnName = participant.ParticipantFirstName.Equals(firstName) && participant.ParticipantLastName.Equals(lastName);
                 if (!participant.IsWaiting)
                 { 
                     if (counter > 0)
@@ -86,7 +87,7 @@ namespace MeetUpPlanner.Shared
                     {
                         sb.Append("<i>");
                     }
-                    sb.Append(isCheckedInAsIncognito ? "Inkognito" : participant.ParticipantDisplayName(nameDisplayLength));
+                    sb.Append((isCheckedInAsIncognito && !isOwnName) ? "Inkognito" : participant.ParticipantDisplayName(nameDisplayLength));
                     if (participant.IsCoGuide && coGuideCounter <= this.MaxCoGuidesCount)
                     {
                         sb.Append("(Co-Guide)</i>");
@@ -103,13 +104,14 @@ namespace MeetUpPlanner.Shared
             bool isCheckedInAsIncognito = IsCheckedInAsIncognito(firstName, lastName);
             foreach (Participant participant in this.ParticipantsList)
             {
+                Boolean isOwnName = participant.ParticipantFirstName.Equals(firstName) && participant.ParticipantLastName.Equals(lastName);
                 if (participant.IsWaiting)
                 { 
                     if (counter > 0)
                     {
                         sb.Append(", ");
                     }
-                    sb.Append(isCheckedInAsIncognito ? "Inkognito" : participant.ParticipantDisplayName(nameDisplayLength));
+                    sb.Append((isCheckedInAsIncognito && !isOwnName) ? "Inkognito" : participant.ParticipantDisplayName(nameDisplayLength));
                     ++counter;
                 }
             }
