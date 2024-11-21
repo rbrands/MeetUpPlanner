@@ -65,12 +65,12 @@
     {
         <div class="col">
             <MeetUpCard FirstName="@_permAppState.FirstName" LastName="@_permAppState.LastName"
-                        CalendarItem="@item"
-                        IsGuest="true"
-                        EnableCheckInCheckOut="true"
-                        OnCheckinCallback="@(e => RegisterGuest(item))"
-                        OnCheckoutCallback="@(e => RegisterGuest(item))"
-                        OnCommentCallback="@(e => ShowComment(item.Id))">
+            CalendarItem="@item"
+            IsGuest="true"
+            EnableCheckInCheckOut="true"
+            OnCheckinCallback="@(e => RegisterGuest(item))"
+            OnCheckoutCallback="@(e => RegisterGuest(item))"
+            OnCommentCallback="@(e => ShowComment(item.Id))">
             </MeetUpCard>
         </div>
     }
@@ -122,6 +122,7 @@
         AppStateStore.FirstName = _guest.ParticipantFirstName;
         AppStateStore.LastName = _guest.ParticipantLastName;
         AppStateStore.PhoneMail = _guest.ParticipantAdressInfo;
+        AppStateStore.Incognito = _guest.IsIncognito;
         if (AppStateStore.SaveSettings)
         {
             // Copy from app state to permanent storage
@@ -130,6 +131,7 @@
             _permAppState.LastName = _guest.ParticipantLastName;
             _permAppState.PhoneMail = _guest.ParticipantAdressInfo;
             _permAppState.NoAddressNeeded = AppStateStore.NoAddressNeeded;
+            _permAppState.Incognito = _guest.IsIncognito;
             await LocalStorage.SetItemAsync<PermAppState>(PERM_STORAGE, _permAppState);
         }
         else
@@ -151,6 +153,7 @@
             _guest.ParticipantFirstName = _permAppState.FirstName;
             _guest.ParticipantLastName = _permAppState.LastName;
             _guest.ParticipantAdressInfo = _permAppState.PhoneMail;
+            _guest.IsIncognito = _permAppState.Incognito;
             AppStateStore.NoAddressNeeded = _permAppState.NoAddressNeeded;
             // If someone has stored the settings before the disclaimer has already been accepted by user
             UsageRightsAccepted = true;
@@ -252,6 +255,7 @@
             _permAppState.FirstName = _guest.ParticipantFirstName;
             _permAppState.LastName = _guest.ParticipantLastName;
             _permAppState.PhoneMail = _guest.ParticipantAdressInfo;
+            _permAppState.Incognito = _guest.IsIncognito;
             await LocalStorage.SetItemAsync<PermAppState>(PERM_STORAGE, _permAppState);
         }
         else

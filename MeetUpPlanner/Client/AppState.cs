@@ -58,6 +58,8 @@ namespace MeetUpPlanner.Client
         public string PhoneMail { get; set; }
         public Boolean NoAddressNeeded { get; set; } = false;
         public bool SaveSettings { get; set; } = true;
+        // User prefers to hide his name in the list of participants of a meetup
+        public Boolean Incognito { get; set; } = false;
         public ExtendedRoute RouteArg { get; set; }
 
         public bool NotificationSubscriptionRequested { get; set; } = false;

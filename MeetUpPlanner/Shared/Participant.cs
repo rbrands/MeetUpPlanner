@@ -24,6 +24,8 @@ namespace MeetUpPlanner.Shared
         public DateTime CheckInDate { get; set; }
         [JsonProperty(PropertyName = "isGuest")]
         public Boolean IsGuest { get; set; } = false;
+        [JsonProperty(PropertyName = "isIncognito")]
+        public Boolean IsIncognito { get; set; } = false;    
         [JsonProperty(PropertyName = "isWaiting")]
         public Boolean IsWaiting { get; set; } = false;
         [JsonProperty(PropertyName = "isCoGuide")]
@@ -47,6 +49,10 @@ namespace MeetUpPlanner.Shared
             if (IsGuest)
             {
                 sb.Append("Gast");
+            }
+            else if (IsIncognito && !IsCoGuide)
+            {
+                sb.Append("Inkognito");
             }
             else
             { 
