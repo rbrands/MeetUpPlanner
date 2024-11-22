@@ -38,7 +38,18 @@ namespace MeetUpPlanner.Shared
         /// is created as according to the pattern type-key and should be unique.
         /// </summary>
         [JsonProperty(PropertyName = "key", NullValueHandling = NullValueHandling.Ignore)]
-        public string LogicalKey { get; set; }
+        public string Key { get; set; }
+        public string LogicalKey 
+        { 
+            get
+            { 
+                return Key;  
+            }
+            set
+            {
+                Key = value;
+            }
+        }
         // used to set Time-to-live for expiration policy
         [JsonProperty(PropertyName = "ttl", NullValueHandling = NullValueHandling.Ignore)]
         public int? TimeToLive { get; set; }
