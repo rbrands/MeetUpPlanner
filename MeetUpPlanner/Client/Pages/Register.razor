@@ -91,6 +91,7 @@
             _guest.ParticipantFirstName = permAppState.FirstName;
             _guest.ParticipantLastName = permAppState.LastName;
             _guest.ParticipantAdressInfo = permAppState.PhoneMail;
+            _guest.IsIncognito = permAppState.Incognito;
         }
         // Get client settings from server
         PrepareHttpClient();
@@ -138,6 +139,7 @@
             permAppState.FirstName = _guest.ParticipantFirstName;
             permAppState.LastName = _guest.ParticipantLastName;
             permAppState.PhoneMail = _guest.ParticipantAdressInfo;
+            permAppState.Incognito = _guest.IsIncognito;
             await LocalStorage.SetItemAsync<PermAppState>(PERM_STORAGE, permAppState);
         }
         else

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
 
@@ -66,14 +67,16 @@ namespace MeetUpPlanner.Shared
 
         }
 
-        public string ParticipantsDisplay(int nameDisplayLength)
+        public string ParticipantsDisplay(int nameDisplayLength, string firstName, string lastName)
         {
             StringBuilder sb = new StringBuilder(100);
             int counter = WithoutHost ? 0 : 1;
             int coGuideCounter = 0;
+            bool isCheckedInAsIncognito = IsCheckedInAsIncognito(firstName, lastName);
             foreach (Participant participant in this.ParticipantsList)
             {
                 if (participant.IsCoGuide) coGuideCounter++;
+                Boolean isOwnName = participant.ParticipantFirstName.Equals(firstName) && participant.ParticipantLastName.Equals(lastName);
                 if (!participant.IsWaiting)
                 { 
                     if (counter > 0)
@@ -84,7 +87,7 @@ namespace MeetUpPlanner.Shared
                     {
                         sb.Append("<i>");
                     }
-                    sb.Append(participant.ParticipantDisplayName(nameDisplayLength));
+                    sb.Append((isCheckedInAsIncognito && !isOwnName) ? "Inkognito" : participant.ParticipantDisplayName(nameDisplayLength));
                     if (participant.IsCoGuide && coGuideCounter <= this.MaxCoGuidesCount)
                     {
                         sb.Append("(Co-Guide)</i>");
@@ -94,19 +97,21 @@ namespace MeetUpPlanner.Shared
             }
             return sb.ToString();
         }
-        public string WaitingListDisplay(int nameDisplayLength)
+        public string WaitingListDisplay(int nameDisplayLength, string firstName, string lastName)
         {
             StringBuilder sb = new StringBuilder(100);
             int counter = 0;
+            bool isCheckedInAsIncognito = IsCheckedInAsIncognito(firstName, lastName);
             foreach (Participant participant in this.ParticipantsList)
             {
+                Boolean isOwnName = participant.ParticipantFirstName.Equals(firstName) && participant.ParticipantLastName.Equals(lastName);
                 if (participant.IsWaiting)
                 { 
                     if (counter > 0)
                     {
                         sb.Append(", ");
                     }
-                    sb.Append(participant.ParticipantDisplayName(nameDisplayLength));
+                    sb.Append((isCheckedInAsIncognito && !isOwnName) ? "Inkognito" : participant.ParticipantDisplayName(nameDisplayLength));
                     ++counter;
                 }
             }
@@ -218,6 +223,12 @@ namespace MeetUpPlanner.Shared
                 }
             }
             return participant;
+        }
+        public Boolean IsCheckedInAsIncognito(string firstName, string lastName)
+        {
+            Participant participant = FindParticipant(firstName, lastName);
+            Boolean result = (null != participant && participant.IsIncognito);
+            return result;
         }
     }
 }

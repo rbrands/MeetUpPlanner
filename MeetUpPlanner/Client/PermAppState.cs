@@ -18,6 +18,7 @@ namespace MeetUpPlanner.Client
         public string LastName { get; set; }
         public string PhoneMail { get; set; }
         public Boolean NoAddressNeeded { get; set; }
+        public Boolean Incognito { get; set; }
 
     }
 }

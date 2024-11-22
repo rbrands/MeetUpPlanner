@@ -30,7 +30,7 @@
             {
                 <span class="badge badge-danger" title="Mindestteilnehmerzahl">Min @CalendarItem.MinRegistrationsCount</span>
             }
-            <small>: <b>@CalendarItem.HostDisplayName(NameDisplayLength)</b>@((MarkupString)CalendarItem.ParticipantsDisplay(NameDisplayLength))</small>
+            <small>: <b>@CalendarItem.HostDisplayName(NameDisplayLength)</b>@((MarkupString)CalendarItem.ParticipantsDisplay(NameDisplayLength, FirstName, LastName))</small>
         }
         else
         {
@@ -58,4 +58,8 @@
     public String AdditionalText { get; set; } = null;
     [Parameter]
     public int NameDisplayLength { get; set; } = 1;
+    [Parameter]
+    public String FirstName { get; set; } = "";
+    [Parameter]
+    public String LastName { get; set; } = "";
 }

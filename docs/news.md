@@ -1,5 +1,9 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
+*21.11.2024*
+- Einführung des "Inkognitomodus" - man kann sich optional jetzt auch "inkognito" zu Terminen anmelden, d.h. der eigene Name wird in den Anmeldelisten nicht angezeigt. Genauere Beschreibung siehe Userguide.
+- Bugfixing diverser Serialisieungsfehler: "Akkordion"-Anhänge zu Terminen können jetzt wieder editiert werden, Kennzeichnung von Anmeldungen aus dem befreundeten Club.
+
 *19.11.2024*
 - Aktualisierung aller Komponenten (Blazor-Frontend, Web-Server Middle-Tier und Azure Functions) auf .NET 8 LTS, d.h. supported bis Mai 2026
 - Auf der Startseite wird klarer gemacht, dass die Kontaktdaten erst bei der Anmeldung zu einer Ausfahrt gespeichert werden, bis dahin nur lokal im Browser

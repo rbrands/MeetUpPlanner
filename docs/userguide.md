@@ -7,6 +7,10 @@ Hier sollen die etwas versteckteren Features beschrieben werden.
 
 ## Features für alle Benutzer:innen
 <dl>
+  <dt id="inkognito">Inkognitomodus</dt>
+  <dd>
+    <p>Auf dem Startbildschirm direkt unter der Angabe der Kontaktdaten kann man den <it>Inkognitomodus</it> aktivieren. Wenn man sich dann für einen Termin anmeldet, wird der eigene Name in der Anmeldeliste nicht angezeigt, sondern durch "Inkognito" ersetzt. Man selbst sieht den eigenen Namen in der Anmeldeliste, alle anderen Namen werden unterdrückt, nach dem Motto: Wer anonym bleiben möchte, sollte dann auch nicht die Infos über die anderen erhalten. Der Name der Guides (auch Co-Guides) bleibt immer sichtbar. Außerdem kann der Organisator eines Termins die Namen sehen.</p>
+  </dd>
   <dt id="linkpreview">Preview An/Aus</dt>
   <dd>
     <p>Wenn man eine Ausfahrt erstellt und dabei einen Link zur Strecke hinzufügt - z.B. Komoot - kann man jetzt über den Button "Preview An/Aus" eine Preview für den Link abrufen. Dies funktioniert ähnlich wie bei Facebook, Twitter & Co: Die Webseite wird abgerufen und Informationen wie Titel, Beschreibung und Bild ausgelesen. Das Bild wird dann in der Ausfahrt oben dargestellt. Bei Komoot ist das z.B. typischerweise eine Kartenübersicht. Aber nicht immer: Hat man in der Komoot-Strecke ein oder mehrere "Highlights" aufgenomnmnen und sind diese mit Fotos angereichert, so wird als Bild für den Link das erste Foto und nicht die Karte verwendet. Da hilft nur auf Highlights in der Planung zu verzichten (so mache ich es sowieso) oder später hinzuzufügen.</p>

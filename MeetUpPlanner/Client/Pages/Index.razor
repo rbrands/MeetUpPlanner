@@ -75,6 +75,13 @@
     </div>
     <div class="form-group">
         <div class="form-check">
+            <InputCheckbox id="Incognito" class="form-check-input" @bind-Value="AppStateStore.Incognito"></InputCheckbox>
+            <label for="Incognito" class="form-check-label">Inkognitomodus?</label>
+        </div>
+        <small id="inkognitoHelp">Dein Name wird in den Anmeldelisten der Termine nicht angezeigt. Du kannst dann allerdings auch nicht die Namen der anderen sehen für Termine, zu denen du inkognito angemeldet bist.</small>
+    </div>
+    <div class="form-group">
+        <div class="form-check">
             <InputCheckbox id="SaveSettings" aria-describedby="saveSettingsHelp" class="form-check-input" @bind-Value="AppStateStore.SaveSettings"></InputCheckbox>
             <label for="SaveSettings" class="form-check-label">Einstellungen im Browser merken?</label>
         </div>
@@ -127,6 +134,7 @@
             AppStateStore.PrivateKeyWord2 = permAppState.PrivateKeyWord2;
             AppStateStore.PrivateKeyWord3 = permAppState.PrivateKeyWord3;
             AppStateStore.NoAddressNeeded = permAppState.NoAddressNeeded;
+            AppStateStore.Incognito = permAppState.Incognito;
             // If someone has stored the settings before the disclaimer has already been accepted by user
             UsageRightsAccepted = true;
         }
@@ -218,6 +226,7 @@
             permAppState.PrivateKeyWord2 = AppStateStore.PrivateKeyWord2;
             permAppState.PrivateKeyWord3 = AppStateStore.PrivateKeyWord3;
             permAppState.NoAddressNeeded = AppStateStore.NoAddressNeeded;
+            permAppState.Incognito = AppStateStore.Incognito;   
             await localStorage.SetItemAsync<PermAppState>("permAppState", permAppState);
         }
         else
