@@ -13,9 +13,9 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.1" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.6.0" />
-    <PackageReference Include="MSiccDev.Libs.LinkTools.Core" Version="1.0.21261.1" />
-    <PackageReference Include="MSiccDev.Libs.LinkTools.Data" Version="1.0.21261.1" />
-    <PackageReference Include="MSiccDev.Libs.LinkTools.LinkPreview" Version="1.0.21262.1" />
+    <PackageReference Include="MSiccDev.Libs.LinkTools.Core" Version="1.0.21263.1" />
+    <PackageReference Include="MSiccDev.Libs.LinkTools.Data" Version="1.0.21263.1" />
+    <PackageReference Include="MSiccDev.Libs.LinkTools.LinkPreview" Version="1.0.21263.1" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.1" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
