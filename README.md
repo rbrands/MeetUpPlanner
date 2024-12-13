@@ -19,6 +19,7 @@ The application is divided into two parts:
   * The front-end is a Blazor WebAssembly application. It is a Single Page Application (SPA) that runs in the browser. The application is hosted on an Azure App Service. 
   * The back-end is a set of Azure Functions that provide the business logic for the application. The Azure Functions are hosted in an Azure Functions App. The Azure Functions are implemented in C# and use the .NET Core 3.1 runtime. The Azure Functions use Azure Cosmos DB to store the data.
 
+```mermaid
     graph TD
     subgraph Client
         A[Blazor WebAssembly]
@@ -51,7 +52,7 @@ The application is divided into two parts:
     G -->|Function Logic| I
     H -->|Database Operations| F
     I -->|Database Operations| F
-
+```
 
 # About this repository
 * Folder "MeetUpFunctions" has the source code of the Azure Functions used for the backend. The master branch is CI enabled with GitHub Actions and deployed to the slot "dev" of the Azure Functions App. 
