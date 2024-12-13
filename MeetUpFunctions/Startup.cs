@@ -8,7 +8,6 @@ using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Azure.Cosmos.Fluent;
 using Microsoft.Azure.Cosmos;
-using MSiccDev.Libs.LinkTools.LinkPreview;
 using MeetUpPlanner.Shared;
 
 [assembly: FunctionsStartup(typeof(MeetUpPlanner.Functions.Startup))]
@@ -52,7 +51,6 @@ namespace MeetUpPlanner.Functions
             builder.Services.AddSingleton(new CosmosDBRepository<ExportLogItem>(config, cosmosClient));
             builder.Services.AddSingleton(new ServerSettingsRepository(config, cosmosClient));
             builder.Services.AddSingleton<ChallengeRepository>();
-            builder.Services.AddSingleton(new LinkPreviewService());
             builder.Services.AddSingleton<CosmosDBRepository<ContentWithChaptersItem>>();
             builder.Services.AddSingleton<BlobStorageRepository>();
             builder.Services.AddHttpClient();

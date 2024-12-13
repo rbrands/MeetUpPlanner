@@ -14,6 +14,45 @@ Therefore the following design principles for this web-app are:
 * Availability of "private" MeetUps: The ability to organize a MeetUp and protect it with a "keyword" that can be given to potential participants. 
 * Adaptable: The application has a front-end layer implemented with <a href="https://docs.microsoft.com/en-us/aspnet/core/blazor">ASP.NET Core Blazor</a>  The application logic is provided via serverless <a href="https://docs.microsoft.com/en-us/azure/azure-functions/">Azure Functions</a>. In this way it is possible to use the application layer independently with a different front-end.  
 
+# Architecture
+The application is divided into two parts: 
+  * The front-end is a Blazor WebAssembly application. It is a Single Page Application (SPA) that runs in the browser. The application is hosted on an Azure App Service. 
+  * The back-end is a set of Azure Functions that provide the business logic for the application. The Azure Functions are hosted in an Azure Functions App. The Azure Functions are implemented in C# and use the .NET Core 3.1 runtime. The Azure Functions use Azure Cosmos DB to store the data.
+
+```mermaid
+    graph TD
+    subgraph Client
+        A[Blazor WebAssembly]
+    end
+
+    subgraph Server
+        B[ASP.NET Core Web API]
+        C[Several Controllers]
+        D[MeetUpFunctions]
+    end
+
+    subgraph Azure
+        G[Azure Functions]
+        H[Function1]
+        I[Function2]
+        E[Repositories]
+    end
+
+    subgraph Database
+        F[CosmosDB]
+    end
+
+    A -->|HTTP Requests| B
+    B -->|Controller Actions| C
+    C -->|Business Logic| D
+    H -->|Data Access| E
+    I -->|Data Access| E
+    E -->|Database Operations| F
+    D -->|Invoke Functions| G
+    G -->|Function Logic| H
+    G -->|Function Logic| I
+```
+
 # About this repository
 * Folder "MeetUpFunctions" has the source code of the Azure Functions used for the backend. The master branch is CI enabled with GitHub Actions and deployed to the slot "dev" of the Azure Functions App. 
 * Folder MeetUpPlanner holds the source code of the Blazor WebAssembly and the ASP.NET Core hosting app. The master branch is CI enabled with GitHub Action and deployed slot "dev" of the web application.
