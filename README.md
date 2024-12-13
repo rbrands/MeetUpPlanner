@@ -27,15 +27,15 @@ The application is divided into two parts:
 
     subgraph Server
         B[ASP.NET Core Web API]
-        C[UtilController]
+        C[Several Controllers]
         D[MeetUpFunctions]
-        E[Repositories]
     end
 
     subgraph Azure
         G[Azure Functions]
         H[Function1]
         I[Function2]
+        E[Repositories]
     end
 
     subgraph Database
