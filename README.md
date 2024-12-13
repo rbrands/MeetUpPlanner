@@ -19,7 +19,7 @@ The application is divided into two parts:
   * The front-end is a Blazor WebAssembly application. It is a Single Page Application (SPA) that runs in the browser. The application is hosted on an Azure App Service. 
   * The back-end is a set of Azure Functions that provide the business logic for the application. The Azure Functions are hosted in an Azure Functions App. The Azure Functions are implemented in C# and use the .NET Core 3.1 runtime. The Azure Functions use Azure Cosmos DB to store the data.
 
-graph TD
+    graph TD
     subgraph Client
         A[Blazor WebAssembly]
     end
