@@ -45,13 +45,12 @@ The application is divided into two parts:
     A -->|HTTP Requests| B
     B -->|Controller Actions| C
     C -->|Business Logic| D
-    D -->|Data Access| E
+    H -->|Data Access| E
+    I -->|Data Access| E
     E -->|Database Operations| F
     D -->|Invoke Functions| G
     G -->|Function Logic| H
     G -->|Function Logic| I
-    H -->|Database Operations| F
-    I -->|Database Operations| F
 ```
 
 # About this repository
