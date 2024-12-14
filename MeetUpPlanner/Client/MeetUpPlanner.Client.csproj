@@ -4,6 +4,7 @@
 	<RuntimeIdentifier>browser-wasm</RuntimeIdentifier>
 	<BlazorWebAssemblyEnableAOT>false</BlazorWebAssemblyEnableAOT>	  
 	<BlazorWebAssemblyEnableCompression>true</BlazorWebAssemblyEnableCompression>
+    <WasmEnableThreads>false</WasmEnableThreads>	  
 	<ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
   </PropertyGroup>
   <ItemGroup>

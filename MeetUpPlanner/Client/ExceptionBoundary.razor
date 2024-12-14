@@ -1,0 +1,33 @@
+﻿@typeparam TError
+
+<div class="error-boundary">
+    @if (Error != null)
+    {
+        <div class="alert alert-danger">
+            <h4>Ein Fehler ist aufgetreten</h4>
+            <p>@Error.Message</p>
+        </div>
+    }
+    else
+    {
+        @ChildContent
+    }
+</div>
+
+@code {
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    private Exception Error { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        try
+        {
+            Error = null;
+            base.OnParametersSet();
+        }
+        catch (Exception ex)
+        {
+            Error = ex;
+        }
+    }
+}
