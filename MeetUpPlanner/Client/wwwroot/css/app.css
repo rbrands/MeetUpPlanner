@@ -41,6 +41,14 @@ a, .btn-link {
     width: 100%;
     z-index: 1000;
 }
+.error-boundary .alert {
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid red;
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
 
     #blazor-error-ui .dismiss {
         cursor: pointer;
