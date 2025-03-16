@@ -45,7 +45,14 @@
     }
     <div class="card-body">
         <h6 class="text-muted card-subtitle mb-2">
-            @CalendarItem.LevelDescription - @CalendarItem.Tempo
+            @if (!String.IsNullOrEmpty(CalendarItem.SubTitle))
+            {
+                @CalendarItem.SubTitle
+            }
+            else
+            {
+                @($"{CalendarItem.LevelDescription} - {CalendarItem.Tempo}")
+            }
         </h6>
         <h5 class="card-title">
             @CalendarItem.Title
@@ -104,7 +111,7 @@
             @if (CalendarItem.IsKidsOrYouth())
             {
                 <hr />
-                <small><b>Trainer:in(nen)</b>@CalendarItem.Trainer</small>
+                <small><b>Trainer:in(nen)</b> @CalendarItem.Trainer</small>
             }
             <hr />
             @if (CalendarItem.CommentsList.Count() > 0)
