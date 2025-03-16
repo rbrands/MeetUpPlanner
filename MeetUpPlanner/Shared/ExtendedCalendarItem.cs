@@ -48,6 +48,7 @@ namespace MeetUpPlanner.Shared
             this.IsInternal = calendarItem.IsInternal;
             this.LevelDescription = calendarItem.LevelDescription;
             this.Tempo = calendarItem.Tempo;
+            this.SubTitle = calendarItem.SubTitle;
             this.Link = calendarItem.Link;
             this.LinkImage = calendarItem.LinkImage;
             this.LinkTitle = calendarItem.LinkTitle;
@@ -55,6 +56,9 @@ namespace MeetUpPlanner.Shared
             this.CommentsList = new List<CalendarComment>();
             this.IsCross = calendarItem.IsCross;
             this.IsTraining = calendarItem.IsTraining;
+            this.IsKids = calendarItem.IsKids;
+            this.IsYouth = calendarItem.IsYouth;
+            this.Trainer = calendarItem.Trainer;
             this.IsCanceled = calendarItem.IsCanceled;
             this.Tenant = calendarItem.Tenant;
             this.WithoutHost = calendarItem.WithoutHost;
@@ -73,27 +77,43 @@ namespace MeetUpPlanner.Shared
             int counter = WithoutHost ? 0 : 1;
             int coGuideCounter = 0;
             bool isCheckedInAsIncognito = IsCheckedInAsIncognito(firstName, lastName);
-            foreach (Participant participant in this.ParticipantsList)
+            if (!IsKidsOrYouth())
             {
-                if (participant.IsCoGuide) coGuideCounter++;
-                Boolean isOwnName = participant.ParticipantFirstName.Equals(firstName) && participant.ParticipantLastName.Equals(lastName);
-                if (!participant.IsWaiting)
-                { 
-                    if (counter > 0)
-                    { 
-                        sb.Append(", ");
-                    }
-                    if (participant.IsCoGuide && coGuideCounter <= this.MaxCoGuidesCount)
+                // Show list of participants only for non kids/youth events
+                foreach (Participant participant in this.ParticipantsList)
+                {
+                    if (participant.IsCoGuide) coGuideCounter++;
+                    Boolean isOwnName = participant.ParticipantFirstName.Equals(firstName) && participant.ParticipantLastName.Equals(lastName);
+                    if (!participant.IsWaiting)
                     {
-                        sb.Append("<i>");
+                        if (counter > 0)
+                        {
+                            sb.Append(", ");
+                        }
+                        if (participant.IsCoGuide && coGuideCounter <= this.MaxCoGuidesCount)
+                        {
+                            sb.Append("<i>");
+                        }
+                        sb.Append((isCheckedInAsIncognito && !isOwnName) ? "Inkognito" : participant.ParticipantDisplayName(nameDisplayLength));
+                        if (participant.IsCoGuide && coGuideCounter <= this.MaxCoGuidesCount)
+                        {
+                            sb.Append("(Co-Guide)</i>");
+                        }
+                        ++counter;
                     }
-                    sb.Append((isCheckedInAsIncognito && !isOwnName) ? "Inkognito" : participant.ParticipantDisplayName(nameDisplayLength));
-                    if (participant.IsCoGuide && coGuideCounter <= this.MaxCoGuidesCount)
-                    {
-                        sb.Append("(Co-Guide)</i>");
-                    }
-                    ++counter;
                 }
+            }
+            else
+            {
+                Participant participant = FindParticipant(firstName, lastName);
+                if (participant != null && !participant.IsWaiting )
+                {
+                    sb.Append("Du bist angemeldet.");
+                }
+                else
+                {
+                    sb.Append("Du bist noch nicht angemeldet.");
+                }   
             }
             return sb.ToString();
         }
@@ -102,17 +122,28 @@ namespace MeetUpPlanner.Shared
             StringBuilder sb = new StringBuilder(100);
             int counter = 0;
             bool isCheckedInAsIncognito = IsCheckedInAsIncognito(firstName, lastName);
-            foreach (Participant participant in this.ParticipantsList)
+            if (!IsKidsOrYouth())
             {
-                Boolean isOwnName = participant.ParticipantFirstName.Equals(firstName) && participant.ParticipantLastName.Equals(lastName);
-                if (participant.IsWaiting)
-                { 
-                    if (counter > 0)
+                foreach (Participant participant in this.ParticipantsList)
+                {
+                    Boolean isOwnName = participant.ParticipantFirstName.Equals(firstName) && participant.ParticipantLastName.Equals(lastName);
+                    if (participant.IsWaiting)
                     {
-                        sb.Append(", ");
+                        if (counter > 0)
+                        {
+                            sb.Append(", ");
+                        }
+                        sb.Append((isCheckedInAsIncognito && !isOwnName) ? "Inkognito" : participant.ParticipantDisplayName(nameDisplayLength));
+                        ++counter;
                     }
-                    sb.Append((isCheckedInAsIncognito && !isOwnName) ? "Inkognito" : participant.ParticipantDisplayName(nameDisplayLength));
-                    ++counter;
+                }
+            }
+            else
+            {
+                Participant participant = FindParticipant(firstName, lastName);
+                if (participant != null && participant.IsWaiting)
+                {
+                    sb.Append("Du stehst auf der Warteliste.");
                 }
             }
             return sb.ToString();
@@ -224,11 +255,17 @@ namespace MeetUpPlanner.Shared
             }
             return participant;
         }
+  
         public Boolean IsCheckedInAsIncognito(string firstName, string lastName)
         {
             Participant participant = FindParticipant(firstName, lastName);
             Boolean result = (null != participant && participant.IsIncognito);
             return result;
+        }
+
+        public Boolean IsKidsOrYouth()
+        {
+            return (IsKids || IsYouth);
         }
     }
 }

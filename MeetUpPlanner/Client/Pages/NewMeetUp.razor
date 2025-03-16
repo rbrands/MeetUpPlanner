@@ -76,9 +76,9 @@
             {
                 <InputSelect @bind-Value="whenDateString" class="form-control">
                     @foreach (KeyValuePair<string, string> c in GetScopedDays())
-                        {
+                    {
                         <option value="@c.Key">@c.Value</option>
-                        }
+                    }
                 </InputSelect>
             }
             else
@@ -136,6 +136,13 @@
         </small>
     </div>
     <div class="form-group">
+        <label for="subTitle">Untertitel</label>
+        <InputText id="subTitle" aria-describedby="subTitleHelp" class="form-control" @bind-Value="meetup.SubTitle" autocomplete="on" placeholder="Untertitel" />
+        <small id="subTitleHelp" class="form-text text-muted">
+            Statt Länge und Tempo kann hier auch ein Untertitel angegeben werden.
+        </small>
+    </div>
+    <div class="form-group">
         <div class="form-check">
             <InputCheckbox id="cross" aria-describedby="crossHelp" class="form-check-input" @bind-Value="meetup.IsCross" />
             <label for="cross" class="form-checklabel">
@@ -157,6 +164,38 @@
             Die Ausfahrt ist nicht "nur" eine Ausfahrt, sondern ein strukturiertes Training und wird entsprechend markiert.
         </small>
     </div>
+    @if (KeywordCheck.IsAdmin)
+    {
+        <div class="form-group">
+            <div class="form-check">
+                <InputCheckbox id="iskids" aria-describedby="internalHelp" class="form-check-input" @bind-Value="meetup.IsKids" />
+                <label for="iskids" class="form-check-label">
+                    Für Pänz?
+                </label>
+            </div>
+            <small id="internalHelp" class="form-text text-muted">
+                Ist dies eine Ausfahrt oder Training für Pänz?
+            </small>
+        </div>
+        <div class="form-group">
+            <div class="form-check">
+                <InputCheckbox id="isyouth" aria-describedby="internalHelp" class="form-check-input" @bind-Value="meetup.IsYouth" />
+                <label for="isyouth" class="form-check-label">
+                    Für Jugend?
+                </label>
+            </div>
+            <small id="internalHelp" class="form-text text-muted">
+                Ist dies eine Ausfahrt oder Training für Jugendliche?
+            </small>
+        </div>
+        <div class="form-group">
+            <label for="trainer">Trainer:innen, die das Pänz-/Jugendtraining leiten</label>
+            <InputText id="trainer" aria-describedby="tempoHelp" class="form-control" @bind-Value="meetup.Trainer" autocomplete="on" placeholder="Namen der Trainer:innen" />
+            <small id="trainerHelp" class="form-text text-muted">
+                Die Trainer:innen für das Training/die Ausfahrt.
+            </small>
+        </div>
+    }
     @if (AppStateStore.ClientSettings.PublicMeetUpJoiningEnabled)
     {
         <div class="form-group">
@@ -213,10 +252,10 @@
                 Optional: Link zu einem Bild zur Strecke
             </small>
         </div>
-         <div class="form-group col-md-4">
+        <div class="form-group col-md-4">
             <UploadImage Title="@meetup.Title" OnFileUploaded="@((string uploadLink) => {meetup.LinkImage = uploadLink; })"></UploadImage>
         </div>
-   </div>
+    </div>
     <div class="form-group">
         <label for="linkTitle">Link-Bezeichnung</label>
         <InputText id="linkTitle" aria-describedby="linkTitleHelp" class="form-control" @bind-Value="meetup.LinkTitle" placeholder="Kurze Überschrift zum Link" title="Bezeichnung des Links zur weiterern Streckeninfo" />
@@ -478,6 +517,12 @@
             notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Startdatum", Detail = "Bitte Startdatum korrigieren.", Duration = 4000 });
             return;
         }
+        if (String.IsNullOrEmpty(meetup.SubTitle) && (String.IsNullOrEmpty(meetup.LevelDescription) || String.IsNullOrEmpty(meetup.Tempo)))
+        {
+            // No subtitle ==> Tempo AND Lenght of event required
+            notificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = "Länge/Tempo", Detail = "Bitte Länge und Tempo oder einen Untertitel angeben.", Duration = 4000 });
+            return;
+        } 
         if (saveDisabled)
         {
             return;
@@ -516,20 +561,29 @@
         Participant participantToBeRemoved = null;
         Participant participantToBeAdded = null;
         // Check if host-status has been changed
-        if (withoutHost && !meetup.WithoutHost)
+        if (meetup.IsKidsOrYouth())
         {
-            // MeetUp was changed to have a host ==> assign current user as host
-            meetup.HostFirstName = AppStateStore.FirstName;
-            meetup.HostLastName = AppStateStore.LastName;
-            meetup.HostAdressInfo = AppStateStore.PhoneMail;
-            // Check if current user (and new host) is already registered and remove him
+            // Training for kids/youth comes without a host, the trainers are logged in the field "Trainer"
+            meetup.WithoutHost = true;
             participantToBeRemoved = meetup.FindParticipant(meetup.HostFirstName, meetup.HostLastName);
         }
-        else if (!withoutHost && meetup.WithoutHost)
+        else
         {
-            // MeetUp was changed to have no host ==> add current host as participant
-            participantToBeAdded = new Participant(meetup.HostFirstName, meetup.HostLastName, meetup.HostAdressInfo);
-            participantToBeAdded.CalendarItemId = meetup.Id;
+            if (withoutHost && !meetup.WithoutHost)
+            {
+                // MeetUp was changed to have a host ==> assign current user as host
+                meetup.HostFirstName = AppStateStore.FirstName;
+                meetup.HostLastName = AppStateStore.LastName;
+                meetup.HostAdressInfo = AppStateStore.PhoneMail;
+                // Check if current user (and new host) is already registered and remove him
+                participantToBeRemoved = meetup.FindParticipant(meetup.HostFirstName, meetup.HostLastName);
+            }
+            else if (!withoutHost && meetup.WithoutHost)
+            {
+                // MeetUp was changed to have no host ==> add current host as participant
+                participantToBeAdded = new Participant(meetup.HostFirstName, meetup.HostLastName, meetup.HostAdressInfo);
+                participantToBeAdded.CalendarItemId = meetup.Id;
+            }
         }
         PrepareHttpClient();
         // Save calendarItem server
