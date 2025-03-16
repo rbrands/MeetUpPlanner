@@ -72,6 +72,8 @@
                     <span class="badge badge-warning" hidden="@(!item.IsCross)">Cross</span>
                     <span class="badge badge-secondary" hidden="@(!item.IsTraining)">Training</span>
                     <span class="badge badge-success" hidden="@(!IsFederated(item))">@item.FederatedFrom</span>
+                    <span class="badge badge-info" hidden="@(!item.IsKids)">Pänz</span>
+                    <span class="badge badge-info" hidden="@(!item.IsYouth)">Jugend</span>
                     @{
                         string badge = GetCalendarBadge(item);
                         if (!String.IsNullOrEmpty(badge))
@@ -88,7 +90,13 @@
                 }
                 <div class="card-body">
                     <h6 class="text-muted card-subtitle mb-2">
-                        @item.LevelDescription - @item.Tempo
+						@if (!String.IsNullOrEmpty(item.SubTitle))
+						{
+							@item.SubTitle
+						} else
+                        {
+                            @($"{item.LevelDescription} - {item.Tempo}")
+                        }
                     </h6>
                     <h5 class="card-title">
                         @item.Title
@@ -133,6 +141,11 @@
                         {
                             <hr />
                             <small>Warteliste (@item.WaitingListCounter von @item.MaxWaitingList): @item.WaitingListDisplay(AppStateStore.ClientSettings.NameDisplayLength, AppStateStore.FirstName, AppStateStore.LastName)</small>
+                        }
+                        @if (item.IsKidsOrYouth())
+                        {
+                            <hr />
+                            <small><b>Trainer:in(nen):</b> @item.Trainer</small>
                         }
                         <hr />
                         @if (item.CommentsList.Count() > 0)

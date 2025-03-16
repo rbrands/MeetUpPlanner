@@ -45,10 +45,12 @@ namespace MeetUpPlanner.Shared
         public string PrivateKeyword { get; set; }
         [JsonProperty(PropertyName = "isInternal")]
         public Boolean IsInternal { get; set; }
-        [JsonProperty(PropertyName = "levelDescription"), Required(ErrorMessage = "Bitte Angaben zur Länge/Dauer machen."), MaxLength(60, ErrorMessage = "Angabe zur Länge bitte kürzen.")]
+        [JsonProperty(PropertyName = "levelDescription"), MaxLength(60, ErrorMessage = "Angabe zur Länge bitte kürzen.")]
         public string LevelDescription { get; set; }
-        [JsonProperty(PropertyName = "tempo"), Required(ErrorMessage = "Bitte geplante Geschwindigkeit angeben."), MaxLength(35, ErrorMessage = "Tempo-Angabe zu lang.")]
+        [JsonProperty(PropertyName = "tempo"), MaxLength(35, ErrorMessage = "Tempo-Angabe zu lang.")]
         public string Tempo { get; set; }
+        [JsonProperty(PropertyName = "subTitle"), MaxLength(512, ErrorMessage = "Untertitel zu lang.")]
+        public string SubTitle { get; set; }
         [JsonProperty(PropertyName = "routeLink", NullValueHandling = NullValueHandling.Ignore), MaxLength(256, ErrorMessage = "Link zu lang"), UIHint("url")]
         public string RouteLink { get; set; }
         [JsonProperty(PropertyName = "link", NullValueHandling = NullValueHandling.Ignore), MaxLength(256, ErrorMessage = "Link zu lang"), UIHint("url")]
@@ -61,6 +63,12 @@ namespace MeetUpPlanner.Shared
         public Boolean IsCross { get; set; } = false;
         [JsonProperty(PropertyName = "isTraining")]
         public Boolean IsTraining { get; set; } = false;
+        [JsonProperty(PropertyName = "isKids")]
+        public Boolean IsKids { get; set; } = false;
+        [JsonProperty(PropertyName = "isYouth")]
+        public Boolean IsYouth { get; set; } = false;
+        [JsonProperty(PropertyName = "trainer", NullValueHandling = NullValueHandling.Ignore), MaxLength(512, ErrorMessage ="Trainernamen zu lang.")]
+        public string Trainer { get; set; }
         [JsonProperty(PropertyName = "isCanceled")]
         public Boolean IsCanceled { get; set; } = false;
         [JsonProperty(PropertyName = "guestScope", NullValueHandling = NullValueHandling.Ignore), MaxLength(60, ErrorMessage = "Gast-Scope zu lang.")]
