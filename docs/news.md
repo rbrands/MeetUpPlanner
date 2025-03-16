@@ -1,5 +1,8 @@
 [https://www.meetupplanner.de](https://www.meetupplanner.de)
 # Änderungshistorie zum MeetUpPlanner
+*16.3.2025*
+Unterstützung von Kinder- und Jugendtrainings: Hier werden Trainer:innen eingetragen (ohne Anmeldung), die Namen der Teilnehmer:innen werden nicht angezeigt, die Events werden mit "Pänz" bzw. "Jugend" gekennzeichnet.
+
 *21.11.2024*
 - Einführung des "Inkognitomodus" - man kann sich optional jetzt auch "inkognito" zu Terminen anmelden, d.h. der eigene Name wird in den Anmeldelisten nicht angezeigt. Genauere Beschreibung siehe Userguide.
 - Bugfixing diverser Serialisieungsfehler: "Akkordion"-Anhänge zu Terminen können jetzt wieder editiert werden, Kennzeichnung von Anmeldungen aus dem befreundeten Club.
