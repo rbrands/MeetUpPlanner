@@ -443,7 +443,13 @@
                  .WithUrl(NavigationManager.ToAbsoluteUri("/broadcastHub"))
                  .WithAutomaticReconnect()
                  .Build();
-            await hubConnection.StartAsync();
+            try
+            {
+                await hubConnection.StartAsync();
+            }
+            catch (Exception)
+            {
+            }
 
             onlyScopedMeetUps = AppStateStore.ClientSettings.OnlyScopedMeetUpsAllowed;
             scopedDates = GetScopedDays();
