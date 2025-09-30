@@ -22,7 +22,7 @@ namespace MeetUpPlanner.Functions
         public const string DEFAULT_DISCLAIMER = "Disclaimer";
         public const string DEFAULT_GUEST_DISCLAIMER = "Guest Disclaimer";
 
-        public const string VERSION = "2025-03-16";
+        public const string VERSION = "2025-09-30";
         public const int ADMINOVERBOOKFACTOR = 1; // no overbooking any more, because not needed
 
         public const int LOG_TTL = 30 * 24 * 3600; // 30 days TTL for Log items
