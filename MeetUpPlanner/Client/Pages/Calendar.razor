@@ -292,7 +292,16 @@
                 }
             };
 
-            await hubConnection.StartAsync();
+            try
+            {
+                if (null != hubConnection)
+                {
+                    await hubConnection.StartAsync();
+                }
+            }
+            catch (Exception)
+            {
+            }
 
             // Polling with timer only if SignalR has problems
             //Timer.SetTimer(refreshInterval);
