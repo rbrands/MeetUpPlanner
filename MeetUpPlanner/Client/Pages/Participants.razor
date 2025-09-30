@@ -32,7 +32,13 @@
                  .WithUrl(NavigationManager.ToAbsoluteUri("/broadcastHub"))
                  .WithAutomaticReconnect()
                  .Build();
-            await hubConnection.StartAsync();
+            try
+            {
+                await hubConnection.StartAsync();
+            }
+            catch (Exception)
+            {
+            }
 
             await ReadData();
             if (!KeywordCheck.IsAdmin && !CheckIfUserIsHost(meetup))
